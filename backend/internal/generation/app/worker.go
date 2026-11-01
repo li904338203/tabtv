@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"log/slog"
-	"github.com/li904338203/tabtv/backend/internal/platform/usererr"
 	"time"
 
 	"github.com/li904338203/tabtv/backend/internal/generation/domain"
 	"github.com/li904338203/tabtv/backend/internal/generation/repo"
+	"github.com/li904338203/tabtv/backend/internal/platform/usererr"
 )
 
 // Provider 是上游适配器。协议实现在 P06；这里只依赖最小能力。
