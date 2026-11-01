@@ -1,0 +1,16 @@
+{
+  "description": "Agent 试图修改用户的节点 → not_owned，整批拒绝（前面那条 add_node 也不生效）。Agent 侧应改为在旁边新建一个节点",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": ["a_fx1"],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "text", "title": "用户写的词", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": { "prompt": "用户的原文" } }
+    ]
+  },
+  "ops": [
+    { "kind": "add_node", "node": { "type": "text", "title": "新节点", "params": {} } },
+    { "kind": "update_node", "nodeId": "n_user1", "patch": { "params": { "prompt": "Agent 改写" } } }
+  ],
+  "expectError": "not_owned"
+}

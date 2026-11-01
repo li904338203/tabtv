@@ -1,0 +1,5 @@
+{"objects": [
+  {"op": "add", "ref": "机位一", "kind": "camera"},
+  {"op": "fly", "ref": "obj_x"},
+  "一个人"
+]}

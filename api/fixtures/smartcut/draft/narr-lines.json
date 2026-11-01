@@ -1,0 +1,63 @@
+{
+  "why": "解说：不存在的句子、音频当画面、同一句写两次 —— 丢掉并说明；按句号排序；没写 take 的按 full",
+  "mode": "narr",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "audio",
+        "durationMs": 9000,
+        "audioRole": "voice"
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 5000
+      },
+      {
+        "no": "3",
+        "kind": "image"
+      }
+    ],
+    "sentences": [
+      "s1",
+      "s2",
+      "s3"
+    ]
+  },
+  "raw": "{\"lines\": [{\"sentence\": \"s2\", \"clips\": [\"3\"], \"take\": \"middle\", \"startMs\": 1200}, {\"sentence\": \"s1\", \"clips\": [\"2\", \"1\"]}, {\"sentence\": \"s9\", \"clips\": [\"2\"]}, {\"sentence\": \"s2\", \"clips\": [\"2\"]}, {\"sentence\": \"s3\", \"clips\": [\"1\"]}]}",
+  "expect": {
+    "draft": {
+      "mode": "narr",
+      "lines": [
+        {
+          "sentence": "s1",
+          "clips": [
+            "2"
+          ],
+          "take": {
+            "kind": "full"
+          }
+        },
+        {
+          "sentence": "s2",
+          "clips": [
+            "3"
+          ],
+          "take": {
+            "kind": "middle"
+          }
+        }
+      ]
+    },
+    "dropped": [
+      "lines 第 2 项：编号「1」是音频，不能放进画面",
+      "lines 第 3 项：句子「s9」不存在",
+      "lines 第 4 项与第 1 项是同一句「s2」，只用第一处",
+      "lines 第 5 项：编号「1」是音频，不能放进画面"
+    ],
+    "ignored": [
+      "方案里写了 1 处时间（startMs），已忽略：时间由系统按素材编排"
+    ]
+  }
+}

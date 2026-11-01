@@ -1,0 +1,130 @@
+{
+  "description": "前端 stores/canvas.ts addNode(nodeType, title, params) 之后 document() 落库的节点形状（扁平存储形状，不是 Vue Flow 的 type:\"aitv\" + data）。由 addNode → canvasNodeToStored（utils/canvasDocument.ts）的代码推导：size.w = nodeDefaultWidth(nodeType, params)、size.h 未测量时兜底 nodeDefaultHeight(nodeType)（导演台与智能剪辑 240，其余 180）、新节点没有 result（undefined 不进 JSON）。Go 侧断言 Agent 用同样的 type/title/params 建出来的节点除 id、agent、position 外逐键相同；前端（AGT-11）断言 addNode + document() 产出与 node 一致。",
+  "cases": [
+    {
+      "addNode": {
+        "nodeType": "text",
+        "title": "文本节点 1",
+        "params": {
+          "prompt": ""
+        }
+      },
+      "node": {
+        "id": "n_mg3k2a_1",
+        "type": "text",
+        "title": "文本节点 1",
+        "position": {
+          "x": 120,
+          "y": 160
+        },
+        "size": {
+          "w": 330,
+          "h": 180
+        },
+        "params": {
+          "prompt": ""
+        }
+      }
+    },
+    {
+      "addNode": {
+        "nodeType": "video",
+        "title": "视频节点 2",
+        "params": {
+          "mode": "text2video"
+        }
+      },
+      "node": {
+        "id": "n_mg3k2b_2",
+        "type": "video",
+        "title": "视频节点 2",
+        "position": {
+          "x": 520,
+          "y": 160
+        },
+        "size": {
+          "w": 390,
+          "h": 180
+        },
+        "params": {
+          "mode": "text2video"
+        }
+      }
+    },
+    {
+      "addNode": {
+        "nodeType": "group",
+        "title": "资产组节点 3",
+        "params": {
+          "groupType": "asset"
+        }
+      },
+      "node": {
+        "id": "n_mg3k2c_3",
+        "type": "group",
+        "title": "资产组节点 3",
+        "position": {
+          "x": 920,
+          "y": 160
+        },
+        "size": {
+          "w": 368,
+          "h": 180
+        },
+        "params": {
+          "groupType": "asset"
+        }
+      }
+    },
+    {
+      "addNode": {
+        "nodeType": "director",
+        "title": "3D 导演台节点 4",
+        "params": {
+          "sceneId": "1"
+        }
+      },
+      "node": {
+        "id": "n_mg3k2d_4",
+        "type": "director",
+        "title": "3D 导演台节点 4",
+        "position": {
+          "x": 1320,
+          "y": 160
+        },
+        "size": {
+          "w": 330,
+          "h": 240
+        },
+        "params": {
+          "sceneId": "1"
+        }
+      }
+    },
+    {
+      "addNode": {
+        "nodeType": "smartcut",
+        "title": "智能剪辑节点 5",
+        "params": {
+          "timelineId": "1"
+        }
+      },
+      "node": {
+        "id": "n_mg3k2e_5",
+        "type": "smartcut",
+        "title": "智能剪辑节点 5",
+        "position": {
+          "x": 1720,
+          "y": 160
+        },
+        "size": {
+          "w": 330,
+          "h": 240
+        },
+        "params": {
+          "timelineId": "1"
+        }
+      }
+    }
+  ]
+}

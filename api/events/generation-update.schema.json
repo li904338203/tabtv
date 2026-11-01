@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/generation-update.schema.json",
+  "title": "GenerationUpdate",
+  "description": "生成任务状态推送。终态为 success/failed/cancelled；客户端必须丢弃落后于已知终态的事件。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "generationId",
+    "workspaceId",
+    "projectId",
+    "nodeId",
+    "status",
+    "progress",
+    "outputs",
+    "error"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "generation.update"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generationId": {
+      "$ref": "#/$defs/id"
+    },
+    "workspaceId": {
+      "$ref": "#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "nodeId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "画布节点 id；组子项与脚本任务可能为 null"
+    },
+    "groupItemId": {
+      "$ref": "#/$defs/nullableId"
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "success",
+        "failed",
+        "cancelled"
+      ],
+      "type": "string"
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "outputs": {
+      "type": "array",
+      "description": "仅在 success 时非空。url 是受保护端点，不是对象存储直链。",
+      "items": {
+        "type": "object",
+        "required": [
+          "index",
+          "outputType"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "outputType": {
+            "enum": [
+              "image",
+              "video",
+              "audio",
+              "text"
+            ],
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "description": "媒体产物的受保护端点（与 GET /generations/{id}/outputs 给的是同一个）。文本产物没有这个字段：正文只在产物端点上，不随事件推送。"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "durationMs": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "width": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "仅在 failed/cancelled 时非 null。reason 取自 errors.yaml 的 task_error_reasons，与 HTTP 错误码不共用编号空间。",
+      "required": [
+        "reason",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "providerCode": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "creditsRefunded": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "description": "失败/取消已退还的积分。null 表示本次事件不涉及退款结论。"
+    },
+    "traceId": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$",
+      "description": "Snowflake id，内部 int64，对外一律 string（GO-34）"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

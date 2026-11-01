@@ -1,0 +1,13 @@
+{
+  "raw-fence.txt": {"why": "外面裹着 ```json 代码围栏", "ok": true, "objects": 2, "camera": true, "droppedCount": 0, "notes": 1},
+  "raw-prose.txt": {"why": "JSON 前后有说明文字，后面的说明里还有大括号", "ok": true, "objects": 2, "camera": true, "droppedCount": 0},
+  "raw-trailing-comma.txt": {"why": "对象与数组末尾多了逗号", "ok": true, "objects": 2, "camera": true, "droppedCount": 0},
+  "raw-unknown-codes.txt": {"why": "白名单外的码：未知的项整项丢弃，未知的字段丢弃该字段，都写进丢弃说明", "ok": true, "objects": 2, "camera": true,
+    "droppedContains": ["robot", "yoga_tree", "animal", "balloon", "above", "teleport", "wide", "bird_eye", "500"]},
+  "raw-coordinates.txt": {"why": "模型自作主张写了坐标：一律忽略并说明（DRD-27）", "ok": true, "objects": 2, "camera": true,
+    "droppedContains": ["「哨兵」带了坐标（position、rotation）", "「岗亭」带了坐标（x、z）", "camera 带了坐标（position）"]},
+  "raw-empty.txt": {"why": "空方案：什么都没有就是失败，不是「成功但为空」", "ok": false, "reasonContains": "模型没有给出可用的搭景方案"},
+  "raw-all-invalid.txt": {"why": "每一项都不合法：丢光了同样是失败", "ok": false, "reasonContains": "模型没有给出可用的搭景方案", "droppedCount": 3},
+  "raw-text-only.txt": {"why": "通篇是文字（模型在反问）：说清楚而不是报乱码", "ok": false, "reasonContains": "没有按要求输出 JSON"},
+  "raw-truncated.txt": {"why": "输出写到一半被截断：救不回来，错误带原文前 300 字", "ok": false, "reasonContains": "无法解析为 JSON"}
+}

@@ -1,0 +1,780 @@
+{
+  "why": "文字层最多 100 个",
+  "content": {
+    "version": 3,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1001",
+        "kind": "video",
+        "isMuted": false,
+        "volume": 100,
+        "clips": [
+          {
+            "id": "2001",
+            "mediaId": "77",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "speed": 100,
+            "volume": 100
+          },
+          {
+            "id": "tmp-a",
+            "mediaId": "78",
+            "sourceInMs": 500,
+            "sourceOutMs": 4500,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          }
+        ]
+      },
+      {
+        "id": "1002",
+        "kind": "audio",
+        "role": "music",
+        "clips": [
+          {
+            "id": "2002",
+            "mediaId": "88",
+            "startMs": 2500,
+            "sourceInMs": 0,
+            "sourceOutMs": 30000
+          }
+        ]
+      },
+      {
+        "id": "1003",
+        "kind": "subtitle",
+        "lang": "zh-CN"
+      },
+      {
+        "id": "tmp-t",
+        "kind": "text"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "3001",
+        "trackId": "1003",
+        "startMs": 0,
+        "endMs": 1800,
+        "text": "第一句"
+      }
+    ],
+    "texts": [
+      {
+        "id": "tmp-x0",
+        "trackId": "tmp-t",
+        "startMs": 0,
+        "endMs": 100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x1",
+        "trackId": "tmp-t",
+        "startMs": 100,
+        "endMs": 200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x2",
+        "trackId": "tmp-t",
+        "startMs": 200,
+        "endMs": 300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x3",
+        "trackId": "tmp-t",
+        "startMs": 300,
+        "endMs": 400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x4",
+        "trackId": "tmp-t",
+        "startMs": 400,
+        "endMs": 500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x5",
+        "trackId": "tmp-t",
+        "startMs": 500,
+        "endMs": 600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x6",
+        "trackId": "tmp-t",
+        "startMs": 600,
+        "endMs": 700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x7",
+        "trackId": "tmp-t",
+        "startMs": 700,
+        "endMs": 800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x8",
+        "trackId": "tmp-t",
+        "startMs": 800,
+        "endMs": 900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x9",
+        "trackId": "tmp-t",
+        "startMs": 900,
+        "endMs": 1000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x10",
+        "trackId": "tmp-t",
+        "startMs": 1000,
+        "endMs": 1100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x11",
+        "trackId": "tmp-t",
+        "startMs": 1100,
+        "endMs": 1200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x12",
+        "trackId": "tmp-t",
+        "startMs": 1200,
+        "endMs": 1300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x13",
+        "trackId": "tmp-t",
+        "startMs": 1300,
+        "endMs": 1400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x14",
+        "trackId": "tmp-t",
+        "startMs": 1400,
+        "endMs": 1500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x15",
+        "trackId": "tmp-t",
+        "startMs": 1500,
+        "endMs": 1600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x16",
+        "trackId": "tmp-t",
+        "startMs": 1600,
+        "endMs": 1700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x17",
+        "trackId": "tmp-t",
+        "startMs": 1700,
+        "endMs": 1800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x18",
+        "trackId": "tmp-t",
+        "startMs": 1800,
+        "endMs": 1900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x19",
+        "trackId": "tmp-t",
+        "startMs": 1900,
+        "endMs": 2000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x20",
+        "trackId": "tmp-t",
+        "startMs": 2000,
+        "endMs": 2100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x21",
+        "trackId": "tmp-t",
+        "startMs": 2100,
+        "endMs": 2200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x22",
+        "trackId": "tmp-t",
+        "startMs": 2200,
+        "endMs": 2300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x23",
+        "trackId": "tmp-t",
+        "startMs": 2300,
+        "endMs": 2400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x24",
+        "trackId": "tmp-t",
+        "startMs": 2400,
+        "endMs": 2500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x25",
+        "trackId": "tmp-t",
+        "startMs": 2500,
+        "endMs": 2600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x26",
+        "trackId": "tmp-t",
+        "startMs": 2600,
+        "endMs": 2700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x27",
+        "trackId": "tmp-t",
+        "startMs": 2700,
+        "endMs": 2800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x28",
+        "trackId": "tmp-t",
+        "startMs": 2800,
+        "endMs": 2900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x29",
+        "trackId": "tmp-t",
+        "startMs": 2900,
+        "endMs": 3000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x30",
+        "trackId": "tmp-t",
+        "startMs": 3000,
+        "endMs": 3100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x31",
+        "trackId": "tmp-t",
+        "startMs": 3100,
+        "endMs": 3200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x32",
+        "trackId": "tmp-t",
+        "startMs": 3200,
+        "endMs": 3300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x33",
+        "trackId": "tmp-t",
+        "startMs": 3300,
+        "endMs": 3400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x34",
+        "trackId": "tmp-t",
+        "startMs": 3400,
+        "endMs": 3500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x35",
+        "trackId": "tmp-t",
+        "startMs": 3500,
+        "endMs": 3600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x36",
+        "trackId": "tmp-t",
+        "startMs": 3600,
+        "endMs": 3700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x37",
+        "trackId": "tmp-t",
+        "startMs": 3700,
+        "endMs": 3800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x38",
+        "trackId": "tmp-t",
+        "startMs": 3800,
+        "endMs": 3900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x39",
+        "trackId": "tmp-t",
+        "startMs": 3900,
+        "endMs": 4000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x40",
+        "trackId": "tmp-t",
+        "startMs": 4000,
+        "endMs": 4100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x41",
+        "trackId": "tmp-t",
+        "startMs": 4100,
+        "endMs": 4200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x42",
+        "trackId": "tmp-t",
+        "startMs": 4200,
+        "endMs": 4300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x43",
+        "trackId": "tmp-t",
+        "startMs": 4300,
+        "endMs": 4400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x44",
+        "trackId": "tmp-t",
+        "startMs": 4400,
+        "endMs": 4500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x45",
+        "trackId": "tmp-t",
+        "startMs": 4500,
+        "endMs": 4600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x46",
+        "trackId": "tmp-t",
+        "startMs": 4600,
+        "endMs": 4700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x47",
+        "trackId": "tmp-t",
+        "startMs": 4700,
+        "endMs": 4800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x48",
+        "trackId": "tmp-t",
+        "startMs": 4800,
+        "endMs": 4900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x49",
+        "trackId": "tmp-t",
+        "startMs": 4900,
+        "endMs": 5000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x50",
+        "trackId": "tmp-t",
+        "startMs": 5000,
+        "endMs": 5100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x51",
+        "trackId": "tmp-t",
+        "startMs": 5100,
+        "endMs": 5200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x52",
+        "trackId": "tmp-t",
+        "startMs": 5200,
+        "endMs": 5300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x53",
+        "trackId": "tmp-t",
+        "startMs": 5300,
+        "endMs": 5400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x54",
+        "trackId": "tmp-t",
+        "startMs": 5400,
+        "endMs": 5500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x55",
+        "trackId": "tmp-t",
+        "startMs": 5500,
+        "endMs": 5600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x56",
+        "trackId": "tmp-t",
+        "startMs": 5600,
+        "endMs": 5700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x57",
+        "trackId": "tmp-t",
+        "startMs": 5700,
+        "endMs": 5800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x58",
+        "trackId": "tmp-t",
+        "startMs": 5800,
+        "endMs": 5900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x59",
+        "trackId": "tmp-t",
+        "startMs": 5900,
+        "endMs": 6000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x60",
+        "trackId": "tmp-t",
+        "startMs": 6000,
+        "endMs": 6100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x61",
+        "trackId": "tmp-t",
+        "startMs": 6100,
+        "endMs": 6200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x62",
+        "trackId": "tmp-t",
+        "startMs": 6200,
+        "endMs": 6300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x63",
+        "trackId": "tmp-t",
+        "startMs": 6300,
+        "endMs": 6400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x64",
+        "trackId": "tmp-t",
+        "startMs": 6400,
+        "endMs": 6500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x65",
+        "trackId": "tmp-t",
+        "startMs": 6500,
+        "endMs": 6600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x66",
+        "trackId": "tmp-t",
+        "startMs": 6600,
+        "endMs": 6700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x67",
+        "trackId": "tmp-t",
+        "startMs": 6700,
+        "endMs": 6800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x68",
+        "trackId": "tmp-t",
+        "startMs": 6800,
+        "endMs": 6900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x69",
+        "trackId": "tmp-t",
+        "startMs": 6900,
+        "endMs": 7000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x70",
+        "trackId": "tmp-t",
+        "startMs": 7000,
+        "endMs": 7100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x71",
+        "trackId": "tmp-t",
+        "startMs": 7100,
+        "endMs": 7200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x72",
+        "trackId": "tmp-t",
+        "startMs": 7200,
+        "endMs": 7300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x73",
+        "trackId": "tmp-t",
+        "startMs": 7300,
+        "endMs": 7400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x74",
+        "trackId": "tmp-t",
+        "startMs": 7400,
+        "endMs": 7500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x75",
+        "trackId": "tmp-t",
+        "startMs": 7500,
+        "endMs": 7600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x76",
+        "trackId": "tmp-t",
+        "startMs": 7600,
+        "endMs": 7700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x77",
+        "trackId": "tmp-t",
+        "startMs": 7700,
+        "endMs": 7800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x78",
+        "trackId": "tmp-t",
+        "startMs": 7800,
+        "endMs": 7900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x79",
+        "trackId": "tmp-t",
+        "startMs": 7900,
+        "endMs": 8000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x80",
+        "trackId": "tmp-t",
+        "startMs": 8000,
+        "endMs": 8100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x81",
+        "trackId": "tmp-t",
+        "startMs": 8100,
+        "endMs": 8200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x82",
+        "trackId": "tmp-t",
+        "startMs": 8200,
+        "endMs": 8300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x83",
+        "trackId": "tmp-t",
+        "startMs": 8300,
+        "endMs": 8400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x84",
+        "trackId": "tmp-t",
+        "startMs": 8400,
+        "endMs": 8500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x85",
+        "trackId": "tmp-t",
+        "startMs": 8500,
+        "endMs": 8600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x86",
+        "trackId": "tmp-t",
+        "startMs": 8600,
+        "endMs": 8700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x87",
+        "trackId": "tmp-t",
+        "startMs": 8700,
+        "endMs": 8800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x88",
+        "trackId": "tmp-t",
+        "startMs": 8800,
+        "endMs": 8900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x89",
+        "trackId": "tmp-t",
+        "startMs": 8900,
+        "endMs": 9000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x90",
+        "trackId": "tmp-t",
+        "startMs": 9000,
+        "endMs": 9100,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x91",
+        "trackId": "tmp-t",
+        "startMs": 9100,
+        "endMs": 9200,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x92",
+        "trackId": "tmp-t",
+        "startMs": 9200,
+        "endMs": 9300,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x93",
+        "trackId": "tmp-t",
+        "startMs": 9300,
+        "endMs": 9400,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x94",
+        "trackId": "tmp-t",
+        "startMs": 9400,
+        "endMs": 9500,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x95",
+        "trackId": "tmp-t",
+        "startMs": 9500,
+        "endMs": 9600,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x96",
+        "trackId": "tmp-t",
+        "startMs": 9600,
+        "endMs": 9700,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x97",
+        "trackId": "tmp-t",
+        "startMs": 9700,
+        "endMs": 9800,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x98",
+        "trackId": "tmp-t",
+        "startMs": 9800,
+        "endMs": 9900,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x99",
+        "trackId": "tmp-t",
+        "startMs": 9900,
+        "endMs": 10000,
+        "text": "字"
+      },
+      {
+        "id": "tmp-x100",
+        "trackId": "tmp-t",
+        "startMs": 10000,
+        "endMs": 10100,
+        "text": "字"
+      }
+    ]
+  },
+  "path": "texts"
+}

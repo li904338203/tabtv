@@ -1,0 +1,18 @@
+[
+  {"focalMm": 35, "sensorMm": 36, "aspect": "16:9", "vfovDeg": 32.26880217111643},
+  {"focalMm": 85, "sensorMm": 36, "aspect": "16:9", "vfovDeg": 13.585861564471855},
+  {"focalMm": 14, "sensorMm": 36, "aspect": "16:9", "vfovDeg": 71.74998270412806},
+  {"focalMm": 50, "sensorMm": 10, "aspect": "16:9", "vfovDeg": 6.43898979370566},
+  {"focalMm": 35, "sensorMm": 36, "aspect": "9:16", "vfovDeg": 54.43222311461495},
+  {"focalMm": 85, "sensorMm": 36, "aspect": "9:16", "vfovDeg": 23.913168486298265},
+  {"focalMm": 12, "sensorMm": 70, "aspect": "9:16", "vfovDeg": 142.15071116789753},
+  {"focalMm": 35, "sensorMm": 36, "aspect": "1:1", "vfovDeg": 54.43222311461495},
+  {"focalMm": 50, "sensorMm": 36, "aspect": "1:1", "vfovDeg": 39.597752709049864},
+  {"focalMm": 135, "sensorMm": 24, "aspect": "1:1", "vfovDeg": 10.159215720029142},
+  {"focalMm": 35, "sensorMm": 36, "aspect": "4:3", "vfovDeg": 42.184679011655},
+  {"focalMm": 200, "sensorMm": 70, "aspect": "4:3", "vfovDeg": 14.9546606133216},
+  {"focalMm": 35, "sensorMm": 36, "aspect": "3:4", "vfovDeg": 54.43222311461495},
+  {"focalMm": 85, "sensorMm": 36, "aspect": "3:4", "vfovDeg": 23.913168486298265},
+  {"focalMm": 24, "sensorMm": 36, "aspect": "21:9", "vfovDeg": 35.63777782904556},
+  {"focalMm": 35, "sensorMm": 36, "aspect": "21:9", "vfovDeg": 24.85944603690893}
+]

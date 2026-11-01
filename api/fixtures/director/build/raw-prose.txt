@@ -1,0 +1,8 @@
+好的，根据你的描述，我安排了下面的搭景方案：
+
+{"objects": [{"op": "add", "ref": "老板", "kind": "character", "posePreset": "sit_chair"},
+ {"op": "add", "ref": "桌子", "kind": "prop", "shape": "box", "size": {"x": 1.6, "y": 0.75, "z": 0.8},
+  "relation": {"type": "in_front_of", "target": "老板", "distance": 0.8}}],
+ "camera": {"shotSize": "full", "angle": "high", "side": "front_left"}}
+
+说明：{老板} 坐在桌后。如需调整请告诉我。

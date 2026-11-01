@@ -1,0 +1,94 @@
+{
+  "why": "DR-AC-27：「三个人在街头对峙，低角度仰拍」—— 3 个角色贴地、两两相距不小于 0.5 米，1 个机位仰拍，距离满足中景（没写景别）",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "阿强",
+        "kind": "character",
+        "posePreset": "fight_stance",
+        "facing": {
+          "target": "老刀"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "老刀",
+        "kind": "character",
+        "posePreset": "fight_stance",
+        "relation": {
+          "type": "facing",
+          "target": "阿强",
+          "distance": 2.0
+        }
+      },
+      {
+        "op": "add",
+        "ref": "小六",
+        "kind": "character",
+        "model": "youth_male",
+        "posePreset": "stand_hands_on_hips",
+        "relation": {
+          "type": "behind",
+          "target": "阿强",
+          "distance": 1.0
+        },
+        "facing": {
+          "target": "老刀"
+        }
+      }
+    ],
+    "camera": {
+      "angle": "low",
+      "side": "front"
+    },
+    "notes": [
+      "街道环境不在导演台里搭，只摆人物"
+    ]
+  },
+  "expect": {
+    "added": 4,
+    "characters": 3,
+    "cameras": 1,
+    "minGapM": 0.5,
+    "grounded": true,
+    "pitch": "up",
+    "framing": {
+      "targets": [
+        "阿强",
+        "老刀",
+        "小六"
+      ],
+      "shotSize": "medium"
+    },
+    "faces": [
+      [
+        "阿强",
+        "老刀"
+      ],
+      [
+        "老刀",
+        "阿强"
+      ],
+      [
+        "小六",
+        "老刀"
+      ]
+    ],
+    "defaultsContain": [
+      "未指定景别，按中景",
+      "未指定机位拍谁，按全部角色",
+      "街道环境不在导演台里搭，只摆人物"
+    ]
+  }
+}

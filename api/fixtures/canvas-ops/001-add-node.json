@@ -1,0 +1,85 @@
+{
+  "description": "add_node：服务端分配 ID、强制写入 agent.sessionId（去掉 userTouched）、补默认 size 与 params；position 以操作上的为准",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": ["a_fx1", "a_fx2"],
+  "before": {
+    "schemaVersion": 1,
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图片节点 1", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} }
+    ],
+    "edges": []
+  },
+  "ops": [
+    {
+      "kind": "add_node",
+      "ref": "ref:plan",
+      "node": {
+        "id": "client-chosen-id-is-ignored",
+        "type": "text",
+        "title": "规划",
+        "params": { "prompt": "一只橘猫在窗台上晒太阳" },
+        "agent": { "sessionId": "9999", "stepId": "s1", "sourceDocId": "9007199254740993", "userTouched": true }
+      },
+      "position": { "x": 400, "y": 120 }
+    },
+    {
+      "kind": "add_node",
+      "node": { "type": "video", "title": "视频" },
+      "position": { "x": 800, "y": 120 }
+    }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "viewport": { "x": 0, "y": 0, "zoom": 1 },
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图片节点 1", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      {
+        "id": "a_fx1",
+        "type": "text",
+        "title": "规划",
+        "params": { "prompt": "一只橘猫在窗台上晒太阳" },
+        "position": { "x": 400, "y": 120 },
+        "size": { "w": 330, "h": 180 },
+        "agent": { "sessionId": "7001", "stepId": "s1", "sourceDocId": "9007199254740993" }
+      },
+      {
+        "id": "a_fx2",
+        "type": "video",
+        "title": "视频",
+        "params": {},
+        "position": { "x": 800, "y": 120 },
+        "size": { "w": 390, "h": 180 },
+        "agent": { "sessionId": "7001" }
+      }
+    ],
+    "edges": []
+  },
+  "nodeIds": ["a_fx1", "a_fx2"],
+  "applied": [
+    {
+      "kind": "add_node",
+      "node": {
+        "id": "a_fx1",
+        "type": "text",
+        "title": "规划",
+        "params": { "prompt": "一只橘猫在窗台上晒太阳" },
+        "position": { "x": 400, "y": 120 },
+        "size": { "w": 330, "h": 180 },
+        "agent": { "sessionId": "7001", "stepId": "s1", "sourceDocId": "9007199254740993" }
+      }
+    },
+    {
+      "kind": "add_node",
+      "node": {
+        "id": "a_fx2",
+        "type": "video",
+        "title": "视频",
+        "params": {},
+        "position": { "x": 800, "y": 120 },
+        "size": { "w": 390, "h": 180 },
+        "agent": { "sessionId": "7001" }
+      }
+    }
+  ]
+}

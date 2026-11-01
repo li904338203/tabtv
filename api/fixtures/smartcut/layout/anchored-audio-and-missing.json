@@ -1,0 +1,111 @@
+{
+  "why": "跟随音频片段按它的起点换算；所属片段已被删（锚点指向一个不在内容里的正式 ID）→ 按存储值留在原处、不隐藏；文字层按存储值",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-c1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 8000
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "role": "voice",
+        "clips": [
+          {
+            "id": "tmp-v1",
+            "mediaId": "31",
+            "startMs": 3000,
+            "sourceInMs": 500,
+            "sourceOutMs": 2500
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "kind": "subtitle"
+      },
+      {
+        "id": "4",
+        "kind": "text"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "tmp-u1",
+        "trackId": "3",
+        "startMs": 0,
+        "endMs": 10,
+        "text": "配音",
+        "anchor": {
+          "clipId": "tmp-v1",
+          "srcStartMs": 500,
+          "srcEndMs": 1500
+        }
+      },
+      {
+        "id": "tmp-u2",
+        "trackId": "3",
+        "startMs": 6000,
+        "endMs": 7000,
+        "text": "片段已删",
+        "anchor": {
+          "clipId": "999",
+          "srcStartMs": 0,
+          "srcEndMs": 1000
+        }
+      }
+    ],
+    "texts": [
+      {
+        "id": "tmp-x1",
+        "trackId": "4",
+        "startMs": 1000,
+        "endMs": 4000,
+        "text": "标题"
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": {
+        "startMs": 0,
+        "durationMs": 8000
+      },
+      "tmp-v1": {
+        "startMs": 3000,
+        "durationMs": 2000
+      }
+    },
+    "subtitles": {
+      "tmp-u1": {
+        "startMs": 3000,
+        "endMs": 4000
+      },
+      "tmp-u2": {
+        "startMs": 6000,
+        "endMs": 7000
+      }
+    },
+    "texts": {
+      "tmp-x1": {
+        "startMs": 1000,
+        "endMs": 4000
+      }
+    },
+    "totalMs": 8000,
+    "effectiveMs": 8000
+  }
+}

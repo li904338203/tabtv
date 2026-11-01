@@ -1,0 +1,183 @@
+{
+  "why": "新建节点直接搭景（默认场景）：默认的机位与角色还没被用户动过，记为 source=ai、可替换（DR-AC-27）——机位就地改成方案要的景别、仍是输出机位；方案没写到的默认角色原样保留，新角色可以拿它当位置关系的目标",
+  "scene": {
+    "background": {
+      "color": "#060608",
+      "mode": "color"
+    },
+    "ground": {
+      "height": 0,
+      "opacity": 1,
+      "visible": true
+    },
+    "lights": {
+      "fill": {
+        "azimuth": 225,
+        "color": "#ffffff",
+        "elevation": 20,
+        "intensity": 0.5,
+        "visible": true
+      },
+      "key": {
+        "azimuth": 45,
+        "color": "#ffffff",
+        "elevation": 50,
+        "intensity": 1.2,
+        "visible": true
+      }
+    },
+    "objects": [
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_1",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 1",
+        "source": "ai",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "character": {
+          "body": "standard",
+          "height": 1.8,
+          "model": "adult_male",
+          "posePreset": "stand_neutral"
+        },
+        "id": "obj_character_1",
+        "kind": "character",
+        "locked": false,
+        "name": "角色 1",
+        "source": "ai",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      }
+    ],
+    "outputCameraId": "obj_camera_1",
+    "schemaVersion": 1,
+    "stage": {
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 1
+    },
+    "timeline": {
+      "durationFrames": 150,
+      "fps": 30,
+      "loop": false,
+      "tracks": []
+    },
+    "view": {
+      "angleSnap": {
+        "enabled": false,
+        "step": 15
+      },
+      "gridSnap": {
+        "enabled": false,
+        "step": 0.5
+      },
+      "groundSnap": true,
+      "showLabels": true
+    }
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "母亲",
+        "kind": "character",
+        "model": "adult_female",
+        "relation": {
+          "type": "right_of",
+          "target": "角色 1"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "女儿",
+        "kind": "character",
+        "model": "youth_female",
+        "relation": {
+          "type": "left_of",
+          "target": "角色 1"
+        }
+      }
+    ],
+    "camera": {
+      "shotSize": "full",
+      "angle": "eye_level"
+    }
+  },
+  "expect": {
+    "added": 2,
+    "characters": 3,
+    "cameras": 1,
+    "outputCamera": "obj_camera_1",
+    "unchanged": [
+      "obj_character_1"
+    ],
+    "leftOf": [
+      [
+        "女儿",
+        "角色 1"
+      ],
+      [
+        "角色 1",
+        "母亲"
+      ]
+    ],
+    "minGapM": 0.5,
+    "grounded": true,
+    "defaultsContain": [
+      "未指定方位，沿用输出机位「机位 1」的方向",
+      "未指定焦距，沿用输出机位「机位 1」的 35mm"
+    ],
+    "updated": 1
+  }
+}

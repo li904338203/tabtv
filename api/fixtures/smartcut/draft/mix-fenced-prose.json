@@ -1,0 +1,62 @@
+{
+  "why": "围栏 + 前后杂文 + 编号写成数字：容错层救得回来，编号按十进制规范成字符串",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 6000
+      },
+      {
+        "no": "3",
+        "kind": "audio",
+        "durationMs": 30000,
+        "audioRole": "music"
+      },
+      {
+        "no": "4",
+        "kind": "image"
+      }
+    ]
+  },
+  "raw": "好的，下面是方案：\n```json\n{\"segments\":[{\"clip\":\"1\",\"take\":\"head\",\"role\":\"hook\",\"weight\":3,\"transition\":\"cut\",\"reason\":\"开头抓人\"},{\"clip\":2,\"take\":{\"aroundSec\":1.5},\"role\":\"body\",\"weight\":1,\"transition\":\"dissolve\"}],\"music\":{\"clip\":3},\"notes\":[\"已按要求突出开头\"]}\n```\n希望对你有帮助。",
+  "expect": {
+    "draft": {
+      "mode": "mix",
+      "segments": [
+        {
+          "clip": "1",
+          "take": {
+            "kind": "head"
+          },
+          "role": "hook",
+          "weight": 3,
+          "transition": "cut",
+          "reason": "开头抓人"
+        },
+        {
+          "clip": "2",
+          "take": {
+            "kind": "around",
+            "aroundMs": 1500
+          },
+          "role": "body",
+          "weight": 1,
+          "transition": "dissolve"
+        }
+      ],
+      "music": "3",
+      "notes": [
+        "已按要求突出开头"
+      ]
+    },
+    "dropped": [],
+    "ignored": []
+  }
+}

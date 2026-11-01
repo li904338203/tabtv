@@ -1,0 +1,33 @@
+{
+  "audio_info": { "duration": 3696 },
+  "result": {
+    "text": "嗯，大家好，今天讲剪辑。",
+    "utterances": [
+      {
+        "text": "嗯，大家好，",
+        "start_time": 0,
+        "end_time": 1705,
+        "definite": true,
+        "words": [
+          { "text": "嗯", "start_time": 120, "end_time": 360, "blank_duration": 0 },
+          { "text": "大", "start_time": 740, "end_time": 860, "blank_duration": 0 },
+          { "text": "家", "start_time": 860, "end_time": 1020, "blank_duration": 0 },
+          { "text": "好", "start_time": 1020, "end_time": 1300, "blank_duration": 0 }
+        ]
+      },
+      {
+        "text": "今天讲剪辑。",
+        "start_time": 1900,
+        "end_time": 3600,
+        "definite": true,
+        "words": [
+          { "text": "今", "start_time": 1900, "end_time": 2080 },
+          { "text": "天", "start_time": 2080, "end_time": 2260 },
+          { "text": "讲", "start_time": 2400, "end_time": 2600 },
+          { "text": "剪", "start_time": 2700, "end_time": 2950 },
+          { "text": "辑", "start_time": 2950, "end_time": 3400 }
+        ]
+      }
+    ]
+  }
+}

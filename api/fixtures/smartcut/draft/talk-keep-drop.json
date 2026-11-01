@@ -1,0 +1,45 @@
+{
+  "why": "口播：keep 的三种写法（区间、单句字符串、{sentence}）；同一句既在 keep 又在 drop 时以 drop 为准；不存在的句号丢掉",
+  "mode": "talk",
+  "refs": {
+    "sentences": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6"
+    ]
+  },
+  "raw": "{\"keep\": [{\"from\": \"s1\", \"to\": \"s2\"}, \"s4\", {\"sentence\": \"s5\"}, {\"from\": \"s9\", \"to\": \"s9\"}], \"drop\": [{\"sentence\": \"s2\", \"reason\": \"口误\"}, {\"sentence\": \"s3\", \"reason\": \"重复\"}], \"subtitle\": false}",
+  "expect": {
+    "draft": {
+      "mode": "talk",
+      "keep": [
+        {
+          "from": "s1",
+          "to": "s1"
+        },
+        {
+          "from": "s4",
+          "to": "s5"
+        }
+      ],
+      "drop": [
+        {
+          "sentence": "s2",
+          "reason": "口误"
+        },
+        {
+          "sentence": "s3",
+          "reason": "重复"
+        }
+      ],
+      "subtitle": false
+    },
+    "dropped": [
+      "keep 第 4 项：句子「s9」不存在"
+    ],
+    "ignored": []
+  }
+}

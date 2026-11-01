@@ -1,0 +1,49 @@
+{
+  "why": "景别 close_up + 角度 low + 方位 front：机位距离满足该景别的 coverage，俯仰与横滚符合角度",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "主角",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "model": "adult_male"
+      }
+    ],
+    "camera": {
+      "target": [
+        "主角"
+      ],
+      "shotSize": "close_up",
+      "angle": "low",
+      "side": "front"
+    }
+  },
+  "expect": {
+    "added": 2,
+    "characters": 1,
+    "cameras": 1,
+    "outputCamera": "new",
+    "grounded": true,
+    "framing": {
+      "targets": [
+        "主角"
+      ],
+      "shotSize": "close_up"
+    },
+    "pitchDeg": 45,
+    "defaultsContain": [
+      "低机位离目标太近"
+    ]
+  }
+}

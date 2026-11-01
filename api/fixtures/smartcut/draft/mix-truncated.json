@@ -1,0 +1,32 @@
+{
+  "why": "输出被截断（括号没闭合）：救不回来就报无法解析，带原文片段，不吞",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 6000
+      },
+      {
+        "no": "3",
+        "kind": "audio",
+        "durationMs": 30000,
+        "audioRole": "music"
+      },
+      {
+        "no": "4",
+        "kind": "image"
+      }
+    ]
+  },
+  "raw": "{\"segments\":[{\"clip\":\"1\",\"take\":\"full\",\"role\":\"hook\"},{\"clip\":\"2\",\"take\":\"he",
+  "expect": {
+    "invalid": "模型输出无法解析为 JSON"
+  }
+}

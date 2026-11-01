@@ -1,0 +1,32 @@
+{
+  "description": "商品库 / 角色库会话（MKT-T-37，dev/05 §4.2）的「## 营销输入」正文：多一行「描述：」；角色库角色写名称 + 形象 / 音色摘要（各截 80 码点、换行压空格）+「有参考音频，不发送给模型」，不出现任何音频 / 媒体 ID；脚本角色资产仍只写名字。旧会话（没有 productDescription）见 slot-summary.json，逐字不变。",
+  "sceneInput": {
+    "productName": "山野冷萃咖啡液",
+    "sellingPoints": "0 蔗糖，冷水 3 秒即溶",
+    "productDescription": "一盒 12 条便携装\n适合通勤与露营",
+    "productImageCount": 6,
+    "visibleImageCount": 4,
+    "characters": [
+      {
+        "library": true,
+        "name": "柚子君",
+        "appearance": "圆脸柚子拟人，绿色叶子发型",
+        "voiceText": "活泼少年音\n语速偏快",
+        "hasVoice": true
+      },
+      {
+        "assetName": "唐僧"
+      }
+    ],
+    "maxVariants": 4
+  },
+  "options": [
+    {
+      "kind": "creative",
+      "name": "巨物从天而降",
+      "description": "商品放大到城市尺度后落地展示",
+      "code": "giant_drop"
+    }
+  ],
+  "expected": "商品：山野冷萃咖啡液\n卖点：0 蔗糖，冷水 3 秒即溶\n描述：一盒 12 条便携装 适合通勤与露营\n商品图：共 6 张，#1 为主图。你在本条消息里能看到 #1~#4；其余用 view_media 按序号查看。\n角色：柚子君（形象：圆脸柚子拟人，绿色叶子发型；音色：活泼少年音 语速偏快；有参考音频，不发送给模型）、唐僧\n所选创意：巨物从天而降（code giant_drop） —— 商品放大到城市尺度后落地展示\n所选 Hook：未选择\n所选风格：未选择\n单次最多 4 个变体；每个生成项选用的商品图不超过该模型的参考图上限，规划时逐项写明用了哪几张。"
+}

@@ -1,0 +1,342 @@
+{
+  "name": "火山极速版：口播（3 次「嗯」+ 一句重复，口播精剪 SC-AC-42 的端到端输入）",
+  "protocol": "volc_asr",
+  "phase": "submit",
+  "status": 200,
+  "headers": {
+    "X-Api-Status-Code": "20000000",
+    "X-Api-Message": "OK"
+  },
+  "body": {
+    "audio_info": {
+      "duration": 10000
+    },
+    "result": {
+      "text": "嗯，大家好，今天讲剪辑。今天讲剪辑。嗯，第一步，嗯，导入素材。",
+      "utterances": [
+        {
+          "text": "嗯，大家好，",
+          "start_time": 100,
+          "end_time": 1200,
+          "definite": true,
+          "words": [
+            {
+              "text": "嗯",
+              "start_time": 100,
+              "end_time": 300,
+              "blank_duration": 0
+            },
+            {
+              "text": "大",
+              "start_time": 600,
+              "end_time": 800,
+              "blank_duration": 0
+            },
+            {
+              "text": "家",
+              "start_time": 800,
+              "end_time": 1000,
+              "blank_duration": 0
+            },
+            {
+              "text": "好",
+              "start_time": 1000,
+              "end_time": 1200,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "今天讲剪辑。",
+          "start_time": 1500,
+          "end_time": 2500,
+          "definite": true,
+          "words": [
+            {
+              "text": "今",
+              "start_time": 1500,
+              "end_time": 1700,
+              "blank_duration": 0
+            },
+            {
+              "text": "天",
+              "start_time": 1700,
+              "end_time": 1900,
+              "blank_duration": 0
+            },
+            {
+              "text": "讲",
+              "start_time": 1900,
+              "end_time": 2100,
+              "blank_duration": 0
+            },
+            {
+              "text": "剪",
+              "start_time": 2100,
+              "end_time": 2300,
+              "blank_duration": 0
+            },
+            {
+              "text": "辑",
+              "start_time": 2300,
+              "end_time": 2500,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "今天讲剪辑。",
+          "start_time": 3300,
+          "end_time": 4300,
+          "definite": true,
+          "words": [
+            {
+              "text": "今",
+              "start_time": 3300,
+              "end_time": 3500,
+              "blank_duration": 0
+            },
+            {
+              "text": "天",
+              "start_time": 3500,
+              "end_time": 3700,
+              "blank_duration": 0
+            },
+            {
+              "text": "讲",
+              "start_time": 3700,
+              "end_time": 3900,
+              "blank_duration": 0
+            },
+            {
+              "text": "剪",
+              "start_time": 3900,
+              "end_time": 4100,
+              "blank_duration": 0
+            },
+            {
+              "text": "辑",
+              "start_time": 4100,
+              "end_time": 4300,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "嗯，第一步，嗯，导入素材。",
+          "start_time": 4900,
+          "end_time": 7600,
+          "definite": true,
+          "words": [
+            {
+              "text": "嗯",
+              "start_time": 4900,
+              "end_time": 5100,
+              "blank_duration": 0
+            },
+            {
+              "text": "第",
+              "start_time": 5400,
+              "end_time": 5600,
+              "blank_duration": 0
+            },
+            {
+              "text": "一",
+              "start_time": 5600,
+              "end_time": 5800,
+              "blank_duration": 0
+            },
+            {
+              "text": "步",
+              "start_time": 5800,
+              "end_time": 6000,
+              "blank_duration": 0
+            },
+            {
+              "text": "嗯",
+              "start_time": 6300,
+              "end_time": 6500,
+              "blank_duration": 0
+            },
+            {
+              "text": "导",
+              "start_time": 6800,
+              "end_time": 7000,
+              "blank_duration": 0
+            },
+            {
+              "text": "入",
+              "start_time": 7000,
+              "end_time": 7200,
+              "blank_duration": 0
+            },
+            {
+              "text": "素",
+              "start_time": 7200,
+              "end_time": 7400,
+              "blank_duration": 0
+            },
+            {
+              "text": "材",
+              "start_time": 7400,
+              "end_time": 7600,
+              "blank_duration": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expect": {
+    "text": "嗯，大家好，今天讲剪辑。今天讲剪辑。嗯，第一步，嗯，导入素材。",
+    "meta": {
+      "granularity": "char",
+      "durationMs": 10000,
+      "utterances": [
+        {
+          "text": "嗯，大家好，",
+          "startMs": 100,
+          "endMs": 1200,
+          "words": [
+            {
+              "text": "嗯",
+              "startMs": 100,
+              "endMs": 300
+            },
+            {
+              "text": "大",
+              "startMs": 600,
+              "endMs": 800
+            },
+            {
+              "text": "家",
+              "startMs": 800,
+              "endMs": 1000
+            },
+            {
+              "text": "好",
+              "startMs": 1000,
+              "endMs": 1200
+            }
+          ]
+        },
+        {
+          "text": "今天讲剪辑。",
+          "startMs": 1500,
+          "endMs": 2500,
+          "words": [
+            {
+              "text": "今",
+              "startMs": 1500,
+              "endMs": 1700
+            },
+            {
+              "text": "天",
+              "startMs": 1700,
+              "endMs": 1900
+            },
+            {
+              "text": "讲",
+              "startMs": 1900,
+              "endMs": 2100
+            },
+            {
+              "text": "剪",
+              "startMs": 2100,
+              "endMs": 2300
+            },
+            {
+              "text": "辑",
+              "startMs": 2300,
+              "endMs": 2500
+            }
+          ]
+        },
+        {
+          "text": "今天讲剪辑。",
+          "startMs": 3300,
+          "endMs": 4300,
+          "words": [
+            {
+              "text": "今",
+              "startMs": 3300,
+              "endMs": 3500
+            },
+            {
+              "text": "天",
+              "startMs": 3500,
+              "endMs": 3700
+            },
+            {
+              "text": "讲",
+              "startMs": 3700,
+              "endMs": 3900
+            },
+            {
+              "text": "剪",
+              "startMs": 3900,
+              "endMs": 4100
+            },
+            {
+              "text": "辑",
+              "startMs": 4100,
+              "endMs": 4300
+            }
+          ]
+        },
+        {
+          "text": "嗯，第一步，嗯，导入素材。",
+          "startMs": 4900,
+          "endMs": 7600,
+          "words": [
+            {
+              "text": "嗯",
+              "startMs": 4900,
+              "endMs": 5100
+            },
+            {
+              "text": "第",
+              "startMs": 5400,
+              "endMs": 5600
+            },
+            {
+              "text": "一",
+              "startMs": 5600,
+              "endMs": 5800
+            },
+            {
+              "text": "步",
+              "startMs": 5800,
+              "endMs": 6000
+            },
+            {
+              "text": "嗯",
+              "startMs": 6300,
+              "endMs": 6500
+            },
+            {
+              "text": "导",
+              "startMs": 6800,
+              "endMs": 7000
+            },
+            {
+              "text": "入",
+              "startMs": 7000,
+              "endMs": 7200
+            },
+            {
+              "text": "素",
+              "startMs": 7200,
+              "endMs": 7400
+            },
+            {
+              "text": "材",
+              "startMs": 7400,
+              "endMs": 7600
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

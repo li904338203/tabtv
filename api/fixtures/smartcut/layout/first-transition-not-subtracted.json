@@ -1,0 +1,68 @@
+{
+  "why": "第一段的转入（从黑场淡入）不扣；none 与 0 毫秒的转入不生效",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-c1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "transitionIn": {
+              "kind": "fade",
+              "durationMs": 500
+            }
+          },
+          {
+            "id": "tmp-c2",
+            "mediaId": "12",
+            "sourceInMs": 0,
+            "sourceOutMs": 3000,
+            "transitionIn": {
+              "kind": "none",
+              "durationMs": 800
+            }
+          },
+          {
+            "id": "tmp-c3",
+            "mediaId": "13",
+            "sourceInMs": 0,
+            "sourceOutMs": 2000,
+            "transitionIn": {
+              "kind": "fade",
+              "durationMs": 0
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": {
+        "startMs": 0,
+        "durationMs": 4000
+      },
+      "tmp-c2": {
+        "startMs": 4000,
+        "durationMs": 3000
+      },
+      "tmp-c3": {
+        "startMs": 7000,
+        "durationMs": 2000
+      }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 9000,
+    "effectiveMs": 9000
+  }
+}

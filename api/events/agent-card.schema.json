@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/agent-card.schema.json",
+  "title": "AgentCard",
+  "description": "画布 Agent 的卡片发出、提交、作废、过期，或待处理卡片的报价被更新（status 仍为 pending）。投递到 project:{id}。只是对账信号。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "sessionId",
+    "cardId",
+    "kind",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "agent.card"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sessionId": {
+      "$ref": "#/$defs/id"
+    },
+    "cardId": {
+      "$ref": "#/$defs/id"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "choice",
+        "questions",
+        "plan_confirm",
+        "budget",
+        "delete_confirm"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "submitted",
+        "expired",
+        "voided"
+      ]
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

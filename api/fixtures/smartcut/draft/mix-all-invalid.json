@@ -1,0 +1,37 @@
+{
+  "why": "过完白名单什么都不剩：报不合规（42218 之前的回灌 / 兜底由应用层决定），原因带第一处问题",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 6000
+      },
+      {
+        "no": "3",
+        "kind": "audio",
+        "durationMs": 30000,
+        "audioRole": "music"
+      },
+      {
+        "no": "4",
+        "kind": "image"
+      }
+    ]
+  },
+  "raw": "{\"segments\":[{\"clip\":\"9\"},{\"clip\":\"3\"}],\"music\":{\"clip\":\"1\"}}",
+  "expect": {
+    "invalid": "模型没有给出可用的片段：第 1 段：编号「9」不在素材条里",
+    "dropped": [
+      "第 1 段：编号「9」不在素材条里",
+      "第 2 段：编号「3」是音频，不能放进画面",
+      "music：编号「1」是视频，不是音频"
+    ]
+  }
+}

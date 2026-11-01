@@ -1,0 +1,42 @@
+{
+  "objects": [
+    {
+      "op": "update",
+      "ref": "obj_character_1",
+      "posePreset": "fight_stance",
+      "facing": {
+        "target": "老刀"
+      }
+    },
+    {
+      "op": "add",
+      "ref": "老刀",
+      "kind": "character",
+      "posePreset": "fight_stance",
+      "relation": {
+        "type": "facing",
+        "target": "obj_character_1",
+        "distance": 2.0
+      }
+    },
+    {
+      "op": "add",
+      "ref": "小六",
+      "kind": "character",
+      "model": "youth_male",
+      "posePreset": "stand_hands_on_hips",
+      "relation": {
+        "type": "behind",
+        "target": "obj_character_1",
+        "distance": 1.0
+      },
+      "facing": {
+        "target": "老刀"
+      }
+    }
+  ],
+  "camera": {
+    "angle": "low",
+    "side": "front"
+  }
+}

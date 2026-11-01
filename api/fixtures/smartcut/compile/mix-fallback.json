@@ -1,0 +1,52 @@
+{
+  "why": "SC-AC-32：兜底 —— 按编号顺序拼接整段（图片 3 秒），按目标时长从尾部截；配乐用第一条；带固定说明",
+  "mode": "mix",
+  "fallback": true,
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 3000,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 3000,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "image",
+      "mediaId": "73",
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "9",
+      "kind": "audio",
+      "mediaId": "89",
+      "durationMs": 20000,
+      "audioRole": "music",
+      "sourceNodeId": "n9"
+    }
+  ],
+  "spec": {
+    "targetMs": 7000
+  },
+  "expect": {
+    "video": [
+      "71 0~3000",
+      "72 0~3000",
+      "73 0~1000"
+    ],
+    "totalMs": 7000,
+    "music": "89 0~7000 fadeOut1500",
+    "usedFallback": true,
+    "notes": [
+      "AI 没能给出方案，已按规则剪好"
+    ],
+    "warnings": []
+  }
+}

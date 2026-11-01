@@ -1,0 +1,45 @@
+{
+  "description": "「## 营销输入」正文的格式契约（dev/01 §4.2，不含标题行 —— 标题由 agent 拼）。不得出现 URL、mediaId、片段原文（MKT-AC-05、06）；卖点里的换行被压成空格（用户文本不可信）。选项带 code（submit_plan 的 picks 要填它，2026-10-24 修订）。",
+  "sceneInput": {
+    "productName": "山野冷萃咖啡液",
+    "sellingPoints": "0 蔗糖，冷水 3 秒即溶\n一盒 12 条便携装",
+    "productImageCount": 20,
+    "visibleImageCount": 4,
+    "characters": [
+      {
+        "assetName": "林澈"
+      },
+      {}
+    ],
+    "maxVariants": 4
+  },
+  "options": [
+    {
+      "kind": "style",
+      "name": "暖调日光",
+      "description": "自然光、暖色调、浅景深",
+      "code": "warm_sun"
+    },
+    {
+      "kind": "creative",
+      "name": "巨物从天而降",
+      "description": "商品放大到城市尺度后落地展示",
+      "recommendedModels": [
+        "Seedance 2.5"
+      ],
+      "aspectRatio": "9:16",
+      "durationSec": [
+        10,
+        15
+      ],
+      "code": "giant_drop"
+    },
+    {
+      "kind": "hook",
+      "name": "提问开场",
+      "description": "前 2 秒抛出一个问题",
+      "code": "ask_open"
+    }
+  ],
+  "expected": "商品：山野冷萃咖啡液\n卖点：0 蔗糖，冷水 3 秒即溶 一盒 12 条便携装\n商品图：共 20 张，#1 为主图。你在本条消息里能看到 #1~#4；其余用 view_media 按序号查看。\n角色：林澈、上传的人物图 #1\n所选创意：巨物从天而降（code giant_drop） —— 商品放大到城市尺度后落地展示（推荐：Seedance 2.5 · 9:16 · 10~15 秒）\n所选 Hook：提问开场（code ask_open） —— 前 2 秒抛出一个问题\n所选风格：暖调日光（code warm_sun） —— 自然光、暖色调、浅景深\n单次最多 4 个变体；每个生成项选用的商品图不超过该模型的参考图上限，规划时逐项写明用了哪几张。"
+}

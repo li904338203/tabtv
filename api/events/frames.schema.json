@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/frames.schema.json",
+  "title": "WebSocketFrames",
+  "description": "握手与订阅帧。token 只走首帧，不入 URL。",
+  "$defs": {
+    "AuthFrame": {
+      "type": "object",
+      "required": [
+        "type",
+        "token"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "auth"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "AuthOk": {
+      "type": "object",
+      "required": [
+        "type",
+        "userId",
+        "sessionId"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "auth.ok"
+        },
+        "userId": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "sessionId": {
+          "type": "string"
+        }
+      }
+    },
+    "AuthError": {
+      "type": "object",
+      "required": [
+        "type",
+        "code",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "auth.error"
+        },
+        "code": {
+          "type": "integer",
+          "description": "取自 errors.yaml，401xx"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "SubscribeFrame": {
+      "type": "object",
+      "required": [
+        "type",
+        "topics"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "subscribe"
+        },
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "string",
+            "pattern": "^(project|workspace|generation|user):[0-9]+$"
+          }
+        }
+      }
+    },
+    "SubscribeOk": {
+      "type": "object",
+      "description": "逐条鉴权：不通过的 topic 进 rejected，不让整次订阅失败。",
+      "required": [
+        "type",
+        "topics",
+        "rejected"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "subscribe.ok"
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rejected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "topic",
+              "code"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "topic": {
+                "type": "string"
+              },
+              "code": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UnsubscribeFrame": {
+      "type": "object",
+      "required": [
+        "type",
+        "topics"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "unsubscribe"
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SubscriptionRevoked": {
+      "type": "object",
+      "description": "成员移除、共享撤销或会话失效后服务端主动推送，客户端应停止依赖该 topic 的本地状态。",
+      "required": [
+        "type",
+        "occurredAt",
+        "topics",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "subscription.revoked"
+        },
+        "occurredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "enum": [
+            "member_removed",
+            "share_revoked",
+            "session_revoked",
+            "workspace_deleted"
+          ],
+          "type": "string"
+        }
+      }
+    },
+    "Ping": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "ping"
+        }
+      }
+    },
+    "Pong": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "pong"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "msg_013Zva2CMHLNnXjNJJKqJ2EF",
+  "type": "message",
+  "role": "assistant",
+  "model": "claude-sonnet-4-5-20250929",
+  "content": [
+    {"type": "text", "text": "好的，"},
+    {"type": "text", "text": "这是第二段。"}
+  ],
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "usage": {"input_tokens": 2095, "output_tokens": 503, "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}
+}

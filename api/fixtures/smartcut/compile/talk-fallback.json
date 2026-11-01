@@ -1,0 +1,80 @@
+{
+  "why": "SC-AC-32（口播）：兜底保留全部句子，只剪口癖与超过 600ms 的停顿",
+  "mode": "talk",
+  "fallback": true,
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 10000,
+      "sourceNodeId": "n1"
+    }
+  ],
+  "transcripts": {
+    "1": {
+      "language": "zh",
+      "granularity": "char",
+      "utterances": [
+        [
+          {
+            "chars": "大家好",
+            "startMs": 500,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "text": "嗯",
+            "startMs": 1600,
+            "endMs": 1900
+          },
+          {
+            "chars": "今天介绍",
+            "startMs": 2100,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "chars": "今天介绍",
+            "startMs": 3600,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "chars": "这款产品",
+            "startMs": 5200,
+            "charMs": 200
+          }
+        ]
+      ]
+    }
+  },
+  "spec": {
+    "withSubtitles": true
+  },
+  "expect": {
+    "video": [
+      "71 300~1300 fade30/30",
+      "71 2000~3100 fade30/30",
+      "71 3400~4600 fade30/30",
+      "71 5000~6200 fade30/30"
+    ],
+    "videoRole": "voice",
+    "totalMs": 4500,
+    "usedFallback": true,
+    "subtitles": [
+      "200~800 大家好",
+      "1100~1900 今天介绍",
+      "2300~3100 今天介绍",
+      "3500~4300 这款产品"
+    ],
+    "notes": [
+      "AI 没能给出方案，已按规则剪好"
+    ],
+    "warnings": [],
+    "summary": "保留了 4 句（共 4 句），去掉口癖 1 处，剪掉长停顿 2 处，成片 4.5 秒"
+  }
+}

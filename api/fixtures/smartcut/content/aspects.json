@@ -1,0 +1,155 @@
+{
+  "presets": [
+    {
+      "aspectRatio": "16:9",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "aspectRatio": "9:16",
+      "width": 1080,
+      "height": 1920
+    },
+    {
+      "aspectRatio": "1:1",
+      "width": 1080,
+      "height": 1080
+    },
+    {
+      "aspectRatio": "4:3",
+      "width": 1440,
+      "height": 1080
+    },
+    {
+      "aspectRatio": "3:4",
+      "width": 1080,
+      "height": 1440
+    },
+    {
+      "aspectRatio": "21:9",
+      "width": 2560,
+      "height": 1080
+    }
+  ],
+  "formats": [
+    {
+      "aspectRatio": "3:4",
+      "fps": 30,
+      "width": 1080,
+      "height": 1440,
+      "path": ""
+    },
+    {
+      "aspectRatio": "3:4",
+      "fps": 30,
+      "width": 720,
+      "height": 960,
+      "path": ""
+    },
+    {
+      "aspectRatio": "9:16",
+      "fps": 25,
+      "width": 720,
+      "height": 1280,
+      "path": ""
+    },
+    {
+      "aspectRatio": "16:9",
+      "fps": 24,
+      "width": 1280,
+      "height": 720,
+      "path": ""
+    },
+    {
+      "aspectRatio": "21:9",
+      "fps": 30,
+      "width": 1706,
+      "height": 720,
+      "path": ""
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 1080,
+      "height": 1350,
+      "path": ""
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 7680,
+      "height": 64,
+      "path": ""
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 1081,
+      "height": 1350,
+      "path": "width"
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 62,
+      "height": 1350,
+      "path": "width"
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 1080,
+      "height": 1351,
+      "path": "height"
+    },
+    {
+      "aspectRatio": "custom",
+      "fps": 30,
+      "width": 1080,
+      "height": 7682,
+      "path": "height"
+    },
+    {
+      "aspectRatio": "16:9",
+      "fps": 30,
+      "width": 1080,
+      "height": 1920,
+      "path": "height"
+    },
+    {
+      "aspectRatio": "1:1",
+      "fps": 30,
+      "width": 1080,
+      "height": 1100,
+      "path": ""
+    },
+    {
+      "aspectRatio": "1:1",
+      "fps": 30,
+      "width": 1080,
+      "height": 1104,
+      "path": "height"
+    },
+    {
+      "aspectRatio": "2:1",
+      "fps": 30,
+      "width": 1080,
+      "height": 540,
+      "path": "aspectRatio"
+    },
+    {
+      "aspectRatio": "9:16",
+      "fps": 0,
+      "width": 1080,
+      "height": 1920,
+      "path": "fps"
+    },
+    {
+      "aspectRatio": "9:16",
+      "fps": 121,
+      "width": 1080,
+      "height": 1920,
+      "path": "fps"
+    }
+  ]
+}

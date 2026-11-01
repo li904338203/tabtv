@@ -1,0 +1,46 @@
+{
+  "why": "跟随的那一段裁掉开头 2 秒并改成 2 倍速：音效跳过开头那 2 秒（取 2000~8000）、也 2 倍速，起点仍是那一段的成片起点，成片长度 3000",
+  "content": {
+    "version": 1,
+    "aspectRatio": "16:9",
+    "fps": 30,
+    "width": 1920,
+    "height": 1080,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          { "id": "tmp-c1", "mediaId": "11", "sourceInMs": 0, "sourceOutMs": 4000 },
+          { "id": "tmp-c2", "mediaId": "12", "sourceInMs": 4000, "sourceOutMs": 10000, "speed": 200 }
+        ]
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "role": "sfx",
+        "clips": [
+          {
+            "id": "tmp-s1",
+            "mediaId": "41",
+            "startMs": 4000,
+            "sourceInMs": 0,
+            "sourceOutMs": 8000,
+            "anchor": { "clipId": "tmp-c2", "srcStartMs": 2000, "srcEndMs": 10000 }
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": { "startMs": 0, "durationMs": 4000 },
+      "tmp-c2": { "startMs": 4000, "durationMs": 3000 },
+      "tmp-s1": { "startMs": 4000, "durationMs": 3000, "follow": { "sourceInMs": 2000, "sourceOutMs": 8000, "speed": 200 } }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 7000,
+    "effectiveMs": 7000
+  }
+}

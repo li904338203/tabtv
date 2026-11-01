@@ -1,0 +1,34 @@
+{
+  "description": "add_frame / set_frame_members / move_node：画框存为 nodes 里 type=frame 的节点（与 group 严格区分），成员可以是用户的节点（只是框住、不改它）、可以用批内引用、重复成员去重",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": ["a_fx1", "a_fx2"],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "参考图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      { "id": "a_n1", "type": "text", "title": "镜头 1", "position": { "x": 400, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {}, "agent": { "sessionId": "7001", "stepId": "s2" } }
+    ]
+  },
+  "ops": [
+    { "kind": "add_node", "ref": "ref:shot2", "node": { "type": "text", "title": "镜头 2", "params": {} }, "position": { "x": 800, "y": 0 } },
+    { "kind": "add_frame", "ref": "ref:frame", "frame": { "title": "第一场", "size": { "w": 1200, "h": 400 }, "members": ["a_n1", "ref:shot2"] }, "position": { "x": 380, "y": -40 } },
+    { "kind": "set_frame_members", "nodeId": "ref:frame", "frame": { "members": ["a_n1", "ref:shot2", "n_user1", "a_n1"] } },
+    { "kind": "move_node", "nodeId": "ref:shot2", "position": { "x": 760, "y": 20 } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "参考图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      { "id": "a_n1", "type": "text", "title": "镜头 1", "position": { "x": 400, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {}, "agent": { "sessionId": "7001", "stepId": "s2" } },
+      { "id": "a_fx1", "type": "text", "title": "镜头 2", "params": {}, "position": { "x": 760, "y": 20 }, "size": { "w": 330, "h": 180 }, "agent": { "sessionId": "7001" } },
+      { "id": "a_fx2", "type": "frame", "title": "第一场", "position": { "x": 380, "y": -40 }, "size": { "w": 1200, "h": 400 }, "members": ["a_n1", "a_fx1", "n_user1"], "agent": { "sessionId": "7001" } }
+    ]
+  },
+  "nodeIds": ["a_fx1", "a_fx2"],
+  "applied": [
+    { "kind": "add_node", "node": { "id": "a_fx1", "type": "text", "title": "镜头 2", "params": {}, "position": { "x": 800, "y": 0 }, "size": { "w": 330, "h": 180 }, "agent": { "sessionId": "7001" } } },
+    { "kind": "add_frame", "frame": { "id": "a_fx2", "type": "frame", "title": "第一场", "position": { "x": 380, "y": -40 }, "size": { "w": 1200, "h": 400 }, "members": ["a_n1", "a_fx1"], "agent": { "sessionId": "7001" } } },
+    { "kind": "set_frame_members", "nodeId": "a_fx2", "frame": { "members": ["a_n1", "a_fx1", "n_user1"] } },
+    { "kind": "move_node", "nodeId": "a_fx1", "position": { "x": 760, "y": 20 } }
+  ]
+}

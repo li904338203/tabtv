@@ -1,0 +1,124 @@
+{
+  "why": "围坐：四人在圆桌四周坐下、面向桌子；关系距离小于桌子半径时沿关系方向推开；俯拍全景",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "圆桌",
+        "kind": "prop",
+        "shape": "cylinder",
+        "size": {
+          "x": 1.2,
+          "y": 0.75,
+          "z": 1.2
+        }
+      },
+      {
+        "op": "add",
+        "ref": "东",
+        "kind": "character",
+        "posePreset": "sit_chair",
+        "relation": {
+          "type": "right_of",
+          "target": "圆桌",
+          "distance": 0.9
+        },
+        "facing": {
+          "target": "圆桌"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "西",
+        "kind": "character",
+        "posePreset": "sit_chair",
+        "relation": {
+          "type": "left_of",
+          "target": "圆桌",
+          "distance": 0.9
+        },
+        "facing": {
+          "target": "圆桌"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "南",
+        "kind": "character",
+        "model": "adult_female",
+        "posePreset": "sit_chair",
+        "relation": {
+          "type": "in_front_of",
+          "target": "圆桌",
+          "distance": 0.9
+        },
+        "facing": {
+          "target": "圆桌"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "北",
+        "kind": "character",
+        "model": "adult_female",
+        "posePreset": "sit_chair",
+        "relation": {
+          "type": "behind",
+          "target": "圆桌",
+          "distance": 0.9
+        },
+        "facing": {
+          "target": "圆桌"
+        }
+      }
+    ],
+    "camera": {
+      "shotSize": "full",
+      "angle": "high",
+      "side": "front_right"
+    }
+  },
+  "expect": {
+    "added": 6,
+    "characters": 4,
+    "props": 1,
+    "cameras": 1,
+    "minGapM": 0.5,
+    "grounded": true,
+    "pitchDeg": -30,
+    "faces": [
+      [
+        "东",
+        "圆桌"
+      ],
+      [
+        "西",
+        "圆桌"
+      ],
+      [
+        "南",
+        "圆桌"
+      ],
+      [
+        "北",
+        "圆桌"
+      ]
+    ],
+    "leftOf": [
+      [
+        "西",
+        "东"
+      ]
+    ]
+  }
+}

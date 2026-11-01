@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/workflow-update.schema.json",
+  "title": "WorkflowUpdate",
+  "description": "整图 DAG 运行状态。节点状态与整次运行状态分开推送，避免前端从节点状态反推整体。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "runId",
+    "workspaceId",
+    "projectId",
+    "status",
+    "nodes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "workflow.update"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runId": {
+      "$ref": "#/$defs/id"
+    },
+    "workspaceId": {
+      "$ref": "#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "running",
+        "success",
+        "partial_success",
+        "failed",
+        "cancelled"
+      ],
+      "description": "partial_success：部分节点成功、部分失败或 blocked（NEW-06）",
+      "type": "string"
+    },
+    "creditsSpent": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "nodes": {
+      "type": "array",
+      "description": "增量推送：只含本次事件发生变化的节点，不是全量快照。全量走 HTTP 对账。",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "running",
+              "success",
+              "failed",
+              "skipped",
+              "blocked",
+              "cancelled"
+            ],
+            "description": "blocked：上游被跳过或失败导致本节点无法执行（NEW-06）",
+            "type": "string"
+          },
+          "generationId": {
+            "$ref": "#/$defs/nullableId"
+          },
+          "progress": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "creditsCost": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "isReused": {
+            "type": "boolean",
+            "description": "true 表示复用了此前的成功结果，未重复扣费（NEW-05）"
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "reason",
+              "message"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "reason": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "traceId": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

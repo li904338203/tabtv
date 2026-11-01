@@ -1,0 +1,9 @@
+{
+  "objects": [
+    {"op": "add", "ref": "瑜伽老师", "kind": "character", "model": "robot", "posePreset": "yoga_tree"},
+    {"op": "add", "ref": "小狗", "kind": "animal"},
+    {"op": "add", "ref": "气球", "kind": "prop", "shape": "balloon", "relation": {"type": "above", "target": "瑜伽老师"}},
+    {"op": "teleport", "ref": "obj_1"}
+  ],
+  "camera": {"shotSize": "wide", "angle": "bird_eye", "side": "front", "focalLengthMm": 500}
+}

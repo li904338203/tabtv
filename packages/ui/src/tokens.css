@@ -1,0 +1,289 @@
+/*
+ * seeAitv 设计 token —— 唯一来源。
+ *
+ * ⚠️ **基线是老系统**（P15-01，FE-11）：老系统前端已通过评审，所以对齐它，
+ * 而不是反过来。这推翻了 P00-04 的定版（浅色优先 + 玫红 `#b8256f`），
+ * 新基线是**深色优先 + 品牌青 `#32bfd0`**。范围口径见 docs/10 §5.1。
+ *
+ * ── 为什么是两套命名 ──────────────────────────────────────────
+ *
+ * 下面同时存在 `--portal-*`（老系统原名，逐值照搬）与 `--surface-*` /
+ * `--text-*` / `--brand-*`（新系统语义名，**映射到 portal 之上**）。
+ * 这不是没收拾干净，是**像素级复刻的前提**：
+ *
+ *   - 保留 portal 原名 → P15-02/04 移植老组件时，那 2254 行组件 CSS
+ *     可以**逐字照抄**。改名的话每一行都要翻译一遍，而翻译过程中
+ *     出的偏差正好就是"看起来差不多但不一样"——那是像素级复刻的反面。
+ *   - 保留新语义名 → 现有 **1350 处引用**（53 个 token）不用动，
+ *     换完这一层就立刻拿到老系统的配色。
+ *
+ * ⚠️ **新写组件用 `--portal-*`**（与老系统同名，便于对照）；
+ * 语义名只为兼容存量引用而留，**不要再扩充**。
+ *
+ * ── 与老系统的三处必然偏差（不是没做到位）──────────────────────
+ *
+ *   1. `--portal-green` / `--portal-coral` 是老系统的 writing / avatar
+ *      产品色，两个产品在新系统**明确排除**（FULL-01）。token **保留**
+ *      （组件 CSS 里有引用，删了会让照搬的样式塌掉），但**不作为产品色使用**。
+ *   2. 老系统的 token 没做过色板校验；图表序列色另见下方 `--series-*`。
+ *   3. 尺寸类 token（`--sp-*` / `--fs-*` / `--radius-*`）是新系统独有的 ——
+ *      老系统把尺寸直接写成 px。两者不冲突，**都保留**：照搬的老组件带着
+ *      自己的 px，新组件用 token。
+ */
+
+/* ===== 以下 token 逐值取自老系统 frontend/assets/css/main.css（已评审）===== */
+
+:root,
+:root[data-theme="dark"] {
+  /* 底色与层次 */
+  --portal-bg: #111212;
+  --portal-bg-deep: #0d0e0f;
+  --portal-surface: #191a1c;
+  --portal-surface-2: #232427;
+  --portal-surface-3: #2b2d31;
+  --portal-panel: #15171a;
+  --portal-panel-2: #17191c;
+  --portal-elevated: #18191b;
+  --portal-sidebar-bg: #111318;
+  --portal-input-bg: #202328;
+  --portal-code-bg: #101214;
+  --portal-hover: #1c2026;
+  --portal-active: #24282e;
+  --portal-disabled-bg: #2c2f34;
+
+  /* 描边 */
+  --portal-line: rgba(255,255,255,.1);
+  --portal-line-strong: rgba(255,255,255,.18);
+  --portal-line-soft: rgba(255,255,255,.06);
+  /* 文字 */
+  --portal-text: #f3f4f6;
+  --portal-text-soft: #e6e7e9;
+  --portal-muted: #969aa2;
+  --portal-faint: #666b74;
+  --portal-placeholder: #676d75;
+  --portal-disabled-text: #747981;
+
+  /* 品牌与产品色（video=cyan / writing=green / avatar=coral） */
+  --portal-cyan: #32bfd0;
+  --portal-gold: #efc36a;
+  --portal-green: #4fc58b;
+  --portal-coral: #ec8478;
+  --portal-danger: #f28b90;
+  --portal-success: #82d8aa;
+
+  /* 主色按钮上的前景色（深底浅字反转用） */
+  --portal-on-accent: #102124;
+  --portal-on-gold: #241e13;
+  --portal-on-green: #152019;
+  --portal-mark-bg: #f0f2f4;
+  --portal-mark-text: #101112;
+
+  /* 半透明衬底：主题相关，light 下需要换算 */
+  --portal-cyan-soft: rgba(50,191,208,.1);
+  --portal-cyan-line: rgba(50,191,208,.42);
+  --portal-gold-soft: rgba(239,195,106,.1);
+  --portal-gold-line: rgba(239,195,106,.22);
+  --portal-green-soft: rgba(79,197,139,.08);
+  --portal-green-line: rgba(79,197,139,.28);
+  --portal-coral-soft: rgba(236,132,120,.1);
+  --portal-coral-line: rgba(236,132,120,.45);
+  --portal-danger-soft: rgba(242,106,112,.08);
+  --portal-danger-line: rgba(242,106,112,.3);
+
+  /* 遮罩与投影 */
+  --portal-scrim: rgba(5,6,7,.82);
+  --portal-scrim-soft: rgba(5,6,7,.7);
+  --portal-shadow: rgba(0,0,0,.32);
+  --portal-shadow-strong: rgba(0,0,0,.58);
+  --portal-topbar-bg: rgba(17,18,18,.96);
+  /* 登录页背景图之上的渐变遮罩与浮层底色 */
+  --portal-auth-scrim: linear-gradient(90deg, rgba(8,9,10,.28), rgba(8,9,10,.7) 55%, rgba(8,9,10,.94));
+  --portal-auth-panel-bg: rgba(24,25,27,.96);
+  /* 窄屏下面板铺满，渐变改为均匀压暗 */
+  --portal-auth-scrim-mobile: rgba(8,9,10,.78);
+
+  /* 叠在图片/视频之上的控件：两套主题同值。
+     媒体内容本身不随主题变化，浅色下仍需白字深底才可读，故不做反转。 */
+  --portal-on-media: #fff;
+  --portal-on-media-bg: rgba(12,13,14,.72);
+  --portal-on-media-bg-hover: rgba(42,45,47,.94);
+  --portal-on-media-line: rgba(255,255,255,.25);
+  --portal-media-letterbox: #080909;
+
+  /* 数字人预览舞台的径向渐变底 */
+  --portal-avatar-stage-bg: radial-gradient(circle at 50% 30%, #2a2528 0, #18191b 52%, #121315 100%);
+
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--portal-text);
+  background: var(--portal-bg);
+  letter-spacing: 0;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  /* 底色与层次：整体提亮，层级靠灰阶递进而非加深 */
+  --portal-bg: #f6f7f9;
+  --portal-bg-deep: #eceef1;
+  --portal-surface: #ffffff;
+  --portal-surface-2: #f1f3f5;
+  --portal-surface-3: #e5e8ec;
+  --portal-panel: #fafbfc;
+  --portal-panel-2: #f4f6f8;
+  --portal-elevated: #ffffff;
+  --portal-sidebar-bg: #ffffff;
+  --portal-input-bg: #ffffff;
+  --portal-code-bg: #f4f6f8;
+  --portal-hover: #eef1f4;
+  --portal-active: #e4e9ee;
+  --portal-disabled-bg: #e3e6ea;
+
+  --portal-line: rgba(16,18,20,.11);
+  --portal-line-strong: rgba(16,18,20,.2);
+  --portal-line-soft: rgba(16,18,20,.06);
+
+  --portal-text: #16181b;
+  --portal-text-soft: #2b2f34;
+  --portal-muted: #5d646d;
+  --portal-faint: #878e97;
+  --portal-placeholder: #9aa1a9;
+  --portal-disabled-text: #a2a8b0;
+
+  /* 主色压深，保证浅底上的对比度 */
+  --portal-cyan: #0f8fa1;
+  --portal-gold: #a9762a;
+  --portal-green: #1f8f5c;
+  --portal-coral: #cf5647;
+  --portal-danger: #c8393f;
+  --portal-success: #1f8f5c;
+
+  --portal-on-accent: #ffffff;
+  --portal-on-gold: #ffffff;
+  --portal-on-green: #ffffff;
+  --portal-mark-bg: #16181b;
+  --portal-mark-text: #f7f8f9;
+
+  --portal-cyan-soft: rgba(15,143,161,.1);
+  --portal-cyan-line: rgba(15,143,161,.4);
+  --portal-gold-soft: rgba(169,118,42,.1);
+  --portal-gold-line: rgba(169,118,42,.26);
+  --portal-green-soft: rgba(31,143,92,.09);
+  --portal-green-line: rgba(31,143,92,.3);
+  --portal-coral-soft: rgba(207,86,71,.1);
+  --portal-coral-line: rgba(207,86,71,.42);
+  --portal-danger-soft: rgba(200,57,63,.08);
+  --portal-danger-line: rgba(200,57,63,.3);
+
+  --portal-scrim: rgba(28,32,36,.55);
+  --portal-scrim-soft: rgba(28,32,36,.4);
+  --portal-shadow: rgba(16,18,20,.12);
+  --portal-shadow-strong: rgba(16,18,20,.2);
+  --portal-topbar-bg: rgba(246,247,249,.94);
+  /* 亮色下背景图仍需压暗以保证面板可读，但整体减淡 */
+  --portal-auth-scrim: linear-gradient(90deg, rgba(246,247,249,.34), rgba(246,247,249,.74) 55%, rgba(246,247,249,.94));
+  --portal-auth-panel-bg: rgba(255,255,255,.97);
+  --portal-auth-scrim-mobile: rgba(246,247,249,.86);
+  --portal-avatar-stage-bg: radial-gradient(circle at 50% 30%, #fdf3f1 0, #f4f6f8 52%, #eceef1 100%);
+
+  color-scheme: light;
+}
+
+/* ============================================================
+ * 语义别名层：新系统那 53 个 token → 老系统 portal token。
+ *
+ * ⚠️ 只做**映射**，不引入新色值 —— 映射里出现一个 portal 里没有的 hex，
+ * 就等于开了第二个色彩来源，而那正是"切主题漏色"的起点。
+ * ============================================================ */
+:root {
+  /* 表面与墨色 */
+  --surface-page: var(--portal-bg);
+  --surface-card: var(--portal-surface);
+  --surface-raised: var(--portal-surface-2);
+  --surface-sunken: var(--portal-bg-deep);
+  --text-primary: var(--portal-text);
+  --text-secondary: var(--portal-muted);
+  --text-muted: var(--portal-faint);
+  --border-hairline: var(--portal-line);
+  --grid-line: var(--portal-line-soft);
+
+  /* 品牌：玫红 → 老系统的青 */
+  --brand-primary: var(--portal-cyan);
+  --brand-on-primary: var(--portal-on-accent);
+
+  /* 状态 ⚠️ 永远配图标 + 文字，不单独承载语义 */
+  --status-good: var(--portal-success);
+  --status-warning: var(--portal-gold);
+  --status-serious: var(--portal-coral);
+  --status-critical: var(--portal-danger);
+
+  /* 图表分类色。⚠️ 固定顺序，不循环、不按排名重新着色。
+   * 老系统没有图表序列色（后台看板用 echarts 默认色），所以这四槽
+   * **沿用新系统经色板校验的取值**，只是重新取步以适配深色底 ——
+   * 这是 docs/10 §5.1 里写明的第 2 处偏差。 */
+  --series-1: #4a9eff;
+  --series-2: #ff8a5c;
+  --series-3: #3fd6a0;
+  --series-4: #ffc95c;
+
+  /* 任务状态。⚠️ cancelled 绝不能用红色：用户主动取消不是故障。 */
+  --task-queued: var(--portal-muted);
+  --task-running: var(--series-1);
+  --task-success: var(--portal-success);
+  --task-failed: var(--portal-danger);
+  --task-cancelled: var(--portal-faint);
+  --task-unknown: var(--portal-faint);
+
+  /* ---- 排版（新系统独有，老系统写死 px）---- */
+  --font-sans: system-ui, -apple-system, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --fs-11: 11px;
+  --fs-12: 12px;
+  --fs-13: 13px;
+  --fs-14: 14px;
+  --fs-15: 15px;
+  --fs-16: 16px;
+  --fs-18: 18px;
+  --fs-20: 20px;
+  --fs-28: 28px;
+  --fs-40: 40px;
+
+  /* ---- 间距（4px 基准）---- */
+  --sp-1: 2px;
+  --sp-2: 4px;
+  --sp-3: 8px;
+  --sp-4: 12px;
+  --sp-5: 16px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 48px;
+
+  /* ---- 圆角 ---- */
+  --radius-control: 4px;
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+  --radius-pill: 999px;
+
+  /* ---- 动效 ---- */
+  --motion-micro: 120ms;
+  --motion-panel: 200ms;
+  --motion-page: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* 图表序列色在浅色下重新取步 —— **不是自动反色**。 */
+:root[data-theme="light"] {
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+}
+
+/* 尊重系统的减少动效设置。 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-micro: 0ms;
+    --motion-panel: 0ms;
+    --motion-page: 0ms;
+  }
+}

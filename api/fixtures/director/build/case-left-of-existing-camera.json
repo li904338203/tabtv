@@ -1,0 +1,83 @@
+{
+  "why": "没有 camera 草案：沿用用户摆的输出机位（在 +X 处朝 −X 看），左右按它的屏幕算，机位本身不动",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [
+      {
+        "id": "obj_cam_side",
+        "name": "侧面机位",
+        "kind": "camera",
+        "transform": {
+          "position": {
+            "x": 4,
+            "y": 1.5,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 90,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "user",
+        "camera": {
+          "focalLengthMm": 35,
+          "sensorWidthMm": 36,
+          "aspect": "16:9",
+          "near": 0.1,
+          "far": 1000,
+          "roll": 0
+        }
+      }
+    ],
+    "outputCameraId": "obj_cam_side"
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "甲",
+        "kind": "character",
+        "posePreset": "stand_neutral"
+      },
+      {
+        "op": "add",
+        "ref": "乙",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "left_of",
+          "target": "甲"
+        }
+      }
+    ]
+  },
+  "expect": {
+    "added": 2,
+    "cameras": 1,
+    "outputCamera": "obj_cam_side",
+    "unchanged": [
+      "obj_cam_side"
+    ],
+    "leftOf": [
+      [
+        "乙",
+        "甲"
+      ]
+    ],
+    "minGapM": 0.5,
+    "grounded": true
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "version": 12,
+  "aspectRatio": "3:4",
+  "fps": 25,
+  "width": 1080,
+  "height": 1440,
+  "tracks": [
+    {
+      "id": "1001",
+      "kind": "video",
+      "name": "画面",
+      "role": "voice",
+      "isHidden": false,
+      "isMuted": false,
+      "volume": 100,
+      "style": {
+        "futureVideoTrackStyle": true
+      },
+      "clips": [
+        {
+          "id": "tmp-1",
+          "mediaId": "77",
+          "sourceInMs": 0,
+          "sourceOutMs": 2100,
+          "speed": 100,
+          "volume": 100,
+          "fadeInMs": 0,
+          "fadeOutMs": 0,
+          "startMs": 999999,
+          "transitionIn": {
+            "kind": "fade",
+            "durationMs": 500
+          },
+          "transform": {
+            "x": -12.5,
+            "y": 8,
+            "scale": 1.2,
+            "rotation": -15,
+            "futureTransform": {
+              "keep": 1
+            },
+            "crop": {
+              "left": 5,
+              "top": 0,
+              "right": 5,
+              "bottom": 10,
+              "futureCrop": "x"
+            }
+          },
+          "origin": "user",
+          "sourceNodeId": "node_abc",
+          "alternates": [
+            {
+              "mediaId": "70",
+              "sourceInMs": 0,
+              "sourceOutMs": 3000,
+              "kind": "original"
+            },
+            {
+              "mediaId": "71",
+              "sourceInMs": 100,
+              "sourceOutMs": 2200,
+              "kind": "regen",
+              "generationId": "9001"
+            }
+          ]
+        },
+        {
+          "id": "2003",
+          "mediaId": "79",
+          "sourceInMs": 0,
+          "sourceOutMs": 8000,
+          "speed": 200,
+          "transitionIn": {
+            "kind": "dissolve",
+            "durationMs": 1000
+          },
+          "transitionOut": {
+            "kind": "fade",
+            "durationMs": 800
+          },
+          "origin": "ai",
+          "sourceNodeId": "node_def",
+          "sourceShotId": "5001",
+          "alternates": []
+        },
+        {
+          "id": "2004",
+          "mediaId": "80",
+          "sourceInMs": 0,
+          "sourceOutMs": 3000,
+          "origin": "sync",
+          "transform": null
+        }
+      ]
+    },
+    {
+      "id": "1002",
+      "kind": "audio",
+      "role": "music",
+      "volume": 60,
+      "style": {
+        "duck": {
+          "enabled": true,
+          "depthDb": 12,
+          "futureDuck": 1
+        },
+        "futureMusicStyle": "keep"
+      },
+      "clips": [
+        {
+          "id": "2002",
+          "mediaId": "88",
+          "startMs": 2500,
+          "sourceInMs": 0,
+          "sourceOutMs": 30000,
+          "fadeInMs": 500,
+          "fadeOutMs": 1500
+        }
+      ]
+    },
+    {
+      "id": "tmp-voice",
+      "kind": "audio",
+      "role": "voice",
+      "isMuted": true,
+      "clips": [
+        {
+          "id": "tmp-v1",
+          "mediaId": "89",
+          "startMs": 0,
+          "sourceInMs": 0,
+          "sourceOutMs": 4000
+        },
+        {
+          "id": "tmp-v2",
+          "mediaId": "90",
+          "startMs": 4000,
+          "sourceInMs": 0,
+          "sourceOutMs": 2000,
+          "volume": 0
+        }
+      ]
+    },
+    {
+      "id": "1003",
+      "kind": "subtitle",
+      "name": "中文",
+      "lang": "zh-CN",
+      "style": {
+        "fontSizePct": 4.5,
+        "color": "#FFFFFF",
+        "bottomPct": 8,
+        "align": "center",
+        "maxWidthPct": 90,
+        "stroke": {
+          "color": "#000",
+          "widthPct": 0.6
+        },
+        "background": {
+          "color": "#00000080",
+          "opacity": 0.5,
+          "paddingPct": 1
+        },
+        "futureSubtitleStyle": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "1005",
+      "kind": "subtitle",
+      "lang": "en",
+      "isHidden": true
+    },
+    {
+      "id": "1004",
+      "kind": "text"
+    }
+  ],
+  "subtitles": [
+    {
+      "id": "tmp-9",
+      "trackId": "1003",
+      "startMs": 0,
+      "endMs": 1800,
+      "text": "跟随第一段的字幕",
+      "anchor": {
+        "clipId": "tmp-1",
+        "srcStartMs": 0,
+        "srcEndMs": 1800,
+        "futureAnchor": true
+      }
+    },
+    {
+      "id": "3002",
+      "trackId": "1003",
+      "startMs": 1500,
+      "endMs": 3000,
+      "text": "与上一条重叠（允许）",
+      "style": {
+        "color": "#FFD400",
+        "futureSubStyle": 1
+      }
+    },
+    {
+      "id": "3003",
+      "trackId": "1005",
+      "startMs": 0,
+      "endMs": 1800,
+      "text": "Same range on another track is fine"
+    }
+  ],
+  "texts": [
+    {
+      "id": "tmp-5",
+      "trackId": "1004",
+      "startMs": 0,
+      "endMs": 3000,
+      "text": "新品上市",
+      "style": {
+        "fontSizePct": 8,
+        "color": "#FFD400",
+        "stroke": {
+          "color": "#000",
+          "widthPct": 0.6
+        },
+        "futureTextStyle": {
+          "glow": true
+        }
+      },
+      "box": {
+        "xPct": 50,
+        "yPct": 20,
+        "anchor": "center",
+        "futureBox": 7
+      }
+    },
+    {
+      "id": "3004",
+      "trackId": "1004",
+      "startMs": 3000,
+      "endMs": 5000,
+      "text": "限时 7 折 🎉",
+      "style": {
+        "background": {
+          "color": "#FF0000",
+          "opacity": 1,
+          "paddingPct": 2
+        },
+        "align": "left"
+      }
+    }
+  ],
+  "futureTopLevel": {
+    "ignored": true
+  }
+}

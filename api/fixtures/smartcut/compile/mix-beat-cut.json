@@ -1,0 +1,58 @@
+{
+  "why": "SC-AC-39：120 BPM（每 500ms 一拍）、目标 7 秒、三段硬切。卡点时按「上限 − 一拍」分出 2334 / 2333 / 2333，切换点 2334 → 2500、4667 → 4500，结尾 7000 本来就在拍上；误差不累积（每处都从名义位置去找拍点）。配乐裁到 7 秒、结尾淡出 1.5 秒",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 5000,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 5000,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 5000,
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "9",
+      "kind": "audio",
+      "mediaId": "89",
+      "durationMs": 20000,
+      "audioRole": "music",
+      "sourceNodeId": "n9"
+    }
+  ],
+  "spec": {
+    "targetMs": 7000
+  },
+  "beatGrid": {
+    "9": {
+      "intervalMs": 500,
+      "untilMs": 20000,
+      "downbeatEvery": 4
+    }
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"3\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}], \"music\": {\"clip\": \"9\"}}",
+  "expect": {
+    "video": [
+      "71 0~2500",
+      "72 0~2000",
+      "73 0~2500"
+    ],
+    "totalMs": 7000,
+    "music": "89 0~7000 fadeOut1500",
+    "warnings": [],
+    "notes": [],
+    "summary": "用了 3 段素材（编号 1、2、3），成片 7 秒"
+  }
+}

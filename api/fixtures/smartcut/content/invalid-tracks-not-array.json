@@ -1,0 +1,32 @@
+{
+  "why": "tracks 必须是数组",
+  "content": {
+    "version": 3,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": {
+      "0": {}
+    },
+    "subtitles": [
+      {
+        "id": "3001",
+        "trackId": "1003",
+        "startMs": 0,
+        "endMs": 1800,
+        "text": "第一句"
+      }
+    ],
+    "texts": [
+      {
+        "id": "tmp-5",
+        "trackId": "tmp-t",
+        "startMs": 0,
+        "endMs": 3000,
+        "text": "新品上市"
+      }
+    ]
+  },
+  "path": "tracks"
+}

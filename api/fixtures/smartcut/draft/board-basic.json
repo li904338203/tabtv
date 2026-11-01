@@ -1,0 +1,55 @@
+{
+  "why": "分镜成片：clip 是镜头编号（只写数字的补成 b）；顺序与取段以装配为准（take / role / weight 读了不用）；空字幕 = 这个镜头不要字幕；同一个镜头只用第一处",
+  "mode": "board",
+  "refs": {
+    "cards": [
+      {
+        "no": "4",
+        "kind": "audio",
+        "durationMs": 20000,
+        "audioRole": "music"
+      }
+    ],
+    "shots": [
+      "b1",
+      "b2",
+      "b3"
+    ]
+  },
+  "raw": "{\"segments\": [{\"clip\": \"b2\", \"transition\": \"dissolve\", \"take\": \"head\", \"weight\": 3}, {\"clip\": 3, \"transition\": \"fade\", \"subtitle\": \"\"}, {\"clip\": \"b9\", \"transition\": \"cut\"}, {\"clip\": \"b2\", \"transition\": \"wipe\"}], \"title\": {\"text\": \"雨夜\"}, \"music\": {\"clip\": \"4\"}}",
+  "expect": {
+    "draft": {
+      "mode": "board",
+      "segments": [
+        {
+          "clip": "b2",
+          "take": {
+            "kind": "full"
+          },
+          "role": "body",
+          "weight": 1,
+          "transition": "dissolve"
+        },
+        {
+          "clip": "b3",
+          "take": {
+            "kind": "full"
+          },
+          "role": "body",
+          "weight": 1,
+          "transition": "fade",
+          "subtitleOff": true
+        }
+      ],
+      "title": {
+        "text": "雨夜"
+      },
+      "music": "4"
+    },
+    "dropped": [
+      "第 3 段：镜头「b9」不在镜头清单里",
+      "第 4 段与第 1 段是同一个镜头「b2」，只用第一处"
+    ],
+    "ignored": []
+  }
+}

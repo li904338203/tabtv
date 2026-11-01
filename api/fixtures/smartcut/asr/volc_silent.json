@@ -1,0 +1,27 @@
+{
+  "name": "火山静音（20000003）：成功、空结果",
+  "protocol": "volc_asr",
+  "phase": "submit",
+  "status": 200,
+  "headers": {
+    "X-Api-Status-Code": "20000003",
+    "X-Api-Message": "silent audio"
+  },
+  "body": {
+    "audio_info": {
+      "duration": 5000
+    },
+    "result": {
+      "text": "",
+      "utterances": []
+    }
+  },
+  "expect": {
+    "text": "",
+    "meta": {
+      "granularity": "char",
+      "durationMs": 5000,
+      "utterances": []
+    }
+  }
+}

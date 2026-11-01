@@ -1,0 +1,181 @@
+{
+  "why": "DR-AC-27 在新建节点上：「三个人在街头对峙，低角度仰拍」。默认角色可替换，模型把它改成三人之一，再加两个；机位就地改成低机位——结果 3 个角色、1 个机位",
+  "scene": {
+    "background": {
+      "color": "#060608",
+      "mode": "color"
+    },
+    "ground": {
+      "height": 0,
+      "opacity": 1,
+      "visible": true
+    },
+    "lights": {
+      "fill": {
+        "azimuth": 225,
+        "color": "#ffffff",
+        "elevation": 20,
+        "intensity": 0.5,
+        "visible": true
+      },
+      "key": {
+        "azimuth": 45,
+        "color": "#ffffff",
+        "elevation": 50,
+        "intensity": 1.2,
+        "visible": true
+      }
+    },
+    "objects": [
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_1",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 1",
+        "source": "ai",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "character": {
+          "body": "standard",
+          "height": 1.8,
+          "model": "adult_male",
+          "posePreset": "stand_neutral"
+        },
+        "id": "obj_character_1",
+        "kind": "character",
+        "locked": false,
+        "name": "角色 1",
+        "source": "ai",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      }
+    ],
+    "outputCameraId": "obj_camera_1",
+    "schemaVersion": 1,
+    "stage": {
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 1
+    },
+    "timeline": {
+      "durationFrames": 150,
+      "fps": 30,
+      "loop": false,
+      "tracks": []
+    },
+    "view": {
+      "angleSnap": {
+        "enabled": false,
+        "step": 15
+      },
+      "gridSnap": {
+        "enabled": false,
+        "step": 0.5
+      },
+      "groundSnap": true,
+      "showLabels": true
+    }
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "update",
+        "ref": "obj_character_1",
+        "posePreset": "fight_stance",
+        "facing": {
+          "target": "老刀"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "老刀",
+        "kind": "character",
+        "posePreset": "fight_stance",
+        "relation": {
+          "type": "facing",
+          "target": "obj_character_1",
+          "distance": 2.0
+        }
+      },
+      {
+        "op": "add",
+        "ref": "小六",
+        "kind": "character",
+        "model": "youth_male",
+        "posePreset": "stand_hands_on_hips",
+        "relation": {
+          "type": "behind",
+          "target": "obj_character_1",
+          "distance": 1.0
+        },
+        "facing": {
+          "target": "老刀"
+        }
+      }
+    ],
+    "camera": {
+      "angle": "low",
+      "side": "front"
+    }
+  },
+  "expect": {
+    "added": 2,
+    "updated": 2,
+    "characters": 3,
+    "cameras": 1,
+    "outputCamera": "obj_camera_1",
+    "minGapM": 0.5,
+    "grounded": true,
+    "pitch": "up"
+  }
+}

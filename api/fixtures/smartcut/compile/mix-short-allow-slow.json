@@ -1,0 +1,77 @@
+{
+  "why": "SC-AC-38：打开「允许放慢」—— 每段放慢到 0.75×（2.04 秒 → 2.72 秒），仍不够 20 秒就如实说明；没有一段慢于 0.75×",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 2040,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 2040,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 2040,
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "4",
+      "kind": "video",
+      "mediaId": "74",
+      "durationMs": 2040,
+      "sourceNodeId": "n4"
+    },
+    {
+      "no": "5",
+      "kind": "video",
+      "mediaId": "75",
+      "durationMs": 2040,
+      "sourceNodeId": "n5"
+    },
+    {
+      "no": "6",
+      "kind": "video",
+      "mediaId": "76",
+      "durationMs": 2040,
+      "sourceNodeId": "n6"
+    },
+    {
+      "no": "7",
+      "kind": "video",
+      "mediaId": "77",
+      "durationMs": 2040,
+      "sourceNodeId": "n7"
+    }
+  ],
+  "spec": {
+    "targetMs": 20000,
+    "allowSlow": true
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"3\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"4\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"5\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"6\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"7\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}]}",
+  "expect": {
+    "video": [
+      "71 0~2040 ×75",
+      "72 0~2040 ×75",
+      "73 0~2040 ×75",
+      "74 0~2040 ×75",
+      "75 0~2040 ×75",
+      "76 0~2040 ×75",
+      "77 0~2040 ×75"
+    ],
+    "totalMs": 19040,
+    "warnings": [
+      "素材共 19 秒，不足目标 20 秒，已按 19 秒剪",
+      "素材不够，放慢了 7 段（最慢 0.75×）"
+    ],
+    "notes": []
+  }
+}

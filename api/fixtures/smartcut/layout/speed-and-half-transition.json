@@ -1,0 +1,63 @@
+{
+  "why": "成片长度算上变速（整数除法向下取整）；转场恰好是上一段的一半",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-c1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "speed": 200
+          },
+          {
+            "id": "tmp-c2",
+            "mediaId": "12",
+            "sourceInMs": 0,
+            "sourceOutMs": 3000,
+            "speed": 50,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          },
+          {
+            "id": "tmp-c3",
+            "mediaId": "13",
+            "sourceInMs": 0,
+            "sourceOutMs": 1000,
+            "speed": 75
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": {
+        "startMs": 0,
+        "durationMs": 2000
+      },
+      "tmp-c2": {
+        "startMs": 1000,
+        "durationMs": 6000
+      },
+      "tmp-c3": {
+        "startMs": 7000,
+        "durationMs": 1333
+      }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 9333,
+    "effectiveMs": 8333
+  }
+}

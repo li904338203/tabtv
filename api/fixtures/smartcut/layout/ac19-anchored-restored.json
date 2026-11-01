@@ -1,0 +1,92 @@
+{
+  "why": "SC-AC-19：恢复取用区间后被隐藏的字幕重新出现",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-a1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 6000
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "kind": "subtitle"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "tmp-s1",
+        "trackId": "3",
+        "startMs": 0,
+        "endMs": 800,
+        "text": "s1",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 0,
+          "srcEndMs": 800
+        }
+      },
+      {
+        "id": "tmp-s3",
+        "trackId": "3",
+        "startMs": 1800,
+        "endMs": 3000,
+        "text": "s3",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 1800,
+          "srcEndMs": 3000
+        }
+      },
+      {
+        "id": "tmp-s5",
+        "trackId": "3",
+        "startMs": 5800,
+        "endMs": 7000,
+        "text": "s5",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 5800,
+          "srcEndMs": 7000
+        }
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-a1": {
+        "startMs": 0,
+        "durationMs": 6000
+      }
+    },
+    "subtitles": {
+      "tmp-s1": {
+        "startMs": 0,
+        "endMs": 800
+      },
+      "tmp-s3": {
+        "startMs": 1800,
+        "endMs": 3000
+      },
+      "tmp-s5": {
+        "startMs": 5800,
+        "endMs": 7000,
+        "hidden": true
+      }
+    },
+    "texts": {},
+    "totalMs": 6000,
+    "effectiveMs": 6000
+  }
+}

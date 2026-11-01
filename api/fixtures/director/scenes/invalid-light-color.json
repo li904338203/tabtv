@@ -1,0 +1,15 @@
+{
+  "scene": {
+    "schemaVersion": 1,
+    "lights": {
+      "key": {
+        "visible": true,
+        "intensity": 1.2,
+        "color": "red",
+        "azimuth": 45,
+        "elevation": 50
+      }
+    }
+  },
+  "path": "lights.key.color"
+}

@@ -1,0 +1,39 @@
+{
+  "description": "未知字段一律保留：文档顶层、节点、连线上服务端不认识的键原样带回；Agent 新建节点上带来的未知键也保留；params 里的大整数不丢精度",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": ["a_fx1", "a_fx2"],
+  "before": {
+    "schemaVersion": 1,
+    "futureTopLevel": { "flag": true, "list": [1, 2, 3] },
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": { "referenceId": 9007199254740993 }, "lockState": "locked" },
+      { "id": "a_n1", "type": "video", "title": "视频", "position": { "x": 500, "y": 0 }, "size": { "w": 390, "h": 180 }, "params": {}, "agent": { "sessionId": "7001", "futureAgentKey": "keep" }, "uiHint": { "collapsed": true } }
+    ],
+    "edges": [],
+    "futureTail": null
+  },
+  "ops": [
+    { "kind": "add_node", "node": { "type": "text", "title": "带未知键", "params": { "n": 12345678901234567890 }, "customX": { "nested": [1, { "deep": "v" }] } } },
+    { "kind": "add_edge", "edge": { "source": "n_user1", "target": "a_n1", "styleHint": "dashed" } },
+    { "kind": "update_node", "nodeId": "a_n1", "patch": { "params": { "duration": 5 } } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "futureTopLevel": { "flag": true, "list": [1, 2, 3] },
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": { "referenceId": 9007199254740993 }, "lockState": "locked" },
+      { "id": "a_n1", "type": "video", "title": "视频", "position": { "x": 500, "y": 0 }, "size": { "w": 390, "h": 180 }, "params": { "duration": 5 }, "agent": { "sessionId": "7001", "futureAgentKey": "keep" }, "uiHint": { "collapsed": true } },
+      { "id": "a_fx1", "type": "text", "title": "带未知键", "params": { "n": 12345678901234567890 }, "customX": { "nested": [1, { "deep": "v" }] }, "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "agent": { "sessionId": "7001" } }
+    ],
+    "edges": [
+      { "id": "a_fx2", "source": "n_user1", "sourceHandle": "out", "target": "a_n1", "targetHandle": "in", "order": 1, "styleHint": "dashed" }
+    ],
+    "futureTail": null
+  },
+  "nodeIds": ["a_fx1"],
+  "applied": [
+    { "kind": "add_node", "node": { "id": "a_fx1", "type": "text", "title": "带未知键", "params": { "n": 12345678901234567890 }, "customX": { "nested": [1, { "deep": "v" }] }, "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "agent": { "sessionId": "7001" } } },
+    { "kind": "add_edge", "edge": { "id": "a_fx2", "source": "n_user1", "sourceHandle": "out", "target": "a_n1", "targetHandle": "in", "order": 1, "styleHint": "dashed" } },
+    { "kind": "update_node", "nodeId": "a_n1", "patch": { "params": { "duration": 5 } } }
+  ]
+}

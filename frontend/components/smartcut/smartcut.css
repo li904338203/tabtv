@@ -1,0 +1,121 @@
+/*
+ * 剪辑台的公共样式（docs/agent/smartcut SCT-20）。
+ * ⚠️ 只用 `--portal-*` 变量，不写死颜色（亮 / 暗两套主题都要对）。预览框里的黑底是成片本身的颜色（导出时没有画面的地方就是黑），
+ *    不跟主题走。
+ * 由 SmartcutStudio.vue 引入，随剪辑台的异步 chunk 加载，不进画布首屏。
+ */
+.sc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--portal-line);
+  border-radius: 6px;
+  color: var(--portal-text);
+  background: transparent;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.sc-btn:hover:not(:disabled) { background: var(--portal-hover); }
+.sc-btn:disabled { cursor: not-allowed; opacity: 0.45; }
+.sc-btn:focus-visible { outline: 2px solid var(--portal-cyan); outline-offset: 1px; }
+.sc-btn.primary { border-color: transparent; color: var(--portal-on-accent); background: var(--portal-text); }
+.sc-btn.primary:hover:not(:disabled) { opacity: 0.9; background: var(--portal-text); }
+.sc-btn.danger { border-color: var(--portal-danger-line); color: var(--portal-danger); }
+.sc-btn.icon { width: 28px; padding: 0; }
+.sc-btn.active { border-color: var(--portal-cyan-line); color: var(--portal-cyan); background: var(--portal-cyan-soft); }
+
+.sc-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  color: var(--portal-text);
+  font-size: 12px;
+}
+.sc-section { display: grid; gap: 8px; }
+.sc-section > h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  color: var(--portal-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sc-field { display: grid; grid-template-columns: 76px 1fr; align-items: center; gap: 8px; }
+.sc-field > label,
+.sc-field > span { color: var(--portal-text-soft); }
+.sc-input,
+.sc-select,
+.sc-textarea {
+  width: 100%;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--portal-line);
+  border-radius: 5px;
+  color: var(--portal-text);
+  background: var(--portal-input-bg);
+  font-size: 12px;
+}
+.sc-textarea { height: auto; min-height: 60px; padding: 6px; resize: vertical; line-height: 1.5; }
+.sc-input:disabled,
+.sc-select:disabled,
+.sc-textarea:disabled { color: var(--portal-disabled-text); background: var(--portal-disabled-bg); cursor: not-allowed; }
+.sc-input:focus-visible,
+.sc-select:focus-visible,
+.sc-textarea:focus-visible { outline: 2px solid var(--portal-cyan); outline-offset: -1px; }
+.sc-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.sc-note { margin: 0; color: var(--portal-muted); font-size: 12px; line-height: 1.5; }
+.sc-warn { margin: 0; color: var(--portal-gold); font-size: 12px; line-height: 1.5; }
+.sc-error { margin: 0; color: var(--portal-danger); font-size: 12px; line-height: 1.5; }
+.sc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 999px;
+  color: var(--portal-text-soft);
+  background: var(--portal-surface-2);
+  font-size: 11px;
+}
+.sc-spin { animation: sc-spin 0.9s linear infinite; }
+@keyframes sc-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .sc-spin { animation: none; }
+}
+
+/* 剪辑台里的确认框（识别、翻译，SCT-36）：盖在剪辑台上、留在剪辑台的焦点陷阱里（不传送到 body）。 */
+.sc-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: var(--portal-overlay, rgba(0, 0, 0, 0.45));
+}
+.sc-modal {
+  display: grid;
+  gap: 14px;
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100% - 48px);
+  padding: 16px;
+  overflow-y: auto;
+  border: 1px solid var(--portal-line);
+  border-radius: 10px;
+  color: var(--portal-text);
+  background: var(--portal-elevated);
+  font-size: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.sc-modal > h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.sc-modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.sc-radio { display: flex; align-items: center; gap: 6px; color: var(--portal-text); }

@@ -1,0 +1,2217 @@
+{
+  "_comment": "审定稿（MKT-PARAM-12 已定 → MK-21）：用户方 2026-10-21 指示按 docs/agent/marketing/03-选项建议稿.md 现稿原样录入，片段、说明、预填描述原文照抄、不润色。规模：分类 creative 8 · hook 5 · style 5；技能 13；创意 21 · Hook 17 · 风格 16。与上一版：首个正式文件（由 scripts/marketing-import/sample/建议稿样例.json 整理，S-13 主说明要点按 03 原文补全）。推荐 / 绑定模型 code 按本机开发库模型目录核对（7 个均存在且启用），其他环境须按目标环境的模型目录重新核对。导入后一律停用、不带封面；封面平台自制（MK-19），由运营上传后在管理端逐条启用。后续调整走管理端或新文件重新导入。",
+  "categories": [
+    {
+      "kind": "creative",
+      "code": "douyin_hot",
+      "name": "抖音爆款",
+      "sort": 1
+    },
+    {
+      "kind": "creative",
+      "code": "drama_ad",
+      "name": "剧情广告",
+      "sort": 2
+    },
+    {
+      "kind": "creative",
+      "code": "cross_border",
+      "name": "跨境电商",
+      "sort": 3
+    },
+    {
+      "kind": "creative",
+      "code": "talk_show",
+      "name": "达人口播",
+      "sort": 4
+    },
+    {
+      "kind": "creative",
+      "code": "unboxing",
+      "name": "开箱试用",
+      "sort": 5
+    },
+    {
+      "kind": "creative",
+      "code": "brand_tvc",
+      "name": "品牌 TVC",
+      "sort": 6
+    },
+    {
+      "kind": "creative",
+      "code": "ai_visual",
+      "name": "AI 炫酷视觉",
+      "sort": 7
+    },
+    {
+      "kind": "creative",
+      "code": "festival",
+      "name": "节日活动",
+      "sort": 8
+    },
+    {
+      "kind": "hook",
+      "code": "visual_grab",
+      "name": "画面吸睛",
+      "sort": 1
+    },
+    {
+      "kind": "hook",
+      "code": "viral_script",
+      "name": "爆款脚本",
+      "sort": 2
+    },
+    {
+      "kind": "hook",
+      "code": "talk_retain",
+      "name": "口播留人",
+      "sort": 3
+    },
+    {
+      "kind": "hook",
+      "code": "audio_hook",
+      "name": "抓耳音效",
+      "sort": 4
+    },
+    {
+      "kind": "hook",
+      "code": "fancy_fx",
+      "name": "花式特效",
+      "sort": 5
+    },
+    {
+      "kind": "style",
+      "code": "natural_life",
+      "name": "自然生活",
+      "sort": 1
+    },
+    {
+      "kind": "style",
+      "code": "oriental",
+      "name": "东方美学",
+      "sort": 2
+    },
+    {
+      "kind": "style",
+      "code": "premium",
+      "name": "高级质感",
+      "sort": 3
+    },
+    {
+      "kind": "style",
+      "code": "youth_trend",
+      "name": "年轻潮流",
+      "sort": 4
+    },
+    {
+      "kind": "style",
+      "code": "tech_future",
+      "name": "科技未来",
+      "sort": 5
+    }
+  ],
+  "skills": [
+    {
+      "code": "mk_product_ad",
+      "name": "商品营销短片",
+      "category": "营销视频",
+      "description": "上传商品图，写下卖点，生成一支节奏紧凑的带货短视频。",
+      "prefillText": "基于商品图和卖点，生成一支突出核心卖点、节奏紧凑的竖屏带货短视频。",
+      "tags": [],
+      "body": "# 商品营销短片\n\n建议输入：商品必、角色可；画幅 / 时长：9:16 · 10~15 秒；模型：Seedance 2.5（ref2video）/ Kling 3.0 Omni。\n\n## 主说明要点\n\n- 先确认三件事：商品是什么、给谁用、最想让人记住的一个卖点；一次问完、只问缺的，可给默认值让用户跳过。\n- 从「人群 + 他的痛点或欲望」出发选结构；用户没选创意时用「Hook → 痛点 / 场景 → 卖点演示 → 结果 → 收尾」五拍，时长约 15% / 20% / 40% / 15% / 10%。\n- **商品或它要解决的问题必须在前 3 秒出现**；每个镜头只承载一个卖点、一个动作、一种运镜。\n- 画面描述先写商品识别（引用商品图序号与用途），再写动作，最后写场景；已选创意 / 风格时不再写镜头编排与光影。\n- 结果画面要与商品真实用途相符；卖点文字与价格交给时间线字幕，不让视频模型画字。\n\n## 工作流程\n\n1 规划✓（`ask_user` 追问缺项 → `write_doc` 写 plan.md 的脚本表与选图）· 2 确认费用✓（`submit_plan` 出确认卡：逐项报价、选用商品图、所用模型）· 3 生成（`generate`）· 4 归组与总结（`canvas_apply` 画框收拢规划与产物；总结「已按以下计划生成」，不承诺画面细节）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "seedance_2_5",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 1,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_reversal_drama",
+      "name": "反转剧情带货",
+      "category": "营销视频",
+      "description": "用「误会 → 反转 → 爽点」的短剧结构，让商品成为剧情转折的关键。",
+      "prefillText": "基于商品特点设计一个有冲突、有反转的短剧情，让商品在反转处登场解决问题。",
+      "tags": [],
+      "body": "# 反转剧情带货\n\n建议输入：商品必、角色可；画幅 / 时长：9:16 · 15 秒（一次生成，不拆段）；模型：Seedance 2.5 / Kling 3.0 Omni。\n\n## 主说明要点\n\n- 先给 2~3 个剧情方向（选择卡），方向之间在「冲突来源」上拉开差异（被看低 / 赶时间 / 出状况）。\n- 结构固定：冲突铺垫 → 商品出现 → 反转爽点 → 商品特写收尾；时长约 35% / 20% / 30% / 15%。\n- **反转自检一句话**：「因为〈商品的某个真实卖点〉，原来的质疑 / 难题不再成立」，说不成这句话的方向不用；铺垫里要先出现与该卖点有关的细节（公平揭示）。\n- 人物不超过 3 人，用稳定称呼（「角色 A」「同事」）；台词短、每句不超过 12 字。\n- 一支视频一次生成，多个镜头写进同一段提示词；超出所选模型的单次最长时长时用 ask_user 让用户选缩短或换模型，不拆段。\n\n## 工作流程\n\n1 规划✓（选择卡选剧情方向 → plan.md 写三幕脚本表与反转自检句）· 2 确认费用✓· 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "seedance_2_5",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 2,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_seeding_talk",
+      "name": "真人种草分享",
+      "category": "营销视频",
+      "description": "人物手持商品对镜分享使用感受，朋友式推荐。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prefillText": "让一位人物手持商品对着镜头分享使用感受，语气像朋友推荐。",
+      "tags": [
+        "口播"
+      ],
+      "body": "# 真人种草分享\n\n建议输入：商品必、角色可；画幅 / 时长：9:16 · 10~15 秒；模型：Kling 3.0 Omni / Seedance 2.5；出声：是。\n\n## 主说明要点\n\n- 规划文档与确认卡写明「画面为人物对镜讲解，不保证口型与语音逐字同步」；不自称数字人、不承诺对口型。\n- 按种草六拍组织：Hook → 可代入的问题 → 商品出场 → 一个演示动作 → 可信的结果 → 自然收尾。\n- 口播稿第一句直接进入话题，不寒暄；第一人称、口语化；按每秒约 4~5 字估算，15 秒不超过约 70 字。\n- 这是情景演绎：不写「真实用户」「亲测 N 天」等冒充真实体验的表述，不写功效承诺与绝对化用语。\n- 镜头以中近景、固定机位为主（面部稳定优先），穿插 1~2 个商品特写。\n\n## 工作流程\n\n1 规划✓（plan.md 写口播稿与镜头表）· 2 确认费用✓（确认卡含口播提示句）· 3 生成 · 4 归组与总结（口播稿同时作为时间线字幕的底稿写进文档）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "kling_3_0_omni",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 3,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_brand_film",
+      "name": "品牌质感大片",
+      "category": "营销视频",
+      "description": "没有剧情，只有光影与镜头，拍出商品的精致感。",
+      "prefillText": "为商品拍一支没有台词、以光影和镜头运动呈现材质细节的品牌短片。",
+      "tags": [],
+      "body": "# 品牌质感大片\n\n建议输入：商品必；画幅 / 时长：16:9 或 9:16 · 10 秒；模型：Kling 3.0 / Seedance 2.5。\n\n## 主说明要点\n\n- 不写剧情与台词；3~4 个镜头：登场 → 环绕 → 微距细节 → 正面定格，每镜一种运镜。\n- 每镜写清光线方向与软硬（如「侧光从左扫过」），不写「高级感 / 电影感」这类词。\n- 保真优先：只给一个材质动态（水珠滑落、光泽流动、粉末散开选一），背景简洁、无人物。\n- 建议搭配「高级质感」类风格。\n\n## 工作流程\n\n1 规划✓（plan.md 写镜头表：运镜 · 光线 · 材质动态）· 2 确认费用✓ · 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "kling_3_0",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 4,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mk_product_showcase",
+      "name": "商品多角度展示",
+      "category": "营销视频",
+      "description": "一键生成商品 360° 展示视频，适合商品详情页主图视频。",
+      "prefillText": "生成一段商品在纯净背景上缓慢旋转、展示各个角度的视频。",
+      "tags": [],
+      "body": "# 商品多角度展示\n\n建议输入：商品必（建议 2~3 张不同角度）；画幅 / 时长：1:1 或 9:16 · 5~8 秒；模型：Kling 3.0 Turbo / Seedance 2.0。\n\n## 主说明要点\n\n- 背景纯净、无人物；单镜头、转台匀速旋转，不加其他运镜。\n- 多张商品图按「正面 → 侧面 → 背面 → 细节」排序，并在画面描述里逐张说明用途（「商品图 1 为正面」）；用户可传到 20 张，按模型参考图上限挑选覆盖角度最全的几张，并说明选了哪几张。\n- 短时长、成本低，优先选按秒便宜的模型并在确认卡说明。\n- 跨境主图视频的规格（时长、是否允许 AI 生成）以目标平台规则为准，需用户核实。\n\n## 工作流程\n\n1 规划✓（选图与角度顺序）· 2 确认费用✓ · 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "kling_3_0_turbo",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 5,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mk_cross_border_listing",
+      "name": "跨境商品视频",
+      "category": "跨境电商",
+      "description": "为海外电商平台制作商品视频：海外生活场景、外籍模特、目标市场语言的卖点字幕。",
+      "prefillText": "为商品制作一支面向海外市场的展示视频，使用目标市场的生活场景和语言。",
+      "tags": [],
+      "body": "# 跨境商品视频\n\n建议输入：商品必、角色可；画幅 / 时长：9:16 / 1:1 · 10~15 秒；模型：Seedance 2.5 / Kling 3.0 Omni。\n\n## 主说明要点\n\n- 先用选择卡确认目标市场（如北美、欧洲、东南亚、中东）与字幕语言。\n- 场景、人物、道具符合当地生活习惯；人物按场景自然设定，不以肤色、族裔作卖点表述；避开当地敏感的手势、宗教与政治元素。\n- 卖点字幕由时间线字幕实现（不让视频模型画字）；商品在前 3 秒出现。\n- 情景演绎不冒充真实顾客评价；涉及当地平台的广告披露要求，提示用户按平台规则处理。\n\n## 工作流程\n\n1 规划✓（选择卡确认市场与语言 → plan.md 写镜头表与目标语言字幕稿）· 2 确认费用✓ · 3 生成 · 4 归组与总结（字幕稿写进文档，供时间线使用）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "seedance_2_5",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 6,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_market_localize",
+      "name": "多市场本地化改版",
+      "category": "跨境电商",
+      "description": "同一个商品视频，一键改成不同市场版本：换场景、换人物、换字幕语言。",
+      "prefillText": "把这支商品视频改成适合其他市场的版本，保留商品与结构，替换场景、人物与字幕语言。",
+      "tags": [],
+      "body": "# 多市场本地化改版\n\n建议输入：视频必（已有成片）或商品必；画幅 / 时长：沿用源视频；模型：Seedance 2.5（video2video）/ Kling 3.0 Omni（video2video）。\n\n## 主说明要点\n\n- 属于批量类：每个目标市场一个变体，单次最多 4 个（MK-11），确认卡逐个列价（MKT-F-50~52）；源视频必须属于本工作区。\n- 编辑句式要写清「改什么 + 保持什么」：「严格编辑源视频，将场景改为…、人物改为…；商品外观、镜头运动与节奏保持不变」。未提及的部分默认不变。\n- 字幕走时间线。\n\n## 工作流程\n\n1 规划✓（变体表：市场 · 改动项 · 保持项 · 字幕语言）· 2 确认费用✓（逐个列价）· 3 生成（逐个受理，余额不足停后续）· 4 归组与总结（如实报告部分成功）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "seedance_2_5",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 7,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "source_video",
+          "label": "源视频",
+          "accept": [
+            "video"
+          ],
+          "required": false,
+          "maxCount": 1
+        },
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": false,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mk_main_image",
+      "name": "商品主图生成",
+      "category": "营销小工具",
+      "description": "把随手拍的商品照做成干净的电商主图，可选白底或场景底。",
+      "prefillText": "把商品图做成一张干净、专业的电商主图。",
+      "tags": [],
+      "body": "# 商品主图生成\n\n建议输入：商品必；产出：图片 · 1:1 / 3:4；模型：gpt-image-2。\n\n## 主说明要点\n\n- 先问白底还是场景底；白底时可先建议使用抠图工具。\n- 编辑提示词写「只改背景与光线；商品的形状、颜色、标签文字、比例保持不变」；需要逐像素一致时，建议抠图后合成，不靠提示词。\n- 商品居中，国内平台白底图常见占画面 60%~80%；跨境平台的主图规范（白底要求、占比、是否接受 AI 生成图）**以平台最新规则为准，提示用户核实**。\n- 不添加商品本身没有的配件；不在图上画文字（文字后期加）。\n\n## 工作流程\n\n1 规划✓（确认底色与张数）· 2 确认费用✓（按张列价）· 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "",
+        "image": "gpt_image_2_direct",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 8,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mk_scene_image",
+      "name": "商品场景图",
+      "category": "营销小工具",
+      "description": "把商品放进真实的使用场景里，一次出多张做详情页或种草图。",
+      "prefillText": "把商品放进符合它用途的生活场景中，生成几张不同场景的种草图。",
+      "tags": [],
+      "body": "# 商品场景图\n\n建议输入：商品必、角色可；产出：图片 · 3:4 / 9:16 · 2~4 张；模型：gpt-image-2。\n\n## 主说明要点\n\n- 先给 3 个场景方向（选择卡），方向之间按「谁在用 · 在哪用」拉开差异。\n- 每张图一个场景；商品作为锁定主体，写清「保持商品形状、颜色、标签文字与比例不变」；透视与光照方向和场景一致。\n- 可搭配风格选项（风格只取色调、光线、材质、构图，节奏与声音对图片不生效）；多张逐张计费，确认卡列清。\n\n## 工作流程\n\n1 规划✓（选择卡选场景 → 每张一句场景说明）· 2 确认费用✓（逐张列价）· 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "",
+        "image": "gpt_image_2_direct",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 9,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_selling_copy",
+      "name": "卖点与口播文案",
+      "category": "营销小工具",
+      "description": "从商品图和描述里提炼卖点，写出 3 版短视频口播稿与标题。",
+      "prefillText": "帮我提炼商品卖点，并写 3 版不同风格的短视频口播稿和标题。",
+      "tags": [],
+      "body": "# 卖点与口播文案\n\n建议输入：商品必或文字卖点；产出：文档（不生成媒体）；模型：推理模型。\n\n## 主说明要点\n\n- 只写文档（写进项目文档并出文件卡），**不调用付费生成工具**（工具白名单收窄到只读 + 文档 + `ask_user`），只收对话费。\n- 卖点按「功能 → 体验 → 情绪」三层提炼；每条卖点写成「拍得出来的画面」。\n- 3 版口播稿用**不同的开头类型**（从痛点直陈、人群点名、结果前置、提出疑问、正话反说等中选 3 种），每版给出 Hook 三件套：开头画面 · 第一句口播 · 字幕，三者互补不重复。\n- 第一句直接进入，不寒暄；不写绝对化用语（最、第一、100%）与功效承诺，能用事实就用事实（用户给的数据才写）。\n\n## 工作流程\n\n1 提炼与追问（`ask_user` 只问缺项）· 2 写稿（`write_doc`：卖点表 + 3 版口播稿与标题）· 3 总结（列出 3 版的差异与适用场景，推荐可接的营销技能）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "提炼与追问",
+          "checkpoint": false
+        },
+        {
+          "no": 2,
+          "name": "写稿",
+          "checkpoint": false
+        },
+        {
+          "no": 3,
+          "name": "总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [
+        "read_canvas",
+        "list_assets",
+        "read_doc",
+        "write_doc",
+        "ask_user",
+        "load_skill",
+        "read_skill_ref"
+      ],
+      "modelBindings": {
+        "video": "",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "sort": 10,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": false,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "mk_batch_variants",
+      "name": "批量生成",
+      "category": "投放与增长",
+      "description": "同一个商品一次出多条不同创意、Hook 或风格的视频，方便投放测试。",
+      "prefillText": "为商品一次生成多条不同开头和风格的视频，用于投放对比测试。",
+      "tags": [],
+      "body": "# 批量生成\n\n建议输入：商品必、角色可；画幅 / 时长：按变体；模型：按用户偏好 / 智能匹配。\n\n## 主说明要点\n\n- 先用选择卡确认**目的**：①探索方向（变体在人群 / 痛点 / 形式上拉开差异）；②对比测试（**只改一个变量**，如只换 Hook，其余不动）。再确认变体维度与数量（单次最多 4 个，MK-11）。\n- 换 Hook 的变体，紧接 Hook 的承接镜头要同步改，保证 Hook 抛出的问题马上被回应。\n- 方向还没验证时，建议先用短时长或单价低的模型出一轮，选出方向后再出高规格版本，并在规划里说明理由。\n- 规划写成变体表（序号、组合、改了什么、时长、报价）；确认卡逐个列价；执行逐个受理、余额不足停后续、部分成功如实报告（MKT-F-50~52）。\n\n## 工作流程\n\n1 规划✓（选择卡选目的与维度 → plan.md 变体表）· 2 确认费用✓（逐个变体列价与合计）· 3 生成（逐个受理）· 4 归组与总结（同一画框按变体排列并标注变体说明，MKT-F-54）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "isBatch": true,
+      "sort": 11,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": true,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        },
+        {
+          "key": "character",
+          "label": "角色",
+          "accept": [
+            "image",
+            "character_asset"
+          ],
+          "required": false,
+          "maxCount": 2
+        }
+      ]
+    },
+    {
+      "code": "mk_material_fission",
+      "name": "爆款素材裂变",
+      "category": "投放与增长",
+      "description": "选一条跑得好的视频，自动裂变出换开头、换风格、换画幅的多个版本。",
+      "prefillText": "基于这条视频，保留商品与核心内容，裂变出几个换开头、换风格的新版本。",
+      "tags": [],
+      "body": "# 爆款素材裂变\n\n建议输入：视频必（本工作区成片或上传视频）；画幅 / 时长：沿用源视频或改画幅；模型：Seedance 2.5 / Kling 3.0 Omni（video2video）、Grok Imagine Video 1.5。\n\n## 主说明要点\n\n- 源视频经服务端校验归属；单次最多裂变 4 个版本（MK-11）。\n- 先读源视频对应的生成记录（若是本平台产物）了解原提示词与参数；把源视频「已经有效的部分」当作保持项。\n- 每个变体只改 1~2 个维度，并写清「改了什么、保留了什么」；编辑句式同 S-07。\n- 改画幅时，关键内容重新放进竖屏安全区。按模型能力选择 video2video 或重新生成，并在确认卡说明差价（MKT-F-53）。\n\n## 工作流程\n\n1 规划✓（变体表：改动项 · 保持项 · 走哪条生成路径）· 2 确认费用✓（逐个列价，两条路径的差价）· 3 生成 · 4 归组与总结",
+      "steps": [
+        {
+          "no": 1,
+          "name": "规划",
+          "checkpoint": true
+        },
+        {
+          "no": 2,
+          "name": "确认费用",
+          "checkpoint": true
+        },
+        {
+          "no": 3,
+          "name": "生成",
+          "checkpoint": false
+        },
+        {
+          "no": 4,
+          "name": "归组与总结",
+          "checkpoint": false
+        }
+      ],
+      "tools": [],
+      "modelBindings": {
+        "video": "seedance_2_5",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": false,
+      "isBatch": true,
+      "sort": 12,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "source_video",
+          "label": "源视频",
+          "accept": [
+            "video"
+          ],
+          "required": true,
+          "maxCount": 1
+        }
+      ]
+    },
+    {
+      "code": "mk_growth_advisor",
+      "name": "生意增长顾问",
+      "category": "营销洞察",
+      "description": "聊聊你的商品和生意，帮你梳理卖点、人群、内容方向与投放思路。",
+      "prefillText": "我想提升这个商品的销量，请帮我分析目标人群、核心卖点和适合的短视频内容方向。",
+      "tags": [],
+      "body": "# 生意增长顾问\n\n建议输入：商品可、文字必（用户的生意情况与问题）；产出：对话 + 项目文档（不强制生成媒体）；模型：推理模型。\n\n## 主说明要点\n\n- 先问清商品、价格带、主要渠道、目前的问题（只追问缺的）。\n- 按「人群切片 → 每个人群的动机（尽量用用户原话）→ 内容形式 → 开头方向 → 测试建议」组织，结论写进项目文档 `/notes/增长建议.md`（Agent 只能写 `/notes/<名>.md` 等固定路径，根目录写不进去）。\n- 测试建议写成**可被结果推翻的假设**（看哪个指标、和谁比、预期往哪个方向变）；一次只测一个变量。\n- 用户给了投放数据时，按「停留 → 完播 → 点击 → 转化」判断该改开头、承接段、卖点还是落地页；**没给数据就不下结论**。\n- **没有外部数据源**，不编造行业 / 竞品 / 平台数据，涉及这些时写明「需你核实」；不承诺 ROI 或销量。\n- 需要落地成片时推荐对应营销技能（如 S-11 批量生成做 A/B），付费生成必须先出确认卡；工具白名单 = 只读 + 文档 + `ask_user` + 报价 + `submit_plan`（出确认卡，免费；营销会话里付费生成必须对应已批准的计划项，漏了它顾问出不了图）+（确认后）生成工具，即 `read_canvas, list_assets, read_doc, write_doc, ask_user, load_skill, read_skill_ref, quote, submit_plan, generate, canvas_apply`。\n\n## 工作流程\n\n1 问诊（`ask_user` 补齐生意信息）· 2 分析与建议（`write_doc` 写 `/notes/增长建议.md`）· 3 落地（可选；用户要出图 / 出片时进入 规划✓ → 确认费用✓ → 生成 → 归组与总结）",
+      "steps": [
+        {
+          "no": 1,
+          "name": "问诊",
+          "checkpoint": false
+        },
+        {
+          "no": 2,
+          "name": "分析与建议",
+          "checkpoint": false
+        },
+        {
+          "no": 3,
+          "name": "落地（可选）",
+          "checkpoint": true
+        }
+      ],
+      "tools": [
+        "read_canvas",
+        "list_assets",
+        "read_doc",
+        "write_doc",
+        "ask_user",
+        "load_skill",
+        "read_skill_ref",
+        "quote",
+        "submit_plan",
+        "generate",
+        "canvas_apply"
+      ],
+      "modelBindings": {
+        "video": "",
+        "image": "",
+        "reasoning": ""
+      },
+      "isQuickEntry": true,
+      "sort": 13,
+      "scenes": [
+        "marketing"
+      ],
+      "inputSlots": [
+        {
+          "key": "product",
+          "label": "商品",
+          "accept": [
+            "image"
+          ],
+          "required": false,
+          "maxCount": 20,
+          "fields": [
+            {
+              "key": "name",
+              "label": "商品名称"
+            },
+            {
+              "key": "sellingPoints",
+              "label": "卖点"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "options": [
+    {
+      "kind": "creative",
+      "code": "cr_pain_point_fix",
+      "name": "痛点立解",
+      "categoryCode": "douyin_hot",
+      "sort": 1,
+      "description": "先拍出日常烦恼，再让商品一步解决，前后反差一目了然。",
+      "prompt": "问题—解决—结果三段，3~4 个镜头，同一场景、同一光线。镜头 1（约占三分之一）：手持中近景轻晃，角色正被一个与商品用途直接相关的小麻烦困住，反复尝试仍失败，神情烦躁。镜头 2（约占三分之一）：固定机位近景，商品入画，角色用一个干脆的动作完成使用。镜头 3：问题解决后的同一场景，角色神情放松。镜头 4：缓慢推近商品正面，停留不少于 1 秒。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": "mk_product_ad",
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_before_after",
+      "name": "前后对比揭晓",
+      "categoryCode": "douyin_hot",
+      "sort": 2,
+      "description": "同机位呈现使用前后，效果对比就是最好的卖点。分屏或划变效果可在时间线里加。功效类化妆品、保健类商品慎用（功效宣称受限）。",
+      "prompt": "同机位前后对比，3 个镜头。镜头 1（约占三分之一）：固定机位，呈现使用商品之前的状态，构图与光线定下后不再改变。镜头 2（约占三分之一）：两个快切近景，手部使用商品的过程清晰可见。镜头 3：回到与镜头 1 完全相同的机位与光线，呈现使用后的状态并停留，商品放在画面中部偏下、完整入画。前后差异只来自商品作用，变化幅度与商品真实用途相符。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          8,
+          12
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_oneshot_haul",
+      "name": "一镜到底好物推荐",
+      "categoryCode": "douyin_hot",
+      "sort": 3,
+      "description": "镜头一路跟随，在真实空间里连续带出商品与使用场景。",
+      "prompt": "单个连续镜头，全程不切镜，稳定器质感、速度均匀。镜头从门口或桌沿出发向前推进，前景偶有门框或绿植轻微遮挡，经过一两个生活化细节后停在商品前；角色的手入画拿起商品，先展示正面，再做一个使用动作；镜头随动作缓慢环绕约四分之一圈，最后停在商品正面。只用推进与小幅环绕两种运动。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "grok_imagine_video_1_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_asmr_closeup",
+      "name": "解压质感特写",
+      "categoryCode": "douyin_hot",
+      "sort": 4,
+      "description": "极近距离的开合、按压、倾倒，用质感和声音留住人。",
+      "prompt": "全片为微距与特写，3~5 个镜头，每镜只做一个动作，节奏舒缓。依次：开盖或开封的一瞬 → 表面质地的极近特写 → 与商品相符的按压、倾倒、涂抹或掰开，动作缓慢连贯 → 细节纹理收尾。背景纯净虚化，焦点始终落在商品上，固定机位或极慢推进。声音只保留清晰的动作声与轻微环境声，不加音乐与人声。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0_omni",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          8,
+          10
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_day_moments",
+      "name": "一天里的它",
+      "categoryCode": "douyin_hot",
+      "sort": 5,
+      "description": "同一个人一天中的三个时刻都自然用到商品，看见它在生活里的位置。",
+      "prompt": "场景代入结构，同一角色在早晨、白天、夜晚三个时刻，各一个镜头，时长相近。镜头 1：清晨暖光的居家场景，角色顺手用到商品。镜头 2：白天明亮的通勤或工作场景，用法与镜头 1 不同。镜头 3：夜晚室内暖灯，角色放松地再次用到商品。镜头之间以相同的手部动作或相同构图衔接。最后推近商品正面停留。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_reversal_short",
+      "name": "反转小剧场",
+      "categoryCode": "drama_ad",
+      "sort": 1,
+      "description": "被看低 → 商品出场 → 当场翻盘，短剧式爽点带货。",
+      "prompt": "三幕短剧，人物不超过 3 人。第一幕（约占三分之一）：正反打中近景，角色因与商品用途相关的事被质疑、处境尴尬，画面里提前出现一个与商品卖点有关的小细节。第二幕：角色不慌不忙拿出商品，镜头推近商品，节奏放慢半拍。第三幕：商品的作用直接改变局面，旁人神情由轻视转为惊讶，角色从容；最后商品正面特写。表演略带短剧式夸张。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          15
+        ]
+      },
+      "defaultSkillCode": "mk_reversal_drama",
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_romance_scene",
+      "name": "恋爱小剧场种草",
+      "categoryCode": "drama_ad",
+      "sort": 2,
+      "description": "用恋爱中的小心思与小甜蜜，把商品变成两人之间的情绪纽带。",
+      "prompt": "两位角色的轻剧情，中近景与过肩镜头为主，柔和侧光，动作幅度小。镜头 1：一个小期待或小误会的瞬间（等待、偷看、把东西藏在身后）。镜头 2（约占三分之一）：商品作为礼物、分享或贴心举动出现，递出时双手与商品位于画面中央、清晰可见。镜头 3：两人相视而笑，商品在两人之间或一人手中。情绪克制，甜而不腻。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0_omni",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          12,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_office_story",
+      "name": "职场小剧场",
+      "categoryCode": "drama_ad",
+      "sort": 3,
+      "description": "加班、开会、通勤里的小困境，用商品轻松化解。",
+      "prompt": "职场轻喜剧，镜头切换干脆，表情生动。镜头 1（约占三分之一）：办公室里角色遇到与商品相关的小困境（疲惫、手忙脚乱、形象尴尬），远处同事正走过来，制造紧张感。镜头 2：近景，角色用商品快速应对，一个动作完成。镜头 3：同事走到工位旁，投来好奇的目光，角色从容。镜头 4：商品正面特写收尾。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          12,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_global_lifestyle",
+      "name": "海外生活方式",
+      "categoryCode": "cross_border",
+      "sort": 1,
+      "description": "把商品放进海外家庭的日常，外籍模特自然使用，适合跨境店铺。",
+      "prompt": "以目标市场的居家或户外日常为背景，3~4 个镜头。镜头 1：中远景交代环境（明亮公寓、后院或通勤街道），自然光。镜头 2：中景，人物自然地使用商品，动作不摆拍。镜头 3：使用细节特写。镜头 4：人物满意的神情与商品同框。手持稳定，色彩通透，人物与场景按目标市场的生活习惯设定。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": "mk_cross_border_listing",
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_feature_callout",
+      "name": "功能卖点逐条演示",
+      "categoryCode": "cross_border",
+      "sort": 2,
+      "description": "一条卖点一个镜头，配合后期标注，清楚讲完商品功能。",
+      "prompt": "按卖点分镜，2~4 个卖点，每个卖点一个镜头、一个动作，时长相近。每镜对准该功能对应的部位或使用动作，背景干净，固定机位或缓慢推进；商品放在画面中部偏左，画面中上部留出一块干净区域供后期叠加卖点文字。镜头之间硬切。最后一镜为商品全貌。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0",
+        "seedance_2_0"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "1:1",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_mirror_share",
+      "name": "对镜真诚分享",
+      "categoryCode": "talk_show",
+      "sort": 1,
+      "description": "人物对着镜头像朋友一样推荐商品。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "中近景、固定机位，人物在居家环境中正对镜头，手持商品，像在跟朋友聊天，表情与手势配合讲述。期间两次把商品举近镜头，展示正面与一处细节；中段切一个使用商品的特写镜头，再回到对镜画面。自然窗光从侧前方照入，背景简洁温馨、轻微虚化。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": true,
+      "recommendedModels": [
+        "kling_3_0_omni",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": "mk_seeding_talk",
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "creative",
+      "code": "cr_street_interview",
+      "name": "街头随机问答",
+      "categoryCode": "talk_show",
+      "sort": 2,
+      "description": "街采风格的情景演绎，路人试用后给出反应。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "街头采访形式的情景演绎，路人不超过 2 位。镜头 1：手持话筒的主观视角拦下一位路人，路人好奇地看向商品。镜头 2（约占三分之一）：路人试用商品，给出使用过程与表情的近景。镜头 3：路人点头或竖起拇指，商品出现在话筒旁。手持跟拍、轻微晃动，白天自然光，街道背景虚化。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          12,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "creative",
+      "code": "cr_unboxing_pov",
+      "name": "第一视角开箱",
+      "categoryCode": "unboxing",
+      "sort": 1,
+      "description": "第一视角拆快递、取出商品、上手试用，仪式感拉满。",
+      "prompt": "第一人称俯视视角，桌面明亮均匀。镜头 1：双手拆开包裹外包装。镜头 2：揭开内层，商品露出一角。镜头 3（节奏放慢）：取出商品举到镜头前，正面朝向镜头停留片刻。镜头 4：上手做一个最能体现卖点的动作。手部动作自然干净，每个动作一步完成。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0_omni",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_try_on_switch",
+      "name": "试穿试用多套切换",
+      "categoryCode": "unboxing",
+      "sort": 2,
+      "description": "同一个人快速切换多种穿搭或使用方式，适合服饰配件类。",
+      "prompt": "固定机位，全身或半身中景，背景与光线全程不变。人物以转身、抬手遮挡镜头或拍手作为切换点，每次切换后换一种与商品相关的穿搭或用法，共 3 套，每套时长相近；衣物垂坠与褶皱自然。最后一套停留稍久，镜头缓慢推近展示商品细节。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_hands_on_test",
+      "name": "实测演示",
+      "categoryCode": "unboxing",
+      "sort": 3,
+      "description": "把商品的一个功能完整演示一遍，过程不剪、结果看得见。",
+      "prompt": "实测演示结构，3~4 个镜头。镜头 1：近景交代测试条件与要解决的问题（按商品用途选择，如一处污渍、一个需要固定的物件）。镜头 2（约占一半）：固定机位，商品完成测试，动作完整连贯，不跳过过程。镜头 3：结果的近景，停留片刻。镜头 4：商品正面收尾。只演示商品真实具备的功能，画面中不出现读数、仪表与其他商品。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_hero_shot",
+      "name": "商品英雄镜头",
+      "categoryCode": "brand_tvc",
+      "sort": 1,
+      "description": "棚拍级的环绕与光影，让商品像主角一样登场。",
+      "prompt": "商品置于干净的展示台上，无人物，3 个镜头。镜头 1：暗场中一道侧光从左向右扫过商品表面，镜头缓慢推进。镜头 2（约占三分之一）：低机位绕商品半周，展现轮廓与材质，只加一个材质动态（水珠滑落或光泽流动，二选一）。镜头 3：推近到商品正面定格。全程运镜缓慢平稳，背景为渐变暗色，空气中有少量漂浮微尘。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "kling_3_0",
+        "seedance_2_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "16:9",
+        "durationSec": [
+          8,
+          10
+        ]
+      },
+      "defaultSkillCode": "mk_brand_film",
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_origin_story",
+      "name": "原料与工艺溯源",
+      "categoryCode": "brand_tvc",
+      "sort": 2,
+      "description": "从原料产地或制作工序到成品，讲清商品「从哪里来、怎么做出来」，适合食品、天然成分与手作类。",
+      "prompt": "三段式。镜头 1（约占三分之一）：与商品真实原料相关的自然场景大远景（果园、田野、山间、海边等，按实际原料选择），清晨侧逆光，缓慢航拍推进。镜头 2：原料采摘或加工工序的特写，手部动作与器具、材料的接触清晰。镜头 3：过渡到成品商品，商品与原料同框。色调从自然的绿色或大地色过渡到干净的产品光。用户没有提供原料与工序信息时，只拍通用原料画面，不虚构工艺。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "16:9",
+        "durationSec": [
+          12,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_product_mascot",
+      "name": "商品拟人小剧场",
+      "categoryCode": "ai_visual",
+      "sort": 1,
+      "description": "把商品或它的口味、颜色变成可爱角色，演一段小故事。",
+      "prompt": "以商品的外形、配色或口味为灵感，生成 1~2 个三维动画质感的拟人角色，配色与造型取自商品本身。镜头 1：角色在童话感场景中出场亮相。镜头 2：一段小冲突或小比赛。镜头 3：角色一起指向画面中央的真实商品，商品保持写实质感，与拟人角色同框。色彩明快。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "grok_imagine_video_1_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          15
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_giant_city",
+      "name": "巨物商品城市奇观",
+      "categoryCode": "ai_visual",
+      "sort": 2,
+      "description": "超大尺寸的商品出现在城市街景里，制造视觉奇观。",
+      "prompt": "一座现代城市的街景（不指定真实地标），傍晚或夜景灯光，写实质感。镜头 1：行人视角低机位仰拍，放大到楼宇尺寸的商品从天空缓缓降落或从地面升起。镜头 2：周围行人抬头仰望、举起手机拍照。镜头 3：航拍缓慢拉远，展现商品与城市的尺度对比。商品比例巨大，外观与商品图一致。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni",
+        "grok_imagine_video_1_5"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          8,
+          12
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_festival_promo",
+      "name": "节日大促氛围",
+      "categoryCode": "festival",
+      "sort": 1,
+      "description": "礼盒、灯串、彩带，给商品配上节日购物氛围；活动信息（价格、倒计时）后期叠加。",
+      "prompt": "节日购物氛围，3 个镜头。镜头 1：节日装饰的场景（灯串、礼盒、彩带，元素按具体节日调整），商品从礼盒中弹出或被一束光照亮。镜头 2（约占三分之一）：商品周围缓缓飘落节日元素，镜头环绕半周。镜头 3：商品居于画面中部偏下，背景是热闹的节日色调，画面中上部留出一块干净区域供后期叠加活动信息。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "creative",
+      "code": "cr_city_checkin",
+      "name": "城市地标打卡",
+      "categoryCode": "festival",
+      "sort": 2,
+      "description": "结合城市活动或旅游季，让商品出现在热门街区的打卡画面里。",
+      "prompt": "手机 vlog 质感的城市街区打卡，色彩鲜明。镜头 1：热闹街区的夜景或白天人流（城市特征由运营在活动版里补一句具体描述），角色手持商品走入画面。镜头 2：角色在街区中拍照打卡，商品出现在合影或手中。镜头 3：商品与城市街景同框定格。街边招牌只作模糊背景。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required",
+        "character": "optional"
+      },
+      "isAudioRequired": false,
+      "recommendedModels": [
+        "seedance_2_5",
+        "kling_3_0_omni"
+      ],
+      "recommendedParams": {
+        "aspectRatio": "9:16",
+        "durationSec": [
+          10,
+          12
+        ]
+      },
+      "defaultSkillCode": null,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_sky_drop",
+      "name": "商品从天而降",
+      "categoryCode": "visual_grab",
+      "sort": 1,
+      "description": "开场商品从高空坠落砸进画面，冲击感拉满",
+      "prompt": "视频开头约 2 秒：首帧是安静场景的中央空位；商品从画面上方快速落下，约 0.5 秒时落地，带起与场景相符的灰尘、水花或碎屑，镜头随落地轻微一震；商品稳稳停在画面中央、正面朝向镜头，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_extreme_macro",
+      "name": "极限微距开场",
+      "categoryCode": "visual_grab",
+      "sort": 2,
+      "description": "从看不出是什么的极近细节拉出，制造好奇",
+      "prompt": "视频开头约 2~3 秒：首帧是商品某处难以辨认的极近纹理，画面已在缓慢移动；约 1 秒后镜头快速拉远，露出商品全貌并停在画面中央，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_odd_scale",
+      "name": "反常比例",
+      "categoryCode": "visual_grab",
+      "sort": 3,
+      "description": "微缩小人或巨物对比，一眼不对劲",
+      "prompt": "视频开头约 2 秒：首帧即呈现不合常理的尺度对比——几个微缩小人站在商品上忙碌，或商品比周围物品大出许多；画面里只有这一处反常、其余写实，随后镜头推近商品进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_mid_action",
+      "name": "动作中途切入",
+      "categoryCode": "visual_grab",
+      "sort": 4,
+      "description": "不铺垫，开场就是正在进行的使用动作",
+      "prompt": "视频开头约 2 秒：首帧即是一个已在进行中的使用动作（正在倒出、按下、拉开或撕开，按商品用途选择），没有任何铺垫；约 1.5 秒时动作到达最明显的一刻，商品清晰可见，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_result_first",
+      "name": "结果前置",
+      "categoryCode": "viral_script",
+      "sort": 1,
+      "description": "先给使用后的效果，再回头讲怎么做到",
+      "prompt": "视频开头约 2 秒：首帧直接是使用商品后最直观的效果画面，效果与商品真实作用相符，停留约 1 秒；随后画面快速倒放或闪白，回到使用前的状态，进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_question_open",
+      "name": "反问开场",
+      "categoryCode": "viral_script",
+      "sort": 2,
+      "description": "一个直击痛点的场景让目标人群停下",
+      "prompt": "视频开头约 2 秒：首帧是人物正对着一个与商品用途相关的具体麻烦（打不开、弄不干净、找不到等，按商品选择），皱眉看向镜头，手指着问题所在处，营造「你是不是也这样」的代入感，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_triple_flash",
+      "name": "三连快闪",
+      "categoryCode": "viral_script",
+      "sort": 3,
+      "description": "三个画面一拍一个，最后落在商品上",
+      "prompt": "视频开头约 2 秒：三个与商品使用场景相关的画面快速硬切，每个约 0.5 秒，节奏一拍一个；最后一个画面停在商品上并推近，形成「揭晓」的节奏，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_stop_scroll",
+      "name": "先别划走",
+      "categoryCode": "talk_retain",
+      "sort": 1,
+      "description": "人物对镜叫停，并马上亮出要说的那件事。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "视频开头约 2 秒：首帧人物已靠近镜头，抬手做出「停」的手势；约 0.5 秒后另一只手把商品或要解决的问题处举到镜头前，表情认真，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "hook",
+      "code": "hk_audience_call",
+      "name": "人群点名",
+      "categoryCode": "talk_retain",
+      "sort": 2,
+      "description": "精准点出目标人群，让对的人留下。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "视频开头约 2 秒：首帧人物正对镜头、手指指向观众，表情笃定，像在点名某一类人（人群由画面描述给出）；约 1 秒时把商品举到胸前，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "hook",
+      "code": "hk_secret_tell",
+      "name": "悄悄告诉你",
+      "categoryCode": "talk_retain",
+      "sort": 3,
+      "description": "压低声音分享秘密，制造私密感。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "视频开头约 2 秒：首帧人物凑近镜头，用手挡在嘴边做出说悄悄话的动作，眼神神秘；约 1 秒时把商品从身后拿到镜头前，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "hook",
+      "code": "hk_reverse_talk",
+      "name": "正话反说",
+      "categoryCode": "talk_retain",
+      "sort": 4,
+      "description": "先劝「别急着买」，再说清它适合谁。画面为人物对镜讲解，不保证口型与语音逐字同步。",
+      "prompt": "视频开头约 2 秒：首帧人物对镜摆手，做出劝阻的表情；停顿一下后把商品拿到镜头前认真端详，神情从犹豫转为认可，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": [
+        "口播"
+      ]
+    },
+    {
+      "kind": "hook",
+      "code": "hk_crisp_open",
+      "name": "清脆开封声",
+      "categoryCode": "audio_hook",
+      "sort": 1,
+      "description": "开盖、撕膜、按压的脆响先声夺人",
+      "prompt": "视频开头约 2 秒：首帧是商品被打开、撕开或按压前一瞬的特写；约 0.5 秒时动作完成，同时响起清晰响亮的开封声或咔哒声；前 2 秒没有音乐，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_beat_drop",
+      "name": "重拍卡点",
+      "categoryCode": "audio_hook",
+      "sort": 2,
+      "description": "音乐重拍落下时商品同步出现",
+      "prompt": "视频开头约 3 秒：节奏明快的音乐响起，画面是与商品相关的环境快切；约 1 秒时第一个重拍落下，画面硬切到商品，商品出现与重拍同步，随后进入正片。开头音乐不使用刺耳的高频音。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_silence_break",
+      "name": "静默后爆点",
+      "categoryCode": "audio_hook",
+      "sort": 3,
+      "description": "先安静一秒，再突然响起，反差抓耳",
+      "prompt": "视频开头约 2 秒：开头约 1 秒近乎无声，画面静止或缓慢；随后响起一声清晰但不刺耳的动作声，同时画面切到商品，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": true,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_freeze_zoom",
+      "name": "定格放大",
+      "categoryCode": "fancy_fx",
+      "sort": 1,
+      "description": "动作瞬间定格并快速推近商品",
+      "prompt": "视频开头约 2 秒：首帧是人物正在使用商品的动作，约 1 秒时动作到达高点瞬间定格，画面快速推近商品，再恢复正常速度进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_shatter_reveal",
+      "name": "碎裂揭晓",
+      "categoryCode": "fancy_fx",
+      "sort": 2,
+      "description": "画面像玻璃一样碎开，露出商品",
+      "prompt": "视频开头约 2 秒：首帧是一个普通的生活画面；约 0.5 秒时画面像玻璃一样碎裂飞散，碎片后方露出被光照亮的商品，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "hook",
+      "code": "hk_speed_ramp",
+      "name": "变速冲镜",
+      "categoryCode": "fancy_fx",
+      "sort": 3,
+      "description": "极速冲向商品后骤然慢下来",
+      "prompt": "视频开头约 2 秒：首帧镜头已在高速向前穿过场景，带运动模糊；约 1 秒时接近商品并骤然减速为慢动作，商品在慢动作中清晰呈现，随后进入正片。",
+      "outputTypes": [
+        "video"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_window_daylight",
+      "name": "窗边日光",
+      "categoryCode": "natural_life",
+      "sort": 1,
+      "description": "柔和的自然光，居家日常的松弛感",
+      "prompt": "色调：暖白、米色、浅木色，低饱和。光线：午后窗光从侧面斜射，形成柔和的长阴影。材质与环境：原木、棉麻、陶瓷，居家整洁。构图：商品位于光斑边缘，留白充足。镜头质感：浅景深，轻微颗粒。节奏：舒缓。声音：室内环境声与轻音乐。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_camping_outdoor",
+      "name": "山野露营",
+      "categoryCode": "natural_life",
+      "sort": 2,
+      "description": "户外林间的清新光线与空气感",
+      "prompt": "色调：草绿、卡其、大地棕。光线：清晨或傍晚逆光，薄雾中可见光束。材质与环境：帆布、木柴、金属炊具、草地。构图：前景草叶虚化，商品在中景。镜头质感：通透，带一点胶片颗粒。节奏：舒缓。声音：鸟鸣、风声、柴火噼啪声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_morning_kitchen",
+      "name": "清晨厨房",
+      "categoryCode": "natural_life",
+      "sort": 3,
+      "description": "明亮温暖的厨房，生活气息浓",
+      "prompt": "色调：白、浅木色，暖黄点缀。光线：清晨阳光从窗口照入，明亮均匀。材质与环境：石材台面、玻璃杯、新鲜水果，整洁而有生活细节。构图：台面平视或俯拍，商品居中。镜头质感：清晰明快。节奏：轻快。声音：杯碗轻碰与环境声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_neo_chinese",
+      "name": "新中式雅致",
+      "categoryCode": "oriental",
+      "sort": 1,
+      "description": "木格窗、竹影、茶席，现代中式的克制美",
+      "prompt": "色调：月白、石青、墨黑、深木色，低饱和。光线：透过木格窗的柔和斜光，竹影投在墙面。材质与环境：木格窗、竹、陶瓷、茶席、宣纸。构图：对称或三分构图，大面积留白。镜头质感：稳定，浅景深。节奏：舒缓。声音：静谧环境声，偶有茶水声或古琴声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_ink_wash",
+      "name": "水墨留白",
+      "categoryCode": "oriental",
+      "sort": 2,
+      "description": "水墨晕染与大面积留白的东方意境",
+      "prompt": "色调：宣纸白、浅灰、墨色。光线：均匀柔和的漫射光，几乎无阴影。材质与环境：背景为水墨晕染或远山轮廓，写意；商品保持写实质感。构图：大面积留白，商品位于视觉中心。镜头质感：平稳缓慢。节奏：极慢。声音：安静，可有风声或流水声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_hk_retro",
+      "name": "港风复古胶片",
+      "categoryCode": "oriental",
+      "sort": 3,
+      "description": "上世纪港片的浓郁色彩与胶片颗粒",
+      "prompt": "色调：浓郁的红绿撞色与暖黄。光线：霓虹与钨丝灯混合的暖光。材质与环境：老式街景、霓虹灯箱、复古家具，招牌只作模糊背景。构图：框中框，前景有门框或窗框遮挡。镜头质感：明显胶片颗粒，轻微柔焦与光晕。节奏：稍慢。声音：复古氛围音乐。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_studio_luxe",
+      "name": "棚拍奢品光",
+      "categoryCode": "premium",
+      "sort": 1,
+      "description": "精准布光与反射，奢侈品广告质感",
+      "prompt": "色调：深灰或纯黑背景。光线：两侧轮廓光勾出商品边缘，顶部柔光，表面一条细长高光。材质与环境：黑色镜面台面映出倒影。构图：商品居中，四周干净。镜头质感：稳定缓慢，焦点精准。节奏：慢。声音：低沉简洁的氛围音。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_minimal_white",
+      "name": "极简白空间",
+      "categoryCode": "premium",
+      "sort": 2,
+      "description": "纯白空间与几何体，干净克制",
+      "prompt": "色调：纯白、浅灰。光线：大面积柔和顶光，阴影很淡。材质与环境：无缝白背景、几何体展台。构图：大量留白，商品居中。镜头质感：干净锐利。节奏：平稳。声音：极简电子音或无声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_dark_spotlight",
+      "name": "暗调聚光",
+      "categoryCode": "premium",
+      "sort": 3,
+      "description": "黑暗中一束光，神秘而聚焦",
+      "prompt": "色调：几乎全黑，暖白光斑。光线：单束顶光照亮商品，明暗对比强，光束里可见微尘。材质与环境：环境隐没在黑暗中。构图：商品位于光柱中心。镜头质感：极慢推进。节奏：慢，有仪式感。声音：低频氛围音。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_quiet_luxury",
+      "name": "静奢质感",
+      "categoryCode": "premium",
+      "sort": 4,
+      "description": "低饱和中性色与好面料，不张扬的讲究",
+      "prompt": "色调：燕麦、驼色、灰褐等低饱和中性色。光线：大窗漫射自然光，柔和无硬阴影。材质与环境：羊毛、亚麻、石材、哑光金属，陈设极少。构图：留白多，线条利落。镜头质感：浅景深，稳定缓慢。节奏：舒缓克制。声音：安静的环境声与简洁钢琴。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_y2k",
+      "name": "Y2K 千禧风",
+      "categoryCode": "youth_trend",
+      "sort": 1,
+      "description": "金属光泽、鱼眼镜头、亮色，千禧年潮流感",
+      "prompt": "色调：银色、粉、紫、电光蓝。光线：高光闪烁，彩色反光。材质与环境：金属、珠光、透明亚克力、星形装饰。构图：鱼眼或超广角，主体略带夸张。镜头质感：锐利，偶有闪光。节奏：轻快。声音：电子流行乐。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_candy_pop",
+      "name": "糖果撞色",
+      "categoryCode": "youth_trend",
+      "sort": 2,
+      "description": "高饱和撞色背景，活泼吸睛（多巴胺配色）",
+      "prompt": "色调：高饱和的粉、黄、蓝、绿色块撞色。光线：平光或硬光，阴影干脆。材质与环境：纯色背景板、圆润道具、气球。构图：几何色块分区，商品居中。镜头质感：干净锐利。节奏：轻快跳跃。声音：活泼的节奏音乐。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_street_vlog",
+      "name": "街头手持 Vlog",
+      "categoryCode": "youth_trend",
+      "sort": 3,
+      "description": "手机随拍的真实与随性",
+      "prompt": "色调：鲜明自然。光线：白天自然光，局部略过曝。材质与环境：真实街道，行人虚化。构图：第一人称或跟拍，前景常有拿着商品的手。镜头质感：手持轻微晃动，偶有运动模糊。节奏：随性轻快。声音：街道环境声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_cyber_neon",
+      "name": "霓虹赛博",
+      "categoryCode": "tech_future",
+      "sort": 1,
+      "description": "霓虹灯与雨夜反光的赛博都市",
+      "prompt": "色调：青色与洋红霓虹，高对比。光线：霓虹溢光，湿润地面反光。材质与环境：雨夜街道、金属、玻璃、薄雾，招牌只作模糊光斑。构图：低机位，商品立在反光地面上。镜头质感：带光晕，缓慢平稳。节奏：缓慢。声音：合成器氛围音与雨声。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_holo_ui",
+      "name": "全息科技界面",
+      "categoryCode": "tech_future",
+      "sort": 2,
+      "description": "商品周围环绕全息光环与线条",
+      "prompt": "色调：深蓝黑与冷蓝。光线：精准冷光，一道扫描光掠过商品。材质与环境：半透明光环与线条环绕商品，只是图形、没有字符。构图：商品居中。镜头质感：锐利稳定。节奏：平稳。声音：轻微的电子音效。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    },
+    {
+      "kind": "style",
+      "code": "st_clean_lab",
+      "name": "冷白实验室",
+      "categoryCode": "tech_future",
+      "sort": 3,
+      "description": "冷白光与洁净台面，专业有序",
+      "prompt": "色调：冷白、银灰。光线：均匀冷白光。材质与环境：不锈钢台面、玻璃器皿，洁净有序。构图：平视对称。镜头质感：稳定清晰。节奏：平稳。声音：安静。",
+      "outputTypes": [
+        "video",
+        "image"
+      ],
+      "inputRequirements": {
+        "product": "required"
+      },
+      "isAudioRequired": false,
+      "tags": []
+    }
+  ]
+}

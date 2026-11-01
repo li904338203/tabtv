@@ -1,0 +1,15 @@
+{
+  "description": "MCP link_generation 只能挂到同授权建的节点上：别的授权建的节点 → not_owned（Agent 的节点、用户的节点同理）",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "a_m2", "type": "image", "title": "另一个客户端的图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {}, "origin": { "kind": "mcp", "grantId": "5002", "clientName": "Cursor" } }
+    ]
+  },
+  "ops": [
+    { "kind": "link_generation", "nodeId": "a_m2", "patch": { "generationId": "222" } }
+  ],
+  "expectError": "not_owned"
+}

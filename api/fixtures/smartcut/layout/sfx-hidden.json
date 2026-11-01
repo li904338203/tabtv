@@ -1,0 +1,55 @@
+{
+  "why": "跟随的那一段改取素材的 12000~14000（与锚点 2000~10000 不相交）：音效隐藏、按存储值留在原处；锚点指向已删片段的另一段按存储值、不隐藏",
+  "content": {
+    "version": 1,
+    "aspectRatio": "16:9",
+    "fps": 30,
+    "width": 1920,
+    "height": 1080,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          { "id": "tmp-c1", "mediaId": "11", "sourceInMs": 0, "sourceOutMs": 4000 },
+          { "id": "tmp-c2", "mediaId": "12", "sourceInMs": 12000, "sourceOutMs": 14000 }
+        ]
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "role": "sfx",
+        "clips": [
+          {
+            "id": "tmp-s1",
+            "mediaId": "41",
+            "startMs": 4000,
+            "sourceInMs": 0,
+            "sourceOutMs": 8000,
+            "anchor": { "clipId": "tmp-c2", "srcStartMs": 2000, "srcEndMs": 10000 }
+          },
+          {
+            "id": "tmp-s2",
+            "mediaId": "42",
+            "startMs": 12000,
+            "sourceInMs": 0,
+            "sourceOutMs": 3000,
+            "anchor": { "clipId": "999", "srcStartMs": 0, "srcEndMs": 3000 }
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": { "startMs": 0, "durationMs": 4000 },
+      "tmp-c2": { "startMs": 4000, "durationMs": 2000 },
+      "tmp-s1": { "startMs": 4000, "durationMs": 8000, "follow": { "sourceInMs": 0, "sourceOutMs": 8000, "speed": 100, "hidden": true } },
+      "tmp-s2": { "startMs": 12000, "durationMs": 3000 }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 6000,
+    "effectiveMs": 6000
+  }
+}

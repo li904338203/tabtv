@@ -1,0 +1,44 @@
+{
+  "description": "update_node / move_node 作用于本会话创建且用户没动过的节点：title 直接替换，params 按 JSON merge patch 合并（null 删键、对象递归合并、其余替换），其余字段与大整数原样保留",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_n1",
+        "type": "image",
+        "title": "旧标题",
+        "position": { "x": 0, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "prompt": "旧", "seed": 9007199254740993, "style": { "a": 1, "b": 2 }, "tags": ["x", "y"] },
+        "result": { "generationId": "123456789012345678", "status": "success" },
+        "agent": { "sessionId": "7001", "stepId": "s1", "userTouched": false }
+      }
+    ]
+  },
+  "ops": [
+    { "kind": "update_node", "nodeId": "a_n1", "patch": { "title": "新标题", "params": { "prompt": "新", "style": { "b": null, "c": 3 }, "tags": ["z"] } } },
+    { "kind": "move_node", "nodeId": "a_n1", "position": { "x": 10.5, "y": -20 } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_n1",
+        "type": "image",
+        "title": "新标题",
+        "position": { "x": 10.5, "y": -20 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "prompt": "新", "seed": 9007199254740993, "style": { "a": 1, "c": 3 }, "tags": ["z"] },
+        "result": { "generationId": "123456789012345678", "status": "success" },
+        "agent": { "sessionId": "7001", "stepId": "s1", "userTouched": false }
+      }
+    ]
+  },
+  "nodeIds": [],
+  "applied": [
+    { "kind": "update_node", "nodeId": "a_n1", "patch": { "title": "新标题", "params": { "prompt": "新", "style": { "b": null, "c": 3 }, "tags": ["z"] } } },
+    { "kind": "move_node", "nodeId": "a_n1", "position": { "x": 10.5, "y": -20 } }
+  ]
+}

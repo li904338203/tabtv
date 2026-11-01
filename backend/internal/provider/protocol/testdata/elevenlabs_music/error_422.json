@@ -1,0 +1,1 @@
+{"detail":[{"loc":["body","music_length_ms"],"msg":"Input should be greater than or equal to 3000","type":"greater_than_equal"}]}

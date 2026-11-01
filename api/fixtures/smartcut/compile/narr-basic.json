@@ -1,0 +1,69 @@
+{
+  "why": "解说：识别结果与原稿对齐，字幕用原稿文字（长句在逗号处断开）、跟随配音；第 1 句的画面从 0 铺到第 2 句开始（4.8 秒）、两段平分；第 2 句铺到配音结束；总长等于配音时长",
+  "mode": "narr",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "audio",
+      "mediaId": "91",
+      "durationMs": 6000,
+      "audioRole": "voice",
+      "sourceNodeId": "nv"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 5000,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 5000,
+      "sourceNodeId": "n3"
+    }
+  ],
+  "transcripts": {
+    "1": {
+      "language": "zh",
+      "granularity": "char",
+      "utterances": [
+        [
+          {
+            "chars": "第一句话很长的一句解说词需要在逗号处断开才放得下第二句",
+            "startMs": 0,
+            "charMs": 200
+          }
+        ]
+      ]
+    }
+  },
+  "script": "第一句话，很长的一句解说词需要在逗号处断开才放得下。第二句！",
+  "spec": {
+    "withSubtitles": true
+  },
+  "raw": "{\"lines\": [{\"sentence\": \"s1\", \"clips\": [\"2\", \"3\"], \"take\": \"head\"}, {\"sentence\": \"s2\", \"clips\": [\"3\"], \"take\": \"tail\"}]}",
+  "expect": {
+    "video": [
+      "72 0~2400",
+      "73 0~2400",
+      "73 3800~5000"
+    ],
+    "voice": "91 0~6000",
+    "totalMs": 6000,
+    "subtitles": [
+      "0~800 第一句话，",
+      "800~4800 很长的一句解说词需要在逗号处断开才放得下。",
+      "4800~5400 第二句！"
+    ],
+    "usedClips": [
+      "2",
+      "3"
+    ],
+    "warnings": [],
+    "notes": [],
+    "summary": "解说 2 句，配了 3 段画面，成片 6 秒"
+  }
+}

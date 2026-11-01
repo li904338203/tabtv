@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/timeline-updated.schema.json",
+  "title": "TimelineUpdated",
+  "description": "时间线写入成功（docs/agent/smartcut，SCD-19）。六条写路径都推：整份保存、逐项接口、AI 剪辑落地、输入同步、快照恢复、片段回填；投递到 project:{id}。只是对账信号：前端本地版本 < version 时 GET /timelines/{timelineId} 取正文，不拿事件内容当正文。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "projectId",
+    "timelineId",
+    "version",
+    "reason",
+    "editorKind"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "timeline.updated"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "timelineId": {
+      "$ref": "#/$defs/id"
+    },
+    "canvasNodeId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 64,
+      "description": "绑定的智能剪辑节点；旧时间线为空"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "写入之后的时间线版本"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "save",
+        "edit",
+        "plan",
+        "sync",
+        "restore",
+        "clip_fill",
+        "assemble",
+        "subtitles",
+        "translate"
+      ]
+    },
+    "editorKind": {
+      "type": "string",
+      "enum": [
+        "user",
+        "ai",
+        "agent",
+        "mcp",
+        "sync",
+        "system"
+      ]
+    },
+    "editorId": {
+      "$ref": "#/$defs/nullableId",
+      "description": "最后一次写入的人（AI / Agent / MCP 写入时是代谁写的那个人）"
+    },
+    "editorName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "scene": {
+    "schemaVersion": 1,
+    "objects": [
+      {
+        "id": "obj_char",
+        "name": "角色",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "character": {
+          "model": "adult_male",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "stand_neutral"
+        }
+      }
+    ],
+    "timeline": {
+      "fps": 30,
+      "durationFrames": 150,
+      "loop": false,
+      "tracks": [
+        {
+          "objectId": "obj_char",
+          "channel": "transform",
+          "keyframes": [
+            {
+              "frame": 500,
+              "interpolation": "linear",
+              "value": {
+                "position": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "rotation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "path": "timeline.tracks[0].keyframes[0].frame"
+}

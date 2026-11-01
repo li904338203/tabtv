@@ -1,0 +1,37 @@
+{
+  "scene": {
+    "schemaVersion": 1,
+    "objects": [
+      {
+        "id": "obj_crowd",
+        "name": "群众",
+        "kind": "crowd",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "crowd": {
+          "model": "adult_male",
+          "rows": 10,
+          "cols": 11,
+          "spacing": 1.0,
+          "posePreset": "stand_neutral"
+        }
+      }
+    ]
+  },
+  "path": "objects[0].crowd.cols"
+}

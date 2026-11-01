@@ -1,0 +1,328 @@
+{
+  "why": "SC-AC-05：一个出了 4 张图的图片节点 → 3-1~3-4；单个上游最多取前 9 个（SCK-20）；回查给的时长、声音与封面带进素材",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "v1",
+        "type": "video",
+        "title": "节点 v1",
+        "result": {
+          "id": "g-71",
+          "status": "success",
+          "mediaId": "71",
+          "outputUrl": "/api/v1/media/71"
+        }
+      },
+      {
+        "id": "v2",
+        "type": "video",
+        "title": "节点 v2"
+      },
+      {
+        "id": "img",
+        "type": "image",
+        "title": "节点 img",
+        "result": {
+          "id": "g-four",
+          "status": "success"
+        }
+      },
+      {
+        "id": "big",
+        "type": "image",
+        "title": "节点 big",
+        "result": {
+          "id": "g-many",
+          "status": "success"
+        }
+      },
+      {
+        "id": "vid",
+        "type": "video",
+        "title": "节点 vid",
+        "result": {
+          "id": "g-vid",
+          "status": "queued"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-v1-sc1",
+        "source": "v1",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-v2-sc1",
+        "source": "v2",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-img-sc1",
+        "source": "img",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-big-sc1",
+        "source": "big",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-vid-sc1",
+        "source": "vid",
+        "target": "sc1",
+        "order": 5
+      }
+    ]
+  },
+  "lookup": {
+    "generations": {
+      "g-four": {
+        "status": "success",
+        "outputs": [
+          {
+            "mediaId": "900"
+          },
+          {
+            "mediaId": "901"
+          },
+          {
+            "mediaId": "902"
+          },
+          {
+            "mediaId": "903"
+          }
+        ]
+      },
+      "g-many": {
+        "status": "success",
+        "outputs": [
+          {
+            "mediaId": "900"
+          },
+          {
+            "mediaId": "901"
+          },
+          {
+            "mediaId": "902"
+          },
+          {
+            "mediaId": "903"
+          },
+          {
+            "mediaId": "904"
+          },
+          {
+            "mediaId": "905"
+          },
+          {
+            "mediaId": "906"
+          },
+          {
+            "mediaId": "907"
+          },
+          {
+            "mediaId": "908"
+          },
+          {
+            "mediaId": "909"
+          },
+          {
+            "mediaId": "910"
+          }
+        ]
+      },
+      "g-vid": {
+        "status": "success",
+        "outputs": [
+          {
+            "mediaId": "950",
+            "durationMs": 5000,
+            "hasAudio": false,
+            "posterMediaId": "951"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "v1",
+        "sourceNodeType": "video",
+        "title": "节点 v1",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "71",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "v2",
+        "sourceNodeType": "video",
+        "title": "节点 v2",
+        "kind": "video",
+        "status": "pending",
+        "reason": "还没有产出",
+        "used": false
+      },
+      {
+        "no": "3-1",
+        "sourceNodeId": "img",
+        "sourceNodeType": "image",
+        "title": "节点 img",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "900",
+        "used": false
+      },
+      {
+        "no": "3-2",
+        "sourceNodeId": "img",
+        "sourceNodeType": "image",
+        "title": "节点 img",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "901",
+        "used": false
+      },
+      {
+        "no": "3-3",
+        "sourceNodeId": "img",
+        "sourceNodeType": "image",
+        "title": "节点 img",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "902",
+        "used": false
+      },
+      {
+        "no": "3-4",
+        "sourceNodeId": "img",
+        "sourceNodeType": "image",
+        "title": "节点 img",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "903",
+        "used": false
+      },
+      {
+        "no": "4-1",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "900",
+        "used": false
+      },
+      {
+        "no": "4-2",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "901",
+        "used": false
+      },
+      {
+        "no": "4-3",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "902",
+        "used": false
+      },
+      {
+        "no": "4-4",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "903",
+        "used": false
+      },
+      {
+        "no": "4-5",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "904",
+        "used": false
+      },
+      {
+        "no": "4-6",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "905",
+        "used": false
+      },
+      {
+        "no": "4-7",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "906",
+        "used": false
+      },
+      {
+        "no": "4-8",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "907",
+        "used": false
+      },
+      {
+        "no": "4-9",
+        "sourceNodeId": "big",
+        "sourceNodeType": "image",
+        "title": "节点 big",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "908",
+        "used": false
+      },
+      {
+        "no": "5",
+        "sourceNodeId": "vid",
+        "sourceNodeType": "video",
+        "title": "节点 vid",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "950",
+        "durationMs": 5000,
+        "hasAudio": false,
+        "posterMediaId": "951",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 15
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "why": "SC-AC-31：模型写死的时间字段一律忽略、不报错，记一条说明；方案其余部分照常",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 6000
+      },
+      {
+        "no": "3",
+        "kind": "audio",
+        "durationMs": 30000,
+        "audioRole": "music"
+      },
+      {
+        "no": "4",
+        "kind": "image"
+      }
+    ]
+  },
+  "raw": "{\"totalMs\":12000,\"segments\":[{\"clip\":\"1\",\"take\":\"full\",\"role\":\"hook\",\"weight\":2,\"transition\":\"cut\",\"startMs\":0,\"endMs\":4000},{\"clip\":\"2\",\"take\":\"head\",\"role\":\"body\",\"weight\":1,\"transition\":\"dissolve\",\"startMs\":4000,\"durationMs\":8000}],\"title\":{\"text\":\"开箱\",\"durationSec\":3,\"startMs\":0}}",
+  "expect": {
+    "draft": {
+      "mode": "mix",
+      "segments": [
+        {
+          "clip": "1",
+          "take": {
+            "kind": "full"
+          },
+          "role": "hook",
+          "weight": 2,
+          "transition": "cut"
+        },
+        {
+          "clip": "2",
+          "take": {
+            "kind": "head"
+          },
+          "role": "body",
+          "weight": 1,
+          "transition": "dissolve"
+        }
+      ],
+      "title": {
+        "text": "开箱",
+        "durationMs": 3000
+      }
+    },
+    "dropped": [],
+    "ignored": [
+      "方案里写了 6 处时间（durationMs、endMs、startMs、totalMs），已忽略：时间由系统按素材编排"
+    ]
+  }
+}

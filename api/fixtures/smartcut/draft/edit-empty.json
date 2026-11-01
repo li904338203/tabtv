@@ -1,0 +1,33 @@
+{
+  "why": "追加指令：一处修改都没有 —— 不合规（应用层回灌一次，仍然没有就告诉用户没改动）",
+  "mode": "edit",
+  "refs": {
+    "cards": [
+      {
+        "no": "5",
+        "kind": "video",
+        "durationMs": 8000
+      },
+      {
+        "no": "8",
+        "kind": "audio",
+        "durationMs": 20000,
+        "audioRole": "music"
+      }
+    ],
+    "clips": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+    ],
+    "texts": [
+      "t1"
+    ]
+  },
+  "raw": "{\"ops\":[],\"summary\":\"不需要修改\"}",
+  "expect": {
+    "invalid": "模型没有给出可执行的修改",
+    "dropped": []
+  }
+}

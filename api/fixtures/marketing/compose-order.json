@@ -1,0 +1,25 @@
+{
+  "description": "营销段拼接顺序：创意 → Hook → 风格 → 场景约束段（MKT-F-44、MKT-AC-07）。snapshots 故意乱序给出：顺序由类型决定，不由入参顺序决定。Go Compose 单测与 E2E 的 provider_request_log 断言共用这一份。",
+  "snapshots": [
+    {
+      "kind": "style",
+      "code": "fx_style_warm_daylight",
+      "version": 2,
+      "prompt": "【风格】暖调自然日光，侧逆光勾出轮廓，浅景深，色调偏琥珀。"
+    },
+    {
+      "kind": "creative",
+      "code": "fx_creative_giant_drop",
+      "version": 3,
+      "prompt": "【创意】商品放大到城市尺度后从天而降、平稳落地，镜头由远景推近到商品特写。"
+    },
+    {
+      "kind": "hook",
+      "code": "fx_hook_question_open",
+      "version": 1,
+      "prompt": "【Hook】前 2 秒以近景提问开场，画面快速切入商品局部。"
+    }
+  ],
+  "constraint": "【约束】商品外观、颜色、包装文字以参考图为准，不得改写；画面不出现文字与水印；同一人物不重复出现。",
+  "expected": "【创意】商品放大到城市尺度后从天而降、平稳落地，镜头由远景推近到商品特写。\n【Hook】前 2 秒以近景提问开场，画面快速切入商品局部。\n【风格】暖调自然日光，侧逆光勾出轮廓，浅景深，色调偏琥珀。\n【约束】商品外观、颜色、包装文字以参考图为准，不得改写；画面不出现文字与水印；同一人物不重复出现。"
+}

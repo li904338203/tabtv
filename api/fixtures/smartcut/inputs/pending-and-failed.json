@@ -1,0 +1,255 @@
+{
+  "why": "未完成：排队 / 运行中 / 认不出的状态为 pending；失败带原因（回查的原因优先）；完成却没有产物算失败；没有任何产出的为 pending；上传失败",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "q",
+        "type": "video",
+        "title": "节点 q",
+        "result": {
+          "id": "g-q",
+          "status": "queued"
+        }
+      },
+      {
+        "id": "r",
+        "type": "video",
+        "title": "节点 r",
+        "result": {
+          "id": "g-r",
+          "status": "running"
+        }
+      },
+      {
+        "id": "x",
+        "type": "video",
+        "title": "节点 x",
+        "result": {
+          "id": "g-x",
+          "status": "failed",
+          "error": "上游超时"
+        }
+      },
+      {
+        "id": "y",
+        "type": "video",
+        "title": "节点 y",
+        "result": {
+          "id": "g-y",
+          "status": "success"
+        }
+      },
+      {
+        "id": "e",
+        "type": "video",
+        "title": "节点 e",
+        "result": {
+          "id": "g-empty",
+          "status": "success"
+        }
+      },
+      {
+        "id": "w",
+        "type": "video",
+        "title": "节点 w",
+        "result": {
+          "id": "g-w",
+          "status": "weird"
+        }
+      },
+      {
+        "id": "n",
+        "type": "video",
+        "title": "节点 n"
+      },
+      {
+        "id": "u",
+        "type": "image",
+        "title": "节点 u",
+        "result": {
+          "status": "uploading"
+        }
+      },
+      {
+        "id": "uf",
+        "type": "image",
+        "title": "节点 uf",
+        "result": {
+          "status": "failed",
+          "error": "上传中断"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-q-sc1",
+        "source": "q",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-r-sc1",
+        "source": "r",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-x-sc1",
+        "source": "x",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-y-sc1",
+        "source": "y",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-e-sc1",
+        "source": "e",
+        "target": "sc1",
+        "order": 5
+      },
+      {
+        "id": "e-w-sc1",
+        "source": "w",
+        "target": "sc1",
+        "order": 6
+      },
+      {
+        "id": "e-n-sc1",
+        "source": "n",
+        "target": "sc1",
+        "order": 7
+      },
+      {
+        "id": "e-u-sc1",
+        "source": "u",
+        "target": "sc1",
+        "order": 8
+      },
+      {
+        "id": "e-uf-sc1",
+        "source": "uf",
+        "target": "sc1",
+        "order": 9
+      }
+    ]
+  },
+  "lookup": {
+    "generations": {
+      "g-y": {
+        "status": "failed",
+        "reason": "内容审核未通过"
+      },
+      "g-empty": {
+        "status": "success",
+        "outputs": []
+      }
+    }
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "q",
+        "sourceNodeType": "video",
+        "title": "节点 q",
+        "kind": "video",
+        "status": "pending",
+        "reason": "上游还在生成",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "r",
+        "sourceNodeType": "video",
+        "title": "节点 r",
+        "kind": "video",
+        "status": "pending",
+        "reason": "上游还在生成",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "x",
+        "sourceNodeType": "video",
+        "title": "节点 x",
+        "kind": "video",
+        "status": "failed",
+        "reason": "上游超时",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "y",
+        "sourceNodeType": "video",
+        "title": "节点 y",
+        "kind": "video",
+        "status": "failed",
+        "reason": "内容审核未通过",
+        "used": false
+      },
+      {
+        "no": "5",
+        "sourceNodeId": "e",
+        "sourceNodeType": "video",
+        "title": "节点 e",
+        "kind": "video",
+        "status": "failed",
+        "reason": "上游任务完成但没有产物",
+        "used": false
+      },
+      {
+        "no": "6",
+        "sourceNodeId": "w",
+        "sourceNodeType": "video",
+        "title": "节点 w",
+        "kind": "video",
+        "status": "pending",
+        "reason": "上游还在生成",
+        "used": false
+      },
+      {
+        "no": "7",
+        "sourceNodeId": "n",
+        "sourceNodeType": "video",
+        "title": "节点 n",
+        "kind": "video",
+        "status": "pending",
+        "reason": "还没有产出",
+        "used": false
+      },
+      {
+        "no": "8",
+        "sourceNodeId": "u",
+        "sourceNodeType": "image",
+        "title": "节点 u",
+        "kind": "image",
+        "status": "pending",
+        "reason": "还在上传",
+        "used": false
+      },
+      {
+        "no": "9",
+        "sourceNodeId": "uf",
+        "sourceNodeType": "image",
+        "title": "节点 uf",
+        "kind": "image",
+        "status": "failed",
+        "reason": "上传中断",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 0
+  }
+}

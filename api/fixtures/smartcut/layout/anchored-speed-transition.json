@@ -1,0 +1,90 @@
+{
+  "why": "跟随的片段有转场与变速：按片段的成片起点与变速换算，整数除法向下取整",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-b1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000
+          },
+          {
+            "id": "tmp-b2",
+            "mediaId": "12",
+            "sourceInMs": 0,
+            "sourceOutMs": 8000,
+            "speed": 200,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "kind": "subtitle"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "tmp-t1",
+        "trackId": "3",
+        "startMs": 0,
+        "endMs": 10,
+        "text": "x",
+        "anchor": {
+          "clipId": "tmp-b2",
+          "srcStartMs": 2000,
+          "srcEndMs": 4000
+        }
+      },
+      {
+        "id": "tmp-t2",
+        "trackId": "3",
+        "startMs": 10,
+        "endMs": 20,
+        "text": "y",
+        "anchor": {
+          "clipId": "tmp-b2",
+          "srcStartMs": 1001,
+          "srcEndMs": 1999
+        }
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-b1": {
+        "startMs": 0,
+        "durationMs": 4000
+      },
+      "tmp-b2": {
+        "startMs": 3000,
+        "durationMs": 4000
+      }
+    },
+    "subtitles": {
+      "tmp-t1": {
+        "startMs": 4000,
+        "endMs": 5000
+      },
+      "tmp-t2": {
+        "startMs": 3500,
+        "endMs": 3999
+      }
+    },
+    "texts": {},
+    "totalMs": 8000,
+    "effectiveMs": 7000
+  }
+}

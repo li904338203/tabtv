@@ -1,0 +1,15 @@
+{
+  "id": "n_kz1x2y3_1",
+  "type": "video",
+  "title": "视频节点 1",
+  "position": { "x": 180, "y": 100 },
+  "size": { "w": 390, "h": 180 },
+  "params": {
+    "model": "seedance_pro",
+    "mode": "img2video",
+    "duration": "5",
+    "aspect_ratio": "16:9",
+    "prompt": "三打白骨精，悟空视角",
+    "reference": [{ "id": "1001", "type": "image" }]
+  }
+}

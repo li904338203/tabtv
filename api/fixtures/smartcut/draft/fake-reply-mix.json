@@ -1,0 +1,73 @@
+{
+  "why": "素材混剪：假上游（scripts/fake-upstream/smartcut.go）对这份 user 消息拼出的回包逐字等于 raw（假上游的测试钉住），这里证明真解析器一项不丢地收下它 —— E2E 的断言按同一个拼法写，回包与解析器对不上时红在这里而不是 E2E 里",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 5000
+      },
+      {
+        "no": "3",
+        "kind": "image"
+      },
+      {
+        "no": "4",
+        "kind": "audio",
+        "durationMs": 20000,
+        "audioRole": "music"
+      }
+    ]
+  },
+  "user": "## 剪辑要求\n\n突出第二段\n\n## 规格\n\n- 剪辑方式：素材混剪\n- 目标时长：10 秒\n- 字幕：不要\n- 卡点：配乐编号 4（节拍还没分析出来，这一版不卡点）\n\n## 素材清单\n\n- 编号 1：视频，4 秒，有声音\n- 编号 2：视频，5 秒\n- 编号 3：图片\n- 编号 4：音频（配乐），20 秒",
+  "raw": "{\"music\":{\"clip\":\"4\"},\"notes\":[\"假上游的固定剪法：每段整段用一次\"],\"segments\":[{\"clip\":\"1\",\"reason\":\"假上游：编号 1 整段用一次\",\"role\":\"hook\",\"take\":\"full\",\"transition\":\"cut\",\"weight\":3},{\"clip\":\"2\",\"reason\":\"假上游：编号 2 整段用一次\",\"role\":\"body\",\"take\":\"full\",\"transition\":\"cut\",\"weight\":2},{\"clip\":\"3\",\"reason\":\"假上游：编号 3 整段用一次\",\"role\":\"end\",\"take\":\"full\",\"transition\":\"cut\",\"weight\":2}]}",
+  "expect": {
+    "draft": {
+      "mode": "mix",
+      "segments": [
+        {
+          "clip": "1",
+          "take": {
+            "kind": "full"
+          },
+          "role": "hook",
+          "weight": 3,
+          "transition": "cut",
+          "reason": "假上游：编号 1 整段用一次"
+        },
+        {
+          "clip": "2",
+          "take": {
+            "kind": "full"
+          },
+          "role": "body",
+          "weight": 2,
+          "transition": "cut",
+          "reason": "假上游：编号 2 整段用一次"
+        },
+        {
+          "clip": "3",
+          "take": {
+            "kind": "full"
+          },
+          "role": "end",
+          "weight": 2,
+          "transition": "cut",
+          "reason": "假上游：编号 3 整段用一次"
+        }
+      ],
+      "music": "4",
+      "notes": [
+        "假上游的固定剪法：每段整段用一次"
+      ]
+    },
+    "dropped": [],
+    "ignored": []
+  }
+}

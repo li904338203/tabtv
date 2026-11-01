@@ -1,0 +1,116 @@
+{
+  "_comment": [
+    "SCT-13 排版 fixture：只比行切分、实际字号与缺字列表，不比像素。",
+    "narrow = 1000×1000 画面、字号 5%（50px）、最大宽度 50%（500px）：一行正好放 10 个汉字，断点落在哪儿一目了然。",
+    "lines 是去掉行尾空白后的各行；fontSizePct 是缩字号之后实际用的字号。"
+  ],
+  "cases": [
+    {
+      "name": "避头尾：句号落在行首时挂到上一行",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九十。一二三",
+      "lines": ["一二三四五六七八九十。", "一二三"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "避头尾：逗号同样挂在行尾",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九十，一二三四五",
+      "lines": ["一二三四五六七八九十，", "一二三四五"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "避头尾：左括号落在行尾时连同后面的字挪到下一行",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九「十」",
+      "lines": ["一二三四五六七八九", "「十」"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "避头尾：汉字后的百分号不落到行首（UAX #14 在这里给了断点）",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九十%一二",
+      "lines": ["一二三四五六七八九十%", "一二"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "超过 3 行先把字号缩到下限 3%",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
+      "lines": ["一二三四五六七八九十一二三四五六", "七八九十一二三四五六七八九十一二", "三四五六七八九十"],
+      "fontSizePct": 3, "missing": []
+    },
+    {
+      "name": "缩到下限仍超长就继续换行",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十",
+      "lines": [
+        "一二三四五六七八九十一二三四五六", "七八九十一二三四五六七八九十一二", "三四五六七八九十一二三四五六七八",
+        "九十一二三四五六七八九十一二三四", "五六七八九十一二三四五六七八九十"
+      ],
+      "fontSizePct": 3, "missing": []
+    },
+    {
+      "name": "手动换行的 4 行不缩字号：缩了行数也不会变少",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "第一行\n第二行\r\n第三行\n\n第四行\n",
+      "lines": ["第一行", "第二行", "第三行", "第四行"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "英文按词断行",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "The quick brown fox jumps over the lazy dog",
+      "lines": ["The quick brown fox", "jumps over the lazy", "dog"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "中英混排：英文单词不拆开，句末标点挂在行尾",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 80 },
+      "text": "我们用 Go 语言写了一个排版服务，支持 Chinese and English 混排。",
+      "lines": ["我们用 Go 语言写了一个排版服务，", "支持 Chinese and English 混排。"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "宽过一整行的单词按字母切开，不伸出行外",
+      "kind": "text", "width": 1000, "height": 1000,
+      "style": { "fontSizePct": 5, "maxWidthPct": 50 },
+      "text": "Pneumonoultramicroscopicsilicovolcanoconiosis",
+      "lines": ["Pneumonoultramicr", "oscopicsilicovolcano", "coniosis"], "fontSizePct": 5, "missing": []
+    },
+    {
+      "name": "字幕默认一行约 16 个字宽（SC-PARAM-31）",
+      "kind": "subtitle", "width": 1920, "height": 1080,
+      "text": "一二三四五六七八九十一二三四五六七八九十",
+      "lines": ["一二三四五六七八九十一二三四五六", "七八九十"], "fontSizePct": 4.5, "missing": []
+    },
+    {
+      "name": "字幕的 16 字宽与分辨率无关：360p 预览断在同一个字上",
+      "kind": "subtitle", "width": 640, "height": 360,
+      "text": "一二三四五六七八九十一二三四五六七八九十",
+      "lines": ["一二三四五六七八九十一二三四五六", "七八九十"], "fontSizePct": 4.5, "missing": []
+    },
+    {
+      "name": "字幕显式给了最大宽度就按它，不再套 16 个字宽",
+      "kind": "subtitle", "width": 1920, "height": 1080,
+      "style": { "maxWidthPct": 90 },
+      "text": "一二三四五六七八九十一二三四五六七八九十",
+      "lines": ["一二三四五六七八九十一二三四五六七八九十"], "fontSizePct": 4.5, "missing": []
+    },
+    {
+      "name": "缺字：阿拉伯文、泰文画替代字形并列进缺字列表",
+      "kind": "subtitle", "width": 1920, "height": 1080,
+      "text": "阿拉伯文مرحبا泰文สวัสดี",
+      "lines": ["阿拉伯文مرحبا泰文", "สวัสดี"], "fontSizePct": 4.5,
+      "missing": ["م", "ر", "ح", "ب", "ا", "ส", "ว", "ั", "ด", "ี"]
+    },
+    {
+      "name": "emoji、日文、韩文都有字形，不进缺字列表",
+      "kind": "subtitle", "width": 1920, "height": 1080,
+      "text": "😀👍❤️ 日本語こんにちは 한국어",
+      "lines": ["😀👍❤️ 日本語こんにちは 한국어"], "fontSizePct": 4.5, "missing": []
+    }
+  ]
+}

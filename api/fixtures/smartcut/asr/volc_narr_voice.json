@@ -1,0 +1,551 @@
+{
+  "name": "火山极速版：20 秒的解说配音（「节目」识别成「节木」、漏了一个「的」；解说成片 SC-AC-43 的端到端输入）",
+  "protocol": "volc_asr",
+  "phase": "submit",
+  "status": 200,
+  "headers": {
+    "X-Api-Status-Code": "20000000",
+    "X-Api-Message": "OK"
+  },
+  "body": {
+    "audio_info": {
+      "duration": 20000
+    },
+    "result": {
+      "text": "大家好，欢迎来到今天的节木。我们先看第一个画面。接下来是第二部分，内容很精彩。最后感谢大家收看！",
+      "utterances": [
+        {
+          "text": "大家好，欢迎来到今天的节木。",
+          "start_time": 300,
+          "end_time": 3600,
+          "definite": true,
+          "words": [
+            {
+              "text": "大",
+              "start_time": 300,
+              "end_time": 550,
+              "blank_duration": 0
+            },
+            {
+              "text": "家",
+              "start_time": 550,
+              "end_time": 800,
+              "blank_duration": 0
+            },
+            {
+              "text": "好",
+              "start_time": 800,
+              "end_time": 1050,
+              "blank_duration": 0
+            },
+            {
+              "text": "欢",
+              "start_time": 1350,
+              "end_time": 1600,
+              "blank_duration": 0
+            },
+            {
+              "text": "迎",
+              "start_time": 1600,
+              "end_time": 1850,
+              "blank_duration": 0
+            },
+            {
+              "text": "来",
+              "start_time": 1850,
+              "end_time": 2100,
+              "blank_duration": 0
+            },
+            {
+              "text": "到",
+              "start_time": 2100,
+              "end_time": 2350,
+              "blank_duration": 0
+            },
+            {
+              "text": "今",
+              "start_time": 2350,
+              "end_time": 2600,
+              "blank_duration": 0
+            },
+            {
+              "text": "天",
+              "start_time": 2600,
+              "end_time": 2850,
+              "blank_duration": 0
+            },
+            {
+              "text": "的",
+              "start_time": 2850,
+              "end_time": 3100,
+              "blank_duration": 0
+            },
+            {
+              "text": "节",
+              "start_time": 3100,
+              "end_time": 3350,
+              "blank_duration": 0
+            },
+            {
+              "text": "木",
+              "start_time": 3350,
+              "end_time": 3600,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "我们先看第一个画面。",
+          "start_time": 4200,
+          "end_time": 6450,
+          "definite": true,
+          "words": [
+            {
+              "text": "我",
+              "start_time": 4200,
+              "end_time": 4450,
+              "blank_duration": 0
+            },
+            {
+              "text": "们",
+              "start_time": 4450,
+              "end_time": 4700,
+              "blank_duration": 0
+            },
+            {
+              "text": "先",
+              "start_time": 4700,
+              "end_time": 4950,
+              "blank_duration": 0
+            },
+            {
+              "text": "看",
+              "start_time": 4950,
+              "end_time": 5200,
+              "blank_duration": 0
+            },
+            {
+              "text": "第",
+              "start_time": 5200,
+              "end_time": 5450,
+              "blank_duration": 0
+            },
+            {
+              "text": "一",
+              "start_time": 5450,
+              "end_time": 5700,
+              "blank_duration": 0
+            },
+            {
+              "text": "个",
+              "start_time": 5700,
+              "end_time": 5950,
+              "blank_duration": 0
+            },
+            {
+              "text": "画",
+              "start_time": 5950,
+              "end_time": 6200,
+              "blank_duration": 0
+            },
+            {
+              "text": "面",
+              "start_time": 6200,
+              "end_time": 6450,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "接下来是第二部分，内容很精彩。",
+          "start_time": 7050,
+          "end_time": 10600,
+          "definite": true,
+          "words": [
+            {
+              "text": "接",
+              "start_time": 7050,
+              "end_time": 7300,
+              "blank_duration": 0
+            },
+            {
+              "text": "下",
+              "start_time": 7300,
+              "end_time": 7550,
+              "blank_duration": 0
+            },
+            {
+              "text": "来",
+              "start_time": 7550,
+              "end_time": 7800,
+              "blank_duration": 0
+            },
+            {
+              "text": "是",
+              "start_time": 7800,
+              "end_time": 8050,
+              "blank_duration": 0
+            },
+            {
+              "text": "第",
+              "start_time": 8050,
+              "end_time": 8300,
+              "blank_duration": 0
+            },
+            {
+              "text": "二",
+              "start_time": 8300,
+              "end_time": 8550,
+              "blank_duration": 0
+            },
+            {
+              "text": "部",
+              "start_time": 8550,
+              "end_time": 8800,
+              "blank_duration": 0
+            },
+            {
+              "text": "分",
+              "start_time": 8800,
+              "end_time": 9050,
+              "blank_duration": 0
+            },
+            {
+              "text": "内",
+              "start_time": 9350,
+              "end_time": 9600,
+              "blank_duration": 0
+            },
+            {
+              "text": "容",
+              "start_time": 9600,
+              "end_time": 9850,
+              "blank_duration": 0
+            },
+            {
+              "text": "很",
+              "start_time": 9850,
+              "end_time": 10100,
+              "blank_duration": 0
+            },
+            {
+              "text": "精",
+              "start_time": 10100,
+              "end_time": 10350,
+              "blank_duration": 0
+            },
+            {
+              "text": "彩",
+              "start_time": 10350,
+              "end_time": 10600,
+              "blank_duration": 0
+            }
+          ]
+        },
+        {
+          "text": "最后感谢大家收看！",
+          "start_time": 11200,
+          "end_time": 13200,
+          "definite": true,
+          "words": [
+            {
+              "text": "最",
+              "start_time": 11200,
+              "end_time": 11450,
+              "blank_duration": 0
+            },
+            {
+              "text": "后",
+              "start_time": 11450,
+              "end_time": 11700,
+              "blank_duration": 0
+            },
+            {
+              "text": "感",
+              "start_time": 11700,
+              "end_time": 11950,
+              "blank_duration": 0
+            },
+            {
+              "text": "谢",
+              "start_time": 11950,
+              "end_time": 12200,
+              "blank_duration": 0
+            },
+            {
+              "text": "大",
+              "start_time": 12200,
+              "end_time": 12450,
+              "blank_duration": 0
+            },
+            {
+              "text": "家",
+              "start_time": 12450,
+              "end_time": 12700,
+              "blank_duration": 0
+            },
+            {
+              "text": "收",
+              "start_time": 12700,
+              "end_time": 12950,
+              "blank_duration": 0
+            },
+            {
+              "text": "看",
+              "start_time": 12950,
+              "end_time": 13200,
+              "blank_duration": 0
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "expect": {
+    "text": "大家好，欢迎来到今天的节木。我们先看第一个画面。接下来是第二部分，内容很精彩。最后感谢大家收看！",
+    "meta": {
+      "granularity": "char",
+      "durationMs": 20000,
+      "utterances": [
+        {
+          "text": "大家好，欢迎来到今天的节木。",
+          "startMs": 300,
+          "endMs": 3600,
+          "words": [
+            {
+              "text": "大",
+              "startMs": 300,
+              "endMs": 550
+            },
+            {
+              "text": "家",
+              "startMs": 550,
+              "endMs": 800
+            },
+            {
+              "text": "好",
+              "startMs": 800,
+              "endMs": 1050
+            },
+            {
+              "text": "欢",
+              "startMs": 1350,
+              "endMs": 1600
+            },
+            {
+              "text": "迎",
+              "startMs": 1600,
+              "endMs": 1850
+            },
+            {
+              "text": "来",
+              "startMs": 1850,
+              "endMs": 2100
+            },
+            {
+              "text": "到",
+              "startMs": 2100,
+              "endMs": 2350
+            },
+            {
+              "text": "今",
+              "startMs": 2350,
+              "endMs": 2600
+            },
+            {
+              "text": "天",
+              "startMs": 2600,
+              "endMs": 2850
+            },
+            {
+              "text": "的",
+              "startMs": 2850,
+              "endMs": 3100
+            },
+            {
+              "text": "节",
+              "startMs": 3100,
+              "endMs": 3350
+            },
+            {
+              "text": "木",
+              "startMs": 3350,
+              "endMs": 3600
+            }
+          ]
+        },
+        {
+          "text": "我们先看第一个画面。",
+          "startMs": 4200,
+          "endMs": 6450,
+          "words": [
+            {
+              "text": "我",
+              "startMs": 4200,
+              "endMs": 4450
+            },
+            {
+              "text": "们",
+              "startMs": 4450,
+              "endMs": 4700
+            },
+            {
+              "text": "先",
+              "startMs": 4700,
+              "endMs": 4950
+            },
+            {
+              "text": "看",
+              "startMs": 4950,
+              "endMs": 5200
+            },
+            {
+              "text": "第",
+              "startMs": 5200,
+              "endMs": 5450
+            },
+            {
+              "text": "一",
+              "startMs": 5450,
+              "endMs": 5700
+            },
+            {
+              "text": "个",
+              "startMs": 5700,
+              "endMs": 5950
+            },
+            {
+              "text": "画",
+              "startMs": 5950,
+              "endMs": 6200
+            },
+            {
+              "text": "面",
+              "startMs": 6200,
+              "endMs": 6450
+            }
+          ]
+        },
+        {
+          "text": "接下来是第二部分，内容很精彩。",
+          "startMs": 7050,
+          "endMs": 10600,
+          "words": [
+            {
+              "text": "接",
+              "startMs": 7050,
+              "endMs": 7300
+            },
+            {
+              "text": "下",
+              "startMs": 7300,
+              "endMs": 7550
+            },
+            {
+              "text": "来",
+              "startMs": 7550,
+              "endMs": 7800
+            },
+            {
+              "text": "是",
+              "startMs": 7800,
+              "endMs": 8050
+            },
+            {
+              "text": "第",
+              "startMs": 8050,
+              "endMs": 8300
+            },
+            {
+              "text": "二",
+              "startMs": 8300,
+              "endMs": 8550
+            },
+            {
+              "text": "部",
+              "startMs": 8550,
+              "endMs": 8800
+            },
+            {
+              "text": "分",
+              "startMs": 8800,
+              "endMs": 9050
+            },
+            {
+              "text": "内",
+              "startMs": 9350,
+              "endMs": 9600
+            },
+            {
+              "text": "容",
+              "startMs": 9600,
+              "endMs": 9850
+            },
+            {
+              "text": "很",
+              "startMs": 9850,
+              "endMs": 10100
+            },
+            {
+              "text": "精",
+              "startMs": 10100,
+              "endMs": 10350
+            },
+            {
+              "text": "彩",
+              "startMs": 10350,
+              "endMs": 10600
+            }
+          ]
+        },
+        {
+          "text": "最后感谢大家收看！",
+          "startMs": 11200,
+          "endMs": 13200,
+          "words": [
+            {
+              "text": "最",
+              "startMs": 11200,
+              "endMs": 11450
+            },
+            {
+              "text": "后",
+              "startMs": 11450,
+              "endMs": 11700
+            },
+            {
+              "text": "感",
+              "startMs": 11700,
+              "endMs": 11950
+            },
+            {
+              "text": "谢",
+              "startMs": 11950,
+              "endMs": 12200
+            },
+            {
+              "text": "大",
+              "startMs": 12200,
+              "endMs": 12450
+            },
+            {
+              "text": "家",
+              "startMs": 12450,
+              "endMs": 12700
+            },
+            {
+              "text": "收",
+              "startMs": 12700,
+              "endMs": 12950
+            },
+            {
+              "text": "看",
+              "startMs": 12950,
+              "endMs": 13200
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

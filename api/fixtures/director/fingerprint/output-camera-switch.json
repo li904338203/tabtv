@@ -1,0 +1,322 @@
+{
+  "before": {
+    "background": {
+      "color": "#060608",
+      "mode": "color"
+    },
+    "ground": {
+      "height": 0,
+      "opacity": 1,
+      "visible": true
+    },
+    "lights": {
+      "fill": {
+        "azimuth": 225,
+        "color": "#ffffff",
+        "elevation": 20,
+        "intensity": 0.5,
+        "visible": true
+      },
+      "key": {
+        "azimuth": 45,
+        "color": "#ffffff",
+        "elevation": 50,
+        "intensity": 1.2,
+        "visible": true
+      }
+    },
+    "objects": [
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_1",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 1",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "character": {
+          "body": "standard",
+          "height": 1.8,
+          "model": "adult_male",
+          "posePreset": "stand_neutral"
+        },
+        "id": "obj_character_1",
+        "kind": "character",
+        "locked": false,
+        "name": "角色 1",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_2",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 2",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 2,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      }
+    ],
+    "outputCameraId": "obj_camera_1",
+    "schemaVersion": 1,
+    "stage": {
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 1
+    },
+    "timeline": {
+      "durationFrames": 150,
+      "fps": 30,
+      "loop": false,
+      "tracks": []
+    },
+    "view": {
+      "angleSnap": {
+        "enabled": false,
+        "step": 15
+      },
+      "gridSnap": {
+        "enabled": false,
+        "step": 0.5
+      },
+      "groundSnap": true,
+      "showLabels": true
+    }
+  },
+  "after": {
+    "background": {
+      "color": "#060608",
+      "mode": "color"
+    },
+    "ground": {
+      "height": 0,
+      "opacity": 1,
+      "visible": true
+    },
+    "lights": {
+      "fill": {
+        "azimuth": 225,
+        "color": "#ffffff",
+        "elevation": 20,
+        "intensity": 0.5,
+        "visible": true
+      },
+      "key": {
+        "azimuth": 45,
+        "color": "#ffffff",
+        "elevation": 50,
+        "intensity": 1.2,
+        "visible": true
+      }
+    },
+    "objects": [
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_1",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 1",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "character": {
+          "body": "standard",
+          "height": 1.8,
+          "model": "adult_male",
+          "posePreset": "stand_neutral"
+        },
+        "id": "obj_character_1",
+        "kind": "character",
+        "locked": false,
+        "name": "角色 1",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      },
+      {
+        "camera": {
+          "aspect": "16:9",
+          "far": 1000,
+          "focalLengthMm": 35,
+          "near": 0.1,
+          "roll": 0,
+          "sensorWidthMm": 36
+        },
+        "id": "obj_camera_2",
+        "kind": "camera",
+        "locked": false,
+        "name": "机位 2",
+        "source": "user",
+        "transform": {
+          "position": {
+            "x": 2,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true
+      }
+    ],
+    "outputCameraId": "obj_camera_2",
+    "schemaVersion": 1,
+    "stage": {
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": 1
+    },
+    "timeline": {
+      "durationFrames": 150,
+      "fps": 30,
+      "loop": false,
+      "tracks": []
+    },
+    "view": {
+      "angleSnap": {
+        "enabled": false,
+        "step": 15
+      },
+      "gridSnap": {
+        "enabled": false,
+        "step": 0.5
+      },
+      "groundSnap": true,
+      "showLabels": true
+    }
+  },
+  "same": true,
+  "why": "只换输出机位：任何一张已有截图的画面都没变"
+}

@@ -1,0 +1,150 @@
+{
+  "why": "SC-AC-06：回查结果优先于快照 —— 快照说成功、回查说不是本项目的生成 → invalid；别的工作区与平台素材（workspace_id = 0）→ invalid，不进轨，音频也不再带用途",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "g",
+        "type": "video",
+        "title": "节点 g",
+        "result": {
+          "id": "g-other",
+          "status": "success",
+          "mediaId": "71",
+          "outputUrl": "/api/v1/media/71"
+        }
+      },
+      {
+        "id": "p",
+        "type": "image",
+        "title": "节点 p",
+        "result": {
+          "status": "success",
+          "mediaId": "600"
+        }
+      },
+      {
+        "id": "o",
+        "type": "audio",
+        "title": "节点 o",
+        "result": {
+          "status": "success",
+          "mediaId": "602"
+        }
+      },
+      {
+        "id": "u",
+        "type": "video",
+        "title": "节点 u",
+        "result": {
+          "status": "success",
+          "mediaId": "601"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-g-sc1",
+        "source": "g",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-p-sc1",
+        "source": "p",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-o-sc1",
+        "source": "o",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-u-sc1",
+        "source": "u",
+        "target": "sc1",
+        "order": 4
+      }
+    ]
+  },
+  "lookup": {
+    "generations": {
+      "g-other": {
+        "status": "invalid",
+        "reason": "不是本项目的生成"
+      }
+    },
+    "media": {
+      "600": {
+        "status": "invalid",
+        "reason": "平台素材不能直接使用"
+      },
+      "602": {
+        "status": "invalid"
+      },
+      "601": {
+        "status": "ready",
+        "durationMs": 4000,
+        "hasAudio": true
+      }
+    }
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "g",
+        "sourceNodeType": "video",
+        "title": "节点 g",
+        "kind": "video",
+        "status": "invalid",
+        "reason": "不是本项目的生成",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "p",
+        "sourceNodeType": "image",
+        "title": "节点 p",
+        "kind": "image",
+        "status": "invalid",
+        "mediaId": "600",
+        "reason": "平台素材不能直接使用",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "o",
+        "sourceNodeType": "audio",
+        "title": "节点 o",
+        "kind": "audio",
+        "status": "invalid",
+        "mediaId": "602",
+        "reason": "素材不属于本工作区",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "u",
+        "sourceNodeType": "video",
+        "title": "节点 u",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "601",
+        "durationMs": 4000,
+        "hasAudio": true,
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 1
+  }
+}

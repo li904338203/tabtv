@@ -1,0 +1,57 @@
+{
+  "why": "空场景、草案没写 camera：新建一个机位，景别 / 角度 / 方位 / 焦距全按默认并逐条说明（DR-F-106）",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "独行者",
+        "kind": "character",
+        "posePreset": "stand_neutral"
+      },
+      {
+        "op": "add",
+        "ref": "同伴",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "near",
+          "target": "独行者"
+        }
+      }
+    ]
+  },
+  "expect": {
+    "added": 3,
+    "characters": 2,
+    "cameras": 1,
+    "outputCamera": "new",
+    "minGapM": 0.5,
+    "grounded": true,
+    "pitchDeg": 0,
+    "framing": {
+      "targets": [
+        "独行者",
+        "同伴"
+      ],
+      "shotSize": "medium"
+    },
+    "defaultsContain": [
+      "场景里没有输出机位，按默认新建一个机位",
+      "未指定景别，按中景",
+      "未指定角度，按平视",
+      "未指定方位，按正面",
+      "未指定焦距，按 35mm",
+      "没写距离的位置关系按默认距离"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+{"ResponseMetadata":{"RequestId":"20261028101540ABCDEF","Action":"QuerySong","Version":"2024-08-12"},"Result":{"TaskID":"7431928470212345678","Status":2,"Progress":100,"SongDetail":{"AudioUrl":"https://imagination-music.tos-cn-beijing.volces.com/bgm/7431928470212345678.mp3?X-Tos-Signature=abc","Duration":30.0}}}

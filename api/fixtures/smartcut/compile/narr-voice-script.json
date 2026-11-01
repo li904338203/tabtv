@@ -1,0 +1,127 @@
+{
+  "why": "SC-AC-43：20 秒配音（火山 fixture volc_narr_voice.json 的那组时间：「节目」识别成「节木」、漏了「的」）+ 解说稿 + 6 段 4 秒的画面。同音错字与漏字都按原稿出字幕（标点按原稿）。s1 的画面 0→4200 两段平分 2100；s2 4200→7050 共 2850；s3 7050→11200 两段平分 2075（取中间：962~3037）；s4 11200→20000 要 8800，编号 8 只有 4000，差 4800 从后往前拉长有余量的：编号 7 与 6 各拉满到 4000（各 +1925），编号 5 再 +950 到 3800 —— 总长 20000 = 配音时长。字幕跟随配音（从 0 起），起止取识别：第一句从第一个字 300 起，最后一句到最后一个字 13200",
+  "mode": "narr",
+  "cards": [
+    {
+      "no": "2",
+      "kind": "audio",
+      "mediaId": "92",
+      "durationMs": 20000,
+      "audioRole": "voice",
+      "sourceNodeId": "nv"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 4000,
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "4",
+      "kind": "video",
+      "mediaId": "74",
+      "durationMs": 4000,
+      "sourceNodeId": "n4"
+    },
+    {
+      "no": "5",
+      "kind": "video",
+      "mediaId": "75",
+      "durationMs": 4000,
+      "sourceNodeId": "n5"
+    },
+    {
+      "no": "6",
+      "kind": "video",
+      "mediaId": "76",
+      "durationMs": 4000,
+      "sourceNodeId": "n6"
+    },
+    {
+      "no": "7",
+      "kind": "video",
+      "mediaId": "77",
+      "durationMs": 4000,
+      "sourceNodeId": "n7"
+    },
+    {
+      "no": "8",
+      "kind": "video",
+      "mediaId": "78",
+      "durationMs": 4000,
+      "sourceNodeId": "n8"
+    }
+  ],
+  "transcripts": {
+    "2": {
+      "granularity": "char",
+      "utterances": [
+        [
+          {
+            "chars": "大家好",
+            "startMs": 300,
+            "charMs": 250
+          },
+          {
+            "chars": "欢迎来到今天的节木",
+            "startMs": 1350,
+            "charMs": 250
+          }
+        ],
+        [
+          {
+            "chars": "我们先看第一个画面",
+            "startMs": 4200,
+            "charMs": 250
+          }
+        ],
+        [
+          {
+            "chars": "接下来是第二部分",
+            "startMs": 7050,
+            "charMs": 250
+          },
+          {
+            "chars": "内容很精彩",
+            "startMs": 9350,
+            "charMs": 250
+          }
+        ],
+        [
+          {
+            "chars": "最后感谢大家收看",
+            "startMs": 11200,
+            "charMs": 250
+          }
+        ]
+      ]
+    }
+  },
+  "script": "大家好，欢迎来到今天的节目。我们先看第一个画面。接下来是第二部分，内容很精彩。最后感谢大家的收看！",
+  "spec": {
+    "withSubtitles": true
+  },
+  "raw": "{\"lines\": [{\"sentence\": \"s1\", \"clips\": [\"3\", \"4\"], \"take\": \"head\"}, {\"sentence\": \"s2\", \"clips\": [\"5\"]}, {\"sentence\": \"s3\", \"clips\": [\"6\", \"7\"], \"take\": \"middle\"}, {\"sentence\": \"s4\", \"clips\": [\"8\"]}]}",
+  "expect": {
+    "video": [
+      "73 0~2100",
+      "74 0~2100",
+      "75 0~3800",
+      "76 0~4000",
+      "77 0~4000",
+      "78 0~4000"
+    ],
+    "voice": "92 0~20000",
+    "totalMs": 20000,
+    "subtitles": [
+      "300~3600 大家好，欢迎来到今天的节目。",
+      "4200~6450 我们先看第一个画面。",
+      "7050~10600 接下来是第二部分，内容很精彩。",
+      "11200~13200 最后感谢大家的收看！"
+    ],
+    "notes": [],
+    "warnings": [],
+    "summary": "解说 4 句，配了 6 段画面，成片 20 秒"
+  }
+}

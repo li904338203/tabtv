@@ -1,0 +1,177 @@
+{
+  "why": "used：时间线里有片段用到（同来源节点，多产物时还要同媒体）；来源节点不在入边里的片段记为断开（SC-AC-04，片段保留）；没有来源节点的不算；未使用数只数就绪、能上轨、没用到的",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "m",
+        "type": "image",
+        "title": "节点 m",
+        "result": {
+          "id": "g",
+          "status": "success"
+        }
+      },
+      {
+        "id": "v",
+        "type": "video",
+        "title": "节点 v",
+        "result": {
+          "id": "g-71",
+          "status": "success",
+          "mediaId": "71",
+          "outputUrl": "/api/v1/media/71"
+        }
+      },
+      {
+        "id": "t",
+        "type": "text",
+        "title": "节点 t",
+        "params": {
+          "text": "字幕稿"
+        }
+      },
+      {
+        "id": "p",
+        "type": "video",
+        "title": "节点 p",
+        "result": {
+          "id": "g-p",
+          "status": "running"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-m-sc1",
+        "source": "m",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-v-sc1",
+        "source": "v",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-t-sc1",
+        "source": "t",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-p-sc1",
+        "source": "p",
+        "target": "sc1",
+        "order": 4
+      }
+    ]
+  },
+  "lookup": {
+    "generations": {
+      "g": {
+        "status": "success",
+        "outputs": [
+          {
+            "mediaId": "1"
+          },
+          {
+            "mediaId": "2"
+          }
+        ]
+      }
+    }
+  },
+  "clips": [
+    {
+      "id": "c1",
+      "sourceNodeId": "m",
+      "mediaId": "2"
+    },
+    {
+      "id": "c2",
+      "sourceNodeId": "gone",
+      "mediaId": "9"
+    },
+    {
+      "id": "c3",
+      "mediaId": "10"
+    },
+    {
+      "id": "c4",
+      "sourceNodeId": "gone2",
+      "mediaId": "11"
+    },
+    {
+      "id": "c5",
+      "sourceNodeId": "v",
+      "mediaId": "71"
+    }
+  ],
+  "expect": {
+    "items": [
+      {
+        "no": "1-1",
+        "sourceNodeId": "m",
+        "sourceNodeType": "image",
+        "title": "节点 m",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "1",
+        "used": false
+      },
+      {
+        "no": "1-2",
+        "sourceNodeId": "m",
+        "sourceNodeType": "image",
+        "title": "节点 m",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "2",
+        "used": true
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "v",
+        "sourceNodeType": "video",
+        "title": "节点 v",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "71",
+        "used": true
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "t",
+        "sourceNodeType": "text",
+        "title": "节点 t",
+        "kind": "text",
+        "status": "ready",
+        "text": "字幕稿",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "p",
+        "sourceNodeType": "video",
+        "title": "节点 p",
+        "kind": "video",
+        "status": "pending",
+        "reason": "上游还在生成",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [
+      "c2",
+      "c4"
+    ],
+    "unusedCount": 1
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/agent-step.schema.json",
+  "title": "AgentStep",
+  "description": "画布 Agent 的一次工具调用开始或结束。投递到 project:{id}。只是对账信号：步骤行的完整内容以 GET /agent/sessions/{id}/messages 为准。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "sessionId",
+    "turnId",
+    "stepId",
+    "tool",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "agent.step"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sessionId": {
+      "$ref": "#/$defs/id"
+    },
+    "turnId": {
+      "$ref": "#/$defs/id"
+    },
+    "stepId": {
+      "$ref": "#/$defs/id"
+    },
+    "tool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 48
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "success",
+        "failed",
+        "cancelled",
+        "waiting"
+      ]
+    },
+    "display": {
+      "type": "object",
+      "description": "步骤行展示内容（与 agent_step.display 同形）；没有时不出现"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

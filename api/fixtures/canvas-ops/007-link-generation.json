@@ -1,0 +1,85 @@
+{
+  "description": "link_generation（只由 generate 工具在受理成功后产生）：把已受理的生成挂到本会话建的节点上，result 整体替换为 {id, status:queued, progress:0}（旧产物的 mediaId / outputUrl 不保留）。不看 userTouched —— 它只写「这里有一次生成」这个事实，不碰标题 / 参数 / 位置。同一个 generationId 已挂着时不动（不把 success 打回 queued）",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_v1",
+        "type": "video",
+        "title": "视频",
+        "position": { "x": 0, "y": 0 },
+        "size": { "w": 390, "h": 180 },
+        "params": { "model": "seedance", "mode": "text2video", "aspect_ratio": "9:16", "duration": "15" },
+        "agent": { "sessionId": "7001", "stepId": "s1" }
+      },
+      {
+        "id": "a_v2",
+        "type": "image",
+        "title": "用户动过的图",
+        "position": { "x": 400, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "model": "dev_image" },
+        "result": { "id": "111", "status": "success", "mediaId": "m_old", "outputUrl": "/api/v1/media/m_old" },
+        "agent": { "sessionId": "7001", "stepId": "s2", "userTouched": true }
+      },
+      {
+        "id": "a_v3",
+        "type": "image",
+        "title": "已挂同一任务",
+        "position": { "x": 800, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": {},
+        "result": { "id": "333", "status": "success", "mediaId": "m3" },
+        "agent": { "sessionId": "7001", "stepId": "s3" }
+      }
+    ]
+  },
+  "ops": [
+    { "kind": "link_generation", "nodeId": "a_v1", "patch": { "generationId": "9007199254740993" } },
+    { "kind": "link_generation", "nodeId": "a_v2", "patch": { "generationId": "222" } },
+    { "kind": "link_generation", "nodeId": "a_v3", "patch": { "generationId": "333" } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_v1",
+        "type": "video",
+        "title": "视频",
+        "position": { "x": 0, "y": 0 },
+        "size": { "w": 390, "h": 180 },
+        "params": { "model": "seedance", "mode": "text2video", "aspect_ratio": "9:16", "duration": "15" },
+        "result": { "id": "9007199254740993", "status": "queued", "progress": 0 },
+        "agent": { "sessionId": "7001", "stepId": "s1" }
+      },
+      {
+        "id": "a_v2",
+        "type": "image",
+        "title": "用户动过的图",
+        "position": { "x": 400, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "model": "dev_image" },
+        "result": { "id": "222", "status": "queued", "progress": 0 },
+        "agent": { "sessionId": "7001", "stepId": "s2", "userTouched": true }
+      },
+      {
+        "id": "a_v3",
+        "type": "image",
+        "title": "已挂同一任务",
+        "position": { "x": 800, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": {},
+        "result": { "id": "333", "status": "success", "mediaId": "m3" },
+        "agent": { "sessionId": "7001", "stepId": "s3" }
+      }
+    ]
+  },
+  "nodeIds": [],
+  "applied": [
+    { "kind": "link_generation", "nodeId": "a_v1", "patch": { "generationId": "9007199254740993" } },
+    { "kind": "link_generation", "nodeId": "a_v2", "patch": { "generationId": "222" } },
+    { "kind": "link_generation", "nodeId": "a_v3", "patch": { "generationId": "333" } }
+  ]
+}

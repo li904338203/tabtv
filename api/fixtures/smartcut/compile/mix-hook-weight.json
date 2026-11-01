@@ -1,0 +1,75 @@
+{
+  "why": "SC-AC-40：只有 3 的描述含「产品」、方案把 3 标为钩子并加权 —— 编译后 3 在开头（钩子在前、结尾在后），按权重 × 角色系数分配：3 = 3×1.2 先钉在可用上限 6 秒，其余 9 秒按 1 : 1 : 1 : 1.1 分（余数给结尾段）",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 6000,
+      "sourceNodeId": "n1",
+      "description": "街景"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 6000,
+      "sourceNodeId": "n2",
+      "description": "街景"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 6000,
+      "sourceNodeId": "n3",
+      "description": "产品特写"
+    },
+    {
+      "no": "4",
+      "kind": "video",
+      "mediaId": "74",
+      "durationMs": 6000,
+      "sourceNodeId": "n4",
+      "description": "街景"
+    },
+    {
+      "no": "5",
+      "kind": "video",
+      "mediaId": "75",
+      "durationMs": 6000,
+      "sourceNodeId": "n5",
+      "description": "街景"
+    }
+  ],
+  "spec": {
+    "targetMs": 15000
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"3\", \"take\": \"full\", \"role\": \"hook\", \"weight\": 3, \"transition\": \"cut\", \"reason\": \"产品特写最抓人\"}, {\"clip\": \"4\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"5\", \"take\": \"full\", \"role\": \"end\", \"weight\": 1, \"transition\": \"cut\"}]}",
+  "expect": {
+    "video": [
+      "73 0~6000",
+      "71 0~2195",
+      "72 0~2195",
+      "74 0~2195",
+      "75 0~2415"
+    ],
+    "totalMs": 15000,
+    "usedClips": [
+      "3",
+      "1",
+      "2",
+      "4",
+      "5"
+    ],
+    "reasons": [
+      {
+        "clip": "3",
+        "reason": "产品特写最抓人"
+      }
+    ],
+    "warnings": [],
+    "notes": []
+  }
+}

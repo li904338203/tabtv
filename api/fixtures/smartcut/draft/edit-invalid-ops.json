@@ -1,0 +1,79 @@
+{
+  "why": "追加指令：不认识的操作、指向不存在的片段、trim 缺比例、速度越界、自己和自己交换、换成音频 —— 逐项丢掉；合规的保留（包括 * 与只写数字的片段号）",
+  "mode": "edit",
+  "refs": {
+    "cards": [
+      {
+        "no": "5",
+        "kind": "video",
+        "durationMs": 8000
+      },
+      {
+        "no": "8",
+        "kind": "audio",
+        "durationMs": 20000,
+        "audioRole": "music"
+      }
+    ],
+    "clips": [
+      "c1",
+      "c2",
+      "c3",
+      "c4"
+    ],
+    "texts": [
+      "t1"
+    ]
+  },
+  "raw": "{\"ops\": [{\"op\": \"zoom\", \"clip\": \"c1\"}, {\"op\": \"trim\", \"clip\": \"c9\", \"take\": \"head\", \"ratio\": 0.5}, {\"op\": \"trim\", \"clip\": \"c2\", \"take\": \"head\"}, {\"op\": \"speed\", \"clip\": \"c1\", \"value\": 5}, {\"op\": \"swap\", \"a\": \"c1\", \"b\": \"c1\"}, {\"op\": \"replace\", \"clip\": \"c2\", \"with\": \"8\"}, {\"op\": \"trim\", \"clip\": 3, \"take\": \"head\", \"ratio\": 0.6}, {\"op\": \"speed\", \"clip\": \"*\", \"value\": 1.25}, {\"op\": \"transition\", \"clip\": \"c2\", \"kind\": \"dissolve\", \"durationSec\": 0.8}, {\"op\": \"text\", \"target\": \"t1\", \"text\": \"新品上市\"}, {\"op\": \"insert\", \"with\": \"5\", \"after\": \"c2\"}, {\"op\": \"delete\", \"clip\": \"c4\"}], \"summary\": \"第 3 段改短\"}",
+  "expect": {
+    "draft": {
+      "mode": "edit",
+      "summary": "第 3 段改短",
+      "ops": [
+        {
+          "op": "trim",
+          "clip": "c3",
+          "take": {
+            "kind": "head",
+            "ratioPermille": 600
+          }
+        },
+        {
+          "op": "speed",
+          "clip": "*",
+          "speedPct": 125
+        },
+        {
+          "op": "transition",
+          "clip": "c2",
+          "kind": "dissolve",
+          "durationMs": 800
+        },
+        {
+          "op": "text",
+          "text": "新品上市",
+          "target": "t1"
+        },
+        {
+          "op": "insert",
+          "with": "5",
+          "after": "c2"
+        },
+        {
+          "op": "delete",
+          "clip": "c4"
+        }
+      ]
+    },
+    "dropped": [
+      "ops 第 1 项：op「zoom」不认识（只能是 trim / swap / replace / speed / transition / text / insert / delete）",
+      "ops 第 2 项（trim）：片段「c9」不存在",
+      "ops 第 3 项（trim）：缺少 ratio（保留的比例，0.1~1）",
+      "ops 第 4 项（speed）：value 5 不在 0.25~4 之间",
+      "ops 第 5 项（swap）：a 与 b 是同一段",
+      "ops 第 6 项（replace）：编号「8」是音频，不能放进画面"
+    ],
+    "ignored": []
+  }
+}

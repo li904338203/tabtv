@@ -1,0 +1,42 @@
+{
+  "description": "MCP link_generation：同授权建的节点即使 userTouched 也照样挂（只写「这里有一次生成」这个事实，同 AGT-24）；result 整体替换为 {id, status:queued, progress:0}",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_m1",
+        "type": "image",
+        "title": "用户动过的图",
+        "position": { "x": 0, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "model": "dev_image" },
+        "result": { "id": "111", "status": "success", "mediaId": "m_old" },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code", "userTouched": true }
+      }
+    ]
+  },
+  "ops": [
+    { "kind": "link_generation", "nodeId": "a_m1", "patch": { "generationId": "9007199254740993" } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      {
+        "id": "a_m1",
+        "type": "image",
+        "title": "用户动过的图",
+        "position": { "x": 0, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "model": "dev_image" },
+        "result": { "id": "9007199254740993", "status": "queued", "progress": 0 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code", "userTouched": true }
+      }
+    ]
+  },
+  "nodeIds": [],
+  "applied": [
+    { "kind": "link_generation", "nodeId": "a_m1", "patch": { "generationId": "9007199254740993" } }
+  ]
+}

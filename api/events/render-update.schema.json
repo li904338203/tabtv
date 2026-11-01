@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/render-update.schema.json",
+  "title": "RenderUpdate",
+  "description": "时间线渲染任务状态。渲染固定 timelineVersion，编辑时间线不影响进行中的导出（NEW-10）。 智能剪辑（docs/agent/smartcut，SCB-6）起由 Worker 真正发布，投递到 project:{id}（节流 1 次 / 秒）；只是对账信号，以 GET /renders/{renderId} 为准。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "renderJobId",
+    "workspaceId",
+    "projectId",
+    "timelineId",
+    "timelineVersion",
+    "status",
+    "progress"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "render.update"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "renderJobId": {
+      "$ref": "#/$defs/id"
+    },
+    "workspaceId": {
+      "$ref": "#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id",
+      "description": "时间线所属项目（render_job 没有 project_id，经时间线取）"
+    },
+    "timelineId": {
+      "$ref": "#/$defs/id"
+    },
+    "timelineVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "running",
+        "success",
+        "failed",
+        "cancelled"
+      ],
+      "type": "string"
+    },
+    "progress": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "stage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "probing",
+        "assembling",
+        "mixing",
+        "encoding",
+        "archiving",
+        "checking",
+        null
+      ],
+      "description": "渲染耗时长，仅有百分比不足以让用户判断是否卡住"
+    },
+    "output": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "mediaId",
+        "url",
+        "contentType"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mediaId": {
+          "$ref": "#/$defs/id"
+        },
+        "url": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "error": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "reason",
+        "message"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "traceId": {
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

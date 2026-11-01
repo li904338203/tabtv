@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/agent-state.schema.json",
+  "title": "AgentState",
+  "description": "画布 Agent 会话状态或额度变了（AGT-26，dev/02 §7）。投递到 project:{id}。只是对账信号：前端收到后以 GET /agent/sessions/{id} 为准（AG-16）。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "sessionId",
+    "state",
+    "approvedBudget",
+    "spent"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "agent.state"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sessionId": {
+      "$ref": "#/$defs/id"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "planning",
+        "awaiting_input",
+        "awaiting_approval",
+        "executing",
+        "waiting_task",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "turnId": {
+      "$ref": "#/$defs/id",
+      "description": "相关的轮次；没有时不出现"
+    },
+    "approvedBudget": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "已批准额度（积分）"
+    },
+    "spent": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "额度已占用（预留 + 已扣的报价合计）"
+    },
+    "pendingCardId": {
+      "$ref": "#/$defs/id",
+      "description": "会话在等的卡片；没有时不出现"
+    },
+    "reason": {
+      "type": "string",
+      "description": "变化原因码（insufficient_credits / stop_requested / cancelled / plan_doc_changed / lost_permission …）；没有时不出现"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

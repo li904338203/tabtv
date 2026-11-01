@@ -1,0 +1,55 @@
+{
+  "why": "SC-AC-41（编译部分）：镜头顺序与取用区间以装配为准；台词字幕按句、按字数在镜头的可见范围（转场两边各让一半）里分时长、跟随片段；写了空字幕的镜头不要字幕；标题默认 2 秒",
+  "mode": "board",
+  "cards": [],
+  "shots": [
+    {
+      "shotNo": 1,
+      "mediaId": "71",
+      "durationMs": 3000,
+      "sourceInMs": 0,
+      "sourceOutMs": 3000,
+      "dialogue": "你好。今天下雨了。"
+    },
+    {
+      "shotNo": 2,
+      "mediaId": "72",
+      "durationMs": 2000,
+      "sourceInMs": 0,
+      "sourceOutMs": 2000
+    },
+    {
+      "shotNo": 3,
+      "mediaId": "73",
+      "durationMs": 3000,
+      "sourceInMs": 0,
+      "sourceOutMs": 3000,
+      "dialogue": "走吧"
+    }
+  ],
+  "spec": {
+    "withSubtitles": true
+  },
+  "raw": "{\"segments\": [{\"clip\": \"b2\", \"transition\": \"dissolve\"}, {\"clip\": \"b3\", \"transition\": \"fade\", \"subtitle\": \"\"}], \"title\": {\"text\": \"雨夜\"}}",
+  "expect": {
+    "video": [
+      "71 0~3000",
+      "72 0~2000 ←dissolve500",
+      "73 0~3000 ←fade500"
+    ],
+    "totalMs": 7000,
+    "subtitles": [
+      "0~785 你好。",
+      "785~2750 今天下雨了。"
+    ],
+    "title": "0~2000 雨夜",
+    "usedClips": [
+      "b1",
+      "b2",
+      "b3"
+    ],
+    "summary": "按分镜装配了 3 个镜头，成片 7 秒",
+    "warnings": [],
+    "notes": []
+  }
+}

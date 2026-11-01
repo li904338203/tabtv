@@ -1,0 +1,58 @@
+{
+  "why": "群众加机位：领舞在前，4×5 的舞群在后；群众按阵列外接半径避让；远景从右前方平视",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "领舞",
+        "kind": "character",
+        "model": "adult_female",
+        "posePreset": "cheer",
+        "facing": {
+          "target": "camera"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "舞群",
+        "kind": "crowd",
+        "model": "adult_female",
+        "posePreset": "cheer",
+        "rows": 4,
+        "cols": 5,
+        "spacing": 1.2,
+        "relation": {
+          "type": "behind",
+          "target": "领舞",
+          "distance": 3.0
+        }
+      }
+    ],
+    "camera": {
+      "shotSize": "long",
+      "angle": "eye_level",
+      "side": "front_right"
+    }
+  },
+  "expect": {
+    "added": 3,
+    "characters": 1,
+    "crowds": 1,
+    "cameras": 1,
+    "grounded": true,
+    "pitchDeg": 0,
+    "facesCamera": [
+      "领舞"
+    ]
+  }
+}

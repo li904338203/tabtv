@@ -1,0 +1,15 @@
+{
+  "description": "link_generation 只能挂到本会话建的节点上：用户的节点（没有 agent 元数据）→ not_owned，整批拒绝",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "用户的图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} }
+    ]
+  },
+  "ops": [
+    { "kind": "link_generation", "nodeId": "n_user1", "patch": { "generationId": "222" } }
+  ],
+  "expectError": "not_owned"
+}

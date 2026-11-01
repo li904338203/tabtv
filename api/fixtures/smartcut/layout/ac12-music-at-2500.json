@@ -1,0 +1,80 @@
+{
+  "why": "SC-AC-12：音频轨按起点放置，配乐在 2500 就是 2500，不被挤到画面末尾或上一段末尾",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-c1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000
+          },
+          {
+            "id": "tmp-c2",
+            "mediaId": "12",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "role": "music",
+        "clips": [
+          {
+            "id": "tmp-m1",
+            "mediaId": "21",
+            "startMs": 2500,
+            "sourceInMs": 0,
+            "sourceOutMs": 6000,
+            "speed": 150
+          },
+          {
+            "id": "tmp-m2",
+            "mediaId": "22",
+            "startMs": 500,
+            "sourceInMs": 1000,
+            "sourceOutMs": 2500
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": {
+        "startMs": 0,
+        "durationMs": 4000
+      },
+      "tmp-c2": {
+        "startMs": 3000,
+        "durationMs": 4000
+      },
+      "tmp-m1": {
+        "startMs": 2500,
+        "durationMs": 4000
+      },
+      "tmp-m2": {
+        "startMs": 500,
+        "durationMs": 1500
+      }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 8000,
+    "effectiveMs": 7000
+  }
+}

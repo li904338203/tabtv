@@ -1,0 +1,6087 @@
+[
+  {
+    "code": "stand_neutral",
+    "name": "自然站立",
+    "category": "stand",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -4
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "RightHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/stand_neutral.webp"
+  },
+  {
+    "code": "stand_arms_crossed",
+    "name": "双臂交叉",
+    "category": "stand",
+    "bones": {
+      "LeftArm": {
+        "x": -27.5,
+        "y": 55.9,
+        "z": 66.7
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 70
+      },
+      "LeftHand": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": -23.4,
+        "y": -42.7,
+        "z": -68.1
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -69
+      },
+      "RightHand": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/stand_arms_crossed.webp"
+  },
+  {
+    "code": "stand_hands_on_hips",
+    "name": "叉腰",
+    "category": "stand",
+    "bones": {
+      "LeftArm": {
+        "x": 53.5,
+        "y": 54,
+        "z": -58.2
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 62
+      },
+      "LeftHand": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "RightArm": {
+        "x": 53.5,
+        "y": -54,
+        "z": 58.2
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -62
+      },
+      "RightHand": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      }
+    },
+    "thumbnail": "/director/poses/stand_hands_on_hips.webp"
+  },
+  {
+    "code": "stand_hands_in_pockets",
+    "name": "插兜",
+    "category": "stand",
+    "bones": {
+      "LeftShoulder": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 42.6,
+        "y": 24.6,
+        "z": -11
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 27
+      },
+      "LeftHand": {
+        "x": 15,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightShoulder": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 42.6,
+        "y": -24.6,
+        "z": 11
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -27
+      },
+      "RightHand": {
+        "x": 15,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 47.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/stand_hands_in_pockets.webp"
+  },
+  {
+    "code": "stand_hands_behind",
+    "name": "背手",
+    "category": "stand",
+    "bones": {
+      "LeftArm": {
+        "x": 130,
+        "y": 59.9,
+        "z": -95.2
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 61
+      },
+      "LeftHandIndex1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 2
+      },
+      "RightArm": {
+        "x": 130,
+        "y": -59.9,
+        "z": 95.2
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -61
+      },
+      "RightHandIndex1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -2
+      }
+    },
+    "thumbnail": "/director/poses/stand_hands_behind.webp"
+  },
+  {
+    "code": "stand_look_back",
+    "name": "回头",
+    "category": "stand",
+    "bones": {
+      "Spine": {
+        "x": 0,
+        "y": 13.3,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 0,
+        "y": 13.3,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 0,
+        "y": 13.3,
+        "z": 0
+      },
+      "Neck": {
+        "x": 2.2,
+        "y": 24,
+        "z": -0.9
+      },
+      "Head": {
+        "x": 3.7,
+        "y": 35.9,
+        "z": -2.2
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -4
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "RightHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/stand_look_back.webp"
+  },
+  {
+    "code": "walk",
+    "name": "行走",
+    "category": "move",
+    "bones": {
+      "Spine": {
+        "x": 0,
+        "y": -1.7,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 0,
+        "y": -1.7,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 0,
+        "y": -1.7,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": -20
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 20
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -10,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": 10,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -20
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -20
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -15,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -10,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/walk.webp"
+  },
+  {
+    "code": "walk_fast",
+    "name": "快走",
+    "category": "move",
+    "bones": {
+      "Spine": {
+        "x": 2.7,
+        "y": -2.7,
+        "z": 0.1
+      },
+      "Spine1": {
+        "x": 2.7,
+        "y": -2.7,
+        "z": 0.1
+      },
+      "Spine2": {
+        "x": 2.7,
+        "y": -2.7,
+        "z": 0.1
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": -35
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 50
+      },
+      "LeftHandIndex1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -15,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": 10,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -35
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -50
+      },
+      "RightHandIndex1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 24.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 33.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -30,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -15,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/walk_fast.webp"
+  },
+  {
+    "code": "run",
+    "name": "奔跑",
+    "category": "move",
+    "bones": {
+      "Spine": {
+        "x": 5,
+        "y": -3.3,
+        "z": 0.3
+      },
+      "Spine1": {
+        "x": 5,
+        "y": -3.3,
+        "z": 0.3
+      },
+      "Spine2": {
+        "x": 5,
+        "y": -3.3,
+        "z": 0.3
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": -35
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 90
+      },
+      "LeftHandIndex1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 55,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -80,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -50
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -90
+      },
+      "RightHandIndex1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -25,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -60,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -25,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/run.webp"
+  },
+  {
+    "code": "sprint",
+    "name": "冲刺",
+    "category": "move",
+    "bones": {
+      "Hips": {
+        "x": 10,
+        "y": 0,
+        "z": 0
+      },
+      "Spine": {
+        "x": 6.7,
+        "y": -4,
+        "z": 0.5
+      },
+      "Spine1": {
+        "x": 6.7,
+        "y": -4,
+        "z": 0.5
+      },
+      "Spine2": {
+        "x": 6.7,
+        "y": -4,
+        "z": 0.5
+      },
+      "Neck": {
+        "x": -6,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": -9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": -60
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 90
+      },
+      "LeftHandIndex1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 75,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -100,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -70
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -90
+      },
+      "RightHandIndex1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 49,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 66.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -30,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -35,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/sprint.webp"
+  },
+  {
+    "code": "jump",
+    "name": "起跳",
+    "category": "move",
+    "bones": {
+      "Neck": {
+        "x": -4,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": -6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -100,
+        "y": 0,
+        "z": 30
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 15
+      },
+      "LeftHandIndex1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": -30,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": -100,
+        "y": 0,
+        "z": -30
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -15
+      },
+      "RightHandIndex1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -35,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -30,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "lift": 0.15,
+    "thumbnail": "/director/poses/jump.webp"
+  },
+  {
+    "code": "sneak",
+    "name": "蹑手蹑脚",
+    "category": "move",
+    "bones": {
+      "Hips": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "Spine": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "Neck": {
+        "x": -14,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": -21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 20,
+        "y": 0,
+        "z": 40
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 70
+      },
+      "LeftHand": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 55,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -70,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 20,
+        "y": 0,
+        "z": -40
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -70
+      },
+      "RightHand": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 15,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -55,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -10,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/sneak.webp"
+  },
+  {
+    "code": "sit_chair",
+    "name": "坐椅子",
+    "category": "rest",
+    "bones": {
+      "Spine": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 38.1,
+        "y": 11.8,
+        "z": 43.1
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -13
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 90,
+        "y": 0,
+        "z": 4
+      },
+      "LeftLeg": {
+        "x": -90,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38.1,
+        "y": -11.8,
+        "z": -43.1
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 13
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 90,
+        "y": 0,
+        "z": -4
+      },
+      "RightLeg": {
+        "x": -90,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/sit_chair.webp"
+  },
+  {
+    "code": "sit_floor_cross",
+    "name": "盘腿坐地",
+    "category": "rest",
+    "bones": {
+      "LeftArm": {
+        "x": 20,
+        "y": 0,
+        "z": 35
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -13
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 180,
+        "y": -45,
+        "z": 90
+      },
+      "LeftLeg": {
+        "x": -130,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 20,
+        "y": 0,
+        "z": -35
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 13
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 180,
+        "y": 45,
+        "z": -90
+      },
+      "RightLeg": {
+        "x": -130,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/sit_floor_cross.webp"
+  },
+  {
+    "code": "squat",
+    "name": "蹲下",
+    "category": "rest",
+    "bones": {
+      "Spine": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 6.7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -14.6,
+        "y": 12.8,
+        "z": 77.3
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 120,
+        "y": 0,
+        "z": 15
+      },
+      "LeftLeg": {
+        "x": -140,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": -14.6,
+        "y": -12.8,
+        "z": -77.3
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 120,
+        "y": 0,
+        "z": -15
+      },
+      "RightLeg": {
+        "x": -140,
+        "y": 0,
+        "z": 0
+      },
+      "RightFoot": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/squat.webp"
+  },
+  {
+    "code": "kneel_one",
+    "name": "单膝跪地",
+    "category": "rest",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 90,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -90,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 38,
+        "y": 0,
+        "z": -4
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "RightHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -90,
+        "y": 0,
+        "z": 0
+      },
+      "RightToeBase": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/kneel_one.webp"
+  },
+  {
+    "code": "lie_back",
+    "name": "仰躺",
+    "category": "rest",
+    "bones": {
+      "Hips": {
+        "x": -90,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -15
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 15
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/lie_back.webp"
+  },
+  {
+    "code": "lie_side",
+    "name": "侧躺",
+    "category": "rest",
+    "bones": {
+      "Hips": {
+        "x": 0,
+        "y": 0,
+        "z": 90
+      },
+      "LeftArm": {
+        "x": 40,
+        "y": 0,
+        "z": 20
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": -120,
+        "y": 0,
+        "z": 0
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -90
+      },
+      "RightHandIndex1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 14,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 19,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/lie_side.webp"
+  },
+  {
+    "code": "wave",
+    "name": "挥手",
+    "category": "gesture",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": -12.3,
+        "y": 67.7,
+        "z": -64.5
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -45
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/wave.webp"
+  },
+  {
+    "code": "point_forward",
+    "name": "指向前方",
+    "category": "gesture",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 42.4,
+        "y": -5,
+        "z": -81.3
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 14
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/point_forward.webp"
+  },
+  {
+    "code": "phone_call",
+    "name": "打电话",
+    "category": "gesture",
+    "bones": {
+      "Neck": {
+        "x": 0,
+        "y": 0,
+        "z": 3.2
+      },
+      "Head": {
+        "x": 0,
+        "y": 0,
+        "z": 4.8
+      },
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 16.1,
+        "y": -13.5,
+        "z": -48.8
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -134
+      },
+      "RightHandIndex1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/phone_call.webp"
+  },
+  {
+    "code": "thinking",
+    "name": "托腮思考",
+    "category": "gesture",
+    "bones": {
+      "Neck": {
+        "x": 4,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -21.1,
+        "y": 60.1,
+        "z": 57.9
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 74
+      },
+      "LeftHandIndex1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 41.6,
+        "y": -40.1,
+        "z": -14.4
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -103
+      },
+      "RightHandIndex1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 42,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 57,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 36,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/thinking.webp"
+  },
+  {
+    "code": "cheer",
+    "name": "双手举起欢呼",
+    "category": "gesture",
+    "bones": {
+      "Neck": {
+        "x": -4,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": -6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -125,
+        "y": 0,
+        "z": 5
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "RightArm": {
+        "x": -125,
+        "y": 0,
+        "z": -5
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -10
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      }
+    },
+    "thumbnail": "/director/poses/cheer.webp"
+  },
+  {
+    "code": "bow",
+    "name": "鞠躬",
+    "category": "gesture",
+    "bones": {
+      "Hips": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "Spine": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "Neck": {
+        "x": 4,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 9.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/bow.webp"
+  },
+  {
+    "code": "fight_stance",
+    "name": "格斗架势",
+    "category": "action",
+    "bones": {
+      "Spine": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Neck": {
+        "x": 4,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": 6,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 25,
+        "y": 18.6,
+        "z": 43.8
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 86
+      },
+      "LeftHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": 25
+      },
+      "LeftHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 24.9,
+        "y": -25,
+        "z": -28.9
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -107
+      },
+      "RightHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -15,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -25,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/fight_stance.webp"
+  },
+  {
+    "code": "punch",
+    "name": "出拳",
+    "category": "action",
+    "bones": {
+      "Spine": {
+        "x": 1.7,
+        "y": 6.7,
+        "z": -0.2
+      },
+      "Spine1": {
+        "x": 1.7,
+        "y": 6.7,
+        "z": -0.2
+      },
+      "Spine2": {
+        "x": 1.7,
+        "y": 6.7,
+        "z": -0.2
+      },
+      "LeftArm": {
+        "x": 25,
+        "y": 18.6,
+        "z": 43.8
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 86
+      },
+      "LeftHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": 25
+      },
+      "LeftHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 30,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -30,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 42.4,
+        "y": -5,
+        "z": -81.3
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 14
+      },
+      "RightHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/punch.webp"
+  },
+  {
+    "code": "kick_side",
+    "name": "侧踢",
+    "category": "action",
+    "bones": {
+      "Spine": {
+        "x": 0,
+        "y": 0,
+        "z": -8.3
+      },
+      "Spine1": {
+        "x": 0,
+        "y": 0,
+        "z": -8.3
+      },
+      "Spine2": {
+        "x": 0,
+        "y": 0,
+        "z": -8.3
+      },
+      "LeftArm": {
+        "x": 25,
+        "y": 18.6,
+        "z": 43.8
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 86
+      },
+      "LeftHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": 25
+      },
+      "LeftHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 24.9,
+        "y": -25,
+        "z": -28.9
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -107
+      },
+      "RightHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -75
+      },
+      "RightFoot": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/kick_side.webp"
+  },
+  {
+    "code": "flying_kick",
+    "name": "飞身踢",
+    "category": "action",
+    "bones": {
+      "Spine": {
+        "x": -3.3,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": -3.3,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": -3.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 25,
+        "y": 18.6,
+        "z": 43.8
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 86
+      },
+      "LeftHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": 25
+      },
+      "LeftHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 85,
+        "y": 0,
+        "z": 0
+      },
+      "LeftFoot": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 24.9,
+        "y": -25,
+        "z": -28.9
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -107
+      },
+      "RightHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -110,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "lift": 0.3,
+    "thumbnail": "/director/poses/flying_kick.webp"
+  },
+  {
+    "code": "block",
+    "name": "格挡",
+    "category": "action",
+    "bones": {
+      "LeftArm": {
+        "x": 37.3,
+        "y": 14.5,
+        "z": 64.6
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 97
+      },
+      "LeftHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": 25
+      },
+      "LeftHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 15,
+        "y": 0,
+        "z": 5
+      },
+      "LeftLeg": {
+        "x": -25,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": 37.3,
+        "y": -14.5,
+        "z": -64.6
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -97
+      },
+      "RightHandIndex1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 70,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 95,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 60,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb1": {
+        "x": 0,
+        "y": 0,
+        "z": -25
+      },
+      "RightHandThumb2": {
+        "x": 25,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandThumb3": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 15,
+        "y": 0,
+        "z": -5
+      },
+      "RightLeg": {
+        "x": -25,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/block.webp"
+  },
+  {
+    "code": "fall_back",
+    "name": "后仰倒地",
+    "category": "action",
+    "bones": {
+      "Hips": {
+        "x": -35,
+        "y": 0,
+        "z": 0
+      },
+      "Spine": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      },
+      "Neck": {
+        "x": 8,
+        "y": 0,
+        "z": 0
+      },
+      "Head": {
+        "x": 12,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -50,
+        "y": 0,
+        "z": -10
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 20
+      },
+      "LeftUpLeg": {
+        "x": 40,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": -50,
+        "y": 0,
+        "z": 10
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -20
+      },
+      "RightUpLeg": {
+        "x": 15,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/fall_back.webp"
+  },
+  {
+    "code": "handshake",
+    "name": "握手",
+    "category": "interact",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 38.1,
+        "y": -8.8,
+        "z": -12.1
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -49
+      },
+      "RightHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/handshake.webp"
+  },
+  {
+    "code": "hug",
+    "name": "拥抱",
+    "category": "interact",
+    "bones": {
+      "Spine": {
+        "x": 3.3,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 3.3,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 3.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -30.6,
+        "y": 13,
+        "z": 52.9
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 72
+      },
+      "LeftHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": -30.6,
+        "y": -13,
+        "z": -52.9
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -72
+      },
+      "RightHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/hug.webp"
+  },
+  {
+    "code": "hold_hands",
+    "name": "牵手",
+    "category": "interact",
+    "bones": {
+      "LeftArm": {
+        "x": 38,
+        "y": 0,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 10
+      },
+      "LeftHandIndex1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 10.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 14.3,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 9,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 20,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 28,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 38,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 24,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/hold_hands.webp"
+  },
+  {
+    "code": "push",
+    "name": "推",
+    "category": "interact",
+    "bones": {
+      "Spine": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": 5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": -0.1,
+        "y": -0.5,
+        "z": 76
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 18
+      },
+      "LeftHand": {
+        "x": -70,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 35,
+        "y": 0,
+        "z": 0
+      },
+      "LeftLeg": {
+        "x": -40,
+        "y": 0,
+        "z": 0
+      },
+      "RightArm": {
+        "x": -0.1,
+        "y": 0.5,
+        "z": -76
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -18
+      },
+      "RightHand": {
+        "x": -70,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": -20,
+        "y": 0,
+        "z": 0
+      },
+      "RightLeg": {
+        "x": -5,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "thumbnail": "/director/poses/push.webp"
+  },
+  {
+    "code": "hand_over",
+    "name": "递东西",
+    "category": "interact",
+    "bones": {
+      "LeftArm": {
+        "x": 35.2,
+        "y": 18.5,
+        "z": 23.3
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 45
+      },
+      "LeftHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 3
+      },
+      "RightArm": {
+        "x": 35.2,
+        "y": -18.5,
+        "z": -23.3
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -45
+      },
+      "RightHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -3
+      }
+    },
+    "thumbnail": "/director/poses/hand_over.webp"
+  },
+  {
+    "code": "carry_box",
+    "name": "搬箱子",
+    "category": "interact",
+    "bones": {
+      "Spine": {
+        "x": -1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine1": {
+        "x": -1.7,
+        "y": 0,
+        "z": 0
+      },
+      "Spine2": {
+        "x": -1.7,
+        "y": 0,
+        "z": 0
+      },
+      "LeftArm": {
+        "x": 38.8,
+        "y": 3,
+        "z": 4
+      },
+      "LeftForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": 54
+      },
+      "LeftHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "LeftHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "LeftUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": 4
+      },
+      "RightArm": {
+        "x": 38.8,
+        "y": -3,
+        "z": -4
+      },
+      "RightForeArm": {
+        "x": 0,
+        "y": 0,
+        "z": -54
+      },
+      "RightHandIndex1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandIndex3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandMiddle3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandRing3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky1": {
+        "x": 21,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky2": {
+        "x": 28.5,
+        "y": 0,
+        "z": 0
+      },
+      "RightHandPinky3": {
+        "x": 18,
+        "y": 0,
+        "z": 0
+      },
+      "RightUpLeg": {
+        "x": 0,
+        "y": 0,
+        "z": -4
+      }
+    },
+    "thumbnail": "/director/poses/carry_box.webp"
+  }
+]

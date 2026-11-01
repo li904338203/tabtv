@@ -1,0 +1,15 @@
+{
+  "description": "MCP 自己建、但用户之后动过（origin.userTouched=true）的节点 → not_owned：用户改过任何来源的节点后机器都不能再改",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "a_m1", "type": "text", "title": "被用户改过", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": { "prompt": "用户改过的词" }, "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code", "userTouched": true } }
+    ]
+  },
+  "ops": [
+    { "kind": "update_node", "nodeId": "a_m1", "patch": { "title": "MCP 想改回去" } }
+  ],
+  "expectError": "not_owned"
+}

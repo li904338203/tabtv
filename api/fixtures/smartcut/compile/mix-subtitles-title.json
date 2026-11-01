@@ -1,0 +1,38 @@
+{
+  "why": "按段落的字幕跟随片段、在切换点（转场中点）衔接；开头标题放进第一条文字轨；自动时长用满可用长度，转场 500ms 不超过较短一段的一半",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 4000,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 4000,
+      "sourceNodeId": "n2"
+    }
+  ],
+  "spec": {
+    "withSubtitles": true
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"hook\", \"weight\": 2, \"transition\": \"cut\", \"subtitle\": \"第一句\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"dissolve\", \"subtitle\": \"第二句\"}], \"title\": {\"text\": \"新品上市\", \"durationSec\": 2}}",
+  "expect": {
+    "video": [
+      "71 0~4000",
+      "72 0~4000 ←dissolve500"
+    ],
+    "totalMs": 7500,
+    "subtitles": [
+      "0~3750 第一句",
+      "3750~7500 第二句"
+    ],
+    "title": "0~2000 新品上市",
+    "warnings": [],
+    "notes": []
+  }
+}

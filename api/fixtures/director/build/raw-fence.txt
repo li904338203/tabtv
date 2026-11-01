@@ -1,0 +1,11 @@
+```json
+{
+  "objects": [
+    {"op": "add", "ref": "林澈", "kind": "character", "model": "adult_male", "posePreset": "stand_arms_crossed",
+     "relation": {"type": "left_of", "target": "苏然"}},
+    {"op": "add", "ref": "苏然", "kind": "character", "model": "adult_female", "posePreset": "point_forward"}
+  ],
+  "camera": {"target": ["林澈", "苏然"], "shotSize": "medium", "angle": "eye_level", "side": "front"},
+  "notes": ["未指定时间与天气，按白天户外"]
+}
+```

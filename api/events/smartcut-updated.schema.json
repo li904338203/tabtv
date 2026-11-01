@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/smartcut-updated.schema.json",
+  "title": "SmartcutUpdated",
+  "description": "智能剪辑的进度信号（docs/agent/smartcut，SCD-19）：AI 剪辑阶段变化、输入同步结果、素材分析完成（预览素材、节拍、识别）；投递到 project:{id}。只是对账信号：节点卡收到后刷新 GET /projects/{projectId}/smartcuts 摘要。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "projectId",
+    "timelineId",
+    "canvasNodeId"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "smartcut.updated"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "timelineId": {
+      "$ref": "#/$defs/id"
+    },
+    "canvasNodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "callId": {
+      "$ref": "#/$defs/nullableId",
+      "description": "AI 剪辑 / 追加指令 / 翻译的调用记录"
+    },
+    "stage": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "sync",
+        "understand",
+        "plan",
+        "compile",
+        "apply",
+        "done",
+        null
+      ]
+    },
+    "status": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "running",
+        "success",
+        "failed",
+        null
+      ]
+    },
+    "analysis": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "required": [
+        "mediaId",
+        "kind",
+        "status"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "mediaId": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "preview_proxy",
+            "filmstrip",
+            "peaks",
+            "speech_audio",
+            "beats",
+            "asr",
+            "caption"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "running",
+            "success",
+            "failed"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

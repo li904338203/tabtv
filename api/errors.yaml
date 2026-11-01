@@ -1,0 +1,168 @@
+# 错误码唯一来源
+#
+# 本文件是错误码的唯一定义处，由 `make gen` 同时生成：
+#   - Go 常量与 HTTP 映射   backend/internal/transport/errcode
+#   - TypeScript 常量        packages/api-client/src/errors.ts
+#   - OpenAPI 组件枚举       api/openapi.yaml 的 ErrorCode
+# 禁止在任何一端手写错误码字面量。
+#
+# 编码规则（相对旧系统的修正，见 docs/design/契约与行为差异.md CD-01）：
+#   code 为 5 位数字，前 3 位即 HTTP 状态码，后 2 位为该类下的序号。
+#   **HTTP 状态码必须与前 3 位一致。** 旧系统把 40902/42201 等业务错误一律返回
+#   HTTP 200 + 非零 code，导致只看 http_status 判不出失败，监控和网关都要解包才知道成败。
+#
+# retryable：客户端可否原样重试。用于前端自动重试与 Worker 重试分类，不是建议值。
+
+version: 1
+
+classes:
+  - { prefix: 400, http: 400, name: 参数与校验 }
+  - { prefix: 401, http: 401, name: 认证 }
+  - { prefix: 403, http: 403, name: 授权 }
+  - { prefix: 404, http: 404, name: 资源不存在 }
+  - { prefix: 409, http: 409, name: 冲突 }
+  - { prefix: 413, http: 413, name: 体积超限 }
+  - { prefix: 415, http: 415, name: 媒体类型 }
+  - { prefix: 422, http: 422, name: 业务规则不满足 }
+  - { prefix: 429, http: 429, name: 限流 }
+  - { prefix: 500, http: 500, name: 内部错误 }
+  - { prefix: 502, http: 502, name: 上游 Provider }
+  - { prefix: 503, http: 503, name: 依赖不可用 }
+
+codes:
+  - { code: 0, name: OK, http: 200, message: ok, retryable: false }
+
+  # ---- 400 参数与校验 ----
+  - { code: 40001, name: INVALID_ARGUMENT,      http: 400, message: 参数错误,                 retryable: false }
+  - { code: 40002, name: MISSING_IDEMPOTENCY_KEY, http: 400, message: 缺少幂等键,             retryable: false }
+  - { code: 40003, name: INVALID_JSON,          http: 400, message: 请求体不是合法 JSON,      retryable: false }
+  - { code: 40004, name: INVALID_PAGINATION,    http: 400, message: 分页参数非法,             retryable: false }
+  - { code: 40005, name: INVALID_CANVAS_SCHEMA, http: 400, message: 画布结构不合法,           retryable: false }
+  - { code: 40006, name: INVALID_INPUT_ORDER,   http: 400, message: 输入顺序必须从 1 起连续且唯一, retryable: false }
+  # MCP OAuth 同意页的授权请求句柄（req）无效或已过期（10 分钟），MCPT-12。无效与过期不区分：出路都是回到客户端重新连接。
+  - { code: 40007, name: MCP_CONSENT_EXPIRED,   http: 400, message: 授权请求已过期或无效，请回到客户端重新连接, retryable: false }
+
+  # ---- 401 认证 ----
+  - { code: 40101, name: UNAUTHENTICATED,       http: 401, message: 未认证或凭证无效,         retryable: false }
+  - { code: 40102, name: TOKEN_EXPIRED,         http: 401, message: 凭证已过期,               retryable: false }
+  - { code: 40103, name: TOKEN_REVOKED,         http: 401, message: 凭证已被撤销,             retryable: false }
+  - { code: 40104, name: WRONG_TOKEN_KIND,      http: 401, message: 凭证类型不匹配,           retryable: false }
+  - { code: 40105, name: BAD_CREDENTIALS,       http: 401, message: 账号或密码错误,           retryable: false }
+  - { code: 40106, name: BAD_VERIFICATION_CODE, http: 401, message: 验证码错误或已失效,       retryable: false }
+
+  # ---- 403 授权 ----
+  - { code: 40301, name: PERMISSION_DENIED,     http: 403, message: 无权限,                   retryable: false }
+  - { code: 40302, name: NOT_WORKSPACE_MEMBER,  http: 403, message: 不是该工作区成员,         retryable: false }
+  - { code: 40303, name: INSUFFICIENT_ROLE,     http: 403, message: 工作区角色不足,           retryable: false }
+  - { code: 40304, name: ACCOUNT_BANNED,        http: 403, message: 账号已封禁,               retryable: false }
+  - { code: 40305, name: SHARE_REVOKED,         http: 403, message: 共享授权已撤销,           retryable: false }
+  # 画布 Agent（AGT-26）：同工作区成员可以查看别人发起的会话，但只有发起人能继续对话 / 提交卡片。
+  - { code: 40306, name: AGENT_NOT_INITIATOR,   http: 403, message: 只有会话发起人能继续对话或提交卡片, retryable: false }
+  # 对外 MCP（MCPT-03，MCP-F-13）：有效权限 = 凭据 scope ∩ 当前成员角色。details.requiredScopes 一次列全，
+  # 并分开「凭据缺 scope」（missingScopes，重新授权可解决）与「角色不够」（roleInsufficient，要找管理员）。
+  - { code: 40307, name: MCP_INSUFFICIENT_SCOPE, http: 403, message: MCP 凭据的 scope 或当前工作区角色不足, retryable: false }
+  # 对外 MCP 的工作区开关（MCPT-14）：工作区 owner / admin 关闭了本工作区的 MCP。不撤销授权，重新打开即恢复；
+  # 平台总开关关闭不走这个码（/mcp 直接 404，关掉就是不存在）。
+  - { code: 40308, name: MCP_DISABLED,          http: 403, message: 工作区管理员已关闭本工作区的 MCP, retryable: false }
+  # 对外 MCP 页面审批（MCPT-13，MCP-F-44）：审批链接只能由发起授权的用户本人打开 / 批准 / 拒绝（防钓鱼：
+  # 攻击者把自己发起的链接发给受害者，受害者一点就花了自己的钱）。⚠️ 这个错误**不带任何报价内容**。
+  - { code: 40309, name: MCP_APPROVAL_NOT_OWNER, http: 403, message: 这条审批属于另一个 seeAitv 账号, retryable: false }
+
+  # ---- 404 资源不存在 ----
+  - { code: 40401, name: NOT_FOUND,             http: 404, message: 资源不存在,               retryable: false }
+  # 画布 Agent 总开关关闭（SEEAITV_AGENT_ENABLED=false）：全部 /agent 路由一律 404，不暴露「功能存在但关着」。
+  - { code: 40402, name: AGENT_DISABLED,        http: 404, message: Agent 功能未开启,         retryable: false }
+  # 会话不存在或不属于当前工作区（跨工作区与不存在回同一个码，不泄漏存在性）。
+  - { code: 40403, name: AGENT_SESSION_NOT_FOUND, http: 404, message: 会话不存在,             retryable: false }
+
+  # ---- 409 冲突 ----
+  - { code: 40901, name: CONFLICT,              http: 409, message: 资源状态冲突,             retryable: false }
+  - { code: 40902, name: VERSION_CONFLICT,      http: 409, message: 版本冲突，请重新加载,     retryable: false }
+  - { code: 40903, name: IDEMPOTENCY_MISMATCH,  http: 409, message: 幂等键已用于不同请求,     retryable: false }
+  - { code: 40904, name: DUPLICATE_NAME,        http: 409, message: 名称已存在,               retryable: false }
+  - { code: 40905, name: INVALID_STATE_TRANSITION, http: 409, message: 当前状态不允许该操作,  retryable: false }
+  - { code: 40906, name: RESOURCE_IN_USE,       http: 409, message: 资源被进行中的任务引用,   retryable: false }
+  # 画布操作试图修改非 Agent 所有的节点（AGT-10，内部使用、前端不展示）：Agent 侧改为新建节点。
+  - { code: 40907, name: CANVAS_OP_NOT_OWNED,   http: 409, message: 不能修改非本会话创建或用户改过的节点, retryable: false }
+  # 卡片已提交 / 已过期 / 已作废（AGT-26）：重复提交的第二次走这里，不新建轮次。
+  - { code: 40908, name: AGENT_CARD_CLOSED,     http: 409, message: 卡片已提交或已失效,       retryable: false }
+  # 会话已取消（终态）：之后的发消息、提交卡片一律拒绝。
+  - { code: 40909, name: AGENT_SESSION_CANCELLED, http: 409, message: 会话已取消,             retryable: false }
+  # 对外 MCP 花钱确认（MCPT-10，MCP-F-41/42）。details.reason：not_found（不存在或不属于本授权，不区分）/
+  # fingerprint_mismatch（参数改了）/ amount_mismatch（confirmCredits 不等于报价）/ voided（已因价格变化作废）/ expired /
+  # rejected（用户在审批页上拒绝了，MCPT-13）。
+  - { code: 40910, name: MCP_QUOTE_INVALID,     http: 409, message: 确认凭证无效，请不带 confirmQuoteId 重新调用以获取新报价, retryable: false }
+  # 确认之后、受理之前价格变了：旧 quote 已作废，details.quote 是新报价（不按新价扣费，要用户重新确认）。
+  - { code: 40911, name: MCP_QUOTE_PRICE_CHANGED, http: 409, message: 价格已变化，需按新报价重新确认, retryable: false }
+  # generate 给的 nodeId 不是本授权创建、或用户之后改过：MCP 不改用户的节点，请不传 nodeId 在旁边新建。
+  - { code: 40912, name: MCP_NODE_NOT_OWNED,    http: 409, message: 该节点不是本授权创建或已被用户修改，请在旁边新建, retryable: false }
+  # 凭据开了「花钱需在 seeAitv 页面确认」而用户还没在审批页上批准（MCPT-13）：没有扣费、quote 保持未用；
+  # details.approvalUrl 是审批页地址，用户批准后带同一个 confirmQuoteId 原样重调。客户端的回显金额不算同意。
+  - { code: 40913, name: MCP_APPROVAL_PENDING,  http: 409, message: 等待用户在 seeAitv 页面批准这笔花费, retryable: false }
+
+  # ---- 413 / 415 上传 ----
+  - { code: 41301, name: PAYLOAD_TOO_LARGE,     http: 413, message: 文件超过大小上限,         retryable: false }
+  - { code: 41501, name: UNSUPPORTED_MEDIA_TYPE, http: 415, message: 不支持的文件类型,        retryable: false }
+  - { code: 41502, name: FILE_CONTENT_MISMATCH, http: 415, message: 文件实际内容与声明类型不符, retryable: false }
+
+  # ---- 422 业务规则 ----
+  - { code: 42201, name: INSUFFICIENT_CREDITS,  http: 422, message: 积分不足,                 retryable: false }
+  - { code: 42202, name: CONNECTION_NOT_ALLOWED, http: 422, message: 该连线不被允许,          retryable: false }
+  - { code: 42203, name: CAPABILITY_UNSUPPORTED, http: 422, message: 所选模型不支持该操作或输入, retryable: false }
+  - { code: 42204, name: MODEL_UNAVAILABLE,     http: 422, message: 模型当前不可用,           retryable: false }
+  - { code: 42205, name: PRICING_MISSING,       http: 422, message: 该能力缺少可用价格,       retryable: false }
+  - { code: 42206, name: MEMBER_LEVEL_REQUIRED, http: 422, message: 会员等级不满足,           retryable: false }
+  - { code: 42207, name: UPSTREAM_NOT_READY,    http: 422, message: 上游输入尚未就绪,         retryable: false }
+  - { code: 42208, name: QUOTA_EXCEEDED,        http: 422, message: 超出配额,                 retryable: false }
+  - { code: 42209, name: ORDER_NOT_PAYABLE,     http: 422, message: 订单当前不可支付,         retryable: false }
+  - { code: 42210, name: REFUND_NOT_ALLOWED,    http: 422, message: 不满足退款条件,           retryable: false }
+  - { code: 42211, name: GRAPH_INVALID,         http: 422, message: 图不合法（环或缺输入）,   retryable: false }
+  - { code: 42212, name: PROMPT_NOT_READY,      http: 422, message: 提示词未就绪或已过期,     retryable: false }
+  - { code: 42213, name: TIMELINE_NOT_RENDERABLE, http: 422, message: 时间线未通过渲染预检,   retryable: false }
+  # 所选推理模型不支持 Agent（未标 is_agent_capable，决策 D-4）。
+  - { code: 42214, name: AGENT_MODEL_NOT_CAPABLE, http: 422, message: 所选推理模型不支持 Agent, retryable: false }
+  # 营销选项（创意 / Hook / 风格）已下线、不在投放时段或不适用当前产出（MKT-T-04）。
+  # details:{kind, code, reason, userFixable}，reason ∈ disabled/not_started/ended/output_mismatch/not_found；
+  # 前端按 userFixable 分语气，不匹配文案。
+  - { code: 42215, name: MARKETING_OPTION_UNAVAILABLE, http: 422, message: 所选创意 / Hook / 风格当前不可用, retryable: false }
+  # 3D 导演台 AI 搭景：模型返回的方案无法解析，或过完白名单之后什么都不剩（docs/agent/director dev/02 §5）。
+  # details:{reason, snippet}，snippet 是模型原文的前 300 字。换个说法通常就能成，所以 retryable。
+  - { code: 42216, name: DIRECTOR_DRAFT_INVALID, http: 422, message: 搭景方案无法解析，请换个说法再试, retryable: true }
+  # 智能剪辑：模式与输入不匹配（docs/agent/smartcut dev/02 §8）。解说没有配音、口播 / 解说缺识别结果、
+  # 要求卡点却没有配乐等。details:{reason, options, missing?, quote?}：reason 取 no_picture / no_shots / no_music /
+  # no_voice / asr_missing / not_regenerable（片段级生成：素材是上传的、或是去字幕的结果，SCT-37）；
+  # options 是出路（connect_audio / ignore_beat / transcribe / allow_slow / allow_repeat / fill_shot），
+  # quote 是缺识别结果时的识别报价；前端据此给出出路按钮（SC-UX-09）。
+  - { code: 42217, name: SMARTCUT_INPUT_UNSUITABLE, http: 422, message: 当前素材不满足这个剪辑模式, retryable: false }
+  # 智能剪辑：没有可用的 AI 剪辑模型（smartcut_plan 没绑 0 积分的模型，或模型不可用）。details:{reason, userFixable}。
+  - { code: 42218, name: SMARTCUT_PLAN_UNAVAILABLE, http: 422, message: AI 剪辑暂不可用, retryable: false }
+  # 图片工具条·情绪调节：人物框是在另一张图上框选的（上游换了图）。details:{expectedMediaId, actualMediaId}。
+  # 重新框选人物即可，所以前端给「重新框选」的出路（docs/agent/imagetools IMGD-11）。
+  - { code: 42219, name: TOOL_SOURCE_CHANGED, http: 422, message: 上游图片已变化，请重新框选人物, retryable: false }
+
+  # ---- 429 限流 ----
+  - { code: 42901, name: RATE_LIMITED,          http: 429, message: 请求过于频繁,             retryable: true }
+  - { code: 42902, name: CONCURRENCY_LIMITED,   http: 429, message: 并发任务数已达上限,       retryable: true }
+
+  # ---- 500 内部 ----
+  - { code: 50001, name: INTERNAL,              http: 500, message: 服务内部错误,             retryable: true }
+
+  # ---- 502 上游 ----
+  - { code: 50201, name: PROVIDER_ERROR,        http: 502, message: 上游服务返回错误,         retryable: true }
+  - { code: 50202, name: PROVIDER_TIMEOUT,      http: 502, message: 上游服务超时,             retryable: true }
+  - { code: 50203, name: PROVIDER_REJECTED,     http: 502, message: 上游服务拒绝了该请求,     retryable: false }
+
+  # ---- 503 依赖 ----
+  - { code: 50301, name: DEPENDENCY_UNAVAILABLE, http: 503, message: 依赖服务不可用,          retryable: true }
+  - { code: 50302, name: VERIFICATION_CHANNEL_DOWN, http: 503, message: 验证码发送渠道不可用, retryable: true }
+
+# 任务内部的失败原因（写入 generation.error_code / render_job.error_code），
+# 与 HTTP 错误码**不共用编号空间**：它们描述的是已受理任务的终态原因，不是请求结果。
+task_error_reasons:
+  - { name: PROVIDER_ERROR,     message: 上游返回错误 }
+  - { name: PROVIDER_TIMEOUT,   message: 上游超时 }
+  - { name: DEADLINE_EXCEEDED,  message: 超过任务截止时间 }
+  - { name: OUTPUT_STORE_FAILED, message: 产物归档失败 }
+  - { name: DISPATCH_FAILED,    message: 消息派发失败 }
+  - { name: CANCELLED_BY_USER,  message: 用户取消 }
+  - { name: UPSTREAM_REJECTED,  message: 上游拒绝该输入 }

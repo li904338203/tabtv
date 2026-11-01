@@ -1,0 +1,11 @@
+{
+  "objects": [
+    {"op": "add", "ref": "林澈", "kind": "character", "model": "adult_male", "posePreset": "walk", "facing": {"target": "camera"}},
+    {"op": "add", "ref": "苏然", "kind": "character", "model": "adult_male", "posePreset": "run", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "林澈"}},
+    {"op": "add", "ref": "陈默", "kind": "character", "model": "adult_male", "posePreset": "wave", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "苏然"}},
+    {"op": "add", "ref": "顾北", "kind": "character", "model": "adult_male", "posePreset": "thinking", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "陈默"}},
+    {"op": "add", "ref": "沈曦", "kind": "character", "model": "adult_male", "posePreset": "phone_call", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "顾北"}},
+    {"op": "add", "ref": "周野", "kind": "character", "model": "adult_male", "posePreset": "cheer", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "沈曦"}},
+    {"op": "add", "ref": "许诺", "kind": "character", "model": "adult_male", "posePreset": "bow", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "周野"}},
+    {"op": "add", "ref": "唐糖", "kind": "character", "model": "adult_male", "posePreset": "stand_neutral", "facing": {"target": "camera"}, "relation": {"type": "right_of", "target": "许诺"}},
+    {"op": "add", "ref": "路人甲", "kind": "character", "posePreset": "wa

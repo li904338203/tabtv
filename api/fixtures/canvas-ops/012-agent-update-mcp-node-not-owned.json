@@ -1,0 +1,15 @@
+{
+  "description": "站内 Agent 试图移动 MCP 建的节点（只有 origin.kind=mcp）→ not_owned：Agent 与 MCP 互不可改对方的节点",
+  "actor": { "kind": "agent", "userId": "1001", "sessionId": "7001" },
+  "newIds": [],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "a_m1", "type": "image", "title": "MCP 的图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {}, "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code" } }
+    ]
+  },
+  "ops": [
+    { "kind": "move_node", "nodeId": "a_m1", "position": { "x": 100, "y": 100 } }
+  ],
+  "expectError": "not_owned"
+}

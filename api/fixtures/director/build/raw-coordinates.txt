@@ -1,0 +1,7 @@
+{"objects": [
+  {"op": "add", "ref": "哨兵", "kind": "character", "posePreset": "stand_hands_behind",
+   "position": {"x": 3, "y": 1.5, "z": -2}, "rotation": {"x": 0, "y": 90, "z": 0}},
+  {"op": "add", "ref": "岗亭", "kind": "prop", "shape": "box", "x": 4, "z": -2,
+   "relation": {"type": "behind", "target": "哨兵"}}
+ ],
+ "camera": {"target": "哨兵", "shotSize": "medium_long", "position": {"x": 0, "y": 1.6, "z": 5}}}

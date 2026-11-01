@@ -1,0 +1,88 @@
+{
+  "why": "打开「允许重复」—— 从高权重段起（权重一样按顺序）重复 1、2、3，凑满 20 秒后按权重平分（每段 2 秒）",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 2040,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 2040,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 2040,
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "4",
+      "kind": "video",
+      "mediaId": "74",
+      "durationMs": 2040,
+      "sourceNodeId": "n4"
+    },
+    {
+      "no": "5",
+      "kind": "video",
+      "mediaId": "75",
+      "durationMs": 2040,
+      "sourceNodeId": "n5"
+    },
+    {
+      "no": "6",
+      "kind": "video",
+      "mediaId": "76",
+      "durationMs": 2040,
+      "sourceNodeId": "n6"
+    },
+    {
+      "no": "7",
+      "kind": "video",
+      "mediaId": "77",
+      "durationMs": 2040,
+      "sourceNodeId": "n7"
+    }
+  ],
+  "spec": {
+    "targetMs": 20000,
+    "allowRepeat": true
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"3\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"4\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"5\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"6\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"7\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}]}",
+  "expect": {
+    "video": [
+      "71 0~2000",
+      "72 0~2000",
+      "73 0~2000",
+      "74 0~2000",
+      "75 0~2000",
+      "76 0~2000",
+      "77 0~2000",
+      "71 0~2000",
+      "72 0~2000",
+      "73 0~2000"
+    ],
+    "totalMs": 20000,
+    "usedClips": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "warnings": [
+      "素材不够，重复用了编号 1、2、3"
+    ],
+    "notes": []
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "why": "SC-AC-19：片段裁掉开头 1 秒，落在被裁区间的字幕隐藏，其余整体前移 1 秒；交集不到一半也隐藏",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-a1",
+            "mediaId": "11",
+            "sourceInMs": 1000,
+            "sourceOutMs": 6000
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "kind": "subtitle"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "tmp-s1",
+        "trackId": "3",
+        "startMs": 0,
+        "endMs": 800,
+        "text": "s1",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 0,
+          "srcEndMs": 800
+        }
+      },
+      {
+        "id": "tmp-s2",
+        "trackId": "3",
+        "startMs": 800,
+        "endMs": 1800,
+        "text": "s2",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 800,
+          "srcEndMs": 1800
+        }
+      },
+      {
+        "id": "tmp-s3",
+        "trackId": "3",
+        "startMs": 1800,
+        "endMs": 3000,
+        "text": "s3",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 1800,
+          "srcEndMs": 3000
+        }
+      },
+      {
+        "id": "tmp-s4",
+        "trackId": "3",
+        "startMs": 5500,
+        "endMs": 6500,
+        "text": "s4",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 5500,
+          "srcEndMs": 6500
+        }
+      },
+      {
+        "id": "tmp-s5",
+        "trackId": "3",
+        "startMs": 5800,
+        "endMs": 7000,
+        "text": "s5",
+        "anchor": {
+          "clipId": "tmp-a1",
+          "srcStartMs": 5800,
+          "srcEndMs": 7000
+        }
+      },
+      {
+        "id": "tmp-s6",
+        "trackId": "3",
+        "startMs": 100,
+        "endMs": 900,
+        "text": "手工字幕"
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-a1": {
+        "startMs": 0,
+        "durationMs": 5000
+      }
+    },
+    "subtitles": {
+      "tmp-s1": {
+        "startMs": 0,
+        "endMs": 800,
+        "hidden": true
+      },
+      "tmp-s2": {
+        "startMs": 0,
+        "endMs": 800
+      },
+      "tmp-s3": {
+        "startMs": 800,
+        "endMs": 2000
+      },
+      "tmp-s4": {
+        "startMs": 4500,
+        "endMs": 5000
+      },
+      "tmp-s5": {
+        "startMs": 5800,
+        "endMs": 7000,
+        "hidden": true
+      },
+      "tmp-s6": {
+        "startMs": 100,
+        "endMs": 900
+      }
+    },
+    "texts": {},
+    "totalMs": 5000,
+    "effectiveMs": 5000
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "why": "SC-AC-11：三段 4 秒、两处 1 秒叠化 → 第 3 段成片起点 6000，成片总长 10000",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          {
+            "id": "tmp-c1",
+            "mediaId": "11",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000
+          },
+          {
+            "id": "tmp-c2",
+            "mediaId": "12",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          },
+          {
+            "id": "tmp-c3",
+            "mediaId": "13",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": {
+        "startMs": 0,
+        "durationMs": 4000
+      },
+      "tmp-c2": {
+        "startMs": 3000,
+        "durationMs": 4000
+      },
+      "tmp-c3": {
+        "startMs": 6000,
+        "durationMs": 4000
+      }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 12000,
+    "effectiveMs": 10000
+  }
+}

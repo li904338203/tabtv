@@ -1,0 +1,203 @@
+{
+  "why": "音频的默认用途（SC-F-11）：文字转语音来的默认人声，其余默认配乐；回查给了操作码时以它为准；有生成但没有入边的按音频节点的默认操作（text2audio）",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "txt",
+        "type": "text",
+        "title": "节点 txt",
+        "params": {
+          "text": "旁白"
+        }
+      },
+      {
+        "id": "tts",
+        "type": "audio",
+        "title": "节点 tts",
+        "result": {
+          "id": "g-80",
+          "status": "success",
+          "mediaId": "80",
+          "outputUrl": "/api/v1/media/80"
+        }
+      },
+      {
+        "id": "mus",
+        "type": "audio",
+        "title": "节点 mus",
+        "result": {
+          "id": "g-81",
+          "status": "success",
+          "mediaId": "81",
+          "outputUrl": "/api/v1/media/81"
+        }
+      },
+      {
+        "id": "lone",
+        "type": "audio",
+        "title": "节点 lone",
+        "result": {
+          "id": "g-82",
+          "status": "success",
+          "mediaId": "82",
+          "outputUrl": "/api/v1/media/82"
+        }
+      },
+      {
+        "id": "v2a",
+        "type": "audio",
+        "title": "节点 v2a",
+        "result": {
+          "id": "g-v2a",
+          "status": "success",
+          "mediaId": "83",
+          "outputUrl": "/api/v1/media/83"
+        }
+      },
+      {
+        "id": "cp",
+        "type": "audio",
+        "title": "节点 cp",
+        "result": {
+          "sourceGenerationId": "99",
+          "status": "success",
+          "mediaId": "84"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-txt-tts",
+        "source": "txt",
+        "target": "tts",
+        "order": 1,
+        "operation": "text2audio"
+      },
+      {
+        "id": "e-txt-mus",
+        "source": "txt",
+        "target": "mus",
+        "order": 1,
+        "operation": "text2music"
+      },
+      {
+        "id": "e-txt-cp",
+        "source": "txt",
+        "target": "cp",
+        "order": 1,
+        "operation": "text2audio"
+      },
+      {
+        "id": "e-tts-sc1",
+        "source": "tts",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-mus-sc1",
+        "source": "mus",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-lone-sc1",
+        "source": "lone",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-v2a-sc1",
+        "source": "v2a",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-cp-sc1",
+        "source": "cp",
+        "target": "sc1",
+        "order": 5
+      }
+    ]
+  },
+  "lookup": {
+    "generations": {
+      "g-v2a": {
+        "status": "success",
+        "operation": "video2audio",
+        "outputs": [
+          {
+            "mediaId": "83"
+          }
+        ]
+      }
+    }
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "tts",
+        "sourceNodeType": "audio",
+        "title": "节点 tts",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "80",
+        "audioRole": "voice",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "mus",
+        "sourceNodeType": "audio",
+        "title": "节点 mus",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "81",
+        "audioRole": "music",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "lone",
+        "sourceNodeType": "audio",
+        "title": "节点 lone",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "82",
+        "audioRole": "voice",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "v2a",
+        "sourceNodeType": "audio",
+        "title": "节点 v2a",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "83",
+        "audioRole": "music",
+        "used": false
+      },
+      {
+        "no": "5",
+        "sourceNodeId": "cp",
+        "sourceNodeType": "audio",
+        "title": "节点 cp",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "84",
+        "audioRole": "voice",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 5
+  }
+}

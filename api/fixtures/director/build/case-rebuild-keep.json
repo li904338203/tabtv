@@ -1,0 +1,317 @@
+{
+  "why": "DR-AC-28：重搭只替换可替换对象 —— 用户摆的阿明、锁定的木箱、被用户改过的小雅逐字不变；AI 摆的路人甲被修改（未知字段保留）、路人乙被删除；输出机位是 AI 摆的，就地改",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [
+      {
+        "id": "obj_cam_ai",
+        "name": "机位 1",
+        "kind": "camera",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 3.5
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "ai",
+        "camera": {
+          "focalLengthMm": 35,
+          "sensorWidthMm": 36,
+          "aspect": "16:9",
+          "near": 0.1,
+          "far": 1000,
+          "roll": 0
+        }
+      },
+      {
+        "id": "obj_user_a",
+        "name": "阿明",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": -1,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "user",
+        "character": {
+          "model": "adult_male",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "stand_neutral"
+        },
+        "futureField": {
+          "keep": true
+        }
+      },
+      {
+        "id": "obj_locked_b",
+        "name": "木箱",
+        "kind": "prop",
+        "transform": {
+          "position": {
+            "x": 1.5,
+            "y": 0,
+            "z": -0.5
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": true,
+        "source": "ai",
+        "prop": {
+          "shape": "box",
+          "size": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          },
+          "color": "#9aa0a6"
+        }
+      },
+      {
+        "id": "obj_user_c",
+        "name": "小雅",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": 0.8,
+            "y": 0,
+            "z": 0.6
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "user",
+        "character": {
+          "model": "adult_female",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "wave"
+        }
+      },
+      {
+        "id": "obj_ai_d",
+        "name": "路人甲",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": -2
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "ai",
+        "character": {
+          "model": "adult_male",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "walk"
+        },
+        "futureField": {
+          "keep": true
+        }
+      },
+      {
+        "id": "obj_ai_e",
+        "name": "路人乙",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": -2,
+            "y": 0,
+            "z": -2
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "ai",
+        "character": {
+          "model": "adult_male",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "walk"
+        }
+      }
+    ],
+    "outputCameraId": "obj_cam_ai"
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "update",
+        "ref": "obj_ai_d",
+        "posePreset": "phone_call",
+        "relation": {
+          "type": "right_of",
+          "target": "阿明",
+          "distance": 1.5
+        }
+      },
+      {
+        "op": "remove",
+        "ref": "obj_ai_e"
+      },
+      {
+        "op": "update",
+        "ref": "obj_user_a",
+        "posePreset": "bow"
+      },
+      {
+        "op": "remove",
+        "ref": "obj_locked_b"
+      },
+      {
+        "op": "update",
+        "ref": "小雅",
+        "posePreset": "run"
+      },
+      {
+        "op": "add",
+        "ref": "警察",
+        "kind": "character",
+        "posePreset": "point_forward",
+        "relation": {
+          "type": "left_of",
+          "target": "阿明"
+        },
+        "facing": {
+          "target": "阿明"
+        }
+      }
+    ],
+    "camera": {
+      "target": [
+        "阿明",
+        "警察"
+      ],
+      "shotSize": "medium_long",
+      "angle": "eye_level",
+      "side": "front"
+    }
+  },
+  "expect": {
+    "added": 1,
+    "removed": 1,
+    "updatedContains": [
+      "obj_ai_d",
+      "obj_cam_ai"
+    ],
+    "cameras": 1,
+    "outputCamera": "obj_cam_ai",
+    "unchanged": [
+      "obj_user_a",
+      "obj_locked_b",
+      "obj_user_c"
+    ],
+    "absent": [
+      "obj_ai_e"
+    ],
+    "keepsField": {
+      "obj_ai_d": "futureField"
+    },
+    "leftOf": [
+      [
+        "警察",
+        "阿明"
+      ],
+      [
+        "阿明",
+        "路人甲"
+      ]
+    ],
+    "minGapM": 0.5,
+    "grounded": true,
+    "faces": [
+      [
+        "警察",
+        "阿明"
+      ]
+    ],
+    "framing": {
+      "targets": [
+        "阿明",
+        "警察"
+      ],
+      "shotSize": "medium_long"
+    },
+    "pitchDeg": 0,
+    "defaultsContain": [
+      "「阿明」（obj_user_a）是用户摆的，不能修改，已保留原样",
+      "「木箱」（obj_locked_b）已锁定，不能删除，已保留原样",
+      "「小雅」（obj_user_c）是用户摆的，不能修改，已保留原样"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/session-revoked.schema.json",
+  "title": "SessionRevoked",
+  "description": "会话被撤销。收到后客户端必须立即清本地凭证并断开 WebSocket —— 修 GAP-19：旧系统 logout 只返回成功、refresh 不查用户状态，封禁/改密后旧 token 仍可用。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "userId",
+    "reason"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "session.revoked"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "userId": {
+      "$ref": "#/$defs/id"
+    },
+    "sessionId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "null 表示该用户的全部会话被撤销（封禁或改密）；非 null 表示仅该会话（单设备退出）"
+    },
+    "reason": {
+      "enum": [
+        "logout",
+        "password_changed",
+        "banned",
+        "admin_revoked",
+        "expired"
+      ],
+      "type": "string"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

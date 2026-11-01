@@ -1,0 +1,16 @@
+{
+  "description": "MCP 试图修改站内 Agent 建的节点（只有旧的 agent 字段）→ not_owned，整批拒绝（前面那条 add_node 也不生效）：Agent 与 MCP 互不可改对方的节点",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": ["a_fx1"],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "a_agent1", "type": "text", "title": "Agent 写的词", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": { "prompt": "Agent 原文" }, "agent": { "sessionId": "7001" } }
+    ]
+  },
+  "ops": [
+    { "kind": "add_node", "node": { "type": "text", "title": "新节点", "params": {} } },
+    { "kind": "update_node", "nodeId": "a_agent1", "patch": { "params": { "prompt": "MCP 改写" } } }
+  ],
+  "expectError": "not_owned"
+}

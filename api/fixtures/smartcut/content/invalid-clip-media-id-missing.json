@@ -1,0 +1,79 @@
+{
+  "why": "mediaId 必填",
+  "content": {
+    "version": 3,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1001",
+        "kind": "video",
+        "isMuted": false,
+        "volume": 100,
+        "clips": [
+          {
+            "id": "2001",
+            "sourceInMs": 0,
+            "sourceOutMs": 4000,
+            "speed": 100,
+            "volume": 100
+          },
+          {
+            "id": "tmp-a",
+            "mediaId": "78",
+            "sourceInMs": 500,
+            "sourceOutMs": 4500,
+            "transitionIn": {
+              "kind": "dissolve",
+              "durationMs": 1000
+            }
+          }
+        ]
+      },
+      {
+        "id": "1002",
+        "kind": "audio",
+        "role": "music",
+        "clips": [
+          {
+            "id": "2002",
+            "mediaId": "88",
+            "startMs": 2500,
+            "sourceInMs": 0,
+            "sourceOutMs": 30000
+          }
+        ]
+      },
+      {
+        "id": "1003",
+        "kind": "subtitle",
+        "lang": "zh-CN"
+      },
+      {
+        "id": "tmp-t",
+        "kind": "text"
+      }
+    ],
+    "subtitles": [
+      {
+        "id": "3001",
+        "trackId": "1003",
+        "startMs": 0,
+        "endMs": 1800,
+        "text": "第一句"
+      }
+    ],
+    "texts": [
+      {
+        "id": "tmp-5",
+        "trackId": "tmp-t",
+        "startMs": 0,
+        "endMs": 3000,
+        "text": "新品上市"
+      }
+    ]
+  },
+  "path": "tracks[0].clips[0].mediaId"
+}

@@ -1,0 +1,46 @@
+{
+  "why": "按画面生成的音效跟随画面轨的第二段（SC-F-56）：存储的起点是旧的 0，按锚点算到第二段的成片起点 4000；取用区间与速度原样",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": [
+          { "id": "tmp-c1", "mediaId": "11", "sourceInMs": 0, "sourceOutMs": 4000 },
+          { "id": "tmp-c2", "mediaId": "12", "sourceInMs": 2000, "sourceOutMs": 10000 }
+        ]
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "role": "sfx",
+        "clips": [
+          {
+            "id": "tmp-s1",
+            "mediaId": "41",
+            "startMs": 0,
+            "sourceInMs": 0,
+            "sourceOutMs": 8000,
+            "anchor": { "clipId": "tmp-c2", "srcStartMs": 2000, "srcEndMs": 10000 }
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-c1": { "startMs": 0, "durationMs": 4000 },
+      "tmp-c2": { "startMs": 4000, "durationMs": 8000 },
+      "tmp-s1": { "startMs": 4000, "durationMs": 8000, "follow": { "sourceInMs": 0, "sourceOutMs": 8000, "speed": 100 } }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 12000,
+    "effectiveMs": 12000
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "version": 0,
+  "aspectRatio": "custom",
+  "fps": 120,
+  "width": 64,
+  "height": 7680,
+  "tracks": [
+    {
+      "id": "1",
+      "kind": "video",
+      "clips": [
+        {
+          "id": "tmp-a",
+          "mediaId": "1",
+          "sourceInMs": 0,
+          "sourceOutMs": 2000,
+          "transitionIn": {
+            "kind": "fade",
+            "durationMs": 1000
+          }
+        },
+        {
+          "id": "tmp-b",
+          "mediaId": "2",
+          "sourceInMs": 0,
+          "sourceOutMs": 2000,
+          "transitionIn": {
+            "kind": "wipe",
+            "durationMs": 1000
+          },
+          "transitionOut": {
+            "kind": "slide_left",
+            "durationMs": 1000
+          }
+        },
+        {
+          "id": "tmp-c",
+          "mediaId": "3",
+          "sourceInMs": 0,
+          "sourceOutMs": 400,
+          "speed": 400,
+          "transitionIn": {
+            "kind": "none",
+            "durationMs": 0
+          }
+        },
+        {
+          "id": "tmp-d",
+          "mediaId": "4",
+          "sourceInMs": 0,
+          "sourceOutMs": 1796900
+        }
+      ]
+    }
+  ]
+}

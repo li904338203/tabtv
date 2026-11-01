@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/agent-delta.schema.json",
+  "title": "AgentDelta",
+  "description": "画布 Agent 助手文本的流式增量（Worker 按 50ms 或 64 字符合并后发）。投递到 project:{id}。纯展示：丢了无所谓，本轮结束后以 HTTP 拉到的正式消息替换。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "sessionId",
+    "turnId",
+    "messageId",
+    "text"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "agent.delta"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sessionId": {
+      "$ref": "#/$defs/id"
+    },
+    "turnId": {
+      "$ref": "#/$defs/id"
+    },
+    "messageId": {
+      "$ref": "#/$defs/id",
+      "description": "这段文本最终落库的那条助手消息（Worker 预先分配）"
+    },
+    "text": {
+      "type": "string",
+      "description": "增量文本（不是全文）"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "description": "MCP 改本授权建且用户没动过的节点：update_node / move_node / 以它为目标的 add_edge 都成功；origin 里服务端不认识的键（futureOriginKey）原样保留",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": ["a_fx1"],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "用户的图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      {
+        "id": "a_m1",
+        "type": "image",
+        "title": "旧标题",
+        "position": { "x": 400, "y": 0 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "prompt": "旧", "seed": 9007199254740993 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code", "userTouched": false, "futureOriginKey": { "keep": true } }
+      }
+    ],
+    "edges": []
+  },
+  "ops": [
+    { "kind": "update_node", "nodeId": "a_m1", "patch": { "title": "新标题", "params": { "prompt": "新" } } },
+    { "kind": "move_node", "nodeId": "a_m1", "position": { "x": 420, "y": 10 } },
+    { "kind": "add_edge", "edge": { "source": "n_user1", "target": "a_m1" } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "用户的图", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      {
+        "id": "a_m1",
+        "type": "image",
+        "title": "新标题",
+        "position": { "x": 420, "y": 10 },
+        "size": { "w": 330, "h": 180 },
+        "params": { "prompt": "新", "seed": 9007199254740993 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code", "userTouched": false, "futureOriginKey": { "keep": true } }
+      }
+    ],
+    "edges": [
+      { "id": "a_fx1", "source": "n_user1", "sourceHandle": "out", "target": "a_m1", "targetHandle": "in", "order": 1 }
+    ]
+  },
+  "nodeIds": [],
+  "applied": [
+    { "kind": "update_node", "nodeId": "a_m1", "patch": { "title": "新标题", "params": { "prompt": "新" } } },
+    { "kind": "move_node", "nodeId": "a_m1", "position": { "x": 420, "y": 10 } },
+    { "kind": "add_edge", "edge": { "id": "a_fx1", "source": "n_user1", "sourceHandle": "out", "target": "a_m1", "targetHandle": "in", "order": 1 } }
+  ]
+}

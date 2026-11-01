@@ -1,0 +1,124 @@
+{
+  "why": "大特写 + 俯拍 + 右前方，85mm：输出机位是用户摆的竖屏机位，新建的 AI 机位沿用 9:16（用户选的竖屏不能被换成横屏）",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [
+      {
+        "id": "obj_camera_1",
+        "name": "机位 1",
+        "kind": "camera",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 1.35,
+            "z": 1.87
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "user",
+        "camera": {
+          "focalLengthMm": 35,
+          "sensorWidthMm": 36,
+          "aspect": "9:16",
+          "near": 0.1,
+          "far": 1000,
+          "roll": 0
+        }
+      },
+      {
+        "id": "obj_character_1",
+        "name": "角色 1",
+        "kind": "character",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "visible": true,
+        "locked": false,
+        "source": "user",
+        "character": {
+          "model": "adult_male",
+          "height": 1.8,
+          "body": "standard",
+          "posePreset": "stand_neutral"
+        }
+      }
+    ],
+    "outputCameraId": "obj_camera_1"
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "主角",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "right_of",
+          "target": "角色 1",
+          "distance": 1.5
+        }
+      }
+    ],
+    "camera": {
+      "target": [
+        "主角"
+      ],
+      "shotSize": "extreme_close_up",
+      "angle": "high",
+      "side": "front_right",
+      "focalLengthMm": 85
+    }
+  },
+  "expect": {
+    "added": 2,
+    "characters": 2,
+    "cameras": 2,
+    "outputCamera": "new",
+    "aspect": "9:16",
+    "grounded": true,
+    "unchanged": [
+      "obj_camera_1",
+      "obj_character_1"
+    ],
+    "pitchDeg": -30,
+    "framing": {
+      "targets": [
+        "主角"
+      ],
+      "shotSize": "extreme_close_up"
+    },
+    "defaultsContain": [
+      "输出机位「机位 1」是用户摆的，新建「机位 2」作为输出机位"
+    ]
+  }
+}

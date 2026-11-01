@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/notification-created.schema.json",
+  "title": "NotificationCreated",
+  "description": "站内通知。source 必须随消息下发：个人通知与全站公告存在两张表，id 在同一空间里无从区分，标已读时要靠它分流。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "notificationId",
+    "source",
+    "userId",
+    "notificationType",
+    "title",
+    "unreadCount"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "notification.created"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notificationId": {
+      "$ref": "#/$defs/id"
+    },
+    "source": {
+      "enum": [
+        "notification",
+        "announcement"
+      ],
+      "description": "notification=个人一人一行；announcement=全站一行，已读记在 announcement_read",
+      "type": "string"
+    },
+    "userId": {
+      "$ref": "#/$defs/id"
+    },
+    "notificationType": {
+      "enum": [
+        "generation_success",
+        "generation_failed",
+        "render_success",
+        "render_failed",
+        "work_approved",
+        "work_rejected",
+        "work_offline",
+        "workspace_invited",
+        "workspace_removed",
+        "order_paid",
+        "refund_done",
+        "credits_expiring",
+        "announcement"
+      ],
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "refType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "refId": {
+      "$ref": "#/$defs/nullableId"
+    },
+    "linkUrl": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unreadCount": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "随事件下发当前未读总数，省掉前端为一个红点再发一次请求"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

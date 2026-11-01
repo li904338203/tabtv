@@ -1,0 +1,26 @@
+{
+  "why": "字幕翻译：每条译成「[语言码] 原文」；假上游（scripts/fake-upstream/smartcut.go）对这份 user 消息拼出的回包逐字等于 raw（假上游的测试钉住），这里证明真解析器一项不丢地收下它 —— E2E 的断言按同一个拼法写，回包与解析器对不上时红在这里而不是 E2E 里",
+  "mode": "translate",
+  "refs": {
+    "items": 2
+  },
+  "user": "## 目标语言\n\n英文（en）\n\n## 字幕（按序号）\n\n1. 大家好\n2. 今天讲剪辑",
+  "raw": "{\"items\":[{\"n\":1,\"text\":\"[en] 大家好\"},{\"n\":2,\"text\":\"[en] 今天讲剪辑\"}]}",
+  "expect": {
+    "draft": {
+      "mode": "translate",
+      "items": [
+        {
+          "n": 1,
+          "text": "[en] 大家好"
+        },
+        {
+          "n": 2,
+          "text": "[en] 今天讲剪辑"
+        }
+      ]
+    },
+    "dropped": [],
+    "ignored": []
+  }
+}

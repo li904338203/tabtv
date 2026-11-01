@@ -1,0 +1,139 @@
+{
+  "why": "连线顺序即编号（order 升序、相同按源节点 ID）；跳过源是文档 / 画框的连线与悬空边（不占编号）；没有快照事实时生成成功的按快照就绪",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "b",
+        "type": "video",
+        "title": "节点 b",
+        "result": {
+          "id": "g-71",
+          "status": "success",
+          "mediaId": "71",
+          "outputUrl": "/api/v1/media/71"
+        }
+      },
+      {
+        "id": "a",
+        "type": "image",
+        "title": "节点 a",
+        "result": {
+          "id": "g-72",
+          "status": "success",
+          "mediaId": "72",
+          "outputUrl": "/api/v1/media/72"
+        }
+      },
+      {
+        "id": "t",
+        "type": "text",
+        "title": "节点 t",
+        "params": {
+          "text": "  新品上市  "
+        }
+      },
+      {
+        "id": "doc",
+        "type": "document",
+        "title": "节点 doc"
+      },
+      {
+        "id": "f",
+        "type": "frame",
+        "title": "节点 f"
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      },
+      {
+        "id": "other",
+        "type": "smartcut",
+        "title": "节点 other"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-t-sc1",
+        "source": "t",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-b-sc1",
+        "source": "b",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-a-sc1",
+        "source": "a",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-doc-sc1",
+        "source": "doc",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-f-sc1",
+        "source": "f",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-ghost-sc1",
+        "source": "ghost",
+        "target": "sc1",
+        "order": 5
+      },
+      {
+        "id": "e-a-other",
+        "source": "a",
+        "target": "other",
+        "order": 1
+      }
+    ]
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "a",
+        "sourceNodeType": "image",
+        "title": "节点 a",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "72",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "b",
+        "sourceNodeType": "video",
+        "title": "节点 b",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "71",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "t",
+        "sourceNodeType": "text",
+        "title": "节点 t",
+        "kind": "text",
+        "status": "ready",
+        "text": "新品上市",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 2
+  }
+}

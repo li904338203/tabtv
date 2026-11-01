@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/director-scene-updated.schema.json",
+  "title": "DirectorSceneUpdated",
+  "description": "3D 导演台的场景保存成功（docs/agent/director，DRD-31）。网页、Agent、MCP 三条写入路径都推，投递到 project:{id}。只是对账信号：前端本地版本 < version 时 GET /projects/{projectId}/director-scenes/{sceneId} 取正文，不拿事件内容当正文。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "projectId",
+    "sceneId",
+    "canvasNodeId",
+    "version",
+    "renderFingerprint",
+    "editorKind",
+    "editorId",
+    "editorName"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "director.scene_updated"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "sceneId": {
+      "$ref": "#/$defs/id"
+    },
+    "canvasNodeId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 2,
+      "description": "保存之后的场景版本（新建的场景是 1，第一次保存之后才有事件）"
+    },
+    "renderFingerprint": {
+      "type": "string",
+      "minLength": 1,
+      "description": "保存之后的渲染指纹；节点卡据此判断截图是否过期，不必取正文"
+    },
+    "editorKind": {
+      "enum": [
+        "user",
+        "agent",
+        "mcp"
+      ],
+      "type": "string"
+    },
+    "editorId": {
+      "$ref": "#/$defs/nullableId",
+      "description": "最后一次保存的人（Agent / MCP 写入时是代谁写的那个人）"
+    },
+    "editorName": {
+      "type": "string",
+      "description": "最后一次保存的人的昵称；未知时为空串"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

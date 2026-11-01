@@ -1,0 +1,113 @@
+/*
+ * 3D 导演台编辑器的公共样式（DRT-15）。
+ * ⚠️ 只用 `--portal-*` 变量，不写死颜色（亮 / 暗两套主题都要对）；视口背景色来自场景数据，不跟主题走（DR-UX-12）。
+ * 由 DirectorStudio.vue 引入，随编辑器的异步 chunk 加载，不进画布首屏。
+ */
+.dr-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  color: var(--portal-text);
+  font-size: 12px;
+}
+.dr-section { display: grid; gap: 8px; }
+.dr-section > h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  color: var(--portal-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.dr-field { display: grid; grid-template-columns: 72px 1fr; align-items: center; gap: 8px; }
+.dr-field > label,
+.dr-field > span { color: var(--portal-text-soft); }
+.dr-vec { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.dr-vec label { display: flex; align-items: center; gap: 3px; color: var(--portal-muted); font-size: 11px; }
+.dr-input,
+.dr-select {
+  width: 100%;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid var(--portal-line);
+  border-radius: 5px;
+  color: var(--portal-text);
+  background: var(--portal-input-bg);
+  font-size: 12px;
+}
+.dr-input:focus,
+.dr-select:focus { outline: 1px solid var(--portal-cyan-line); border-color: var(--portal-cyan-line); }
+.dr-input:disabled,
+.dr-select:disabled { color: var(--portal-disabled-text); background: var(--portal-disabled-bg); cursor: not-allowed; }
+.dr-unit { color: var(--portal-muted); font-size: 11px; white-space: nowrap; }
+.dr-range { display: flex; align-items: center; gap: 8px; }
+.dr-range input[type="range"] { flex: 1 1 auto; min-width: 0; accent-color: var(--portal-cyan); }
+.dr-seg { display: flex; flex-wrap: wrap; gap: 4px; }
+.dr-btn,
+.dr-seg button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--portal-line);
+  border-radius: 5px;
+  color: var(--portal-text);
+  background: transparent;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.dr-btn:hover:not(:disabled),
+.dr-seg button:hover:not(:disabled) { background: var(--portal-hover); }
+.dr-seg button.active { border-color: transparent; color: var(--portal-on-accent); background: var(--portal-text); }
+.dr-btn:disabled,
+.dr-seg button:disabled { opacity: 0.45; cursor: not-allowed; }
+.dr-btn.primary { border-color: transparent; color: var(--portal-on-accent); background: var(--portal-text); }
+/*
+ * ⚠️ 上面的悬停规则（三个类选择器）比「主按钮 / 选中项」（两个）更具体：不单独写的话，鼠标一放上去
+ * 主按钮的底色就换成悬停灰，而文字还是反色 —— 亮色主题下白字压浅灰、暗色下黑字压深灰，字直接看不见（DRT-21 发现）。
+ */
+.dr-btn.primary:hover:not(:disabled),
+.dr-seg button.active:hover:not(:disabled) { background: var(--portal-text); opacity: 0.86; }
+.dr-check { display: flex; align-items: center; gap: 6px; color: var(--portal-text-soft); }
+.dr-check input { accent-color: var(--portal-cyan); }
+.dr-hint { margin: 0; color: var(--portal-muted); font-size: 11px; line-height: 1.5; }
+.dr-note {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--portal-gold-line);
+  border-radius: 5px;
+  color: var(--portal-text);
+  background: var(--portal-gold-soft);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.dr-empty { margin: 0; padding: 18px 0; color: var(--portal-muted); text-align: center; }
+.dr-tabs { display: flex; gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid var(--portal-line); }
+.dr-tabs button {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--portal-muted);
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.dr-tabs button.active { border-bottom-color: var(--portal-text); color: var(--portal-text); font-weight: 600; }
+.dr-color { width: 34px; height: 26px; padding: 0 2px; border: 1px solid var(--portal-line); border-radius: 5px; background: var(--portal-input-bg); }
+@media (prefers-reduced-motion: reduce) {
+  .dr-panel * { transition: none !important; animation: none !important; }
+}
+/* 截图完成的 toast（ElMessage 传送到 body，不在编辑器的作用域样式里） */
+.director-toast { display: inline-flex; align-items: center; gap: 8px; }
+.director-toast-action { padding: 2px 8px; border: 1px solid var(--portal-line-strong); border-radius: 5px; color: var(--portal-text); background: transparent; font-size: 12px; cursor: pointer; }
+.director-toast-action:hover { background: var(--portal-hover); }

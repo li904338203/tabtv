@@ -1,0 +1,24 @@
+{
+  "id": "chatcmpl-bad1",
+  "object": "chat.completion",
+  "created": 1699896916,
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_bad",
+            "type": "function",
+            "function": {"name": "add_node", "arguments": "{\"type\": \"image\", \"prompt\": \"一只"}
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ],
+  "usage": {"prompt_tokens": 50, "completion_tokens": 9, "total_tokens": 59}
+}

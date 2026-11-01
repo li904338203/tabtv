@@ -1,0 +1,74 @@
+{
+  "description": "口播文案校验（MKT-F-76、MKT-AC-29）。Go CheckTalkCopy 与管理端前端预检共用：两边遍历同一批用例，任一侧不一致即失败。errors / warnings 按输出顺序列出 {field, code}：字段按名字排序，同一字段内禁用词按 BannedTalkWords 顺序、合规用语按 CautionWords 顺序；缺提示句那条 field 为空、排在最后。",
+  "cases": [
+    {
+      "description": "禁用词拦截并点名字段（没有口播标签也拦）",
+      "fields": { "name": "数字人带货", "description": "把商品讲清楚" },
+      "tags": [],
+      "errors": [{ "field": "name", "code": "banned_word" }],
+      "warnings": []
+    },
+    {
+      "description": "同一字段含两个禁用词各报一条",
+      "fields": { "name": "达人讲解", "description": "支持对口型，口型同步更自然" },
+      "tags": ["口播"],
+      "errors": [
+        { "field": "description", "code": "banned_word" },
+        { "field": "description", "code": "banned_word" }
+      ],
+      "warnings": [{ "field": "", "code": "missing_disclaimer" }]
+    },
+    {
+      "description": "插空格绕不过禁用词",
+      "fields": { "name": "真 人 克 隆", "description": "" },
+      "tags": [],
+      "errors": [{ "field": "name", "code": "banned_word" }],
+      "warnings": []
+    },
+    {
+      "description": "口播标签缺提示句只告警",
+      "fields": { "name": "达人口播", "description": "真人出镜讲三个卖点" },
+      "tags": ["口播"],
+      "errors": [],
+      "warnings": [{ "field": "", "code": "missing_disclaimer" }]
+    },
+    {
+      "description": "口播标签且含提示句：通过",
+      "fields": { "name": "达人口播", "description": "画面为人物对镜讲解，不保证口型与语音逐字同步" },
+      "tags": ["口播"],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "description": "提示句用半角逗号或带空格也认",
+      "fields": { "name": "达人口播", "description": "画面为人物对镜讲解, 不保证口型与语音逐字同步" },
+      "tags": [" 口播 "],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "description": "非口播不触发提示句告警",
+      "fields": { "name": "开箱特写", "description": "近景拆箱，展示包装" },
+      "tags": ["开箱"],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "description": "合规用语只告警不拦截",
+      "fields": { "name": "爆款开场", "description": "医生同款，100%有效" },
+      "tags": [],
+      "errors": [],
+      "warnings": [
+        { "field": "description", "code": "caution_word" },
+        { "field": "description", "code": "caution_word" }
+      ]
+    },
+    {
+      "description": "提示句写在说明里、禁用词在名称里：拦名称，不报缺提示句",
+      "fields": { "name": "数字人口播", "description": "画面为人物对镜讲解，不保证口型与语音逐字同步" },
+      "tags": ["口播"],
+      "errors": [{ "field": "name", "code": "banned_word" }],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "why": "模型反问、通篇没有一个括号：说清是回了一段文字",
+  "mode": "mix",
+  "refs": {
+    "cards": [
+      {
+        "no": "1",
+        "kind": "video",
+        "durationMs": 4000
+      },
+      {
+        "no": "2",
+        "kind": "video",
+        "durationMs": 6000
+      },
+      {
+        "no": "3",
+        "kind": "audio",
+        "durationMs": 30000,
+        "audioRole": "music"
+      },
+      {
+        "no": "4",
+        "kind": "image"
+      }
+    ]
+  },
+  "raw": "请问你希望成片多长？素材里哪一段是产品？",
+  "expect": {
+    "invalid": "模型没有按要求输出 JSON，回的是一段文字"
+  }
+}

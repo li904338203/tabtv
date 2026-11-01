@@ -1,0 +1,85 @@
+{
+  "why": "SC-AC-38：7 段各 2.04 秒、目标 20 秒 —— 默认如实剪：不放慢、不重复，警告写明素材不够",
+  "mode": "mix",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 2040,
+      "sourceNodeId": "n1"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 2040,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 2040,
+      "sourceNodeId": "n3"
+    },
+    {
+      "no": "4",
+      "kind": "video",
+      "mediaId": "74",
+      "durationMs": 2040,
+      "sourceNodeId": "n4"
+    },
+    {
+      "no": "5",
+      "kind": "video",
+      "mediaId": "75",
+      "durationMs": 2040,
+      "sourceNodeId": "n5"
+    },
+    {
+      "no": "6",
+      "kind": "video",
+      "mediaId": "76",
+      "durationMs": 2040,
+      "sourceNodeId": "n6"
+    },
+    {
+      "no": "7",
+      "kind": "video",
+      "mediaId": "77",
+      "durationMs": 2040,
+      "sourceNodeId": "n7"
+    }
+  ],
+  "spec": {
+    "targetMs": 20000
+  },
+  "raw": "{\"segments\": [{\"clip\": \"1\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"2\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"3\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"4\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"5\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"6\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}, {\"clip\": \"7\", \"take\": \"full\", \"role\": \"body\", \"weight\": 1, \"transition\": \"cut\"}]}",
+  "expect": {
+    "video": [
+      "71 0~2040",
+      "72 0~2040",
+      "73 0~2040",
+      "74 0~2040",
+      "75 0~2040",
+      "76 0~2040",
+      "77 0~2040"
+    ],
+    "totalMs": 14280,
+    "usedClips": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "warnings": [
+      "素材共 14.3 秒，不足目标 20 秒，已按 14.3 秒剪"
+    ],
+    "notes": [],
+    "summary": "用了 7 段素材（编号 1、2、3、4、5、6、7），成片 14.3 秒"
+  }
+}

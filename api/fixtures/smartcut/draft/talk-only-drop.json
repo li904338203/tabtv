@@ -1,0 +1,41 @@
+{
+  "why": "口播：只给了 drop 没给 keep —— 按「保留其余句子」理解",
+  "mode": "talk",
+  "refs": {
+    "sentences": [
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6"
+    ]
+  },
+  "raw": "{\"drop\":[{\"sentence\":\"s3\",\"reason\":\"重复\"},{\"sentence\":\"S6\"}]}",
+  "expect": {
+    "draft": {
+      "mode": "talk",
+      "keep": [
+        {
+          "from": "s1",
+          "to": "s2"
+        },
+        {
+          "from": "s4",
+          "to": "s5"
+        }
+      ],
+      "drop": [
+        {
+          "sentence": "s3",
+          "reason": "重复"
+        },
+        {
+          "sentence": "s6"
+        }
+      ]
+    },
+    "dropped": [],
+    "ignored": []
+  }
+}

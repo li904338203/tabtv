@@ -1,0 +1,7 @@
+{
+  "objects": [
+    {"op": "add", "ref": "甲", "kind": "character", "posePreset": "fight_stance",},
+    {"op": "add", "ref": "乙", "kind": "character", "posePreset": "block", "relation": {"type": "facing", "target": "甲",},},
+  ],
+  "camera": {"shotSize": "full", "angle": "low",},
+}

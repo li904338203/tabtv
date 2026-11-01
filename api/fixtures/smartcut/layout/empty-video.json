@@ -1,0 +1,42 @@
+{
+  "why": "画面轨没有片段：成片总长 0，其它轨照常按存储值",
+  "content": {
+    "version": 1,
+    "aspectRatio": "9:16",
+    "fps": 30,
+    "width": 1080,
+    "height": 1920,
+    "tracks": [
+      {
+        "id": "1",
+        "kind": "video",
+        "clips": []
+      },
+      {
+        "id": "2",
+        "kind": "audio",
+        "clips": [
+          {
+            "id": "tmp-m1",
+            "mediaId": "21",
+            "startMs": 1200,
+            "sourceInMs": 0,
+            "sourceOutMs": 3000
+          }
+        ]
+      }
+    ]
+  },
+  "expect": {
+    "clips": {
+      "tmp-m1": {
+        "startMs": 1200,
+        "durationMs": 3000
+      }
+    },
+    "subtitles": {},
+    "texts": {},
+    "totalMs": 0,
+    "effectiveMs": 0
+  }
+}

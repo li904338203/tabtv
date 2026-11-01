@@ -1,0 +1,77 @@
+{
+  "why": "机位从左侧拍（转过 90° 方位角）：左右仍按这个机位的屏幕算，不按世界轴",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "甲",
+        "kind": "character",
+        "posePreset": "stand_neutral"
+      },
+      {
+        "op": "add",
+        "ref": "乙",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "right_of",
+          "target": "甲"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "丙",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "left_of",
+          "target": "甲"
+        }
+      }
+    ],
+    "camera": {
+      "shotSize": "full",
+      "angle": "eye_level",
+      "side": "left"
+    }
+  },
+  "expect": {
+    "characters": 3,
+    "cameras": 1,
+    "leftOf": [
+      [
+        "丙",
+        "甲"
+      ],
+      [
+        "甲",
+        "乙"
+      ]
+    ],
+    "minGapM": 0.5,
+    "grounded": true,
+    "framing": {
+      "targets": [
+        "甲",
+        "乙",
+        "丙"
+      ],
+      "shotSize": "full"
+    },
+    "pitchDeg": 0,
+    "defaultsContain": [
+      "未指定机位拍谁，按全部角色",
+      "未指定焦距，按 35mm"
+    ]
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "why": "「林澈在苏然左边」：从输出机位看，林澈的屏幕横坐标小于苏然（DR-AC-29）；林澈依赖排在后面的苏然，按依赖顺序摆",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "林澈",
+        "kind": "character",
+        "model": "adult_male",
+        "posePreset": "stand_arms_crossed",
+        "relation": {
+          "type": "left_of",
+          "target": "苏然"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "苏然",
+        "kind": "character",
+        "model": "adult_female",
+        "posePreset": "point_forward"
+      }
+    ],
+    "camera": {
+      "target": [
+        "林澈",
+        "苏然"
+      ],
+      "shotSize": "full",
+      "angle": "eye_level",
+      "side": "front",
+      "focalLengthMm": 35
+    }
+  },
+  "expect": {
+    "added": 3,
+    "characters": 2,
+    "cameras": 1,
+    "outputCamera": "new",
+    "leftOf": [
+      [
+        "林澈",
+        "苏然"
+      ]
+    ],
+    "minGapM": 0.5,
+    "grounded": true,
+    "framing": {
+      "targets": [
+        "林澈",
+        "苏然"
+      ],
+      "shotSize": "full"
+    },
+    "pitchDeg": 0,
+    "roll": 0
+  }
+}

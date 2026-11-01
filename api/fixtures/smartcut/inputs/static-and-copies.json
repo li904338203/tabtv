@@ -1,0 +1,201 @@
+{
+  "why": "导演台给输出机位截图（没截过时待定）；发布节点（导演台预演、成片）与上传节点、复制出来的节点按媒体声明；上传的音频默认配乐；媒体事实补时长与声音",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "dir",
+        "type": "director",
+        "title": "节点 dir",
+        "params": {
+          "outputMediaId": "501"
+        }
+      },
+      {
+        "id": "dir2",
+        "type": "director",
+        "title": "节点 dir2",
+        "params": {}
+      },
+      {
+        "id": "pub",
+        "type": "video",
+        "title": "节点 pub",
+        "params": {
+          "directorSource": {
+            "kind": "preview",
+            "mediaId": "502"
+          }
+        },
+        "result": {
+          "status": "success",
+          "mediaId": "502",
+          "outputUrl": "/api/v1/media/502"
+        }
+      },
+      {
+        "id": "cut",
+        "type": "video",
+        "title": "节点 cut",
+        "params": {
+          "smartcutSource": {
+            "timelineId": "9",
+            "renderId": "8",
+            "mediaId": "503",
+            "timelineVersion": 4
+          }
+        }
+      },
+      {
+        "id": "up",
+        "type": "audio",
+        "title": "节点 up",
+        "result": {
+          "status": "success",
+          "outputUrl": "/api/v1/media/504"
+        }
+      },
+      {
+        "id": "copy",
+        "type": "image",
+        "title": "节点 copy",
+        "result": {
+          "sourceGenerationId": "777",
+          "status": "success",
+          "mediaId": "505"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-dir-sc1",
+        "source": "dir",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-dir2-sc1",
+        "source": "dir2",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-pub-sc1",
+        "source": "pub",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-cut-sc1",
+        "source": "cut",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-up-sc1",
+        "source": "up",
+        "target": "sc1",
+        "order": 5
+      },
+      {
+        "id": "e-copy-sc1",
+        "source": "copy",
+        "target": "sc1",
+        "order": 6
+      }
+    ]
+  },
+  "lookup": {
+    "media": {
+      "502": {
+        "status": "ready",
+        "durationMs": 8000,
+        "hasAudio": true,
+        "posterMediaId": "512"
+      },
+      "504": {
+        "status": "ready",
+        "durationMs": 30000,
+        "hasAudio": true
+      }
+    }
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "dir",
+        "sourceNodeType": "director",
+        "title": "节点 dir",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "501",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "dir2",
+        "sourceNodeType": "director",
+        "title": "节点 dir2",
+        "kind": "image",
+        "status": "pending",
+        "reason": "请先在导演台截图",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "pub",
+        "sourceNodeType": "video",
+        "title": "节点 pub",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "502",
+        "durationMs": 8000,
+        "hasAudio": true,
+        "posterMediaId": "512",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "cut",
+        "sourceNodeType": "video",
+        "title": "节点 cut",
+        "kind": "video",
+        "status": "ready",
+        "mediaId": "503",
+        "used": false
+      },
+      {
+        "no": "5",
+        "sourceNodeId": "up",
+        "sourceNodeType": "audio",
+        "title": "节点 up",
+        "kind": "audio",
+        "status": "ready",
+        "mediaId": "504",
+        "audioRole": "music",
+        "durationMs": 30000,
+        "hasAudio": true,
+        "used": false
+      },
+      {
+        "no": "6",
+        "sourceNodeId": "copy",
+        "sourceNodeType": "image",
+        "title": "节点 copy",
+        "kind": "image",
+        "status": "ready",
+        "mediaId": "505",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 5
+  }
+}

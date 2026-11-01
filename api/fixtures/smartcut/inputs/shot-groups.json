@@ -1,0 +1,186 @@
+{
+  "why": "脚本与视频组是镜头组（有 scriptId / groupId 才就绪）；资产组、风格之类不认的节点为 invalid（类型按快照的产出类型兜底，缺省 video）",
+  "nodeId": "sc1",
+  "canvas": {
+    "nodes": [
+      {
+        "id": "s",
+        "type": "script",
+        "title": "节点 s",
+        "params": {
+          "scriptId": "31"
+        }
+      },
+      {
+        "id": "s0",
+        "type": "script",
+        "title": "节点 s0",
+        "params": {}
+      },
+      {
+        "id": "vg",
+        "type": "group",
+        "title": "节点 vg",
+        "params": {
+          "groupType": "video_generator",
+          "groupId": "41",
+          "scriptId": "31"
+        }
+      },
+      {
+        "id": "vg0",
+        "type": "group",
+        "title": "节点 vg0",
+        "params": {
+          "groupType": "video_generator"
+        }
+      },
+      {
+        "id": "ag",
+        "type": "group",
+        "title": "节点 ag",
+        "params": {
+          "groupType": "asset",
+          "groupId": "42"
+        }
+      },
+      {
+        "id": "st",
+        "type": "style",
+        "title": "节点 st"
+      },
+      {
+        "id": "x",
+        "type": "mystery",
+        "title": "节点 x",
+        "result": {
+          "outputType": "audio"
+        }
+      },
+      {
+        "id": "sc1",
+        "type": "smartcut",
+        "title": "节点 sc1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-s-sc1",
+        "source": "s",
+        "target": "sc1",
+        "order": 1
+      },
+      {
+        "id": "e-s0-sc1",
+        "source": "s0",
+        "target": "sc1",
+        "order": 2
+      },
+      {
+        "id": "e-vg-sc1",
+        "source": "vg",
+        "target": "sc1",
+        "order": 3
+      },
+      {
+        "id": "e-vg0-sc1",
+        "source": "vg0",
+        "target": "sc1",
+        "order": 4
+      },
+      {
+        "id": "e-ag-sc1",
+        "source": "ag",
+        "target": "sc1",
+        "order": 5
+      },
+      {
+        "id": "e-st-sc1",
+        "source": "st",
+        "target": "sc1",
+        "order": 6
+      },
+      {
+        "id": "e-x-sc1",
+        "source": "x",
+        "target": "sc1",
+        "order": 7
+      }
+    ]
+  },
+  "expect": {
+    "items": [
+      {
+        "no": "1",
+        "sourceNodeId": "s",
+        "sourceNodeType": "script",
+        "title": "节点 s",
+        "kind": "shotGroup",
+        "status": "ready",
+        "used": false
+      },
+      {
+        "no": "2",
+        "sourceNodeId": "s0",
+        "sourceNodeType": "script",
+        "title": "节点 s0",
+        "kind": "shotGroup",
+        "status": "pending",
+        "reason": "脚本还没有分镜",
+        "used": false
+      },
+      {
+        "no": "3",
+        "sourceNodeId": "vg",
+        "sourceNodeType": "group",
+        "title": "节点 vg",
+        "kind": "shotGroup",
+        "status": "ready",
+        "used": false
+      },
+      {
+        "no": "4",
+        "sourceNodeId": "vg0",
+        "sourceNodeType": "group",
+        "title": "节点 vg0",
+        "kind": "shotGroup",
+        "status": "pending",
+        "reason": "视频组还没建好",
+        "used": false
+      },
+      {
+        "no": "5",
+        "sourceNodeId": "ag",
+        "sourceNodeType": "group",
+        "title": "节点 ag",
+        "kind": "video",
+        "status": "invalid",
+        "reason": "不支持的输入：group",
+        "used": false
+      },
+      {
+        "no": "6",
+        "sourceNodeId": "st",
+        "sourceNodeType": "style",
+        "title": "节点 st",
+        "kind": "video",
+        "status": "invalid",
+        "reason": "不支持的输入：style",
+        "used": false
+      },
+      {
+        "no": "7",
+        "sourceNodeId": "x",
+        "sourceNodeType": "mystery",
+        "title": "节点 x",
+        "kind": "audio",
+        "status": "invalid",
+        "reason": "不支持的输入：mystery",
+        "used": false
+      }
+    ],
+    "omitted": 0,
+    "disconnected": [],
+    "unusedCount": 0
+  }
+}

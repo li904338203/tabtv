@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://seeaitv.local/events/canvas-ops-applied.schema.json",
+  "title": "CanvasOpsApplied",
+  "description": "服务端（Agent / MCP）在画布最新版本上应用了一批操作（AGT-10，决策 D-2；MCP 写入见 MCPT-09）。投递到 project:{id}。只是对账信号：前端本地版本 == fromVersion 时按序重放 ops 并把版本改为 toVersion；版本不连续或 truncated 时改走 GET /projects/{id}/canvas/ops 补取。",
+  "type": "object",
+  "required": [
+    "type",
+    "occurredAt",
+    "workspaceId",
+    "projectId",
+    "batchId",
+    "fromVersion",
+    "toVersion",
+    "actor",
+    "truncated"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "const": "canvas.ops_applied"
+    },
+    "occurredAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "workspaceId": {
+      "$ref": "#/$defs/id"
+    },
+    "projectId": {
+      "$ref": "#/$defs/id"
+    },
+    "batchId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "fromVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "toVersion": {
+      "type": "integer",
+      "minimum": 2,
+      "description": "恒为 fromVersion + 1"
+    },
+    "actor": {
+      "type": "object",
+      "required": [
+        "kind",
+        "userId",
+        "agentSessionId",
+        "mcpGrantId",
+        "clientName"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "agent",
+            "user",
+            "mcp"
+          ],
+          "type": "string"
+        },
+        "userId": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "agentSessionId": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "mcpGrantId": {
+          "$ref": "#/$defs/nullableId",
+          "description": "kind=mcp 时的 MCP 授权 ID；其余为 null"
+        },
+        "clientName": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "kind=mcp 时发起这次写入的外部客户端名（展示用，如 Claude Code）；补取接口恒为 null，前端回落节点上的 origin.clientName"
+        }
+      }
+    },
+    "ops": {
+      "type": "array",
+      "description": "已解析的操作（批内引用已换成真实 ID，新建项带完整节点 / 连线）。序列化超过 64KB 时省略并置 truncated=true。",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "add_node",
+              "update_node",
+              "move_node",
+              "add_edge",
+              "add_frame",
+              "set_frame_members",
+              "link_generation"
+            ],
+            "type": "string"
+          },
+          "nodeId": {
+            "type": "string"
+          },
+          "node": {
+            "type": "object"
+          },
+          "patch": {
+            "type": "object"
+          },
+          "edge": {
+            "type": "object"
+          },
+          "frame": {
+            "type": "object"
+          },
+          "position": {
+            "type": "object",
+            "required": [
+              "x",
+              "y"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "truncated": {
+      "type": "boolean",
+      "description": "true 时事件不带 ops，前端必须走补取接口"
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "nullableId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

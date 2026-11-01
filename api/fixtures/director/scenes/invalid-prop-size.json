@@ -1,0 +1,39 @@
+{
+  "scene": {
+    "schemaVersion": 1,
+    "objects": [
+      {
+        "id": "obj_box",
+        "name": "方块",
+        "kind": "prop",
+        "transform": {
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "rotation": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "prop": {
+          "shape": "box",
+          "size": {
+            "x": 1,
+            "y": 0,
+            "z": 1
+          },
+          "color": "#9aa0a6"
+        }
+      }
+    ]
+  },
+  "path": "objects[0].prop.size.y"
+}

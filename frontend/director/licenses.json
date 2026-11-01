@@ -1,0 +1,112 @@
+{
+  "packages": [
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "license": "MIT",
+      "url": "https://github.com/mrdoob/three.js",
+      "note": "3D 渲染（导演台编辑器）"
+    },
+    {
+      "name": "camera-controls",
+      "version": "3.1.2",
+      "license": "MIT",
+      "url": "https://github.com/yomotsu/camera-controls",
+      "note": "导演视角的轨道、过渡与对焦"
+    },
+    {
+      "name": "three-viewport-gizmo",
+      "version": "2.2.0",
+      "license": "MIT",
+      "url": "https://github.com/Fennec-hub/three-viewport-gizmo",
+      "note": "视口右上角的轴向小方块"
+    },
+    {
+      "name": "three-mesh-bvh",
+      "version": "0.9.16",
+      "license": "MIT",
+      "url": "https://github.com/gkjohnson/three-mesh-bvh",
+      "note": "拾取与贴地射线"
+    },
+    {
+      "name": "@types/three",
+      "version": "0.186.0",
+      "license": "MIT",
+      "url": "https://github.com/three-types/three-ts-types",
+      "note": "three 的类型声明（仅开发期）"
+    },
+    {
+      "name": "@gltf-transform/core",
+      "version": "4.5.1",
+      "license": "MIT",
+      "url": "https://github.com/donmccurdy/glTF-Transform",
+      "note": "离线构建素模 GLB（仅开发期，scripts/director-assets.mjs）"
+    },
+    {
+      "name": "@gltf-transform/extensions",
+      "version": "4.5.1",
+      "license": "MIT",
+      "url": "https://github.com/donmccurdy/glTF-Transform",
+      "note": "声明 KHR_mesh_quantization（仅开发期，scripts/director-assets.mjs）"
+    },
+    {
+      "name": "mediabunny",
+      "version": "1.62.1",
+      "license": "MPL-2.0",
+      "url": "https://github.com/Vanilagy/mediabunny",
+      "note": "预演视频封装成 mp4（WebCodecs 编码，DRT-25）；MPL-2.0 只约束到文件级，只调用、不改源码"
+    },
+    {
+      "name": "@mediapipe/tasks-vision",
+      "version": "1.1.1",
+      "license": "Apache-2.0",
+      "url": "https://github.com/google-ai-edge/mediapipe",
+      "note": "参考图转姿势（Pose Landmarker，跑在 Web Worker 里，DRT-23）；第一次点「识别」时才加载"
+    },
+    {
+      "name": "@sparkjsdev/spark",
+      "version": "2.4.0",
+      "license": "MIT",
+      "url": "https://github.com/sparkjsdev/spark",
+      "note": "高斯泼溅背景（SplatMesh / SparkRenderer，DRT-28）；场景里第一次出现泼溅时才加载"
+    }
+  ],
+  "assets": [
+    {
+      "path": "director/models/*",
+      "license": "MIT",
+      "source": "https://github.com/wonderunit/shot-generator-models",
+      "attribution": "Copyright (c) 2019 Wonder Unit。成年男 / 成年女 / 少年男 / 少年女四个人物素模，统一换成素模材质、去掉贴图、只留 LOD1；来源提交与处理步骤见 models/SOURCE.md"
+    },
+    {
+      "path": "director/poses.json",
+      "license": "MIT",
+      "source": "https://github.com/wonderunit/shot-generator-models",
+      "attribution": "姿势角度由本仓库自编（scripts/poses.source.mjs），未取自任何第三方姿势库；骨骼命名与 rest 姿势来自上面的素模（Copyright (c) 2019 Wonder Unit）"
+    },
+    {
+      "path": "director/poses/*",
+      "license": "MIT",
+      "source": "https://github.com/wonderunit/shot-generator-models",
+      "attribution": "姿势缩略图：本仓库用导演台引擎离屏渲染生成（开发态沙盒的「生成姿势缩略图」，DRT-21），未取自任何第三方姿势库；画面里是上面的成年男素模（Copyright (c) 2019 Wonder Unit），姿势角度见 poses.json"
+    },
+    {
+      "path": "director/mediapipe/*",
+      "license": "Apache-2.0",
+      "source": "https://github.com/google-ai-edge/mediapipe",
+      "attribution": "Google MediaPipe：wasm 取自 @mediapipe/tasks-vision 1.1.1，姿势模型 pose_landmarker_full.task 取自官方存储（Model Card「BlazePose GHUM 3D」写明 Apache License 2.0）；来源与校验值见 mediapipe/SOURCE.md，许可全文见 mediapipe/LICENSE"
+    },
+    {
+      "path": "backend/assets/fonts/SourceHanSansSC-Regular.otf",
+      "license": "OFL-1.1",
+      "source": "https://github.com/adobe-fonts/source-han-sans/tree/2.004R",
+      "attribution": "思源黑体 Source Han Sans SC Regular，Copyright 2014-2021 Adobe (http://www.adobe.com/)，保留字体名「Source」。服务端字体：智能剪辑把字幕与文字排版成图片时用（SCT-13），不随网页下发；由 scripts/fetch-fonts.sh 按固定版本与 sha256 下载，许可全文与来源见同目录的 LICENSE-SourceHanSans.txt、SOURCES.txt"
+    },
+    {
+      "path": "backend/assets/fonts/NotoEmoji-VariableFont.ttf",
+      "license": "OFL-1.1",
+      "source": "https://github.com/google/fonts/tree/8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5/ofl/notoemoji",
+      "attribution": "Noto Emoji（单色），Copyright 2013 Google LLC。服务端字体：字幕与文字里的 emoji 用（SCT-13），不随网页下发；由 scripts/fetch-fonts.sh 按固定版本与 sha256 下载，许可全文见同目录的 OFL-NotoEmoji.txt"
+    }
+  ]
+}

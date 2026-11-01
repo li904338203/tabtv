@@ -1,0 +1,83 @@
+{
+  "description": "MCP add_node：服务端强写 origin {kind:mcp, grantId, clientName}（去掉 userTouched），并剥掉客户端伪造的 agent / origin（防止冒充 Agent 会话或别的授权来绕过所有权）；目标为本批新建节点的连线照常落下",
+  "actor": { "kind": "mcp", "userId": "1001", "grantId": "5001", "clientName": "Claude Code" },
+  "newIds": ["a_fx1", "a_fx2", "a_fx3"],
+  "before": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图片节点 1", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} }
+    ],
+    "edges": []
+  },
+  "ops": [
+    {
+      "kind": "add_node",
+      "ref": "ref:v",
+      "node": {
+        "type": "video",
+        "title": "镜头 1",
+        "params": { "prompt": "推镜" },
+        "agent": { "sessionId": "7001", "stepId": "s1" },
+        "origin": { "kind": "mcp", "grantId": "9999", "clientName": "冒充的客户端", "userTouched": true }
+      },
+      "position": { "x": 400, "y": 0 }
+    },
+    { "kind": "add_node", "node": { "type": "text", "title": "提示词", "origin": { "kind": "agent", "sessionId": "7001" } }, "position": { "x": 400, "y": 300 } },
+    { "kind": "add_edge", "edge": { "source": "n_user1", "target": "ref:v" } }
+  ],
+  "after": {
+    "schemaVersion": 1,
+    "nodes": [
+      { "id": "n_user1", "type": "image", "title": "图片节点 1", "position": { "x": 0, "y": 0 }, "size": { "w": 330, "h": 180 }, "params": {} },
+      {
+        "id": "a_fx1",
+        "type": "video",
+        "title": "镜头 1",
+        "params": { "prompt": "推镜" },
+        "position": { "x": 400, "y": 0 },
+        "size": { "w": 390, "h": 180 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code" }
+      },
+      {
+        "id": "a_fx2",
+        "type": "text",
+        "title": "提示词",
+        "params": {},
+        "position": { "x": 400, "y": 300 },
+        "size": { "w": 330, "h": 180 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code" }
+      }
+    ],
+    "edges": [
+      { "id": "a_fx3", "source": "n_user1", "sourceHandle": "out", "target": "a_fx1", "targetHandle": "in", "order": 1 }
+    ]
+  },
+  "nodeIds": ["a_fx1", "a_fx2"],
+  "applied": [
+    {
+      "kind": "add_node",
+      "node": {
+        "id": "a_fx1",
+        "type": "video",
+        "title": "镜头 1",
+        "params": { "prompt": "推镜" },
+        "position": { "x": 400, "y": 0 },
+        "size": { "w": 390, "h": 180 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code" }
+      }
+    },
+    {
+      "kind": "add_node",
+      "node": {
+        "id": "a_fx2",
+        "type": "text",
+        "title": "提示词",
+        "params": {},
+        "position": { "x": 400, "y": 300 },
+        "size": { "w": 330, "h": 180 },
+        "origin": { "kind": "mcp", "grantId": "5001", "clientName": "Claude Code" }
+      }
+    },
+    { "kind": "add_edge", "edge": { "id": "a_fx3", "source": "n_user1", "sourceHandle": "out", "target": "a_fx1", "targetHandle": "in", "order": 1 } }
+  ]
+}

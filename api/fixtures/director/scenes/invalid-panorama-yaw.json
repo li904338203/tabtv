@@ -1,0 +1,16 @@
+{
+  "scene": {
+    "schemaVersion": 1,
+    "background": {
+      "mode": "panorama",
+      "color": "#060608",
+      "panorama": {
+        "sourceNodeId": "n_1",
+        "mediaId": "123",
+        "yaw": 400,
+        "radius": 50
+      }
+    }
+  },
+  "path": "background.panorama.yaw"
+}

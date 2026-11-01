@@ -1,0 +1,9 @@
+# oapi-codegen 配置。生成物禁止手改，漂移由 make gen-check 拦截。
+package: apigen
+output: ../backend/internal/transport/apigen/api_gen.go
+generate:
+  models: true
+  chi-server: true
+  strict-server: true
+output-options:
+  skip-prune: true

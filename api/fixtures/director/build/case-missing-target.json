@@ -1,0 +1,62 @@
+{
+  "why": "关系目标与机位目标找不到：按场景中心处理并说明，不报错",
+  "scene": {
+    "schemaVersion": 1,
+    "ground": {
+      "visible": true,
+      "opacity": 1,
+      "height": 0
+    },
+    "objects": [],
+    "outputCameraId": null
+  },
+  "draft": {
+    "objects": [
+      {
+        "op": "add",
+        "ref": "甲",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "left_of",
+          "target": "不存在的人"
+        }
+      },
+      {
+        "op": "add",
+        "ref": "乙",
+        "kind": "character",
+        "posePreset": "stand_neutral",
+        "relation": {
+          "type": "near",
+          "target": "甲"
+        }
+      }
+    ],
+    "camera": {
+      "target": [
+        "幽灵"
+      ],
+      "shotSize": "full",
+      "angle": "eye_level",
+      "side": "front"
+    }
+  },
+  "expect": {
+    "characters": 2,
+    "cameras": 1,
+    "minGapM": 0.5,
+    "grounded": true,
+    "framing": {
+      "targets": [
+        "甲",
+        "乙"
+      ],
+      "shotSize": "full"
+    },
+    "defaultsContain": [
+      "「甲」的关系目标「不存在的人」找不到，按场景中心处理",
+      "机位要拍的「幽灵」找不到，已忽略"
+    ]
+  }
+}

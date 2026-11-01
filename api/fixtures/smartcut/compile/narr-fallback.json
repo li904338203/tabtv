@@ -1,0 +1,61 @@
+{
+  "why": "SC-AC-32（解说）：兜底按句均分画面（两句两段，各配一段）",
+  "mode": "narr",
+  "fallback": true,
+  "cards": [
+    {
+      "no": "1",
+      "kind": "audio",
+      "mediaId": "91",
+      "durationMs": 6000,
+      "audioRole": "voice",
+      "sourceNodeId": "nv"
+    },
+    {
+      "no": "2",
+      "kind": "video",
+      "mediaId": "72",
+      "durationMs": 5000,
+      "sourceNodeId": "n2"
+    },
+    {
+      "no": "3",
+      "kind": "video",
+      "mediaId": "73",
+      "durationMs": 5000,
+      "sourceNodeId": "n3"
+    }
+  ],
+  "transcripts": {
+    "1": {
+      "language": "zh",
+      "granularity": "char",
+      "utterances": [
+        [
+          {
+            "chars": "第一句话很长的一句解说词需要在逗号处断开才放得下第二句",
+            "startMs": 0,
+            "charMs": 200
+          }
+        ]
+      ]
+    }
+  },
+  "script": "第一句话，很长的一句解说词需要在逗号处断开才放得下。第二句！",
+  "spec": {
+    "withSubtitles": true
+  },
+  "expect": {
+    "video": [
+      "72 0~4800",
+      "73 0~1200"
+    ],
+    "voice": "91 0~6000",
+    "totalMs": 6000,
+    "usedFallback": true,
+    "notes": [
+      "AI 没能给出方案，已按规则剪好"
+    ],
+    "warnings": []
+  }
+}

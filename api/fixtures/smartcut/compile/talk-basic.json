@@ -1,0 +1,77 @@
+{
+  "why": "SC-AC-42（编译部分）：留 s1、s2、s4，删掉重复的 s3 与口癖「嗯」。剪点外扩取相邻停顿的一半（30~200ms），每个剪点 30ms 声音淡入淡出；字幕跟随片段；画面轨标人声",
+  "mode": "talk",
+  "cards": [
+    {
+      "no": "1",
+      "kind": "video",
+      "mediaId": "71",
+      "durationMs": 10000,
+      "sourceNodeId": "n1"
+    }
+  ],
+  "transcripts": {
+    "1": {
+      "language": "zh",
+      "granularity": "char",
+      "utterances": [
+        [
+          {
+            "chars": "大家好",
+            "startMs": 500,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "text": "嗯",
+            "startMs": 1600,
+            "endMs": 1900
+          },
+          {
+            "chars": "今天介绍",
+            "startMs": 2100,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "chars": "今天介绍",
+            "startMs": 3600,
+            "charMs": 200
+          }
+        ],
+        [
+          {
+            "chars": "这款产品",
+            "startMs": 5200,
+            "charMs": 200
+          }
+        ]
+      ]
+    }
+  },
+  "spec": {
+    "withSubtitles": true
+  },
+  "raw": "{\"keep\": [{\"from\": \"s1\", \"to\": \"s2\"}, {\"from\": \"s4\", \"to\": \"s4\"}], \"drop\": [{\"sentence\": \"s3\", \"reason\": \"重复\"}]}",
+  "expect": {
+    "video": [
+      "71 300~1300 fade30/30",
+      "71 2000~3100 fade30/30",
+      "71 5000~6200 fade30/30"
+    ],
+    "videoRole": "voice",
+    "totalMs": 3300,
+    "subtitles": [
+      "200~800 大家好",
+      "1100~1900 今天介绍",
+      "2300~3100 这款产品"
+    ],
+    "notes": [
+      "删掉了 s3：重复"
+    ],
+    "warnings": [],
+    "summary": "保留了 3 句（共 4 句），去掉口癖 1 处，成片 3.3 秒"
+  }
+}
