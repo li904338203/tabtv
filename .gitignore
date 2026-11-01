@@ -20,3 +20,5 @@ backend/assets/fonts/*.ttf
 # 杂项
 .DS_Store
 *.log
+frontend/wailsjs/
+frontend/dist

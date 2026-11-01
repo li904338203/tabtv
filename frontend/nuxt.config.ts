@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 export default defineNuxtConfig({
   compatibilityDate: "2026-07-01",
   devtools: { enabled: false },
+  // 桌面应用：前端是静态产物，由 Wails 的 AssetServer 直接提供（dev/03 TTD-30）。
+  ssr: false,
   modules: ["@pinia/nuxt", "@nuxt/eslint"],
   css: [
     "element-plus/dist/index.css",
@@ -78,6 +80,20 @@ export default defineNuxtConfig({
       }
     }
   },
+  // 三平台探针（TT-T-03）：只在 TABTV_PROBE=1 构建时注册 `/__probe`，正式产物里没有这个路由。
+  hooks: {
+    "pages:extend"(pages) {
+      if (process.env.TABTV_PROBE !== "1") return;
+      // 探针构建把首页也换成探针页：桌面窗口打开即是 "/"，不必手动跳转。
+      const home = pages.find(p => p.path === "/");
+      if (home) home.file = fileURLToPath(new URL("./probe/ProbePage.vue", import.meta.url));
+      pages.push({
+        name: "probe",
+        path: "/__probe",
+        file: fileURLToPath(new URL("./probe/ProbePage.vue", import.meta.url))
+      });
+    }
+  },
   // 生产里页面与 API 经反向代理同域：实时通道连页面自己的域名，不补端口。
   $production: {
     runtimeConfig: {
@@ -115,15 +131,6 @@ export default defineNuxtConfig({
       // 外部化时它的传递依赖要靠 Nitro 追踪复制，而 pnpm 的非扁平 node_modules 会让追踪漏包
       // （实测漏了 @popperjs/core）。内联后没有运行时解析，也就没有漏包的可能。
       inline: ["element-plus"]
-    },
-    devProxy: {
-      "/api": {
-        // ⚠️ target **必须带 `/api`**：nitro 会把前缀剥掉，
-        // 不带的话 Go 收到的是 `/v1/...`，返回纯文本 404 —— 看着像后端少路由。
-        // 8180 是新 Go 后端（老系统是 8081）。
-        target: "http://localhost:8180/api",
-        changeOrigin: true
-      }
     }
   },
   typescript: {

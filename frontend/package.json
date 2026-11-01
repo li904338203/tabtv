@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "TMPDIR=/tmp NUXT_TELEMETRY_DISABLED=1 nuxt dev --port 3000",
     "build": "nuxt build",
+    "generate": "TMPDIR=/tmp NUXT_TELEMETRY_DISABLED=1 nuxt generate",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
     "test": "vitest run --passWithNoTests",

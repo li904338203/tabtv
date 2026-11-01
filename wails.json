@@ -1,0 +1,18 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "tabtv",
+  "outputfilename": "tabtv",
+  "frontend:dir": "frontend",
+  "frontend:install": "pnpm install --frozen-lockfile",
+  "frontend:build": "pnpm generate",
+  "frontend:dev:watcher": "pnpm dev",
+  "frontend:dev:serverUrl": "http://localhost:3000",
+  "wailsjsdir": "./frontend/wailsjs",
+  "author": {
+    "name": "tabtv contributors"
+  },
+  "info": {
+    "productName": "tabtv",
+    "copyright": "Apache-2.0"
+  }
+}

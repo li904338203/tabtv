@@ -58,10 +58,11 @@ fmt:
 	@cd $(GO_DIR) && $(GO) fmt ./...
 
 fmt-check:
-	@cd $(GO_DIR) && test -z "$$(gofmt -l . | tee /dev/stderr)" || (echo "上列文件未格式化，请运行 make fmt" && exit 1)
+	@test -z "$$(gofmt -l $(GO_DIR) app main.go | tee /dev/stderr)" || (echo "上列文件未格式化，请运行 make fmt" && exit 1)
 
 lint:
 	@cd $(GO_DIR) && $(GO) vet ./...
+	@$(GO) vet ./app/...
 
 typecheck:
 	@$(PNPM) run typecheck
@@ -74,6 +75,7 @@ test: test-go test-scripts
 
 test-go: fonts
 	@cd $(GO_DIR) && $(GO) test ./...
+	@$(GO) test ./app/...
 
 # scripts/ 下的独立 module（假上游等）不在 `go test ./...` 的范围里，单独编译与测试。
 test-scripts:
