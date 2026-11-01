@@ -1,2 +1,22 @@
+# 本地内部值（扫描脚本读取，绝不入库）
 scripts/internal-patterns.local
+# 环境与凭据
+.env
+.env.*
+# 依赖与产物
+node_modules/
+frontend/.output/
+frontend/.nuxt/
+frontend/dist/
+build/bin/
+backend/bin/
+.gen-check/
+# 随包第三方二进制与字体（由 build/fetch-*.sh 按锁文件下载）
+build/third_party/
+backend/assets/fonts/*.otf
+backend/assets/fonts/*.ttf
+# 本地数据目录（开发运行）
+.tabtv-data/
+# 杂项
 .DS_Store
+*.log
