@@ -25,3 +25,7 @@ frontend/dist
 backend/.test-it.log
 backend/headless
 build/ffmpeg/out/
+
+# 打包产物（build/package.sh）与 wails 生成的校验文件
+build/dist/
+frontend/package.json.md5

@@ -34,6 +34,24 @@ extract_ffmpeg() { # tar.xz（顶层一个 ffmpeg-<版本>-<平台>/ 目录）�
   chmod +x "$dest"/bin/* 2>/dev/null || true
 }
 
+# download 下载一个地址。本仓库自己的 Release（ffmpeg 镜像）在私有阶段匿名 curl 拿到的是 404，
+# 有 gh 且已登录时改用 `gh release download`（CI 里由 GH_TOKEN 提供权限）；公开之后两条路都通。
+download() {
+  local url="$1" out="$2"
+  if [[ "$url" =~ ^https://github\.com/([^/]+/[^/]+)/releases/download/([^/]+)/([^/]+)$ ]] \
+    && command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    local dir
+    dir="$(mktemp -d)"
+    if gh release download "${BASH_REMATCH[2]}" -R "${BASH_REMATCH[1]}" -p "${BASH_REMATCH[3]}" -D "$dir" >/dev/null 2>&1; then
+      mv "$dir/${BASH_REMATCH[3]}" "$out"
+      rm -rf "$dir"
+      return 0
+    fi
+    rm -rf "$dir"
+  fi
+  curl -sSfL -o "$out" "$url"
+}
+
 found=0
 while read -r name plat ver url sum; do
   case "$name" in ''|'#'*) continue ;; esac
@@ -49,7 +67,7 @@ while read -r name plat ver url sum; do
   file="$CACHE/$(basename "$url")"
   if [ ! -f "$file" ] || [ "$(sha256 "$file")" != "$sum" ]; then
     echo "→ 下载 $name $plat $ver"
-    curl -sSfL -o "$file.part" "$url"
+    download "$url" "$file.part"
     mv "$file.part" "$file"
   fi
   got="$(sha256 "$file")"
@@ -61,6 +79,8 @@ while read -r name plat ver url sum; do
   case "$name" in
     postgres) extract_postgres "$file" "$dest" ;;
     ffmpeg) extract_ffmpeg "$file" "$dest" ;;
+    appimagetool|appimage-runtime) # 单文件工具：原样放好、加可执行位（只打包机用）
+      mkdir -p "$dest" && cp "$file" "$dest/$name" && chmod +x "$dest/$name" ;;
     *) echo "❌ 未知组件 $name" >&2; exit 1 ;;
   esac
   echo "$sum" > "$stamp"

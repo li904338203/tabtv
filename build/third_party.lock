@@ -7,9 +7,13 @@ postgres windows-amd64 17.11.0 https://repo1.maven.org/maven2/io/zonky/test/post
 # ffmpeg：LGPL 构建（TT-T-26）。统一布局 ffmpeg-<版本>-<平台>/{bin,licenses,SOURCES.txt,buildconf.txt}，
 # 由 .github/workflows/ffmpeg.yml 产出并上传到本仓库的 Release（tag third-party-ffmpeg-<版本>）；
 # macOS 从源码构建（build/ffmpeg/build-macos.sh），Windows / Linux 重打包 BtbN 的 lgpl 构建（build/ffmpeg/repack-btbn.sh）。
-# Release 建好后按 workflow 输出的 SHA-256 填下面几行并去掉行首的 #：
-# ffmpeg darwin-arm64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-darwin-arm64.tar.xz <sha256>
-# ffmpeg darwin-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-darwin-amd64.tar.xz <sha256>
-# ffmpeg linux-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-linux-amd64.tar.xz <sha256>
-# ffmpeg linux-arm64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-linux-arm64.tar.xz <sha256>
-# ffmpeg windows-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-windows-amd64.tar.xz <sha256>
+# SHA-256 取自 release third-party-ffmpeg-8.1.3（workflow run 41384330336，2026-11-02）。
+ffmpeg darwin-arm64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-darwin-arm64.tar.xz 998cec8bc06ca3929d5c20c4cd59e3323290c16fc016917af470e7a9163abcf6
+ffmpeg darwin-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-darwin-amd64.tar.xz b9783f8d155c666e367c75bdd880f68e64ceea2f74a51dfc46a7485ad57d3f1d
+ffmpeg linux-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-linux-amd64.tar.xz 18351eed6f0ae4d1a173e566b7efe26057ca41b20a7aa7cc74d768d29023f19b
+ffmpeg linux-arm64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-linux-arm64.tar.xz 329a6e5f47ecdabdb2aaf86e5d0f1cec4b4edc64de48a16e641c49841195801b
+ffmpeg windows-amd64 8.1.3 https://github.com/li904338203/tabtv/releases/download/third-party-ffmpeg-8.1.3/ffmpeg-8.1.3-windows-amd64.tar.xz 131d545651d8c1ecb0750052e9f85c3a008556136ebd278801a2b98c4765263c
+# AppImage 打包工具（只在 Linux 打包机上用，不进安装包）。appimagetool 默认会去网上取「最新」运行时，
+# 这里把运行时也钉住，用 --runtime-file 传进去。
+appimagetool linux-amd64 1.9.1 https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-x86_64.AppImage ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0
+appimage-runtime linux-amd64 20251108 https://github.com/AppImage/type2-runtime/releases/download/20251108/runtime-x86_64 2fca8b443c92510f1483a883f60061ad09b46b978b2631c807cd873a47ec260d

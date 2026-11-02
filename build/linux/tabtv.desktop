@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=tabtv
+Comment=开源的 AI 画布与视频创作工具
+Exec=tabtv
+Icon=tabtv
+Terminal=false
+Categories=AudioVideo;Video;Graphics;
+StartupWMClass=tabtv

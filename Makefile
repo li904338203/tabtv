@@ -116,3 +116,17 @@ build-web:
 check: scan fmt-check lint gen-check typecheck test build
 	@echo ""
 	@echo "✅ 门禁通过（test-it 单列）"
+
+# 本机打安装包（与 .github/workflows/release.yml 同一组命令，TT-T-29）。VER 缺省取 git describe。
+PLAT ?= $(shell $(GO) env GOOS)-$(shell $(GO) env GOARCH)
+VER ?= $(shell git describe --tags --always --dirty 2>/dev/null | sed 's/^v//')
+WAILS_TAGS := $(if $(filter linux-%,$(PLAT)),-tags webkit2_40,)
+BUILDINFO := github.com/li904338203/tabtv/backend/internal/platform/buildinfo
+.PHONY: package
+package: fonts
+	@bash build/fetch-third-party.sh postgres $(PLAT)
+	@bash build/fetch-third-party.sh ffmpeg $(PLAT)
+	@wails build -platform $(subst -,/,$(PLAT)) $(WAILS_TAGS) -trimpath \
+		-ldflags "-X $(BUILDINFO).Version=$(VER) -X $(BUILDINFO).Commit=$$(git rev-parse --short HEAD)"
+	@bash build/package.sh $(PLAT) $(VER)
+	@bash build/check-size.sh build/dist

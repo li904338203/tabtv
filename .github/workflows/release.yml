@@ -1,0 +1,120 @@
+# 发布（TT-T-29，dev/04 R-7）：推 v* tag 时三平台打包，上传为 Release 草稿（人工确认后发布）。
+#
+# ⚠️ 安装包文件名是自动更新的契约（app/updater.AssetName）：改名会让应用内更新退回「打开下载页」。
+# ⚠️ 版本号来自 tag，注入 buildinfo；不是 vX.Y.Z[-pre] 的 tag 直接失败（「线上跑的是哪一版」必须答得出来）。
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+env:
+  NUXT_TELEMETRY_DISABLED: "1"
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            plat: darwin-arm64
+            wails: darwin/arm64
+          # Intel 版在苹果芯片的机器上交叉构建（macos-13 runner 逐步下线）。
+          - os: macos-14
+            plat: darwin-amd64
+            wails: darwin/amd64
+          - os: windows-latest
+            plat: windows-amd64
+            wails: windows/amd64
+          - os: ubuntu-22.04
+            plat: linux-amd64
+            wails: linux/amd64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 版本号
+        id: ver
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if ! [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::tag $tag 不是 vX.Y.Z[-pre] 形式，拒绝发布"; exit 1
+          fi
+          echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          echo "commit=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          echo "time=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Linux 依赖
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+      - name: Windows 依赖（NSIS）
+        if: runner.os == 'Windows'
+        run: command -v makensis || choco install nsis -y --no-progress
+      - name: 第三方二进制与字体（按锁文件校验，任何一项哈希不符即失败）
+        run: |
+          build/fetch-third-party.sh postgres ${{ matrix.plat }}
+          build/fetch-third-party.sh ffmpeg ${{ matrix.plat }}
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            build/fetch-third-party.sh appimagetool linux-amd64
+            build/fetch-third-party.sh appimage-runtime linux-amd64
+          fi
+          bash build/fetch-fonts.sh
+      - name: wails build
+        run: |
+          [ "$RUNNER_OS" = "Windows" ] && export PATH="$PATH:/c/Program Files (x86)/NSIS"
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.1
+          pnpm install --frozen-lockfile
+          bi=github.com/li904338203/tabtv/backend/internal/platform/buildinfo
+          ld="-X $bi.Version=${{ steps.ver.outputs.version }} -X $bi.Commit=${{ steps.ver.outputs.commit }} -X $bi.BuildTime=${{ steps.ver.outputs.time }}"
+          tags=""
+          [ "$RUNNER_OS" = "Linux" ] && tags="-tags webkit2_40"
+          wails build -platform ${{ matrix.wails }} $tags -trimpath -ldflags "$ld"
+      - name: 打包
+        run: |
+          [ "$RUNNER_OS" = "Windows" ] && export PATH="$PATH:/c/Program Files (x86)/NSIS"
+          build/package.sh ${{ matrix.plat }} ${{ steps.ver.outputs.version }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.plat }}
+          path: build/dist/*
+          if-no-files-found: error
+
+  publish:
+    needs: package
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: SHA256SUMS 与体积报告
+        run: |
+          cd dist
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+          bash ../build/check-size.sh .
+      - name: 上传为 Release 草稿
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* --draft --title "tabtv $GITHUB_REF_NAME" \
+            --notes "安装说明见 README。未签名：macOS 首次打开请右键 → 打开；Windows 出现 SmartScreen 时点「更多信息 → 仍要运行」。" \
+            $( [[ "$GITHUB_REF_NAME" == *-* ]] && echo --prerelease )

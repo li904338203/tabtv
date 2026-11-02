@@ -1,0 +1,99 @@
+# 门禁（TT-T-29）：每次推送与 PR。全平台跑 Go 单测、前端检查与 wails build；Linux 另跑集成测试与契约检查。
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NUXT_TELEMETRY_DISABLED: "1"
+  # 本仓库自己的 Release（ffmpeg 镜像）在私有阶段要带权限下载（build/fetch-third-party.sh 用 gh）。
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  gate:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: 依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev ffmpeg
+          pnpm install --frozen-lockfile
+      - name: 格式、vet、契约
+        run: make fmt-check lint gen-check
+      - name: 前端
+        run: |
+          pnpm run lint
+          make typecheck
+      - name: 单测（Go + 独立 module + 前端）
+        run: make test
+      - name: 集成测试（内嵌 PG）
+        run: make test-it
+      - name: 集成测试日志
+        if: failure()
+        run: tail -200 backend/.test-it.log || true
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            plat: darwin-arm64
+          - os: windows-latest
+            plat: windows-amd64
+          - os: ubuntu-22.04
+            plat: linux-amd64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Linux 依赖
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev
+      - name: 第三方二进制与字体（按锁文件校验）
+        run: |
+          build/fetch-third-party.sh postgres ${{ matrix.plat }}
+          bash build/fetch-fonts.sh
+      - name: Go 单测（含内嵌 PG 的启动冒烟）
+        run: |
+          (cd backend && go test ./...)
+          go test ./app/...
+      - name: 前端单测
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run test
+      - name: wails build
+        run: |
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.17.1
+          tags=""
+          [ "$RUNNER_OS" = "Linux" ] && tags="-tags webkit2_40"
+          wails build $tags
