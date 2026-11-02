@@ -74,9 +74,11 @@ func TestBoot_内置营销内容装上且幂等(t *testing.T) {
 	check("选项（已启用、有封面）",
 		count(`select count(*) from marketing_option where is_enabled and jsonb_array_length(cover_media_ids) > 0`),
 		len(opts.Options))
-	check("营销技能（已启用、有封面）",
-		count(`select count(*) from agent_skill where code like 'mk\_%' and is_enabled and cover_media_id is not null`),
+	check("营销技能（有封面）",
+		count(`select count(*) from agent_skill where code like 'mk\_%' and cover_media_id is not null`),
 		len(opts.Skills)+len(drafts.Skills))
+	// 定稿技能启用、建议稿技能装上但停用（2026-11-02 定）。
+	check("营销技能（已启用）", count(`select count(*) from agent_skill where code like 'mk\_%' and is_enabled`), len(opts.Skills))
 	check("预置营销角色（已启用、有图）",
 		count(`select count(*) from marketing_preset_character where is_enabled and jsonb_array_length(image_media_ids) > 0`),
 		len(presets.PresetCharacters))

@@ -179,8 +179,13 @@ func installBuiltinContent(ctx context.Context, pool *pgxpool.Pool, store *objst
 	for _, c := range opts.Categories {
 		in.category(ctx, c.Kind, c.Code, c.Name, c.Sort)
 	}
-	for _, s := range append(append([]mkSkill{}, opts.Skills...), drafts.Skills...) {
-		in.skill(ctx, s)
+	for _, s := range opts.Skills {
+		in.skill(ctx, s, true)
+	}
+	// 7 个建议稿技能（未经运营审定）装上但**不启用**：用户在设置 → Agent 技能里看得到、自己决定开不开
+	//（2026-11-02 定，TT-T-24 执行记录）。已经装过的不动 —— 用户可能已经自己开了。
+	for _, s := range drafts.Skills {
+		in.skill(ctx, s, false)
 	}
 	for _, r := range refs.SkillRefs {
 		for _, code := range r.SkillCodes {
@@ -263,7 +268,7 @@ func (in *builtinInstaller) keepModel(code string) string {
 	return ""
 }
 
-func (in *builtinInstaller) skill(ctx context.Context, s mkSkill) {
+func (in *builtinInstaller) skill(ctx context.Context, s mkSkill, enable bool) {
 	if _, ok := in.exists(ctx, `select id from agent_skill where code = $1`, s.Code); ok {
 		return
 	}
@@ -285,6 +290,9 @@ func (in *builtinInstaller) skill(ctx context.Context, s mkSkill) {
 		return
 	}
 	in.rep.Skills++
+	if !enable {
+		return
+	}
 	if _, err := in.skills.SetEnabled(ctx, in.adminID, saved.ID, true); err != nil {
 		in.fail("启用技能 "+s.Code, err)
 	}
