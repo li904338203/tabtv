@@ -50,7 +50,15 @@ jobs:
         run: make test-it
       - name: 集成测试日志
         if: failure()
-        run: tail -200 backend/.test-it.log || true
+        run: |
+          # 超时的包：打出当时在跑的用例与卡住的调用栈（只看末尾 200 行会错过它们）。
+          grep -n -A60 "panic: test timed out" backend/.test-it.log | head -600 || true
+          grep -E "^(--- FAIL|FAIL)" backend/.test-it.log || true
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-it-log
+          path: backend/.test-it.log
 
   build:
     strategy:

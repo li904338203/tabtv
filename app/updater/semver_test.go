@@ -1,6 +1,9 @@
 package updater
 
-import "testing"
+import (
+	"path/filepath"
+	"testing"
+)
 
 func TestNewer(t *testing.T) {
 	cases := []struct {
@@ -64,7 +67,8 @@ func TestDetect(t *testing.T) {
 		t.Error("非 AppImage 的 Linux（.deb）只提示")
 	}
 	d := Detect("linux", env(map[string]string{"APPIMAGE": "/home/u/Apps/tabtv.AppImage"}))
-	if d.Mode != ModeAuto || d.Dir != "/home/u/Apps" || d.AppImage != "/home/u/Apps/tabtv.AppImage" {
+	// 期望值按运行平台的分隔符算（这条测试在 Windows CI 上也跑）。
+	if d.Mode != ModeAuto || d.Dir != filepath.Dir("/home/u/Apps/tabtv.AppImage") || d.AppImage != "/home/u/Apps/tabtv.AppImage" {
 		t.Errorf("AppImage 应下载到自身目录：%+v", d)
 	}
 	if d := Detect("windows", env(nil)); d.Mode != ModeAuto {
