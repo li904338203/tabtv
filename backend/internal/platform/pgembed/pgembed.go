@@ -80,6 +80,10 @@ func Start(ctx context.Context, o Options) (*Server, error) {
 	if _, err := os.Stat(o.bin("pg_ctl")); err != nil {
 		return nil, fmt.Errorf("找不到 PostgreSQL 程序 %s：%w", o.bin("pg_ctl"), err)
 	}
+	o, err := o.forPG()
+	if err != nil {
+		return nil, err
+	}
 	st, err := loadState(o.State)
 	if err != nil {
 		return nil, err
@@ -164,11 +168,55 @@ func checkMajor(data string) error {
 	return nil
 }
 
-func initdb(ctx context.Context, o Options, password string) error {
+// forPG 把交给 PG 程序的路径换成它能处理的形式。
+//
+// ⚠️ Windows 上 initdb / pg_ctl / postgres 按系统代码页处理命令行与自身路径，路径里有中文
+// （用户名是中文时 %APPDATA%、%LOCALAPPDATA% 都是）就报「Invalid argument」—— 应用在首次启动就起不来。
+// 换成 8.3 短路径（纯 ASCII）；卷上关了短文件名时短路径仍是原样，这时**提前**给出能看懂的原因与出路，
+// 而不是让 initdb 报一句看不出所以然的错误。目录要先存在才拿得到短路径（空目录不影响 needsInit）。
+func (o Options) forPG() (Options, error) {
 	if err := os.MkdirAll(o.Data, 0o700); err != nil {
-		return err
+		return o, err
 	}
-	pw, err := os.CreateTemp("", "tabtv-pw-*")
+	if err := os.MkdirAll(filepath.Dir(o.LogFile), 0o755); err != nil {
+		return o, err
+	}
+	var err error
+	if o.Home, err = shortPath(o.Home); err != nil {
+		return o, err
+	}
+	if o.Data, err = shortPath(o.Data); err != nil {
+		return o, err
+	}
+	logDir, err := shortPath(filepath.Dir(o.LogFile))
+	if err != nil {
+		return o, err
+	}
+	o.LogFile = filepath.Join(logDir, filepath.Base(o.LogFile))
+	if runtime.GOOS == "windows" {
+		for _, p := range []string{o.Home, o.Data, o.LogFile} {
+			if !isASCII(p) {
+				return o, fmt.Errorf("数据库路径含非英文字符且系统未提供短路径，内嵌数据库无法使用：%s。"+
+					"请把环境变量 TABTV_DATA_DIR 设为一个只含英文与数字的目录（例如 C:\\tabtv-data）后重新打开", p)
+			}
+		}
+	}
+	return o, nil
+}
+
+func isASCII(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] >= 0x80 {
+			return false
+		}
+	}
+	return true
+}
+
+func initdb(ctx context.Context, o Options, password string) error {
+	// 密码文件放在数据目录的上一级（与数据目录同为 forPG 处理过的路径）：系统临时目录在用户目录下，
+	// 用户名是中文时 initdb 一样读不了它。数据目录本身必须为空，不能放进去。
+	pw, err := os.CreateTemp(filepath.Dir(o.Data), "tabtv-pw-*")
 	if err != nil {
 		return err
 	}

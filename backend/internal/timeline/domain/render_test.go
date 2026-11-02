@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -276,14 +277,14 @@ func TestBuildRenderPlan_分块渲染再拼接(t *testing.T) {
 		t.Fatalf("两块：%+v", plan.Chunks)
 	}
 	first := strings.Join(plan.Chunks[0].Args, " ")
-	if strings.Count(first, " -i ") != 60 || !strings.Contains(first, "-crf 16") || !strings.HasSuffix(first, "-an /tmp/work/chunk-001.mp4") {
+	if strings.Count(first, " -i ") != 60 || !strings.Contains(first, "-crf 16") || !strings.HasSuffix(first, "-an "+filepath.Join("/tmp/work", "chunk-001.mp4")) {
 		t.Fatalf("第一块 60 个输入、高质量中间文件、不带声音：\n%s", first)
 	}
-	if !strings.Contains(plan.ConcatListBody, "file '/tmp/work/chunk-002.mp4'") || plan.ConcatList != "/tmp/work/chunks.txt" {
+	if !strings.Contains(plan.ConcatListBody, "file '"+filepath.Join("/tmp/work", "chunk-002.mp4")+"'") || plan.ConcatList != filepath.Join("/tmp/work", "chunks.txt") {
 		t.Fatalf("concat 脚本：%s", plan.ConcatListBody)
 	}
 	final := strings.Join(plan.Args, " ")
-	if !strings.HasPrefix(final, "-hide_banner -nostdin -y -f concat -safe 0 -i /tmp/work/chunks.txt -i /tmp/work/mix.wav") ||
+	if !strings.HasPrefix(final, "-hide_banner -nostdin -y -f concat -safe 0 -i "+filepath.Join("/tmp/work", "chunks.txt")+" -i /tmp/work/mix.wav") ||
 		!strings.Contains(final, "-map 0:v -map 1:a") {
 		t.Fatalf("收尾那一遍拼接分块并映射预渲音频：\n%s", final)
 	}

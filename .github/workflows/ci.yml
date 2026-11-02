@@ -32,8 +32,12 @@ jobs:
       - name: 依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev ffmpeg
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev
           pnpm install --frozen-lockfile
+      - name: 随包 ffmpeg（测试用的就是要发出去的那一份，不用发行版自带的）
+        run: |
+          build/fetch-third-party.sh ffmpeg linux-amd64
+          echo "$PWD/build/third_party/ffmpeg/linux-amd64/bin" >> "$GITHUB_PATH"
       - name: 格式、vet、契约
         run: make fmt-check lint gen-check
       - name: 前端
@@ -82,7 +86,11 @@ jobs:
       - name: 第三方二进制与字体（按锁文件校验）
         run: |
           build/fetch-third-party.sh postgres ${{ matrix.plat }}
+          build/fetch-third-party.sh ffmpeg ${{ matrix.plat }}
           bash build/fetch-fonts.sh
+          # 真实 ffmpeg 的渲染测试用随包那一份跑（各平台都跑，而不是没有 ffmpeg 就跳过）。
+          root="$PWD"; [ "$RUNNER_OS" = "Windows" ] && root="$(pwd -W)"  # GITHUB_PATH 在 Windows 上要 D:/... 形式
+          echo "$root/build/third_party/ffmpeg/${{ matrix.plat }}/bin" >> "$GITHUB_PATH"
       - name: Go 单测（含内嵌 PG 的启动冒烟）
         run: |
           (cd backend && go test ./...)
