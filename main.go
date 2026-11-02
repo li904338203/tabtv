@@ -75,7 +75,7 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets:     assets,
 			Handler:    app.SPAFallback(assets),
-			Middleware: app.APIMiddleware(app.WithProbe(a.API())),
+			Middleware: chain(app.SaveMiddleware(app.ContextOf(a)), app.APIMiddleware(app.WithProbe(a.API()))),
 		},
 		OnStartup:  a.Startup,
 		OnShutdown: func(context.Context) { shutdown() },
@@ -83,5 +83,15 @@ func main() {
 	})
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+// chain 依次套上中间件（第一个最外层）。
+func chain(ms ...func(http.Handler) http.Handler) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		for i := len(ms) - 1; i >= 0; i-- {
+			next = ms[i](next)
+		}
+		return next
 	}
 }

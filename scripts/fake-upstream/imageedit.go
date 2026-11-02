@@ -114,7 +114,7 @@ func (s *server) imageEdit(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	for i := range rec.Files {
-		if rec.Files[i].Field == "image" {
+		if f := rec.Files[i].Field; f == "image" || f == "image[]" {
 			first = &rec.Files[i]
 			break
 		}

@@ -7,7 +7,7 @@
  * ⚠️ 水印开关的字段是「关闭标志」（isAiWatermarkOff），界面上的开关是「开启水印」，中间取反一次；
  *    关掉之后成片不再带 AI 生成标识，且只影响之后的渲染（与来源系统账号页同一句说明）。
  */
-import { ElMessage } from "element-plus";
+import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElMessage, ElOption, ElSelect, ElSlider, ElSwitch, ElTag } from "element-plus";
 import { hostApp } from "~/utils/desktopBridge";
 
 type SettingItem = { key: string; kind: string; value: unknown; default: unknown; set: boolean; restart: boolean; min?: number; max?: number };
@@ -102,46 +102,46 @@ onMounted(() => { void load(); });
     <div class="section-head"><div><h2>常规</h2><p>并发、日志、网络与水印</p></div></div>
     <p v-if="loadError" class="settings-error">{{ loadError }} <button type="button" class="portal-link-button" @click="load">重试</button></p>
 
-    <el-form label-position="top" class="settings-form">
-      <el-form-item v-for="it in shownItems" :key="it.key">
+    <ElForm label-position="top" class="settings-form">
+      <ElFormItem v-for="it in shownItems" :key="it.key">
         <template #label>
           <span>{{ LABELS[it.key]?.label }}</span>
-          <el-tag v-if="it.restart" size="small" type="warning" effect="plain" class="settings-tag">重启后生效</el-tag>
+          <ElTag v-if="it.restart" size="small" type="warning" effect="plain" class="settings-tag">重启后生效</ElTag>
         </template>
-        <el-input-number v-if="it.kind === 'int'" v-model="form[it.key] as number" :min="it.min" :max="it.max" />
-        <el-switch v-else-if="it.kind === 'bool'" v-model="form[it.key] as boolean" />
-        <el-input v-else v-model="form[it.key] as string" :placeholder="'使用随应用附带的版本'" clearable />
+        <ElInputNumber v-if="it.kind === 'int'" v-model="form[it.key] as number" :min="it.min" :max="it.max" />
+        <ElSwitch v-else-if="it.kind === 'bool'" v-model="form[it.key] as boolean" />
+        <ElInput v-else v-model="form[it.key] as string" :placeholder="'使用随应用附带的版本'" clearable />
         <small class="settings-help" :class="{ danger: it.key === 'provider.allow_private_network' && form[it.key] }">{{ LABELS[it.key]?.help }}</small>
-      </el-form-item>
+      </ElFormItem>
 
       <div class="section-head"><div><h2>水印</h2><p>成片右下角的 AI 生成标识</p></div></div>
-      <el-form-item label="在成片上加 AI 生成标识">
-        <el-switch v-model="watermarkOn" />
+      <ElFormItem label="在成片上加 AI 生成标识">
+        <ElSwitch v-model="watermarkOn" />
         <small class="settings-help">关掉之后成片不带 AI 生成标识；只影响之后的渲染，已经渲好的不变。</small>
-      </el-form-item>
-      <el-form-item label="水印图片">
+      </ElFormItem>
+      <ElFormItem label="水印图片">
         <input type="file" accept="image/png,image/webp" @change="pickWatermark">
         <small class="settings-help">{{ render.watermarkMediaId && render.watermarkMediaId !== "0" ? "已设置自定义水印图" : "未设置时使用文字标识" }}</small>
-      </el-form-item>
-      <el-form-item label="位置">
-        <el-select v-model="render.position" style="width: 200px">
-          <el-option label="右下" value="bottom_right" />
-          <el-option label="左下" value="bottom_left" />
-          <el-option label="右上" value="top_right" />
-          <el-option label="左上" value="top_left" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="不透明度（%）"><el-slider v-model="render.opacity" :min="10" :max="100" style="width: 320px" /></el-form-item>
-      <el-form-item label="大小（画面宽度的 %）"><el-slider v-model="render.scale" :min="4" :max="30" style="width: 320px" /></el-form-item>
+      </ElFormItem>
+      <ElFormItem label="位置">
+        <ElSelect v-model="render.position" style="width: 200px">
+          <ElOption label="右下" value="bottom_right" />
+          <ElOption label="左下" value="bottom_left" />
+          <ElOption label="右上" value="top_right" />
+          <ElOption label="左上" value="top_left" />
+        </ElSelect>
+      </ElFormItem>
+      <ElFormItem label="不透明度（%）"><ElSlider v-model="render.opacity" :min="10" :max="100" style="width: 320px" /></ElFormItem>
+      <ElFormItem label="大小（画面宽度的 %）"><ElSlider v-model="render.scale" :min="4" :max="30" style="width: 320px" /></ElFormItem>
 
       <div class="section-head"><div><h2>数据目录</h2><p>数据库、素材与日志都在这里</p></div></div>
-      <el-form-item>
+      <ElFormItem>
         <code class="settings-path">{{ dataDir || "—" }}</code>
-        <el-button size="small" @click="openDataDir">在文件管理器中打开</el-button>
-      </el-form-item>
+        <ElButton size="small" @click="openDataDir">在文件管理器中打开</ElButton>
+      </ElFormItem>
 
-      <el-button type="primary" :loading="saving" @click="save">保存</el-button>
-    </el-form>
+      <ElButton type="primary" :loading="saving" @click="save">保存</ElButton>
+    </ElForm>
   </div>
 </template>
 

@@ -3,8 +3,6 @@ import { fileURLToPath } from "node:url";
 export default defineNuxtConfig({
   compatibilityDate: "2026-07-01",
   devtools: { enabled: false },
-  // 桌面应用：前端是静态产物，由 Wails 的 AssetServer 直接提供（dev/03 TTD-30）。
-  ssr: false,
   modules: ["@pinia/nuxt", "@nuxt/eslint"],
   css: [
     "element-plus/dist/index.css",
@@ -104,6 +102,10 @@ export default defineNuxtConfig({
   },
   // 生产里页面与 API 经反向代理同域：实时通道连页面自己的域名，不补端口。
   $production: {
+    // 桌面应用：前端是静态产物，由 Wails 的 AssetServer 直接提供（dev/03 TTD-30）。
+    // ⚠️ 只在生产构建关 SSR：Nuxt 3.21 开发态 + ssr:false 解析服务端入口会报
+    //    「No entry found in rollupOptions.input」，开发服务器起不来（来源系统开发态本来就是 SSR）。
+    ssr: false,
     runtimeConfig: {
       public: {
         wsApiPort: ""

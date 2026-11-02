@@ -463,13 +463,29 @@ func TestOpenAIImages_多张参考图逐张发出且不当成蒙版(t *testing.T
 	if len(req.Files) != len(refs) {
 		t.Fatalf("应发出 %d 张参考图，实际 %d 个文件位: %+v", len(refs), len(req.Files), req.Files)
 	}
+	// 官方多图字段名是 `image[]`（tabtv 核实官方文档后改）。
 	for i, f := range req.Files {
-		if f.Field != "image" || f.Ref != refs[i] {
-			t.Fatalf("第 %d 个文件位应是第 %d 张参考图（字段 image、顺序不变），得到 %+v", i+1, i+1, f)
+		if f.Field != "image[]" || f.Ref != refs[i] {
+			t.Fatalf("第 %d 个文件位应是第 %d 张参考图（字段 image[]、顺序不变），得到 %+v", i+1, i+1, f)
 		}
 	}
-	if req.Fields["input_fidelity"] != "high" {
-		t.Fatalf("参考图式编辑默认要保住参考图的身份与细节: %+v", req.Fields)
+	// gpt-image-2 官方写明不要传 input_fidelity。
+	if _, ok := req.Fields["input_fidelity"]; ok {
+		t.Fatalf("gpt-image-2 不该带 input_fidelity: %+v", req.Fields)
+	}
+}
+
+// input_fidelity 只对 gpt-image-1 系列发；单张参考图字段仍是 image。
+func TestOpenAIImages_inputFidelity只给gptImage1(t *testing.T) {
+	req, err := mustGet(t, "openai_images").BuildSubmit(Job{
+		OperationCode: "img2img", UpstreamModel: "gpt-image-1", Prompt: "换个背景",
+		Images: []string{"https://cdn.x/1.png"}, Media: []Media{{Kind: "image", Order: 1, Value: "https://cdn.x/1.png"}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if req.Fields["input_fidelity"] != "high" || req.Files[0].Field != "image" {
+		t.Fatalf("gpt-image-1 单图编辑：%+v %+v", req.Fields, req.Files)
 	}
 }
 

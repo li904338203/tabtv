@@ -67,6 +67,9 @@ func (r *Runtime) start(ctx context.Context, log *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	if _, err := installProviderTemplates(ctx, pool.Pool, gen.Next, ident.AdminID, log); err != nil {
+		return fmt.Errorf("写入厂商模板失败：%w", err)
+	}
 	if r.Builtin, err = installBuiltinContent(ctx, pool.Pool, store, gen.Next, ident.AdminID, log); err != nil {
 		return fmt.Errorf("安装内置营销内容失败：%w", err)
 	}

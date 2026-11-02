@@ -152,15 +152,21 @@ func (openAIImages) BuildSubmit(job Job) (Request, error) {
 		// ⚠️ 多张参考图**每张一个 `image` 字段**（CD-80）：分镜图要同时参照这一镜的角色、场景、道具。
 		// 此前只发第一张、第二张当成蒙版 —— 带着五六张资产图的分镜图会把第二个角色的设定图当成「要重绘的区域」。
 		// 老系统对同一个上游（gpt-image-2 @ relay.example.com）就是这样发的，实测 6~7 张图返回 200。
+		// ⚠️ 官方多图字段名是 `image[]`（单张是 `image`）—— tabtv 核实官方文档后改（docs/research/厂商官方端点核实.md §1）。
+		field := "image"
+		if len(refs) > 1 {
+			field = "image[]"
+		}
 		for i, ref := range refs {
 			req.Files = append(req.Files,
-				FilePart{Field: "image", Filename: "reference-" + itoa(i+1) + ".png", Ref: ref})
+				FilePart{Field: field, Filename: "reference-" + itoa(i+1) + ".png", Ref: ref})
 		}
 		if mask != "" {
 			// 编辑接口用 mask 指定要重绘的区域（涂抹重绘）。
 			req.Files = append(req.Files, FilePart{Field: "mask", Filename: "mask.png", Ref: mask})
-		} else if paramString(job.Params, "input_fidelity", "") == "" {
-			// 参考图式编辑：让上游尽量保住参考图里的身份与细节（老系统同款默认）
+		} else if paramString(job.Params, "input_fidelity", "") == "" && supportsInputFidelity(job.UpstreamModel) {
+			// 参考图式编辑：让上游尽量保住参考图里的身份与细节（老系统同款默认）。
+			// ⚠️ 只有 gpt-image-1 系列认这个参数；官方写明 gpt-image-2 及之后的型号不要传（传了会被拒）。
 			req.Fields["input_fidelity"] = "high"
 		}
 		return req, nil
@@ -448,4 +454,9 @@ func editImages(job Job) (refs []string, mask string) {
 		refs = refs[:1]
 	}
 	return refs, mask
+}
+
+// supportsInputFidelity：只有 gpt-image-1 系列支持 input_fidelity（官方图片编辑文档）。
+func supportsInputFidelity(model string) bool {
+	return strings.HasPrefix(strings.ToLower(model), "gpt-image-1")
 }

@@ -6,7 +6,7 @@
  * ⚠️ 密钥三态（TT-F-28）：读回来的只有掩码 —— 不动就保留、填了新值才替换、点「清除」才清空；
  *    掩码值绝不能被当成新密钥提交回去（来源系统同一条规则）。
  */
-import { ElMessage } from "element-plus";
+import { ElButton, ElForm, ElFormItem, ElInput, ElInputNumber, ElMessage, ElRadioButton, ElRadioGroup, ElSwitch } from "element-plus";
 import { formatBytes } from "~/utils/settingsNav";
 
 type SettingItem = { key: string; kind: string; value: unknown; set: boolean };
@@ -98,37 +98,37 @@ onMounted(() => { void load(); });
     </div>
 
     <div class="section-head"><div><h2>可选：S3 兼容存储</h2><p>只在模型要求「参考图必须是公网地址」时使用，其余素材始终留在本机</p></div></div>
-    <el-form label-position="top" class="settings-form">
-      <el-form-item label="端点（Endpoint）"><el-input v-model="form.endpoint" placeholder="https://s3.example.com" clearable /></el-form-item>
-      <el-form-item label="区域（Region）"><el-input v-model="form.region" placeholder="us-east-1" /></el-form-item>
-      <el-form-item label="存储桶"><el-input v-model="form.bucket" /></el-form-item>
-      <el-form-item label="Access Key"><el-input v-model="form.accessKey" /></el-form-item>
-      <el-form-item label="Secret Key">
-        <el-radio-group v-model="secretAction" size="small">
-          <el-radio-button value="keep">保留原值{{ secretMask ? `（${secretMask}）` : "" }}</el-radio-button>
-          <el-radio-button value="replace">替换</el-radio-button>
-          <el-radio-button value="clear">清除</el-radio-button>
-        </el-radio-group>
-        <el-input v-if="secretAction === 'replace'" v-model="form.secretKey" type="password" show-password style="margin-top: 8px" />
-      </el-form-item>
-      <el-form-item label="寻址方式">
-        <el-switch v-model="form.pathStyle" active-text="路径式（MinIO 等）" inactive-text="虚拟主机式（阿里云 OSS、火山 TOS 等）" />
-      </el-form-item>
-      <el-form-item label="对象前缀"><el-input v-model="form.prefix" /></el-form-item>
-      <el-form-item label="签名地址有效期（小时）">
-        <el-input-number v-model="form.signTTLHours" :min="1" :max="168" />
+    <ElForm label-position="top" class="settings-form">
+      <ElFormItem label="端点（Endpoint）"><ElInput v-model="form.endpoint" placeholder="https://s3.example.com" clearable /></ElFormItem>
+      <ElFormItem label="区域（Region）"><ElInput v-model="form.region" placeholder="us-east-1" /></ElFormItem>
+      <ElFormItem label="存储桶"><ElInput v-model="form.bucket" /></ElFormItem>
+      <ElFormItem label="Access Key"><ElInput v-model="form.accessKey" /></ElFormItem>
+      <ElFormItem label="Secret Key">
+        <ElRadioGroup v-model="secretAction" size="small">
+          <ElRadioButton value="keep">保留原值{{ secretMask ? `（${secretMask}）` : "" }}</ElRadioButton>
+          <ElRadioButton value="replace">替换</ElRadioButton>
+          <ElRadioButton value="clear">清除</ElRadioButton>
+        </ElRadioGroup>
+        <ElInput v-if="secretAction === 'replace'" v-model="form.secretKey" type="password" show-password style="margin-top: 8px" />
+      </ElFormItem>
+      <ElFormItem label="寻址方式">
+        <ElSwitch v-model="form.pathStyle" active-text="路径式（MinIO 等）" inactive-text="虚拟主机式（阿里云 OSS、火山 TOS 等）" />
+      </ElFormItem>
+      <ElFormItem label="对象前缀"><ElInput v-model="form.prefix" /></ElFormItem>
+      <ElFormItem label="签名地址有效期（小时）">
+        <ElInputNumber v-model="form.signTTLHours" :min="1" :max="168" />
         <small class="settings-help">上游可能排队一阵才来取图，不要设得太短。</small>
-      </el-form-item>
+      </ElFormItem>
       <div class="storage-actions">
-        <el-button :loading="testing" @click="test">测试连接</el-button>
-        <el-button type="primary" :loading="saving" @click="save">保存</el-button>
+        <ElButton :loading="testing" @click="test">测试连接</ElButton>
+        <ElButton type="primary" :loading="saving" @click="save">保存</ElButton>
       </div>
       <ul v-if="testResult" class="storage-steps">
         <li v-for="s in testResult.steps" :key="s.step" :class="{ bad: !s.ok }">
           {{ s.ok ? "✓" : "✗" }} {{ s.step }}<span v-if="s.message">：{{ s.message }}</span>
         </li>
       </ul>
-    </el-form>
+    </ElForm>
   </div>
 </template>
 

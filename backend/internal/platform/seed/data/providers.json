@@ -1,0 +1,845 @@
+{
+  "_comment": "厂商模板（TT-T-23）。依据 docs/research/厂商官方端点核实.md §9：只放请求形状与官方文档一致的「协议 × 操作」；地址一律官方，Key 永远为空、厂商与模型全部停用，由使用者在设置页填 Key 后启用。能力矩阵按 §8（来源 enable-models.sh 的 video_caps 规则），参数支持只写已核实的型号差异。",
+  "capabilityRules": {
+    "text2text": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      },
+      {
+        "role": "image",
+        "min": 0,
+        "max": 4
+      }
+    ],
+    "storyboard_gen": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "prompt_compose": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "img2prompt": [
+      {
+        "role": "image",
+        "min": 1,
+        "max": 4
+      },
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "video2prompt": [
+      {
+        "role": "video",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "text2img": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "text2video": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "img2video": [
+      {
+        "role": "image",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "first_last_frame": [
+      {
+        "role": "image",
+        "min": 2,
+        "max": 2
+      }
+    ],
+    "ref2video": [
+      {
+        "role": "image",
+        "min": 0,
+        "max": 4
+      },
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "video2video": [
+      {
+        "role": "video",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "speech2text": [
+      {
+        "role": "audio",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "video_desubtitle": [
+      {
+        "role": "video",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "text2music": [
+      {
+        "role": "text",
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "video2audio": [
+      {
+        "role": "video",
+        "min": 1,
+        "max": 1
+      },
+      {
+        "role": "text",
+        "min": 0,
+        "max": 2
+      }
+    ],
+    "img2img": [
+      {
+        "role": "image",
+        "min": 1,
+        "max": 6
+      },
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      }
+    ],
+    "asset_gen": [
+      {
+        "role": "text",
+        "min": 0,
+        "max": 8
+      },
+      {
+        "role": "image",
+        "min": 0,
+        "max": 1
+      }
+    ]
+  },
+  "providers": [
+    {
+      "code": "openai",
+      "name": "OpenAI",
+      "baseUrl": "https://api.openai.com/v1",
+      "authType": "bearer",
+      "testPath": "/models",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 900000,
+      "idleTimeoutMs": 120000,
+      "maxRetries": 2
+    },
+    {
+      "code": "anthropic",
+      "name": "Anthropic",
+      "baseUrl": "https://api.anthropic.com/v1",
+      "authType": "header",
+      "headerName": "x-api-key",
+      "testPath": "/models",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 900000,
+      "idleTimeoutMs": 120000,
+      "maxRetries": 2
+    },
+    {
+      "code": "kling",
+      "name": "可灵 AI（国内）",
+      "baseUrl": "https://api-beijing.klingai.com",
+      "authType": "bearer",
+      "testPath": "/tasks?task_ids=tabtv-connection-probe",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 60000,
+      "idleTimeoutMs": 60000,
+      "maxRetries": 3
+    },
+    {
+      "code": "volc_ark",
+      "name": "火山方舟",
+      "baseUrl": "https://ark.cn-beijing.volces.com/api/v3",
+      "authType": "bearer",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 60000,
+      "idleTimeoutMs": 60000,
+      "maxRetries": 3
+    },
+    {
+      "code": "volc_speech",
+      "name": "火山引擎语音识别",
+      "baseUrl": "https://openspeech.bytedance.com",
+      "authType": "header",
+      "headerName": "X-Api-Key",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 600000,
+      "idleTimeoutMs": 600000,
+      "maxRetries": 2
+    },
+    {
+      "code": "volc_mediakit",
+      "name": "火山引擎 AI MediaKit",
+      "baseUrl": "https://mediakit.cn-beijing.volces.com",
+      "authType": "bearer",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 60000,
+      "idleTimeoutMs": 60000,
+      "maxRetries": 3
+    },
+    {
+      "code": "xai",
+      "name": "xAI",
+      "baseUrl": "https://api.x.ai",
+      "authType": "bearer",
+      "testPath": "/v1/models",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 60000,
+      "idleTimeoutMs": 60000,
+      "maxRetries": 3
+    },
+    {
+      "code": "elevenlabs",
+      "name": "ElevenLabs",
+      "baseUrl": "https://api.elevenlabs.io",
+      "authType": "header",
+      "headerName": "xi-api-key",
+      "testPath": "/v1/models",
+      "connectTimeoutMs": 15000,
+      "requestTimeoutMs": 300000,
+      "idleTimeoutMs": 300000,
+      "maxRetries": 2
+    }
+  ],
+  "models": [
+    {
+      "code": "gpt_6_astra",
+      "name": "GPT-6 Astra",
+      "provider": "openai",
+      "domain": "text",
+      "upstream": "gpt-6-astra",
+      "protocol": "openai_chat",
+      "estSeconds": 30,
+      "sort": 10,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "gpt_6_1_sol",
+      "name": "GPT-6.1 Sol",
+      "provider": "openai",
+      "domain": "text",
+      "upstream": "gpt-6.1-sol",
+      "protocol": "openai_chat",
+      "estSeconds": 30,
+      "sort": 11,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "gpt_6_1_terra",
+      "name": "GPT-6.1 Terra",
+      "provider": "openai",
+      "domain": "text",
+      "upstream": "gpt-6.1-terra",
+      "protocol": "openai_chat",
+      "estSeconds": 30,
+      "sort": 12,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "gpt_6_luna",
+      "name": "GPT-6 Luna",
+      "provider": "openai",
+      "domain": "text",
+      "upstream": "gpt-6-luna",
+      "protocol": "openai_chat",
+      "estSeconds": 30,
+      "sort": 13,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "claude_opus_5_5",
+      "name": "Claude Opus 5.5",
+      "provider": "anthropic",
+      "domain": "text",
+      "upstream": "claude-opus-5-5",
+      "protocol": "anthropic_messages",
+      "estSeconds": 30,
+      "sort": 20,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "claude_sonnet_5_5",
+      "name": "Claude Sonnet 5.5",
+      "provider": "anthropic",
+      "domain": "text",
+      "upstream": "claude-sonnet-5-5",
+      "protocol": "anthropic_messages",
+      "estSeconds": 30,
+      "sort": 21,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "claude_haiku_5_5",
+      "name": "Claude Haiku 5.5",
+      "provider": "anthropic",
+      "domain": "text",
+      "upstream": "claude-haiku-5-5",
+      "protocol": "anthropic_messages",
+      "estSeconds": 30,
+      "sort": 22,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "claude_fable_5_1",
+      "name": "Claude Fable 5.1",
+      "provider": "anthropic",
+      "domain": "text",
+      "upstream": "claude-fable-5-1",
+      "protocol": "anthropic_messages",
+      "estSeconds": 30,
+      "sort": 23,
+      "agentCapable": true,
+      "opsGroup": "text"
+    },
+    {
+      "code": "gpt_image_2_5_sunburst",
+      "name": "GPT Image 2.5 Sunburst",
+      "provider": "openai",
+      "domain": "image",
+      "upstream": "gpt-image-2.5-sunburst",
+      "protocol": "openai_images",
+      "estSeconds": 120,
+      "sort": 30,
+      "operations": [
+        "text2img",
+        "img2img",
+        "asset_gen"
+      ]
+    },
+    {
+      "code": "gpt_image_2_5_flare",
+      "name": "GPT Image 2.5 Flare",
+      "provider": "openai",
+      "domain": "image",
+      "upstream": "gpt-image-2.5-flare",
+      "protocol": "openai_images",
+      "estSeconds": 120,
+      "sort": 31,
+      "operations": [
+        "text2img",
+        "img2img",
+        "asset_gen"
+      ]
+    },
+    {
+      "code": "gpt_image_2_direct",
+      "name": "GPT Image 2",
+      "provider": "openai",
+      "domain": "image",
+      "upstream": "gpt-image-2",
+      "protocol": "openai_images",
+      "estSeconds": 120,
+      "sort": 32,
+      "operations": [
+        "text2img",
+        "img2img",
+        "asset_gen"
+      ]
+    },
+    {
+      "code": "kling_3_0_turbo",
+      "name": "可灵 3.0 Turbo",
+      "provider": "kling",
+      "domain": "video",
+      "upstream": "kling-3.0-turbo",
+      "protocol": "kling_video",
+      "submitPath": "/text-to-video/kling-3.0-turbo",
+      "queryPath": "/tasks?task_ids={taskId}",
+      "estSeconds": 180,
+      "sort": 50,
+      "maxDurationSec": 15,
+      "operations": [
+        "text2video",
+        "img2video"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "720p",
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "10",
+            "15"
+          ],
+          "default": "5"
+        }
+      ]
+    },
+    {
+      "code": "kling_3_0",
+      "name": "可灵 3.0",
+      "provider": "kling",
+      "domain": "video",
+      "upstream": "kling-3.0",
+      "protocol": "kling_video",
+      "submitPath": "/text-to-video/kling-3.0",
+      "queryPath": "/tasks?task_ids={taskId}",
+      "estSeconds": 180,
+      "sort": 51,
+      "maxDurationSec": 15,
+      "nativeAudio": true,
+      "operations": [
+        "text2video",
+        "img2video",
+        "first_last_frame"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "720p",
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "10",
+            "15"
+          ],
+          "default": "5"
+        }
+      ]
+    },
+    {
+      "code": "kling_3_0_omni",
+      "name": "可灵 3.0 Omni",
+      "provider": "kling",
+      "domain": "video",
+      "upstream": "kling-3.0-omni",
+      "protocol": "kling_video",
+      "submitPath": "/omni-video/kling-3.0-omni",
+      "queryPath": "/tasks?task_ids={taskId}",
+      "estSeconds": 180,
+      "sort": 52,
+      "maxDurationSec": 15,
+      "nativeAudio": true,
+      "operations": [
+        "text2video",
+        "img2video",
+        "first_last_frame",
+        "ref2video",
+        "video2video"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "720p",
+            "1080p"
+          ],
+          "default": "1080p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "10",
+            "15"
+          ],
+          "default": "5"
+        }
+      ]
+    },
+    {
+      "code": "kling_video_to_audio",
+      "name": "可灵视频配音效",
+      "provider": "kling",
+      "domain": "audio",
+      "upstream": "kling-video-to-audio",
+      "protocol": "kling_v2a",
+      "estSeconds": 120,
+      "sort": 53,
+      "operations": [
+        "video2audio"
+      ]
+    },
+    {
+      "code": "seedance_2_5",
+      "name": "Seedance 2.5",
+      "provider": "volc_ark",
+      "domain": "video",
+      "upstream": "doubao-seedance-2-5-260628",
+      "protocol": "seedance_video",
+      "submitPath": "/contents/generations/tasks",
+      "queryPath": "/contents/generations/tasks/{taskId}",
+      "estSeconds": 180,
+      "sort": 60,
+      "maxDurationSec": 30,
+      "nativeAudio": true,
+      "operations": [
+        "text2video",
+        "img2video",
+        "first_last_frame"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "4",
+            "5",
+            "8",
+            "10",
+            "15",
+            "20",
+            "30"
+          ],
+          "default": "5"
+        }
+      ]
+    },
+    {
+      "code": "seedance_2_0",
+      "name": "Seedance 2.0",
+      "provider": "volc_ark",
+      "domain": "video",
+      "upstream": "doubao-seedance-2-0-260128",
+      "protocol": "seedance_video",
+      "submitPath": "/contents/generations/tasks",
+      "queryPath": "/contents/generations/tasks/{taskId}",
+      "estSeconds": 180,
+      "sort": 61,
+      "maxDurationSec": 15,
+      "nativeAudio": true,
+      "operations": [
+        "text2video",
+        "img2video",
+        "first_last_frame"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "4",
+            "5",
+            "8",
+            "10",
+            "15"
+          ],
+          "default": "5"
+        }
+      ]
+    },
+    {
+      "code": "grok_imagine_video_1_5",
+      "name": "Grok Imagine Video 1.5",
+      "provider": "xai",
+      "domain": "video",
+      "upstream": "grok-imagine-video-1.5",
+      "protocol": "grok_video",
+      "submitPath": "/v1/videos/generations",
+      "queryPath": "/v1/videos/{taskId}",
+      "estSeconds": 180,
+      "sort": 40,
+      "maxDurationSec": 15,
+      "operations": [
+        "text2video",
+        "img2video"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "8",
+            "10",
+            "15"
+          ],
+          "default": "8"
+        }
+      ]
+    },
+    {
+      "code": "grok_imagine_video_1_5_lite",
+      "name": "Grok Imagine Video 1.5 Lite",
+      "provider": "xai",
+      "domain": "video",
+      "upstream": "grok-imagine-video-1.5-lite",
+      "protocol": "grok_video",
+      "submitPath": "/v1/videos/generations",
+      "queryPath": "/v1/videos/{taskId}",
+      "estSeconds": 180,
+      "sort": 41,
+      "maxDurationSec": 15,
+      "operations": [
+        "text2video",
+        "img2video"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "8",
+            "10",
+            "15"
+          ],
+          "default": "8"
+        }
+      ]
+    },
+    {
+      "code": "grok_imagine_video",
+      "name": "Grok Imagine Video",
+      "provider": "xai",
+      "domain": "video",
+      "upstream": "grok-imagine-video",
+      "protocol": "grok_video",
+      "submitPath": "/v1/videos/generations",
+      "queryPath": "/v1/videos/{taskId}",
+      "estSeconds": 180,
+      "sort": 42,
+      "maxDurationSec": 15,
+      "operations": [
+        "text2video",
+        "img2video"
+      ],
+      "params": [
+        {
+          "code": "resolution",
+          "allowed": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "default": "720p"
+        },
+        {
+          "code": "duration",
+          "allowed": [
+            "5",
+            "8",
+            "10",
+            "15"
+          ],
+          "default": "8"
+        }
+      ]
+    },
+    {
+      "code": "gpt_transcribe",
+      "name": "GPT Transcribe（仅整段文字）",
+      "provider": "openai",
+      "domain": "text",
+      "upstream": "gpt-transcribe",
+      "protocol": "openai_transcribe",
+      "estSeconds": 120,
+      "sort": 70,
+      "operations": [
+        "speech2text"
+      ]
+    },
+    {
+      "code": "volc_asr_turbo",
+      "name": "豆包录音文件识别极速版",
+      "provider": "volc_speech",
+      "domain": "text",
+      "upstream": "volc.bigasr.auc_turbo",
+      "protocol": "volc_asr",
+      "estSeconds": 60,
+      "sort": 71,
+      "operations": [
+        "speech2text"
+      ]
+    },
+    {
+      "code": "volc_asr_2_0",
+      "name": "豆包录音文件识别 2.0",
+      "provider": "volc_speech",
+      "domain": "text",
+      "upstream": "volc.seedasr.auc",
+      "protocol": "volc_asr_standard",
+      "estSeconds": 180,
+      "sort": 72,
+      "operations": [
+        "speech2text"
+      ]
+    },
+    {
+      "code": "volc_asr_1_0",
+      "name": "豆包录音文件识别 1.0",
+      "provider": "volc_speech",
+      "domain": "text",
+      "upstream": "volc.bigasr.auc",
+      "protocol": "volc_asr_standard",
+      "estSeconds": 180,
+      "sort": 73,
+      "operations": [
+        "speech2text"
+      ]
+    },
+    {
+      "code": "volc_desubtitle",
+      "name": "视频去字幕（精细化）",
+      "provider": "volc_mediakit",
+      "domain": "video",
+      "upstream": "erase-video-subtitle-pro",
+      "protocol": "volc_mediakit_erase",
+      "submitPath": "/api/v1/tools/erase-video-subtitle-pro",
+      "queryPath": "/api/v1/tasks/{taskId}",
+      "estSeconds": 300,
+      "sort": 80,
+      "operations": [
+        "video_desubtitle"
+      ]
+    },
+    {
+      "code": "elevenlabs_music_v2_5",
+      "name": "ElevenLabs Music v2.5",
+      "provider": "elevenlabs",
+      "domain": "audio",
+      "upstream": "music_v2_5",
+      "protocol": "elevenlabs_music",
+      "estSeconds": 120,
+      "sort": 90,
+      "operations": [
+        "text2music"
+      ]
+    },
+    {
+      "code": "elevenlabs_music_v2",
+      "name": "ElevenLabs Music v2",
+      "provider": "elevenlabs",
+      "domain": "audio",
+      "upstream": "music_v2",
+      "protocol": "elevenlabs_music",
+      "estSeconds": 120,
+      "sort": 91,
+      "operations": [
+        "text2music"
+      ]
+    },
+    {
+      "code": "elevenlabs_music_v1",
+      "name": "ElevenLabs Music v1",
+      "provider": "elevenlabs",
+      "domain": "audio",
+      "upstream": "music_v1",
+      "protocol": "elevenlabs_music",
+      "estSeconds": 120,
+      "sort": 92,
+      "operations": [
+        "text2music"
+      ]
+    }
+  ],
+  "operationGroups": {
+    "text": [
+      "text2text",
+      "storyboard_gen",
+      "prompt_compose",
+      "img2prompt",
+      "video2prompt",
+      "agent_chat",
+      "scene_build",
+      "smartcut_plan"
+    ]
+  },
+  "protocolSubmitPaths": {
+    "openai_chat": "/chat/completions",
+    "anthropic_messages": "/messages",
+    "openai_images": "/images/generations",
+    "openai_transcribe": "/audio/transcriptions",
+    "kling_v2a": "/v1/audio/video-to-audio",
+    "volc_asr": "/api/v3/auc/bigmodel/recognize/flash",
+    "volc_asr_standard": "/api/v3/auc/bigmodel/submit",
+    "elevenlabs_music": "/v1/music"
+  }
+}

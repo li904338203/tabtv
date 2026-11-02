@@ -1,3 +1,6 @@
+import { ElMessage } from "element-plus";
+import { hostApp } from "~/utils/desktopBridge";
+
 /**
  * 把一个 Blob 存成本地文件。
  *
@@ -7,6 +10,15 @@
  *    同步撤销会下出一个 0 字节的文件 —— 而下载本身显示「已完成」。
  */
 export function saveBlob(blob: Blob, filename: string, delayMs = 1000): void {
+  // 桌面版（TT-T-16，TTD-36）：WebView 里没有下载管理器，`<a download>` 不可靠 —— 交给宿主弹系统「另存为」。
+  // 请求体就是文件内容，经资源服务流式交给 Go，不转 base64。
+  // ⚠️ 失败要说出来：吞掉的话用户点了「下载」什么都没发生，也没有文件。
+  if (hostApp()) {
+    saveViaHost(blob, filename).catch((e: unknown) => {
+      ElMessage.error((e as { message?: string }).message || "保存失败");
+    });
+    return;
+  }
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;
@@ -55,4 +67,12 @@ export function safeFilename(base: string, fallback = "AITv作品"): string {
   // 连续的非法字符只留一个下划线；按字符截断（Array.from），中文不会截出半个字
   const cleaned = Array.from(mapped.replace(/_+/g, "_").trim()).slice(0, 80).join("");
   return cleaned || fallback;
+}
+
+/** 桌面版的另存为（Go 侧 app/save.go）。返回是否保存（用户取消为 false）。 */
+export async function saveViaHost(blob: Blob, filename: string): Promise<boolean> {
+  const response = await fetch(`/api/v1/_desktop/save?name=${encodeURIComponent(filename)}`, { method: "POST", body: blob });
+  const result = (await response.json().catch(() => ({}))) as { saved?: boolean; message?: string };
+  if (!response.ok) throw new Error(result.message || "保存失败");
+  return Boolean(result.saved);
 }

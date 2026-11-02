@@ -144,16 +144,16 @@ func TestFission_video2video与重新生成两条路报价(t *testing.T) {
 		v1.Inputs["video"] != 1 || v1.Inputs["image"] != 0 || v1.Credits != 50 {
 		t.Fatalf("v1 应走 video2video、50 积分：%+v", v1)
 	}
-	if !strings.Contains(v1.FissionNote, "视频生视频") || !strings.Contains(v1.FissionNote, "✦50") {
-		t.Fatalf("v1 说明应写明路径与费用：%q", v1.FissionNote)
+	if !strings.Contains(v1.FissionNote, "视频生视频") || strings.Contains(v1.FissionNote, "✦") {
+		t.Fatalf("v1 说明应写明路径且不出现金额：%q", v1.FissionNote)
 	}
 	// m-ref 没绑 video2video → 重新生成：按 ref2video + 3 张商品图报价（6 × 5），不发源视频。
 	if v2.FissionRoute != domain.FissionRegenerate || v2.OperationCode != "ref2video" || v2.Inputs["video"] != 0 ||
 		v2.Inputs["image"] != 3 || v2.Credits != 30 {
 		t.Fatalf("v2 应走重新生成、30 积分：%+v", v2)
 	}
-	if !strings.Contains(v2.FissionNote, "不支持以视频为输入") || !strings.Contains(v2.FissionNote, "✦30") {
-		t.Fatalf("v2 说明应写明原因与费用：%q", v2.FissionNote)
+	if !strings.Contains(v2.FissionNote, "不支持以视频为输入") || strings.Contains(v2.FissionNote, "✦") {
+		t.Fatalf("v2 说明应写明原因且不出现金额：%q", v2.FissionNote)
 	}
 	if p.Total != 80 || !p.CanApprove {
 		t.Fatalf("合计 = 各行之和：%d %v", p.Total, p.CanApprove)
@@ -167,7 +167,7 @@ func TestFission_video2video与重新生成两条路报价(t *testing.T) {
 	}
 	p = run()
 	if v1 := p.Items[0]; v1.FissionRoute != domain.FissionRegenerate || v1.OperationCode != "ref2video" ||
-		v1.Credits != 40 || v1.Inputs["video"] != 0 || !strings.Contains(v1.FissionNote, "✦40") {
+		v1.Credits != 40 || v1.Inputs["video"] != 0 || strings.Contains(v1.FissionNote, "✦") {
 		t.Fatalf("绑定停用后应改走重新生成：%+v", v1)
 	}
 	// 规划不扣费。

@@ -39,6 +39,12 @@ func New(boot Booter, dataDir, logDir string) *App {
 	return a
 }
 
+// ContextOf 返回 Wails 的应用 context（窗口创建后才有）。
+// ⚠️ 写成包级函数而不是 App 的方法：App 的导出方法都会被 Wails 绑定给前端，context 无法序列化。
+func ContextOf(a *App) func() context.Context {
+	return func() context.Context { return a.ctx }
+}
+
 // API 返回始终指向「当前」后端路由的 handler：重试成功后无需重建 AssetServer。
 func (a *App) API() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton } from "element-plus";
 /**
  * 设置 → 环境自检（TT-F-35）：每一项给状态、现值与处置建议 —— 只说「不可用」的话用户不知道下一步做什么。
  */
@@ -33,8 +34,8 @@ onMounted(() => { void run(); });
     <div class="section-head">
       <div><h2>环境自检</h2><p>tabtv {{ version || "—" }}</p></div>
       <div class="diag-actions">
-        <el-button size="small" @click="hostApp()?.OpenLogDir?.()">打开日志目录</el-button>
-        <el-button size="small" :loading="loading" @click="run">重新检查</el-button>
+        <ElButton size="small" @click="hostApp()?.OpenLogDir?.()">打开日志目录</ElButton>
+        <ElButton size="small" :loading="loading" @click="run">重新检查</ElButton>
       </div>
     </div>
     <p v-if="loadError" class="settings-error">{{ loadError }}</p>

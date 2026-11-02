@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ElButton, ElCheckbox, ElDrawer, ElInput, ElTable, ElTableColumn } from "element-plus";
 /**
  * 设置 → 调用日志（TT-F-36）：发给模型上游的请求（已脱敏），排查「为什么生成失败」用。
  *
@@ -53,29 +54,29 @@ onMounted(() => { void load(); });
     <div class="section-head">
       <div><h2>调用日志</h2><p>发给模型上游的请求，按时间倒序 · 保留期在「常规」里设置</p></div>
       <div class="log-filters">
-        <el-input v-model.lazy="model" placeholder="按模型编码筛选" clearable style="width: 200px" />
-        <el-checkbox v-model="failedOnly">只看失败</el-checkbox>
+        <ElInput v-model.lazy="model" placeholder="按模型编码筛选" clearable style="width: 200px" />
+        <ElCheckbox v-model="failedOnly">只看失败</ElCheckbox>
       </div>
     </div>
     <p v-if="loadError" class="settings-error">{{ loadError }}</p>
-    <el-table :data="items" size="small" class="log-table" @row-click="(row: LogItem) => (detail = row)">
-      <el-table-column label="时间" width="170"><template #default="{ row }">{{ time(row.createdAt) }}</template></el-table-column>
-      <el-table-column prop="model" label="模型" min-width="160" />
-      <el-table-column prop="operation" label="操作" width="130" />
-      <el-table-column label="结果" width="130">
+    <ElTable :data="items" size="small" class="log-table" @row-click="(row: LogItem) => (detail = row)">
+      <ElTableColumn label="时间" width="170"><template #default="{ row }">{{ time(row.createdAt) }}</template></ElTableColumn>
+      <ElTableColumn prop="model" label="模型" min-width="160" />
+      <ElTableColumn prop="operation" label="操作" width="130" />
+      <ElTableColumn label="结果" width="130">
         <template #default="{ row }">
           <span :class="{ bad: row.errorType !== 'none' }">{{ ERROR_LABELS[row.errorType] ?? row.errorType }}</span>
         </template>
-      </el-table-column>
-      <el-table-column prop="httpStatus" label="状态码" width="80" />
-      <el-table-column label="耗时" width="90"><template #default="{ row }">{{ (row.durationMs / 1000).toFixed(1) }}s</template></el-table-column>
-    </el-table>
+      </ElTableColumn>
+      <ElTableColumn prop="httpStatus" label="状态码" width="80" />
+      <ElTableColumn label="耗时" width="90"><template #default="{ row }">{{ (row.durationMs / 1000).toFixed(1) }}s</template></ElTableColumn>
+    </ElTable>
     <div class="log-more">
-      <el-button v-if="cursor" :loading="loading" size="small" @click="load(false)">加载更多</el-button>
+      <ElButton v-if="cursor" :loading="loading" size="small" @click="load(false)">加载更多</ElButton>
       <span v-else-if="!loading && !items.length" class="portal-empty">还没有调用记录</span>
     </div>
 
-    <el-drawer :model-value="!!detail" size="50%" title="请求详情" @close="detail = null">
+    <ElDrawer :model-value="!!detail" size="50%" title="请求详情" @close="detail = null">
       <template v-if="detail">
         <p class="log-url"><code>{{ detail.url }}</code></p>
         <h4>请求体（已脱敏）</h4>
@@ -83,7 +84,7 @@ onMounted(() => { void load(); });
         <h4>响应 / 错误</h4>
         <pre class="log-body">{{ detail.responseBody || "（无）" }}</pre>
       </template>
-    </el-drawer>
+    </ElDrawer>
   </div>
 </template>
 
