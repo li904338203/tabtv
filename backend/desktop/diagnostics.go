@@ -3,8 +3,10 @@ package desktop
 import (
 	"context"
 	"net/http"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -12,6 +14,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/buildinfo"
+	"github.com/li904338203/tabtv/backend/internal/platform/diag"
 	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
 	"github.com/li904338203/tabtv/backend/internal/platform/migrate"
 	"github.com/li904338203/tabtv/backend/internal/timeline/typeset"
@@ -20,13 +23,12 @@ import (
 
 // 环境自检（TT-F-35，TT-T-22）。每一项给「状态 + 现值 + 处置建议」：
 // 只说「ffmpeg 不可用」的话，用户不知道下一步该做什么。
-// Linux 播放依赖（TT-T-28）后续追加到 checks 里。
 
 // Check 是一项自检结果。
 type Check struct {
 	Key    string `json:"key"`
 	Label  string `json:"label"`
-	Status string `json:"status"` // ok / warn / fail
+	Status string `json:"status"` // ok / warn / fail / na（本平台不适用）
 	Value  string `json:"value"`
 	Advice string `json:"advice,omitempty"`
 }
@@ -47,6 +49,7 @@ func runDiagnostics(ctx context.Context, pool *pgxpool.Pool) []Check {
 		out = append(out, encoderCheck())
 	}
 	out = append(out, fontCheck())
+	out = append(out, videoDecoderCheck(ctx))
 	return out
 }
 
@@ -124,5 +127,19 @@ func encoderCheck() Check {
 		c.Status = "warn"
 		c.Advice = "没有可用的硬件编码器，使用软件编码 openh264：成片能出，但渲染较慢"
 	}
+	return c
+}
+
+// videoDecoderCheck：Linux 上 WebKitGTK 播放 H.264 要 gst-libav（TT-T-28）。
+// key 固定为 video_decoder：播放出错时的提示直接跳到 /settings/diagnostics#diag-video_decoder。
+func videoDecoderCheck(ctx context.Context) Check {
+	c := Check{Key: "video_decoder", Label: "视频播放解码器"}
+	if runtime.GOOS != "linux" {
+		c.Status, c.Value = "na", "不适用（系统自带的 WebView 已带 H.264 解码）"
+		return c
+	}
+	release, _ := os.ReadFile("/etc/os-release")
+	r := diag.VideoDecoder(ctx, string(release), nil)
+	c.Status, c.Value, c.Advice = r.Status, r.Value, r.Advice
 	return c
 }

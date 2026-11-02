@@ -3,10 +3,10 @@ import { ElButton } from "element-plus";
 /**
  * 设置 → 环境自检（TT-F-35）：每一项给状态、现值与处置建议 —— 只说「不可用」的话用户不知道下一步做什么。
  */
-import { CircleAlert, CircleCheck, CircleX } from "@lucide/vue";
+import { CircleAlert, CircleCheck, CircleMinus, CircleX } from "@lucide/vue";
 import { hostApp } from "~/utils/desktopBridge";
 
-type Check = { key: string; label: string; status: "ok" | "warn" | "fail"; value: string; advice?: string };
+type Check = { key: string; label: string; status: "ok" | "warn" | "fail" | "na"; value: string; advice?: string };
 const checks = ref<Check[]>([]);
 const version = ref("");
 const loading = ref(false);
@@ -26,6 +26,15 @@ async function run() {
   }
 }
 
+// 从播放失败的提示跳过来时（#diag-video_decoder）高亮并滚到那一项。
+const route = useRoute();
+const focusKey = computed(() => route.hash.replace(/^#diag-/, ""));
+watch(checks, async () => {
+  if (!focusKey.value) return;
+  await nextTick();
+  document.getElementById(`diag-${focusKey.value}`)?.scrollIntoView({ block: "center" });
+});
+
 onMounted(() => { void run(); });
 </script>
 
@@ -40,9 +49,10 @@ onMounted(() => { void run(); });
     </div>
     <p v-if="loadError" class="settings-error">{{ loadError }}</p>
     <ul class="diag-list">
-      <li v-for="c in checks" :key="c.key" :class="c.status">
+      <li v-for="c in checks" :id="`diag-${c.key}`" :key="c.key" :class="[c.status, { focused: focusKey === c.key }]">
         <CircleCheck v-if="c.status === 'ok'" :size="18" />
         <CircleAlert v-else-if="c.status === 'warn'" :size="18" />
+        <CircleMinus v-else-if="c.status === 'na'" :size="18" />
         <CircleX v-else :size="18" />
         <div>
           <strong>{{ c.label }}</strong>
@@ -61,6 +71,8 @@ onMounted(() => { void run(); });
 .diag-list li.ok > svg { color: var(--portal-success); }
 .diag-list li.warn > svg { color: var(--portal-gold); }
 .diag-list li.fail > svg { color: var(--portal-danger); }
+.diag-list li.na > svg { color: var(--portal-faint); }
+.diag-list li.focused { border-color: var(--portal-gold); }
 .diag-value { margin: 4px 0 0; color: var(--portal-muted); font-size: 12px; word-break: break-all; }
 .diag-advice { margin: 4px 0 0; color: var(--portal-text-soft); font-size: 12px; }
 .settings-error { color: var(--portal-danger); font-size: 13px; }
