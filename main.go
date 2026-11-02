@@ -13,6 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"github.com/li904338203/tabtv/app"
 	"github.com/li904338203/tabtv/backend/desktop"
@@ -54,6 +55,10 @@ func main() {
 			logger.Error("启动失败", "err", err)
 			return nil, err
 		}
+		// 实时事件：经 Wails 事件通道交给前端（替代来源系统的 /ws/events，dev/01 TTD-3）。
+		rt.OnEvent(func(topic string, payload []byte) {
+			wruntime.EventsEmit(ctx, app.EventName, app.Event{Topic: topic, Payload: payload})
+		})
 		mu.Lock()
 		cur = rt
 		mu.Unlock()

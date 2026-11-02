@@ -2,9 +2,7 @@
 //
 // 一套代码覆盖 MinIO / 阿里云 OSS / 腾讯云 COS / R2 / S3，靠自定义 endpoint。
 //
-// ⚠️ local 存储仅限单机开发：它无法预签名，参考图只能内联 base64
-// （体积暴涨且部分上游直接拒收），且 API 与 Worker 分机部署时互相读不到盘。
-// production 下 config.Validate 会直接拒绝 local。
+// tabtv 默认用本地目录后端（local.go）；S3 后端保留给可选的公网中转存储（TT-F-34）。
 package objstore
 
 import (
@@ -14,6 +12,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -34,6 +33,40 @@ type Client struct {
 	signTTL time.Duration
 	// prefix 全部对象键的公共前缀（见 config.Storage.Prefix）；由 prefixMiddleware 统一加上。
 	prefix string
+	// local 非空时为本地目录后端（local.go），s3 / presign 为空。
+	local *localFS
+}
+
+// ErrNotFound 是对象不存在。
+var ErrNotFound = errors.New("对象不存在")
+
+// Put 上传一个对象（大小已知）。本地后端直接流式写盘；S3 后端要求 body 可 Seek 时请用 PutFile。
+func (c *Client) Put(ctx context.Context, key string, body io.Reader, size int64, contentType string) error {
+	if c.local != nil {
+		return c.local.put(key, body)
+	}
+	_, err := c.s3.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: aws.String(c.bucket), Key: aws.String(key), Body: body,
+		ContentType: aws.String(contentType), ContentLength: aws.Int64(size),
+	})
+	return err
+}
+
+// Open 读取一个对象。调用方负责 Close。
+func (c *Client) Open(ctx context.Context, key string) (io.ReadCloser, error) {
+	if c.local != nil {
+		rc, _, err := c.local.open(key)
+		return rc, err
+	}
+	out, err := c.s3.GetObject(ctx, &s3.GetObjectInput{Bucket: aws.String(c.bucket), Key: aws.String(key)})
+	if err != nil {
+		var nk *types.NoSuchKey
+		if errors.As(err, &nk) {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+	return out.Body, nil
 }
 
 // Open 建客户端并探测存储可达（启动时用：存储不可用就该起不来）。
@@ -107,6 +140,9 @@ func (c *Client) PresignGet(ctx context.Context, key string) (string, error) {
 // ⚠️ 与 PresignGet 分开而不是改它的默认值：那条路给上游取参考图，地址要撑过排队与重试；
 // 这条路把地址交给外部客户端，有效期越短泄漏面越小。ttl<=0 时回落到配置的 SignTTL。
 func (c *Client) PresignGetTTL(ctx context.Context, key string, ttl time.Duration) (string, error) {
+	if c.local != nil {
+		return LocalScheme + key, nil
+	}
 	if ttl <= 0 {
 		ttl = c.signTTL
 	}
@@ -123,6 +159,9 @@ func (c *Client) PresignGetTTL(ctx context.Context, key string, ttl time.Duratio
 // PresignGetDownload 签发一个「下载为附件」的地址（智能剪辑成片下载，SCK-10）：浏览器直接存成文件，
 // 不在新标签页里播放；文件名按 RFC 5987 带 UTF-8（中文名不乱码）。ttl<=0 时回落到配置的 SignTTL。
 func (c *Client) PresignGetDownload(ctx context.Context, key string, ttl time.Duration, fileName string) (string, error) {
+	if c.local != nil {
+		return LocalScheme + key, nil
+	}
 	if ttl <= 0 {
 		ttl = c.signTTL
 	}
@@ -165,6 +204,10 @@ func (c *Client) Name() string { return "objstore" }
 // Check 探活。用 HeadBucket 而不是 ListBuckets：
 // 生产凭据通常只对单个桶有权限，ListBuckets 会因权限不足而误报故障。
 func (c *Client) Check(ctx context.Context) error {
+	if c.local != nil {
+		_, err := os.Stat(c.local.root)
+		return err
+	}
 	_, err := c.s3.HeadBucket(ctx, &s3.HeadBucketInput{Bucket: aws.String(c.bucket)})
 	if err != nil {
 		return fmt.Errorf("对象存储探活失败（桶 %s）: %w", c.bucket, err)
@@ -175,6 +218,10 @@ func (c *Client) Check(ctx context.Context) error {
 // Exists 判断对象在不在（HeadObject）。不存在返回 false 而不是错误；权限、网络这类错误原样返回 ——
 // 把它们也当成「不存在」的话，调用方会去重传一份，真正的问题反而被盖住了。
 func (c *Client) Exists(ctx context.Context, key string) (bool, error) {
+	if c.local != nil {
+		_, ok, err := c.local.stat(key)
+		return ok, err
+	}
 	_, err := c.s3.HeadObject(ctx, &s3.HeadObjectInput{Bucket: aws.String(c.bucket), Key: aws.String(key)})
 	if err == nil {
 		return true, nil
@@ -189,6 +236,10 @@ func (c *Client) Exists(ctx context.Context, key string) (bool, error) {
 
 // SameSize 对象在且大小等于 size（拷贝工具判断「已经拷过」用）。不在返回 false、nil。
 func (c *Client) SameSize(ctx context.Context, key string, size int64) (bool, error) {
+	if c.local != nil {
+		n, ok, err := c.local.stat(key)
+		return ok && n == size, err
+	}
 	out, err := c.s3.HeadObject(ctx, &s3.HeadObjectInput{Bucket: aws.String(c.bucket), Key: aws.String(key)})
 	if err != nil {
 		var nf *types.NotFound
@@ -203,6 +254,9 @@ func (c *Client) SameSize(ctx context.Context, key string, size int64) (bool, er
 
 // PutFile 上传一个可 Seek 的 body（一般是临时文件）：签名要先读一遍 body 再回到开头，所以大文件不能进内存。
 func (c *Client) PutFile(ctx context.Context, key string, body io.ReadSeeker, size int64, contentType string) error {
+	if c.local != nil {
+		return c.local.put(key, body)
+	}
 	_, err := c.s3.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(c.bucket), Key: aws.String(key), Body: body,
 		ContentType: aws.String(contentType), ContentLength: aws.Int64(size),
@@ -212,6 +266,9 @@ func (c *Client) PutFile(ctx context.Context, key string, body io.ReadSeeker, si
 
 // Delete 删一个对象。不存在也算成功（S3 的 DeleteObject 本来就是幂等的）。
 func (c *Client) Delete(ctx context.Context, key string) error {
+	if c.local != nil {
+		return c.local.delete(key)
+	}
 	_, err := c.s3.DeleteObject(ctx, &s3.DeleteObjectInput{Bucket: aws.String(c.bucket), Key: aws.String(key)})
 	return err
 }
@@ -222,6 +279,9 @@ func (c *Client) Delete(ctx context.Context, key string) error {
 func (c *Client) ListOlderThan(ctx context.Context, prefix string, before time.Time, limit int) ([]string, error) {
 	if prefix == "" {
 		return nil, errors.New("清理只能按前缀扫，不能扫整个桶")
+	}
+	if c.local != nil {
+		return c.local.listOlderThan(prefix, before, limit)
 	}
 	var keys []string
 	var token *string

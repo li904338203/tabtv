@@ -6,7 +6,6 @@ package desktop
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -18,6 +17,8 @@ import (
 	"time"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/datadir"
+	"github.com/li904338203/tabtv/backend/internal/platform/db"
+	"github.com/li904338203/tabtv/backend/internal/platform/eventbus"
 	"github.com/li904338203/tabtv/backend/internal/platform/migrate"
 	"github.com/li904338203/tabtv/backend/internal/platform/pgembed"
 	"github.com/li904338203/tabtv/backend/internal/platform/resources"
@@ -32,6 +33,7 @@ const (
 	StageDatabase Stage = "database"
 	StageBackup   Stage = "backup"
 	StageMigrate  Stage = "migrate"
+	StageAssemble Stage = "assemble"
 )
 
 // Error 是带阶段与位置信息的启动错误。
@@ -55,6 +57,8 @@ func stageText(s Stage) string {
 		return "迁移前备份数据库失败（为保护数据，未执行迁移）"
 	case StageMigrate:
 		return "升级数据库结构失败"
+	case StageAssemble:
+		return "初始化应用失败"
 	default:
 		return "启动失败"
 	}
@@ -66,13 +70,27 @@ type Runtime struct {
 	DB      *pgembed.Server
 	Handler http.Handler
 	Timings map[string]time.Duration
+	// Bus 是事件总线：宿主窗口就绪后用 SetEmitter 接上出口（Wails EventsEmit）。
+	Bus *eventbus.Local
 
+	pool      *db.Pool
+	bg        *background
+	cancel    context.CancelFunc
 	closeOnce sync.Once
 }
 
-// Close 优雅停库。可重复调用。
+// Close 停后台工作（限时 10 秒，没跑完的任务留在 running，下次启动由恢复扫描接管）、关连接池、停库。
 func (r *Runtime) Close(ctx context.Context) {
 	r.closeOnce.Do(func() {
+		if r.cancel != nil {
+			r.cancel()
+		}
+		if r.bg != nil {
+			r.bg.Wait(10 * time.Second)
+		}
+		if r.pool != nil {
+			_ = r.pool.Close()
+		}
 		if r.DB != nil {
 			_ = r.DB.Stop(ctx)
 		}
@@ -121,9 +139,15 @@ func Boot(ctx context.Context, log *slog.Logger) (*Runtime, error) {
 	}
 	timings["migrate"] = time.Since(t1)
 
+	t2 := time.Now()
 	rt := &Runtime{Dirs: dirs, DB: srv, Timings: timings}
-	rt.Handler = placeholderAPI(rt)
-	log.Info("启动完成", "dataDir", dirs.Root, "database", timings["database"], "migrate", timings["migrate"])
+	if err := rt.start(ctx, log); err != nil {
+		_ = srv.Stop(context.Background())
+		return nil, fail(StageAssemble, err)
+	}
+	timings["assemble"] = time.Since(t2)
+	log.Info("启动完成", "dataDir", dirs.Root, "database", timings["database"], "migrate", timings["migrate"],
+		"assemble", timings["assemble"])
 	return rt, nil
 }
 
@@ -183,24 +207,6 @@ func appliedVersion(ctx context.Context, srv *pgembed.Server) (int64, error) {
 	return runner.Version(ctx)
 }
 
-// placeholderAPI 是装配合并（TT-T-07）之前的占位：只有健康检查，其余接口 503。
-func placeholderAPI(rt *Runtime) http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/health", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(map[string]any{
-			"code": 0, "message": "ok",
-			"data": map[string]any{"dataDir": rt.Dirs.Root, "database": rt.DB.Port() > 0},
-		})
-	})
-	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusServiceUnavailable)
-		_, _ = w.Write([]byte(`{"code":50310,"message":"后端装配尚未接入（TT-T-07）"}`))
-	})
-	return mux
-}
-
 // AsError 把任意错误还原成 *Error（取阶段与目录）。
 func AsError(err error) (*Error, bool) {
 	var e *Error
@@ -219,4 +225,12 @@ func OpenLog(dirs datadir.Dirs) (*slog.Logger, func()) {
 		return slog.New(slog.NewTextHandler(os.Stderr, nil)), func() {}
 	}
 	return slog.New(slog.NewJSONHandler(io.MultiWriter(f, os.Stderr), nil)), func() { _ = f.Close() }
+}
+
+// OnEvent 接上实时事件的出口（TTD-3）：宿主把它转成 Wails 的 EventsEmit。
+// 每条事件是 {topic, payload}，payload 是原样的事件 JSON；前端按 topic 自己过滤。
+func (r *Runtime) OnEvent(f func(topic string, payload []byte)) {
+	if r.Bus != nil {
+		r.Bus.SetEmitter(f)
+	}
 }

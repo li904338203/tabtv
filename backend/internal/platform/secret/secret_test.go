@@ -126,3 +126,18 @@ func TestMask(t *testing.T) {
 		}
 	}
 }
+
+func TestPlain_直通(t *testing.T) {
+	c := Plain()
+	enc, err := c.Encrypt("sk-test-123")
+	if err != nil || enc != "sk-test-123" {
+		t.Fatalf("Encrypt = %q, %v", enc, err)
+	}
+	dec, err := c.Decrypt(enc)
+	if err != nil || dec != "sk-test-123" {
+		t.Fatalf("Decrypt = %q, %v", dec, err)
+	}
+	if c.NeedsRotation(enc) {
+		t.Fatal("明文模式不需要轮换")
+	}
+}

@@ -16,7 +16,6 @@ import (
 	collab "github.com/li904338203/tabtv/backend/internal/collaboration/domain"
 	directorapp "github.com/li904338203/tabtv/backend/internal/director/app"
 	directorrepo "github.com/li904338203/tabtv/backend/internal/director/repo"
-	mcpapp "github.com/li904338203/tabtv/backend/internal/mcp/app"
 	mediaapp "github.com/li904338203/tabtv/backend/internal/media/app"
 	"github.com/li904338203/tabtv/backend/internal/platform/config"
 	providerapp "github.com/li904338203/tabtv/backend/internal/provider/app"
@@ -119,7 +118,6 @@ func (a directorCatalog) SceneBuildChoice(ctx context.Context, memberLevelID int
 
 var (
 	_ agentapp.Directors       = AgentDirectors{}
-	_ mcpapp.Directors         = MCPDirectors{}
 	_ canvasgen.DirectorScenes = canvasGenDirectorScenes{}
 )
 
@@ -209,41 +207,4 @@ func (a canvasGenDirectorScenes) SceneNode(ctx context.Context, c canvasgen.Call
 		return "", canvasgen.ErrDirectorSceneNotFound
 	}
 	return nodeID, err
-}
-
-// MCPDirectors 实现 mcpapp.Directors（API 进程）。租户、操作者、会员等级一律取 Principal；来源 = 本授权。
-type MCPDirectors struct {
-	// Orch 只用到画布（建节点 / 读节点 / 写回），不报价、不受理。
-	Orch     *canvasgen.Orchestrator
-	Canvas   *canvasapp.Service
-	Director *directorapp.Service
-}
-
-func (a MCPDirectors) Create(ctx context.Context, p mcpapp.Principal, in mcpapp.DirectorCreateInput) (
-	string, int64, error) {
-	return canvasgen.CreateDirectorNode(ctx, *a.Orch, mcpCaller(p, in.ProjectID, in.BatchID),
-		canvasgen.DirectorNodeInput{Title: in.Title, Position: in.Position}, canvasGenDirectorScenes{a.Canvas})
-}
-
-func (a MCPDirectors) Build(ctx context.Context, p mcpapp.Principal, in mcpapp.DirectorBuildInput) (
-	mcpapp.DirectorBuildResult, error) {
-	if a.Director == nil {
-		return mcpapp.DirectorBuildResult{}, errDirectorUnwired()
-	}
-	sceneID, repair, err := canvasgen.DirectorSceneOfNode(ctx, *a.Orch, mcpCaller(p, in.ProjectID, in.BatchID),
-		in.NodeID, canvasGenDirectorScenes{a.Canvas})
-	if err != nil {
-		return mcpapp.DirectorBuildResult{}, err
-	}
-	r, err := a.Director.BuildAndApply(ctx, directorapp.BuildInput{
-		WorkspaceID: p.WorkspaceID, ProjectID: in.ProjectID, SceneID: sceneID, Role: p.Role,
-		Actor:         directorapp.Actor{UserID: p.UserID, McpGrantID: p.GrantID},
-		MemberLevelID: p.MemberLevelID, Prompt: in.Prompt, ReferenceMediaIDs: in.ReferenceMediaIDs,
-	})
-	if err != nil {
-		return mcpapp.DirectorBuildResult{}, err
-	}
-	return mcpapp.DirectorBuildResult{SceneID: r.SceneID, Version: r.Version, Added: r.Changes.Added,
-		Updated: r.Changes.Updated, Removed: r.Changes.Removed, Defaults: r.Defaults, Notice: r.Notice,
-		Repair: repair}, nil
 }

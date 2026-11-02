@@ -70,8 +70,7 @@ type Core struct {
 // genSvc.SetMarketing(...) 四条反向注入一条都不能漏（漏了没有编译错误：组子项永远 queued /
 // 整图运行永远 running / 预设选了等于没选 / 营销片段静默缺失）。
 //
-// 不在这里做的：事件桥（genapp.NewEventBridge，依赖 WebSocket hub）、
-// 共享资源注册、时间线/支付/内容/运维的装配 —— 仍在 main。
+// 不在这里做的：共享资源注册、时间线/支付/内容/运维的装配 —— 仍在 main。
 func BuildCore(in CoreInput) (*Core, error) {
 	cfg, deps, logger := in.Cfg, in.Deps, in.Logger
 	nextID := in.NextID
@@ -120,11 +119,9 @@ func BuildCore(in CoreInput) (*Core, error) {
 	// 只收地址的上游收不收得到参考媒体（docs/agent/smartcut SCT-38）：在扣费之前说清，不让 Worker 收了钱再退。
 	// 两个进程都装（Agent 的生成在 Worker 里受理）。
 	genSvc.SetMediaURLDelivery(mediaDelivery(cfg, deps, logger))
-	if deps.Cache != nil {
-		// 取消与运维补偿在 API 进程里进入终态，也要推事件（同样走 Redis 广播：
-		// 等这条任务的那个浏览器可能连在另一台 API 实例上）。
-		// ⚠️ 订阅侧的事件桥（NewEventBridge）依赖 WebSocket hub，留在 cmd/api。
-		genSvc.SetEvents(genapp.NewRedisEventPublisher(deps.Cache.Client, deps.Cache.Key))
+	if deps.Bus != nil {
+		// 取消与补偿进入终态时也要推事件（执行器那条路在 desktop 装配里另接同一个总线）。
+		genSvc.SetEvents(genapp.NewBusEventPublisher(deps.Bus))
 	}
 
 	// 脚本域（P07-01）。⚠️ 它与生成域走的是**两条链**：分镜与提示词合成

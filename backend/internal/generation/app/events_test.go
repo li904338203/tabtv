@@ -6,11 +6,9 @@ import (
 	"os"
 	"regexp"
 	"slices"
-	"strings"
 	"testing"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 
 	"github.com/li904338203/tabtv/backend/internal/generation/domain"
 	"github.com/li904338203/tabtv/backend/internal/generation/repo"
@@ -176,39 +174,24 @@ func TestGenerationUpdate_产物地址与产物端点同一个(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------- 经通用事件总线发布（AGT-02）
+// ---------------------------------------------------------------- 经进程内事件总线发布（TT-T-06）
 
-type recordingRedis struct {
-	channels []string
-	messages []string
-}
-
-func (r *recordingRedis) Publish(_ context.Context, channel string, message any) *redis.IntCmd {
-	r.channels = append(r.channels, channel)
-	r.messages = append(r.messages, string(message.([]byte)))
-	return redis.NewIntResult(1, nil)
-}
-
-func TestRedisEventPublisher_走总线且topic为workspace(t *testing.T) {
-	rdb := &recordingRedis{}
-	key := func(parts ...string) string { return "ns:" + strings.Join(parts, ":") }
-	p := NewRedisEventPublisher(rdb, key)
+func TestBusEventPublisher_topic为workspace且payload原样(t *testing.T) {
+	bus := eventbus.NewLocal()
+	var topics, payloads []string
+	bus.SetEmitter(func(topic string, payload []byte) {
+		topics = append(topics, topic)
+		payloads = append(payloads, string(payload))
+	})
+	p := NewBusEventPublisher(bus)
 	payload := json.RawMessage(`{"type":"generation.update","generationId":"9001"}`)
 	if err := p.PublishState(context.Background(), 42, payload); err != nil {
 		t.Fatal(err)
 	}
-	// ⚠️ 只发一条、只发新频道：API 过渡期两条桥都在听，双发会让每条事件投递两次。
-	if len(rdb.channels) != 1 || rdb.channels[0] != "ns:"+eventbus.Channel {
-		t.Fatalf("应只发到总线频道一次，实际 %v", rdb.channels)
+	if len(topics) != 1 || topics[0] != "workspace:42" {
+		t.Fatalf("应发到 workspace:42 一次，实际 %v", topics)
 	}
-	var env eventbus.Envelope
-	if err := json.Unmarshal([]byte(rdb.messages[0]), &env); err != nil {
-		t.Fatal(err)
-	}
-	if env.Topic != "workspace:42" {
-		t.Errorf("topic 应为 workspace:42，实际 %q", env.Topic)
-	}
-	if string(env.Payload) != string(payload) {
-		t.Errorf("payload 应原样，实际 %s", env.Payload)
+	if payloads[0] != string(payload) {
+		t.Errorf("payload 应原样，实际 %s", payloads[0])
 	}
 }

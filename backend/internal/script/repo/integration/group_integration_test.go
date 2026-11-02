@@ -182,12 +182,14 @@ func TestCreateGroup_视频组先落draft不扣费(t *testing.T) {
 		t.Fatalf("建组不该扣费：%d → %d", before, after)
 	}
 	// 输入规划要在建组时就算好并存进快照 —— 预览与真跑必须是同一份数据。
+	// ⚠️ 文生视频的提示词走 params.prompt（CD-81），没有外部输入时 `[]` 是合法的 —— 只有带图的操作才必须有输入。
 	for _, it := range v.Items {
-		if len(it.InputRefs) == 0 || string(it.InputRefs) == "[]" {
-			t.Fatalf("视频子项应带规划好的输入: %s", it.InputRefs)
-		}
-		if op := gjsonString(t, it.ParamsSnapshot, "operation"); op == "" {
+		op := gjsonString(t, it.ParamsSnapshot, "operation")
+		if op == "" {
 			t.Fatalf("快照里应有操作码: %s", it.ParamsSnapshot)
+		}
+		if op != domain.OpText2Video && (len(it.InputRefs) == 0 || string(it.InputRefs) == "[]") {
+			t.Fatalf("%s 子项应带规划好的输入: %s", op, it.InputRefs)
 		}
 	}
 }

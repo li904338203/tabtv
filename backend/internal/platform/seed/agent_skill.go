@@ -430,3 +430,6 @@ const videoPromptGuideRef = agentSkillPlaceholder + `
 - 一长串「不要出现……」的负面清单。
 - 堆砌风格词：两三个就够。
 `
+
+// AgentSkillCount 是内置通用技能的条数（测试按它断言，别再写死一个会随技能库增长而过期的数）。
+func AgentSkillCount() int { return len(agentSkillSeeds()) }

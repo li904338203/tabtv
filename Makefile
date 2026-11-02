@@ -35,15 +35,13 @@ gen:
 	@echo "→ OpenAPI → TypeScript 类型"
 	@$(PNPM) exec openapi-typescript api/openapi.yaml -o packages/api-client/src/generated/api.ts
 	@cd $(GO_DIR) && gofmt -w ./internal/transport
-	@echo "→ MCP 工具注册表（TT-T-10 删除 MCP 后去掉这一步）"
-	@cd $(GO_DIR) && $(GO) run ./tools/mcpschema
 	@echo "✅ 生成完成"
 
 # 契约漂移检测：改了契约没重跑 gen、或手改了生成物，都会在这里被拦下。
 gen-check:
 	@$(MAKE) --no-print-directory gen >/dev/null
 	@git diff --quiet -- $(GO_DIR)/internal/transport/errcode/errcode_gen.go $(GO_DIR)/internal/transport/apigen/api_gen.go \
-		packages/api-client/src/generated api/mcp/tools.json \
+		packages/api-client/src/generated \
 		&& echo "✅ 契约与生成物一致" \
 		|| (echo "❌ 生成物与契约不一致：请运行 make gen 并提交生成结果" && git diff --stat && exit 1)
 

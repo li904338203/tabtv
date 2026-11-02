@@ -41,5 +41,5 @@ func (d MediaDelivery) Undeliverable(ctx context.Context, apiProtocol string) st
 			return ""
 		}
 	}
-	return "这个模型只收公网地址的素材，而当前存储签出的地址它访问不到，也没有配置公网中转存储：请联系管理员"
+	return "这个模型只收公网地址的素材，而当前存储签出的地址它访问不到，也没有配置公网中转存储：请在「设置 → 存储」里配置一个 S3 兼容存储"
 }

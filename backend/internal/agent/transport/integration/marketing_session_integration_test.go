@@ -19,7 +19,6 @@ import (
 	marketingapp "github.com/li904338203/tabtv/backend/internal/marketing/app"
 	mktdomain "github.com/li904338203/tabtv/backend/internal/marketing/domain"
 	marketingrepo "github.com/li904338203/tabtv/backend/internal/marketing/repo"
-	mcpapp "github.com/li904338203/tabtv/backend/internal/mcp/app"
 	mediaapp "github.com/li904338203/tabtv/backend/internal/media/app"
 	mediarepo "github.com/li904338203/tabtv/backend/internal/media/repo"
 	scriptapp "github.com/li904338203/tabtv/backend/internal/script/app"
@@ -579,16 +578,6 @@ func TestCreateSession_通用会话scene默认general(t *testing.T) {
 	// PATCH 带 scene 一律 400：场景建后不可改（B-18）。
 	if r := m.do("PATCH", "/agent/sessions/"+idS(sid), m.owner, "", map[string]any{"scene": "marketing"}); r.status != http.StatusBadRequest {
 		t.Errorf("PATCH 带 scene 应 400：%d %v", r.status, r.body)
-	}
-	// MCP 委托建会话一律 general（MKD-22）。
-	w, err := wiring.MCPAgentSessions{Svc: m.svc}.Start(ctx, mcpapp.Principal{UserID: m.owner, WorkspaceID: m.ws,
-		Role: "owner", PayerAccountID: m.payer}, mcpapp.AgentStartInput{ProjectID: m.project, Text: "MCP 来的",
-		IdempotencyKey: "k-mcp-0001"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := m.pool.QueryRow(ctx, `select scene from agent_session where id = $1`, w.SessionID).Scan(&scene); err != nil || scene != "general" {
-		t.Fatalf("MCP 建会话应为 general：%s %v", scene, err)
 	}
 }
 

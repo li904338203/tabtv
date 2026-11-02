@@ -18,7 +18,6 @@ import (
 	agenttools "github.com/li904338203/tabtv/backend/internal/agent/tools"
 	collab "github.com/li904338203/tabtv/backend/internal/collaboration/domain"
 	genrepo "github.com/li904338203/tabtv/backend/internal/generation/repo"
-	mcpapp "github.com/li904338203/tabtv/backend/internal/mcp/app"
 	"github.com/li904338203/tabtv/backend/internal/platform/config"
 	timelineapp "github.com/li904338203/tabtv/backend/internal/timeline/app"
 	"github.com/li904338203/tabtv/backend/internal/timeline/domain"
@@ -321,49 +320,5 @@ func TestBindTimeline_脚本时间线挂到节点上(t *testing.T) {
 	}
 	if err := e.svc.BindTimeline(e.ctx, other, e.proj, tid, "sz"); err == nil {
 		t.Fatal("跨工作区不能绑")
-	}
-}
-
-// MCP（SC-AC-68 的后端部分）：建节点并连素材、剪辑（来源 mcp、编辑者 mcp）、只读详情；只读路径不替节点补时间线。
-func TestMcpSmartcut_建节点剪辑与详情(t *testing.T) {
-	e := setupAgent(t)
-	// 与 API 同一个装配入口（NewMCPToolDeps），不在测试里另拼适配器。
-	sc := wiring.NewMCPToolDeps(wiring.MCPReadInput{Canvas: e.canvas, Smartcut: e.svc, Timeline: e.tl}).Smartcuts
-	p := mcpapp.Principal{UserID: user, WorkspaceID: ws, Role: collab.RoleEditor, GrantID: 88, ClientName: "Claude"}
-	res, err := sc.Create(e.ctx, p, mcpapp.SmartcutCreateInput{ProjectID: e.proj, InputNodeIDs: []string{"v1", "v2", "v3"},
-		BatchID: "mcp:88:o:it-create"})
-	if err != nil || res.Appended != 3 || len(res.Connected) != 3 {
-		t.Fatalf("建节点并铺轨：%+v %v", res, err)
-	}
-	plan, err := sc.Plan(e.ctx, p, mcpapp.SmartcutPlanInput{ProjectID: e.proj, NodeID: res.NodeID, Mode: "mix",
-		Instruction: "突出第二段", BatchID: "mcp:88:o:it-plan"})
-	if err != nil || plan.AppliedVariant != 0 || plan.TimelineID != res.TimelineID {
-		t.Fatalf("剪辑：%+v %v", plan, err)
-	}
-	var kind, source string
-	_ = e.pool.QueryRow(e.ctx, `select last_editor_kind from timeline where id = $1`, res.TimelineID).Scan(&kind)
-	_ = e.pool.QueryRow(e.ctx, `select source from smartcut_llm_call where id = $1`, plan.CallID).Scan(&source)
-	if kind != "mcp" || source != "mcp" {
-		t.Fatalf("来源记 mcp：%s %s", kind, source)
-	}
-	det, err := sc.Get(e.ctx, p, e.proj, res.NodeID)
-	if err != nil || !det.HasTimeline || det.ClipCount != 3 || len(det.Inputs) != 3 {
-		t.Fatalf("详情：%+v %v", det, err)
-	}
-	// 复制出来还没打开过的节点（带着别人的 timelineId）：只读详情不替它分叉。
-	nodes, edges := e.canvasOf(t)
-	var list []map[string]any
-	for _, n := range nodes {
-		list = append(list, n)
-	}
-	list = append(list, map[string]any{"id": "copy", "type": "smartcut", "title": "副本",
-		"params": map[string]any{"timelineId": fmt.Sprint(res.TimelineID)}})
-	e.setCanvas(t, e.proj, list, edges)
-	det, err = sc.Get(e.ctx, p, e.proj, "copy")
-	if err != nil || det.HasTimeline {
-		t.Fatalf("没有自己的时间线：%+v %v", det, err)
-	}
-	if n := e.count(t, `select count(*) from timeline where project_id = $1 and canvas_node_id = 'copy'`, e.proj); n != 0 {
-		t.Fatal("只读路径不建时间线")
 	}
 }

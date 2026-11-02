@@ -11,11 +11,8 @@ import (
 	"context"
 	"sync"
 	"testing"
-	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/testcontainers/testcontainers-go"
-	"github.com/testcontainers/testcontainers-go/wait"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/pgembed/testcluster"
 )
@@ -103,64 +100,4 @@ func join(parts []string, sep string) string {
 		out += p
 	}
 	return out
-}
-
-// ---------------------------------------------------------------- Redis
-
-var (
-	redisOnce sync.Once
-	redisAddr string
-	redisErr  error
-)
-
-// RedisAddr 返回本进程共用的 Redis 地址。
-//
-// ⚠️ 与 Postgres 同一个理由：每个用例各起一个容器时，
-// P05-04 实测出现过「Redis 客户端连到某个 HTTP 服务」的报错
-// （`can't parse map reply: HTTP/1.1 400 Bad Request`）——
-// 容器的映射端口在高并发下撞上了别的服务。
-func RedisAddr(t *testing.T) string {
-	t.Helper()
-	redisOnce.Do(startRedis)
-	if redisErr != nil {
-		t.Fatalf("启动测试 Redis 失败: %v", redisErr)
-	}
-	return redisAddr
-}
-
-func startRedis() {
-	ctx := context.Background()
-	var c testcontainers.Container
-	c, redisErr = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
-		ContainerRequest: testcontainers.ContainerRequest{
-			Image:        "redis:8-alpine",
-			ExposedPorts: []string{"6379/tcp"},
-			WaitingFor:   wait.ForLog("Ready to accept connections").WithStartupTimeout(120 * time.Second),
-		},
-		Started: true,
-	})
-	if redisErr != nil {
-		return
-	}
-	host, err := c.Host(ctx)
-	if err != nil {
-		redisErr = err
-		return
-	}
-	port, err := c.MappedPort(ctx, "6379/tcp")
-	if err != nil {
-		redisErr = err
-		return
-	}
-	redisAddr = host + ":" + port.Port()
-}
-
-// FlushRedis 清空当前 Redis，给用例一张干净的表。
-func FlushRedis(t *testing.T, flush func(addr string) error) string {
-	t.Helper()
-	addr := RedisAddr(t)
-	if err := flush(addr); err != nil {
-		t.Fatalf("清空 Redis 失败: %v", err)
-	}
-	return addr
 }

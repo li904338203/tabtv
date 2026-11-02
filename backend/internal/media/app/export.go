@@ -11,9 +11,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-
 	"github.com/li904338203/tabtv/backend/internal/media/domain"
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 	"github.com/li904338203/tabtv/backend/internal/transport/errcode"
@@ -255,11 +252,7 @@ func (s *Service) buildArchive(ctx context.Context, task repo.ExportTask) (int64
 
 	id := s.nextID()
 	key := objectKey("export_archive", id, "application/zip")
-	if _, err := s.store.S3().PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(s.store.Bucket()), Key: aws.String(key),
-		Body: tmp, ContentType: aws.String("application/zip"),
-		ContentLength: aws.Int64(stat.Size()),
-	}); err != nil {
+	if err := s.store.PutFile(ctx, key, tmp, stat.Size(), "application/zip"); err != nil {
 		return 0, 0, httpx.Wrap(errcode.Internal, err)
 	}
 	if err := s.repo.Insert(ctx, repo.MediaObject{
@@ -317,10 +310,7 @@ func (c *ExportCleaner) Once(ctx context.Context) int {
 	n := 0
 	for _, e := range list {
 		// 顺序与媒体回收一致：**先删对象，再删库行**。
-		if _, err := c.svc.store.S3().DeleteObject(ctx, &s3.DeleteObjectInput{
-			// 桶用当前配置的，不用行里记的：那一列是写入时的历史记录，换存储（2026-11-02 迁到 TOS）后仍是旧桶名，照它取旧文件一律 404。
-			Bucket: aws.String(c.svc.store.Bucket()), Key: aws.String(e.ObjectKey),
-		}); err != nil {
+		if err := c.svc.store.Delete(ctx, e.ObjectKey); err != nil {
 			c.log.Warn("删除过期压缩包失败，下轮重试", "exportId", e.TaskID, "error", err)
 			continue
 		}

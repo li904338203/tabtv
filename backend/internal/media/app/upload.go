@@ -13,9 +13,6 @@ import (
 	"path"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-
 	"github.com/li904338203/tabtv/backend/internal/media/domain"
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 	"github.com/li904338203/tabtv/backend/internal/platform/objstore"
@@ -194,13 +191,7 @@ func (s *Service) Upload(ctx context.Context, in UploadInput) (Uploaded, error) 
 	checksum := hex.EncodeToString(hasher.Sum(nil))
 	key := objectKey(in.Purpose, id, detected.MIME)
 
-	if _, err := s.store.S3().PutObject(ctx, &s3.PutObjectInput{
-		Bucket:        aws.String(s.store.Bucket()),
-		Key:           aws.String(key),
-		Body:          tmp,
-		ContentType:   aws.String(detected.MIME),
-		ContentLength: aws.Int64(total),
-	}); err != nil {
+	if err := s.store.PutFile(ctx, key, tmp, total, detected.MIME); err != nil {
 		return Uploaded{}, httpx.Wrap(errcode.Internal, fmt.Errorf("上传对象存储失败: %w", err))
 	}
 
@@ -234,14 +225,11 @@ func (s *Service) Open(ctx context.Context, mediaID int64) (io.ReadCloser, repo.
 	if err != nil {
 		return nil, repo.MediaObject{}, httpx.Err(errcode.NotFound)
 	}
-	out, err := s.store.S3().GetObject(ctx, &s3.GetObjectInput{
-		// 桶用当前配置的，不用行里记的：那一列是写入时的历史记录，换存储（2026-11-02 迁到 TOS）后仍是旧桶名，照它取旧文件一律 404。
-		Bucket: aws.String(s.store.Bucket()), Key: aws.String(m.ObjectKey),
-	})
+	body, err := s.store.Open(ctx, m.ObjectKey)
 	if err != nil {
 		return nil, repo.MediaObject{}, httpx.Wrap(errcode.Internal, err)
 	}
-	return out.Body, m, nil
+	return body, m, nil
 }
 
 func (s *Service) Get(ctx context.Context, mediaID int64) (repo.MediaObject, error) {

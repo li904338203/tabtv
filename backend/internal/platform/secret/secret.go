@@ -34,7 +34,15 @@ var (
 type Cipher struct {
 	current int
 	aeads   map[int]cipher.AEAD
+	// plain 为 true 时不加密（tabtv：开源单机工具，Key 明文存库，dev/01 TTD-13）。
+	plain bool
 }
+
+// Plain 返回一个直通的 Cipher：Encrypt / Decrypt 原样返回。
+//
+// 保留 Cipher 这一层而不是删掉调用点：管理端「保留 / 替换 / 清除」三态、掩码不回显、
+// 日志脱敏这些逻辑都挂在它周围，直通之后它们照常工作。
+func Plain() *Cipher { return &Cipher{plain: true} }
 
 // New 建立 Cipher。keys 的 map 键是版本号，值是密钥材料（任意长度字符串）。
 // current 指明加密时使用哪个版本。
@@ -67,6 +75,9 @@ func New(keys map[int]string, current int) (*Cipher, error) {
 
 // Encrypt 用当前版本加密。每次生成随机 nonce —— GCM 下 nonce 重用会直接泄漏明文。
 func (c *Cipher) Encrypt(plaintext string) (string, error) {
+	if c.plain {
+		return plaintext, nil
+	}
 	aead := c.aeads[c.current]
 	nonce := make([]byte, aead.NonceSize())
 	if _, err := rand.Read(nonce); err != nil {
@@ -78,6 +89,9 @@ func (c *Cipher) Encrypt(plaintext string) (string, error) {
 
 // Decrypt 按密文自带的版本选 key 解密。
 func (c *Cipher) Decrypt(ciphertext string) (string, error) {
+	if c.plain {
+		return ciphertext, nil
+	}
 	ver, payload, err := parse(ciphertext)
 	if err != nil {
 		return "", err
@@ -105,6 +119,9 @@ func (c *Cipher) Decrypt(ciphertext string) (string, error) {
 // NeedsRotation 判断密文是否用的旧版本 key。
 // 轮换作业据此挑出待重新加密的行，不必全表重写。
 func (c *Cipher) NeedsRotation(ciphertext string) bool {
+	if c.plain {
+		return false
+	}
 	ver, _, err := parse(ciphertext)
 	return err == nil && ver != c.current
 }

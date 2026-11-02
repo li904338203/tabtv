@@ -8,9 +8,6 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/s3"
-
 	"github.com/li904338203/tabtv/backend/internal/media/domain"
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 	"github.com/li904338203/tabtv/backend/internal/transport/errcode"
@@ -74,13 +71,11 @@ func (s *Service) Download(ctx context.Context, workspaceID, mediaID int64, widt
 // 归属校验**不在这里** —— 由各入口自己负责（这正是它们的区别）。
 func (s *Service) openWithThumb(ctx context.Context, m repo.MediaObject, width int) (
 	io.ReadCloser, repo.MediaObject, error) {
-	out, err := s.store.S3().GetObject(ctx, &s3.GetObjectInput{
-		// 桶用当前配置的，不用行里记的：那一列是写入时的历史记录，换存储（2026-11-02 迁到 TOS）后仍是旧桶名，照它取旧文件一律 404。
-		Bucket: aws.String(s.store.Bucket()), Key: aws.String(m.ObjectKey),
-	})
+	body, err := s.store.Open(ctx, m.ObjectKey)
 	if err != nil {
 		return nil, repo.MediaObject{}, httpx.Wrap(errcode.Internal, err)
 	}
+	out := struct{ Body io.ReadCloser }{body}
 
 	if width <= 0 {
 		return out.Body, m, nil
@@ -384,10 +379,7 @@ func (c *Collector) Once(ctx context.Context) int {
 		}
 		// ⚠️ 顺序：**先删对象，再删库行**。反过来的话对象存储里会留下
 		// 谁也不认识的文件，只能靠对账脚本捞。
-		if _, err := c.svc.store.S3().DeleteObject(ctx, &s3.DeleteObjectInput{
-			// 桶用当前配置的，不用行里记的：那一列是写入时的历史记录，换存储（2026-11-02 迁到 TOS）后仍是旧桶名，照它取旧文件一律 404。
-			Bucket: aws.String(c.svc.store.Bucket()), Key: aws.String(m.ObjectKey),
-		}); err != nil {
+		if err := c.svc.store.Delete(ctx, m.ObjectKey); err != nil {
 			// 删对象失败就留着行，下一轮再试 —— 库行是唯一还能找到这个对象的线索。
 			c.log.Warn("删除对象失败，保留记录待下轮重试",
 				"mediaId", m.ID, "key", m.ObjectKey, "error", err)

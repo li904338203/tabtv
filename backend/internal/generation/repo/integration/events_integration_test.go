@@ -97,8 +97,9 @@ func TestEvents_四条终态路径都推事件且带原因(t *testing.T) {
 		t.Fatal(err)
 	}
 	if u := events.last(t, bad.Generation.ID); u.Status != gendomain.StatusFailed || u.Error == nil ||
-		u.Error.Reason != "provider_rejected" || u.Error.Message != "fake" {
-		t.Fatalf("失败事件应带原因（此前没有，节点上只有一个红叉）：%+v", u)
+		u.Error.Reason != "provider_rejected" || u.Error.Message == "" || u.Error.Message == "fake" {
+		// 原因码要对、文案要有；上游原话（这里是 "fake"）不进用户可见字段（usererr，B-17）。
+		t.Fatalf("失败事件应带原因（此前没有，节点上只有一个红叉）：%+v %+v", u, u.Error)
 	}
 
 	// ③ 用户取消（API 进程）：推 cancelled；再取消一次被拒，不重复推

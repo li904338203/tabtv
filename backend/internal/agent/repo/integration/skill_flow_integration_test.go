@@ -216,8 +216,9 @@ func TestSeed_重复执行不覆盖已改内容(t *testing.T) {
 	e := newPaidEnv(t, nil)
 	ctx := context.Background()
 	applySeed(t, e)
-	if n := e.count(t, `select count(*)::int from agent_skill`); n != 3 {
-		t.Fatalf("agent_skill 应 3 行，实际 %d", n)
+	// ⚠️ 不写死条数：技能库 2026-11-01 从 3 条扩到 13 条时这里没跟着改，一直是红的（README §5 B-17）。
+	if n, want := e.count(t, `select count(*)::int from agent_skill`), seed.AgentSkillCount(); n != want {
+		t.Fatalf("agent_skill 应 %d 行，实际 %d", want, n)
 	}
 	refs := e.count(t, `select count(*)::int from agent_skill_reference`)
 	if refs < 2 {
@@ -238,8 +239,8 @@ func TestSeed_重复执行不覆盖已改内容(t *testing.T) {
 	}
 
 	applySeed(t, e)
-	if n := e.count(t, `select count(*)::int from agent_skill`); n != 3 {
-		t.Fatalf("重复 seed 后 agent_skill 应仍 3 行，实际 %d", n)
+	if n, want := e.count(t, `select count(*)::int from agent_skill`), seed.AgentSkillCount(); n != want {
+		t.Fatalf("重复 seed 后 agent_skill 应仍 %d 行，实际 %d", want, n)
 	}
 	if n := e.count(t, `select count(*)::int from agent_skill_reference`); n != refs {
 		t.Fatalf("重复 seed 后附属文档行数应不变：%d → %d", refs, n)
