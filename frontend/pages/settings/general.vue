@@ -31,7 +31,8 @@ const LABELS: Record<string, { label: string; help: string }> = {
   "request_log.retention_days": { label: "调用日志保留天数", help: "发给模型上游的请求记录，到期自动清理。" },
   "provider.allow_private_network": { label: "允许访问局域网上游", help: "只在你自己在局域网里部署了模型网关时打开；打开后应用可以访问内网地址。" },
   "ffmpeg.path": { label: "ffmpeg 路径", help: "留空使用随应用附带的 ffmpeg。" },
-  "ffprobe.path": { label: "ffprobe 路径", help: "留空使用随应用附带的 ffprobe。" }
+  "ffprobe.path": { label: "ffprobe 路径", help: "留空使用随应用附带的 ffprobe。" },
+  "app.close_always_minimize": { label: "有任务进行时，关闭窗口直接最小化", help: "关掉之后每次都会询问；最小化后任务在后台跑完，再次打开应用即可回到窗口。" }
 };
 const SHOWN = Object.keys(LABELS);
 const shownItems = computed(() => items.value.filter(i => SHOWN.includes(i.key)));

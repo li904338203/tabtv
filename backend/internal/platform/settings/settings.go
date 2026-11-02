@@ -58,6 +58,8 @@ const (
 	S3PathStyle          = "storage.s3.path_style"
 	S3Prefix             = "storage.s3.prefix"
 	S3SignTTLHours       = "storage.s3.sign_ttl_hours"
+	// AppCloseMinimize 有任务在跑时关窗口不再询问、总是最小化（TT-T-30）。
+	AppCloseMinimize = "app.close_always_minimize"
 )
 
 // Definitions 是全部合法的键。
@@ -77,6 +79,7 @@ var Definitions = []Definition{
 	{Key: S3PathStyle, Kind: KindBool, Default: true, Restart: true},
 	{Key: S3Prefix, Kind: KindString, Default: "relay/", Restart: true},
 	{Key: S3SignTTLHours, Kind: KindInt, Default: 6, Min: 1, Max: 168, Restart: true},
+	{Key: AppCloseMinimize, Kind: KindBool, Default: false},
 }
 
 func definition(key string) (Definition, bool) {

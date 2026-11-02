@@ -48,6 +48,7 @@ func (h *AdminHandler) MountAdmin(r chi.Router, requireAdmin func(http.Handler) 
 		r.With(write).Put("/skills/{skillId}", h.update)
 		r.With(write).Post("/skills/{skillId}/enable", h.enable)
 		r.With(write).Post("/skills/{skillId}/disable", h.disable)
+		r.With(write).Post("/skills/{skillId}/restore-builtin", h.restoreBuiltin)
 		r.With(read).Get("/skills/{skillId}/references", h.listRefs)
 		r.With(write).Post("/skills/{skillId}/references", h.createRef)
 		r.With(write).Put("/skills/{skillId}/references/{refId}", h.updateRef)
@@ -64,30 +65,33 @@ type skillBindingsResp struct {
 }
 
 type adminSkillResp struct {
-	ID            string             `json:"id"`
-	Code          string             `json:"code"`
-	Name          string             `json:"name"`
-	Category      string             `json:"category"`
-	Description   string             `json:"description"`
-	Tags          json.RawMessage    `json:"tags"`
-	CoverMediaID  *string            `json:"coverMediaId"`
-	Body          *string            `json:"body,omitempty"`
-	Steps         json.RawMessage    `json:"steps"`
-	Tools         json.RawMessage    `json:"tools"`
-	ModelBindings skillBindingsResp  `json:"modelBindings"`
-	IsQuickEntry  bool               `json:"isQuickEntry"`
-	Sort          int                `json:"sort"`
-	IsEnabled     bool               `json:"isEnabled"`
-	Version       int                `json:"version"`
-	Scenes        json.RawMessage    `json:"scenes"`
-	InputSlots    json.RawMessage    `json:"inputSlots"`
-	PrefillText   string             `json:"prefillText"`
-	IsBatch       bool               `json:"isBatch"`
-	Warnings      []skillWarningDTO  `json:"warnings,omitempty"`
-	RefCount      *int               `json:"refCount,omitempty"`
-	References    []adminSkillRefDTO `json:"references,omitempty"`
-	CreatedAt     string             `json:"createdAt"`
-	UpdatedAt     string             `json:"updatedAt"`
+	ID            string            `json:"id"`
+	Code          string            `json:"code"`
+	Name          string            `json:"name"`
+	Category      string            `json:"category"`
+	Description   string            `json:"description"`
+	Tags          json.RawMessage   `json:"tags"`
+	CoverMediaID  *string           `json:"coverMediaId"`
+	Body          *string           `json:"body,omitempty"`
+	Steps         json.RawMessage   `json:"steps"`
+	Tools         json.RawMessage   `json:"tools"`
+	ModelBindings skillBindingsResp `json:"modelBindings"`
+	IsQuickEntry  bool              `json:"isQuickEntry"`
+	Sort          int               `json:"sort"`
+	IsEnabled     bool              `json:"isEnabled"`
+	Version       int               `json:"version"`
+	Scenes        json.RawMessage   `json:"scenes"`
+	InputSlots    json.RawMessage   `json:"inputSlots"`
+	PrefillText   string            `json:"prefillText"`
+	IsBatch       bool              `json:"isBatch"`
+	// IsBuiltin / IsUserModified：设置页的「内置 / 已修改」标识（TT-T-19）。
+	IsBuiltin      bool               `json:"isBuiltin"`
+	IsUserModified bool               `json:"isUserModified"`
+	Warnings       []skillWarningDTO  `json:"warnings,omitempty"`
+	RefCount       *int               `json:"refCount,omitempty"`
+	References     []adminSkillRefDTO `json:"references,omitempty"`
+	CreatedAt      string             `json:"createdAt"`
+	UpdatedAt      string             `json:"updatedAt"`
 }
 
 // skillWarningDTO 是保存时不拦截的提示（缺口播提示句、合规风险用语，MKT-F-76）。
@@ -122,7 +126,7 @@ func toAdminSkill(s repo.Skill, withBody bool) adminSkillResp {
 		Tools: rawOr(s.Tools, "[]"), ModelBindings: skillBindingsResp(b), IsQuickEntry: s.IsQuickEntry,
 		Sort: s.Sort, IsEnabled: s.IsEnabled, Version: s.Version,
 		Scenes: rawOr(s.Scenes, "[]"), InputSlots: rawOr(s.InputSlots, "[]"), PrefillText: s.PrefillText,
-		IsBatch: s.IsBatch, CreatedAt: ts(s.CreatedAt), UpdatedAt: ts(s.UpdatedAt),
+		IsBatch: s.IsBatch, IsBuiltin: s.IsBuiltin, IsUserModified: s.IsUserModified, CreatedAt: ts(s.CreatedAt), UpdatedAt: ts(s.UpdatedAt),
 	}
 	if withBody {
 		body := s.Body
@@ -337,6 +341,20 @@ func (h *AdminHandler) setEnabled(w http.ResponseWriter, r *http.Request, enable
 		return
 	}
 	httpx.JSON(w, http.StatusOK, toAdminSkill(s, false))
+}
+
+// restoreBuiltin 恢复内置版本（TT-T-19）。回带正文的完整技能，编辑器直接替换。
+func (h *AdminHandler) restoreBuiltin(w http.ResponseWriter, r *http.Request) {
+	id, ok := pathID(w, r, "skillId")
+	if !ok {
+		return
+	}
+	s, err := h.svc.RestoreBuiltin(r.Context(), h.adminIDs(r), id)
+	if err != nil {
+		httpx.Fail(w, r, err)
+		return
+	}
+	httpx.JSON(w, http.StatusOK, toAdminSkill(s, true))
 }
 
 type refBody struct {

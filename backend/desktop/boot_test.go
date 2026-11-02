@@ -99,6 +99,53 @@ func TestBoot_空目录启动并能调用接口(t *testing.T) {
 	if code, out := call(http.MethodGet, "/api/v1/settings/diagnostics", nil); !ok(code) || out["checks"] == nil {
 		t.Fatalf("环境自检 %d %v", code, out)
 	}
+	// 设置页的技能 / 提示词 / 预设 / 营销（TT-T-19~21）：沿用来源系统的管理端点，预设写接口与「恢复内置版本」是新增的。
+	if code, out := call(http.MethodGet, "/api/v1/admin/agent/skills", nil); !ok(code) {
+		t.Fatalf("技能列表 %d %v", code, out)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/admin/prompts/specs", nil); !ok(code) {
+		t.Fatalf("提示词规格 %d %v", code, out)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/admin/marketing/options", nil); !ok(code) {
+		t.Fatalf("营销选项 %d %v", code, out)
+	}
+	code, out = call(http.MethodGet, "/api/v1/admin/image-presets", nil)
+	items, _ := out["items"].([]any)
+	if !ok(code) || len(items) == 0 {
+		t.Fatalf("预设列表 %d %v", code, out)
+	}
+	first, _ := items[0].(map[string]any)
+	pcode, _ := first["code"].(string)
+	if first["isBuiltin"] != true {
+		t.Fatalf("seed 装的预设应标内置：%v", first)
+	}
+	first["prompt"] = "冒烟改过的提示词"
+	if code, out := call(http.MethodPut, "/api/v1/admin/image-presets/"+pcode, first); !ok(code) {
+		t.Fatalf("改预设 %d %v", code, out)
+	}
+	if code, out := call(http.MethodPost, "/api/v1/admin/image-presets/"+pcode+"/restore-builtin", nil); !ok(code) {
+		t.Fatalf("恢复内置预设 %d %v", code, out)
+	}
+	code, out = call(http.MethodGet, "/api/v1/admin/agent/skills", nil)
+	skills, _ := out["items"].([]any)
+	if !ok(code) || len(skills) == 0 {
+		t.Fatalf("技能列表为空 %d %v", code, out)
+	}
+	restored := false
+	for _, it := range skills {
+		s, _ := it.(map[string]any)
+		if s["isBuiltin"] == true {
+			id, _ := s["id"].(string)
+			if code, out := call(http.MethodPost, "/api/v1/admin/agent/skills/"+id+"/restore-builtin", nil); !ok(code) {
+				t.Fatalf("恢复内置技能 %d %v", code, out)
+			}
+			restored = true
+			break
+		}
+	}
+	if !restored {
+		t.Fatal("没有标内置的技能")
+	}
 	// 被裁剪的域不挂路由。
 	for _, p := range []string{"/api/v1/credits/balance", "/api/v1/auth/login", "/api/v1/orders"} {
 		if code, _ := call(http.MethodGet, p, nil); code != 404 && code != 405 {

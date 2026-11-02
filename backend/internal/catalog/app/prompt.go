@@ -99,6 +99,12 @@ func (s *Service) RenderFallbackPrompt(code string, vars map[string]string) (str
 
 func (s *Service) ListPromptSpecs() []domain.PromptSpec { return domain.PromptSpecs() }
 
+// BuiltinPrompt 返回代码内置兜底的原文（设置页对照显示、「恢复内置」= 归档覆盖行回落到它，dev/02 R-1）。
+func (s *Service) BuiltinPrompt(code string) (string, bool) {
+	fb, ok := promptFallback[code]
+	return fb, ok
+}
+
 func (s *Service) ListPrompts(ctx context.Context) ([]repo.PromptTemplate, error) {
 	list, err := s.repo.ListPrompts(ctx)
 	if err != nil {

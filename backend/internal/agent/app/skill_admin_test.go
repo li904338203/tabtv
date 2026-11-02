@@ -109,6 +109,24 @@ func (f *fakeSkillStore) DeleteSkillReference(_ context.Context, sid, rid int64,
 	return cur.Version, nil
 }
 
+func (f *fakeSkillStore) RestoreSkill(_ context.Context, id int64, c repo.SkillRestore) (repo.Skill, error) {
+	cur, ok := f.skills[id]
+	if !ok {
+		return repo.Skill{}, repo.ErrNotFound
+	}
+	cur.Name, cur.Body, cur.IsUserModified, cur.IsBuiltin = c.Name, c.Body, false, true
+	cur.Version++
+	f.skills[id] = cur
+	return cur, nil
+}
+
+type fakeBuiltinSkills map[string]repo.SkillRestore
+
+func (b fakeBuiltinSkills) BuiltinSkill(code string) (repo.SkillRestore, bool) {
+	c, ok := b[code]
+	return c, ok
+}
+
 type fakeSkillModels []SkillModelInfo
 
 func (m fakeSkillModels) SkillModels(context.Context) ([]SkillModelInfo, error) { return m, nil }
@@ -477,4 +495,38 @@ func TestSkillAdmin_已启用的营销技能改完仍要有封面(t *testing.T) 
 	if _, err := a.Update(ctx, 7, s.ID, sk.Version, in); err != nil {
 		t.Fatalf("停用的技能可以先不配封面：%v", err)
 	}
+}
+
+func TestSkillAdmin_RestoreBuiltin(t *testing.T) {
+	ctx := context.Background()
+	store := newFakeSkillStore()
+	store.skills[1] = repo.Skill{ID: 1, Code: "builtin_x", Name: "改过的名字", Body: "改过", Version: 3,
+		IsBuiltin: true, IsUserModified: true}
+	store.skills[2] = repo.Skill{ID: 2, Code: "my_own", Name: "自建", Version: 1}
+	var n int64 = 100
+	a := NewSkillAdmin(store, fakeSkillModels{}, nil, func() int64 { n++; return n })
+
+	// 没注入内置来源：一律 404。
+	if _, err := a.RestoreBuiltin(ctx, 9, 1); !isCode(err, errcode.NotFound) {
+		t.Fatalf("未注入内置来源应 404，得到 %v", err)
+	}
+	a.SetBuiltins(fakeBuiltinSkills{"builtin_x": {Name: "内置名字", Body: "内置正文"}})
+	out, err := a.RestoreBuiltin(ctx, 9, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out.Name != "内置名字" || out.IsUserModified || out.Version != 4 {
+		t.Fatalf("恢复结果不对：%+v", out)
+	}
+	if _, err := a.RestoreBuiltin(ctx, 9, 2); !isCode(err, errcode.NotFound) {
+		t.Fatalf("非内置技能应 404，得到 %v", err)
+	}
+	if _, err := a.RestoreBuiltin(ctx, 9, 404); !isCode(err, errcode.NotFound) {
+		t.Fatalf("不存在的技能应 404，得到 %v", err)
+	}
+}
+
+func isCode(err error, c errcode.Code) bool {
+	var be *httpx.BizError
+	return errors.As(err, &be) && be.Code == c
 }

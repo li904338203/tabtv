@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 
 	"github.com/jackc/pgx/v5"
@@ -39,8 +40,8 @@ func (r *Repo) ListAllSkills(ctx context.Context) ([]AdminSkill, error) {
 		s := &a.Skill
 		if err := rows.Scan(&s.ID, &s.Code, &s.Name, &s.Category, &s.Description, &s.Tags,
 			&s.CoverMediaID, &s.Body, &s.Steps, &s.Tools, &s.ModelBindings, &s.IsQuickEntry, &s.Sort,
-			&s.IsEnabled, &s.Version, &s.Scenes, &s.InputSlots, &s.PrefillText, &s.IsBatch, &s.CreatedAt,
-			&s.UpdatedAt, &a.RefCount); err != nil {
+			&s.IsEnabled, &s.Version, &s.Scenes, &s.InputSlots, &s.PrefillText, &s.IsBatch, &s.IsBuiltin,
+			&s.IsUserModified, &s.CreatedAt, &s.UpdatedAt, &a.RefCount); err != nil {
 			return nil, err
 		}
 		out = append(out, a)
@@ -193,4 +194,55 @@ func (r *Repo) staleOrMissing(ctx context.Context, q Querier, id int64) error {
 		return ErrStale
 	}
 	return ErrNotFound
+}
+
+// SkillRestore 是「恢复内置版本」要写回的内容（来自随包 seed，TT-T-19）。
+type SkillRestore struct {
+	Name, Category, Description string
+	Tags, Steps, Tools          json.RawMessage
+	Body                        string
+	QuickEntry                  bool
+	Sort                        int
+	Hash                        string
+	// Refs 的 ID 只在新建附属文档时使用。
+	Refs []SkillReference
+}
+
+// RestoreSkill 用内置内容覆盖技能：一个事务里改技能行（清 is_user_modified、写 builtin_hash、version +1）
+// 并把附属文档同步成内置那一套 —— 用户后加的附属文档一并删掉，否则「恢复」之后的技能仍是一个没人审过的组合。
+// 只覆盖 seed 管的字段：封面、模型绑定、场景、槽位、预填文本不在内置内容里，保持原样。
+// 技能不存在返回 ErrNotFound。
+func (r *Repo) RestoreSkill(ctx context.Context, id int64, c SkillRestore) (Skill, error) {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return Skill{}, err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	out, err := scanSkill(tx.QueryRow(ctx, `
+		update agent_skill set name = $2, category = $3, description = $4, tags = $5, body = $6,
+			steps = $7, tools = $8, is_quick_entry = $9, sort = $10, builtin_hash = $11,
+			is_user_modified = false, version = version + 1, updated_at = now()
+		where id = $1
+		returning `+skillCols,
+		id, c.Name, c.Category, c.Description, jsonOr(c.Tags, "[]"), c.Body, jsonOr(c.Steps, "[]"),
+		jsonOr(c.Tools, "[]"), c.QuickEntry, c.Sort, c.Hash))
+	if err != nil {
+		return Skill{}, err
+	}
+	names := make([]string, 0, len(c.Refs))
+	for _, f := range c.Refs {
+		names = append(names, f.Name)
+		if _, err := tx.Exec(ctx, `
+			insert into agent_skill_reference (id, skill_id, name, body, sort)
+			values ($1, $2, $3, $4, $5)
+			on conflict (skill_id, name) do update set body = excluded.body, sort = excluded.sort, updated_at = now()`,
+			f.ID, id, f.Name, f.Body, f.Sort); err != nil {
+			return Skill{}, err
+		}
+	}
+	if _, err := tx.Exec(ctx, `delete from agent_skill_reference where skill_id = $1 and not (name = any($2))`,
+		id, names); err != nil {
+		return Skill{}, err
+	}
+	return out, tx.Commit(ctx)
 }

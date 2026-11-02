@@ -31,9 +31,12 @@ type Skill struct {
 	InputSlots  json.RawMessage // jsonb 数组；形状由营销域校验
 	PrefillText string
 	// IsBatch 一次出多个变体的技能（MKT-T-32，迁移 00062）：只用于展示「最多 N 个变体」，不是计费依据。
-	IsBatch   bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	IsBatch bool
+	// IsBuiltin / IsUserModified：随包内置的技能与「用户改过」标志（迁移 00083）；设置页据此显示「内置 / 已修改」。
+	IsBuiltin      bool
+	IsUserModified bool
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 // SceneList 解出 Scenes（坏值按空处理：一行脏数据不该让整个技能列表打不开）。
@@ -56,13 +59,13 @@ type SkillReference struct {
 
 const skillCols = `id, code, name, category, description, tags, coalesce(cover_media_id, 0), body,
 	steps, tools, model_bindings, is_quick_entry, sort, is_enabled, version, scenes, input_slots,
-	prefill_text, is_batch, created_at, updated_at`
+	prefill_text, is_batch, builtin_hash is not null, is_user_modified, created_at, updated_at`
 
 func scanSkill(row pgx.Row) (Skill, error) {
 	var s Skill
 	err := row.Scan(&s.ID, &s.Code, &s.Name, &s.Category, &s.Description, &s.Tags, &s.CoverMediaID,
 		&s.Body, &s.Steps, &s.Tools, &s.ModelBindings, &s.IsQuickEntry, &s.Sort, &s.IsEnabled,
-		&s.Version, &s.Scenes, &s.InputSlots, &s.PrefillText, &s.IsBatch, &s.CreatedAt, &s.UpdatedAt)
+		&s.Version, &s.Scenes, &s.InputSlots, &s.PrefillText, &s.IsBatch, &s.IsBuiltin, &s.IsUserModified, &s.CreatedAt, &s.UpdatedAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Skill{}, ErrNotFound
 	}

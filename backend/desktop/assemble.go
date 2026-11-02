@@ -100,6 +100,7 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 	catalogSvc.SetSecretCipher(cipher)
 	catalogSvc.SetLogger(logger)
 	catalogSvc.SetCache(catalogapp.NewConfigCache(30 * time.Minute))
+	catalogSvc.SetBuiltinPresets(builtinPresets{})
 	if err := catalogSvc.SyncProtocols(ctx); err != nil {
 		return nil, err
 	}
@@ -201,6 +202,7 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 	agentHandler.SetMedia(mediaHandler)
 	skillAdmin := agentapp.NewSkillAdmin(agentrepo.New(pool), skillModels{catalogSvc}, wiring.AgentSkillRenderer{}, gen.Next)
 	skillAdmin.SetAudit(auditLog)
+	skillAdmin.SetBuiltins(builtinSkills{})
 	skillAdmin.SetMarketingChecks(wiring.AgentSkillCopy{}, wiring.AgentSkillSlots{})
 	agentAdmin := agenthttp.NewAdminHandler(skillAdmin, subjectID)
 
@@ -263,6 +265,7 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 		catalogHandler.MountModelAdmin(r, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountMaterial(r, identity.RequireUser, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountPrompt(r, identity.RequireAdmin, identity.RequirePermission)
+		catalogHandler.MountPresetAdmin(r, identity.RequireAdmin, identity.RequirePermission)
 		timelineAdmin.MountAdmin(r, identity.RequireAdmin, identity.RequirePermission)
 		mediaHandler.Mount(r, identity.RequireUser, identity.RequireAdmin, wsGuard)
 		canvasHandler.Mount(r, identity.RequireUser, wsGuard)

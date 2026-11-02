@@ -35,6 +35,13 @@ type SkillAdminStore interface {
 	SetSkillEnabled(ctx context.Context, id int64, enabled bool) (repo.Skill, bool, error)
 	SaveSkillReference(ctx context.Context, ref repo.SkillReference, isNew bool, expectSkillVersion int) (int, error)
 	DeleteSkillReference(ctx context.Context, skillID, refID int64, expectSkillVersion int) (int, error)
+	RestoreSkill(ctx context.Context, id int64, c repo.SkillRestore) (repo.Skill, error)
+}
+
+// BuiltinSkills 按 code 取随包内置的技能内容（seed 包实现，desktop 装配）。
+// ok=false 表示这个 code 不是内置技能 —— 恢复内置版本据此回 404。
+type BuiltinSkills interface {
+	BuiltinSkill(code string) (repo.SkillRestore, bool)
 }
 
 // SkillModelInfo 是绑定模型校验与下拉选项要的模型事实（目录域提供）。
@@ -67,6 +74,8 @@ type SkillAdmin struct {
 	// slots 为 nil 时声明了输入槽的技能一律存不进去（缺了等于放行一切槽位声明）。
 	copy  CopyChecker
 	slots SlotDeclValidator
+	// builtins 为 nil 时「恢复内置版本」一律 404。
+	builtins BuiltinSkills
 }
 
 // NewSkillAdmin 构造。render 必须非 nil：保存前要试渲染（缺了等于放行一切模板）。
@@ -74,6 +83,9 @@ func NewSkillAdmin(store SkillAdminStore, models SkillModels, render SkillRender
 	nextID func() int64) *SkillAdmin {
 	return &SkillAdmin{store: store, models: models, render: render, nextID: nextID}
 }
+
+// SetBuiltins 注入内置技能来源（TT-T-19）。
+func (a *SkillAdmin) SetBuiltins(b BuiltinSkills) { a.builtins = b }
 
 // SetAudit 注入审计。
 func (a *SkillAdmin) SetAudit(au Auditor) { a.audit = au }
@@ -324,6 +336,37 @@ func (a *SkillAdmin) SetEnabled(ctx context.Context, adminID, id int64, enabled 
 			map[string]any{"isEnabled": before.IsEnabled, "version": before.Version},
 			map[string]any{"isEnabled": out.IsEnabled, "version": out.Version})
 	}
+	return out, nil
+}
+
+// RestoreBuiltin 用随包内置内容覆盖技能（TT-T-19）：清「已修改」、写入内置哈希、version +1，
+// 附属文档同步成内置那一套。不是内置技能（seed 里没有这个 code）返回 404。
+// ⚠️ 不做乐观锁：恢复的语义就是「不管现在是什么，回到内置那份」，带 version 只会让它在
+// 别人刚保存过时失败，而用户要的结果并不因此改变。启用状态不动。
+func (a *SkillAdmin) RestoreBuiltin(ctx context.Context, adminID, id int64) (repo.Skill, error) {
+	before, err := a.store.GetSkillByID(ctx, id)
+	if err != nil {
+		return repo.Skill{}, mapSkillErr(err)
+	}
+	if a.builtins == nil {
+		return repo.Skill{}, httpx.Errf(errcode.NotFound, "这个技能没有内置版本")
+	}
+	c, ok := a.builtins.BuiltinSkill(before.Code)
+	if !ok {
+		return repo.Skill{}, httpx.Errf(errcode.NotFound, "这个技能没有内置版本")
+	}
+	for i := range c.Refs {
+		if c.Refs[i].ID == 0 {
+			c.Refs[i].ID = a.nextID()
+		}
+	}
+	out, err := a.store.RestoreSkill(ctx, id, c)
+	if err != nil {
+		return repo.Skill{}, mapSkillErr(err)
+	}
+	a.write(ctx, adminID, "agent_skill.restore_builtin", id,
+		map[string]any{"version": before.Version, "isUserModified": before.IsUserModified},
+		map[string]any{"version": out.Version, "isUserModified": out.IsUserModified})
 	return out, nil
 }
 

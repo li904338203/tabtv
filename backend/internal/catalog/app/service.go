@@ -26,6 +26,8 @@ type Service struct {
 	cipher *secret.Cipher
 	cache  *ConfigCache
 	log    *slog.Logger
+	// builtinPresets 恢复图片预设的内置版本用（preset_admin.go）。
+	builtinPresets BuiltinPresets
 }
 
 func (s *Service) SetCache(c *ConfigCache)  { s.cache = c }

@@ -39,6 +39,9 @@ func (h *Handler) promptSpecs(w http.ResponseWriter, r *http.Request) {
 		Required []string `json:"required"`
 		Optional []string `json:"optional"`
 		MaxChars int      `json:"maxChars"`
+		// Builtin 代码内置的兜底原文：没有覆盖行时实际生效的就是它（设置页对照显示）。
+		Builtin    string `json:"builtin"`
+		HasBuiltin bool   `json:"hasBuiltin"`
 	}
 	out := make([]resp, 0, len(specs))
 	for _, s := range specs {
@@ -51,7 +54,8 @@ func (h *Handler) promptSpecs(w http.ResponseWriter, r *http.Request) {
 		if opt == nil {
 			opt = []string{}
 		}
-		out = append(out, resp{s.Code, s.Name, req, opt, s.MaxChars})
+		fb, ok := h.svc.BuiltinPrompt(s.Code)
+		out = append(out, resp{s.Code, s.Name, req, opt, s.MaxChars, fb, ok})
 	}
 	httpx.JSON(w, http.StatusOK, out)
 }
