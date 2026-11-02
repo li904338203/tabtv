@@ -59,6 +59,7 @@ jobs:
         with:
           name: test-it-log
           path: backend/.test-it.log
+          include-hidden-files: true # 文件名以 . 开头，v4 缺省会跳过它
 
   build:
     strategy:

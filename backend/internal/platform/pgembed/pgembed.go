@@ -42,6 +42,9 @@ type Options struct {
 	Data    string // 集群目录
 	State   string // tabtv.json：端口、密码、集群版本
 	LogFile string // postgres 日志
+	// MaxConnections 是 PG 的 max_connections；0 = 40（单用户桌面应用够用）。
+	// 共享测试集群要设得大：多个测试包同时跑，每个包一个连接池。
+	MaxConnections int
 }
 
 // State 落在数据目录的 tabtv.json 里。
@@ -106,7 +109,7 @@ func Start(ctx context.Context, o Options) (*Server, error) {
 	if err := checkMajor(o.Data); err != nil {
 		return nil, err
 	}
-	if err := writeConf(o.Data); err != nil {
+	if err := writeConf(o.Data, o.MaxConnections); err != nil {
 		return nil, err
 	}
 
@@ -237,12 +240,15 @@ func initdb(ctx context.Context, o Options, password string) error {
 
 // writeConf 每次启动重写 tabtv.conf 并确保被 postgresql.conf 引入（TTD-22）。
 // 写成文件而不是 pg_ctl -o 参数：-o 在 Windows 上经 cmd 解释，空字符串引号不会被剥掉。
-func writeConf(data string) error {
+func writeConf(data string, maxConns int) error {
+	if maxConns <= 0 {
+		maxConns = 40
+	}
 	conf := strings.Join([]string{
 		"# 由 tabtv 每次启动重写，请勿手改",
 		"listen_addresses = '127.0.0.1'",
 		"unix_socket_directories = ''",
-		"max_connections = 40",
+		"max_connections = " + strconv.Itoa(maxConns),
 		"shared_buffers = 128MB",
 		"fsync = on",
 		"timezone = 'UTC'",

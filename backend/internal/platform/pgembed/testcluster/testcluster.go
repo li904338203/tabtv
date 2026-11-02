@@ -46,6 +46,8 @@ func Options() (pgembed.Options, error) {
 		Data:    filepath.Join(dir, "pg"),
 		State:   filepath.Join(dir, "tabtv.json"),
 		LogFile: filepath.Join(dir, "postgres.log"),
+		// 多个测试包并行（make test-it 是 -p 4），每个包一个 32 连接的池（testsupport），再加模板与管理连接。
+		MaxConnections: 200,
 	}, nil
 }
 
