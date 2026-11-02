@@ -116,25 +116,6 @@ func WithProbe(api http.Handler) http.Handler {
 	mux.Handle("/", api)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		println("probe request:", r.Method, r.URL.Path, r.Header.Get("Range"))
-		// 窗口打开的是 "/"：直接送到探针页，不经过首页的重定向链。
-		if r.URL.Path == "/" || r.URL.Path == "/index.html" {
-			http.Redirect(w, r, "/__probe/", http.StatusFound)
-			return
-		}
 		mux.ServeHTTP(w, r)
 	})
-}
-
-// ProbeMiddleware 让探针构建的所有请求（含静态资源与 "/"）先过探针路由。
-func ProbeMiddleware(inner func(http.Handler) http.Handler) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		h := inner(next)
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/" || r.URL.Path == "/index.html" {
-				http.Redirect(w, r, "/__probe/", http.StatusFound)
-				return
-			}
-			h.ServeHTTP(w, r)
-		})
-	}
 }

@@ -1,0 +1,6 @@
+# 随包第三方二进制锁文件（dev/04 TTD-52/54）：名称 平台 版本 地址 SHA-256
+# 平台名用 Go 的 GOOS-GOARCH。脚本 build/fetch-third-party.sh 按本文件下载并校验。
+postgres darwin-arm64 17.11.0 https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-darwin-arm64v8/17.11.0/embedded-postgres-binaries-darwin-arm64v8-17.11.0.jar a1c2786acb0c398f9b2d76806fc52f5dc8b222cbc8e9383a9b9702084daaf3a5
+postgres darwin-amd64 17.11.0 https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-darwin-amd64/17.11.0/embedded-postgres-binaries-darwin-amd64-17.11.0.jar d464ff178e9860ba204662ac23fa547504b7fd392392ff2fb92e3fd73b5bdb64
+postgres linux-amd64 17.11.0 https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-linux-amd64/17.11.0/embedded-postgres-binaries-linux-amd64-17.11.0.jar 0dd7b72b6f335b8ecfb355fa24c5781e8a93edd09880bb77eb52ebbf29b3e96d
+postgres windows-amd64 17.11.0 https://repo1.maven.org/maven2/io/zonky/test/postgres/embedded-postgres-binaries-windows-amd64/17.11.0/embedded-postgres-binaries-windows-amd64-17.11.0.jar 98040fae18dd9633ff95932125b0cecf0a45a1a9312e216e2a33ad03a31d4251

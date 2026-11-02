@@ -36,7 +36,7 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets:     assets,
 			Handler:    app.SPAFallback(assets),
-			Middleware: app.ProbeMiddleware(app.APIMiddleware(app.WithProbe(a.API()))),
+			Middleware: app.APIMiddleware(app.WithProbe(a.API())),
 		},
 		OnStartup: a.Startup,
 		Bind:      []interface{}{a},

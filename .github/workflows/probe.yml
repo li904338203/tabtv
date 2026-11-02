@@ -42,6 +42,7 @@ jobs:
           pnpm --filter @tabtv/web generate
         env:
           TABTV_PROBE: "1"
+          NUXT_TELEMETRY_DISABLED: "1"
       - name: 构建探针应用
         run: wails build -tags probe -s
       - name: 运行探针（Linux）
@@ -50,6 +51,7 @@ jobs:
         env:
           TABTV_PROBE_EXIT: "1"
           TABTV_PROBE_OUT: ${{ github.workspace }}/probe-result.json
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
       - name: 运行探针（Windows）
         if: runner.os == 'Windows'
         shell: pwsh

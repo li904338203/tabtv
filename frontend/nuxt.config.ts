@@ -84,9 +84,10 @@ export default defineNuxtConfig({
   hooks: {
     "pages:extend"(pages) {
       if (process.env.TABTV_PROBE !== "1") return;
-      // 探针构建把首页也换成探针页：桌面窗口打开即是 "/"，不必手动跳转。
+      // 探针构建里首页在前端路由层直接转到探针页（桌面窗口打开即是 "/"）。
+      // ⚠️ 不能在 Go 侧回 302：Linux 的 WebKitGTK 自定义协议不跟随重定向，页面停在空白。
       const home = pages.find(p => p.path === "/");
-      if (home) home.file = fileURLToPath(new URL("./probe/ProbePage.vue", import.meta.url));
+      if (home) home.redirect = "/__probe";
       pages.push({
         name: "probe",
         path: "/__probe",
