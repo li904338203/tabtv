@@ -27,6 +27,13 @@ extract_postgres() { # jar → 目录（jar 里是一个 .txz，解出 bin/ lib/
   rm -rf "$tmp"
 }
 
+extract_ffmpeg() { # tar.xz（顶层一个 ffmpeg-<版本>-<平台>/ 目录）→ 目录（bin/ffmpeg[.exe]、bin/ffprobe[.exe]、licenses/、SOURCES.txt）
+  local file="$1" dest="$2"
+  mkdir -p "$dest"
+  tar -xJf "$file" -C "$dest" --strip-components=1
+  chmod +x "$dest"/bin/* 2>/dev/null || true
+}
+
 found=0
 while read -r name plat ver url sum; do
   case "$name" in ''|'#'*) continue ;; esac
@@ -47,12 +54,13 @@ while read -r name plat ver url sum; do
   fi
   got="$(sha256 "$file")"
   if [ "$got" != "$sum" ]; then
-    echo "❌ $name $plat 校验失败：得到 $got，锁文件 $sum" >&2
+    echo "❌ $name $plat 校验失败：得到 ${got}，锁文件 $sum" >&2
     exit 1
   fi
   rm -rf "$dest"
   case "$name" in
     postgres) extract_postgres "$file" "$dest" ;;
+    ffmpeg) extract_ffmpeg "$file" "$dest" ;;
     *) echo "❌ 未知组件 $name" >&2; exit 1 ;;
   esac
   echo "$sum" > "$stamp"

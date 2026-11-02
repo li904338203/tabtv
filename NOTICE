@@ -23,17 +23,26 @@ Copyright 2026 tabtv contributors
 
 2. FFmpeg（ffmpeg / ffprobe）
    用途：时间线成片渲染、媒体时长探测、视频截帧。
-   ⚠️ 随包来源待 TT-T-26 / TT-T-27 锁定。
-   许可要求：只随包分发 LGPL-2.1-or-later 构建（不启用 --enable-gpl、
-         --enable-nonfree）；须随包附 LGPL 原文、注明所用版本与配置参数，
-         并给出对应源码的获取方式。锁定后在此处补齐版本、构建来源与源码地址。
+   来源（dev/04 R-6，版本与 SHA-256 见 build/third_party.lock）：
+     - macOS（arm64 / x86_64）：本仓库 build/ffmpeg/build-macos.sh 从源码静态构建，
+       LGPL-2.1-or-later（不启用 --enable-gpl / --enable-nonfree / --enable-version3）；
+     - Windows / Linux：BtbN/FFmpeg-Builds 的 lgpl-shared 构建重新打包，
+       LGPL-3.0-or-later（该构建启用了 --enable-version3）。
+   tabtv 以独立进程调用 ffmpeg / ffprobe，不与其链接。
+   每个安装包随附：resources/licenses/ 下的 LGPL 原文与各依赖库许可、
+   buildconf.txt（实际 configure 参数）、SOURCES.txt（ffmpeg 及每个依赖库的
+   版本与源码地址）。对应源码随同一 GitHub Release（third-party-ffmpeg-<版本>）
+   一并发布。
 
 3. OpenH264
    用途：在没有可用硬件编码器时作为 H.264 编码的回落。
-   ⚠️ 随包来源待 TT-T-27 锁定。
-   许可要求：源码为 BSD-2-Clause；若分发 Cisco 预编译二进制，须遵守 Cisco
-         的二进制许可（由 Cisco 承担 H.264 专利许可费的前提是使用其官方
-         二进制），并随包附带其许可说明。锁定后在此处补齐。
+   来源：作为 ffmpeg 的依赖库从源码编译、静态链入上面的 ffmpeg（BSD-2-Clause，
+   许可原文在 resources/licenses/ 中）。
+   ⚠️ 专利说明：Cisco 为 OpenH264 承担 H.264 专利许可费的前提是使用 Cisco 官方
+   发布的预编译二进制；tabtv 随包的是从源码编译的版本，**不在** Cisco 的专利许可
+   覆盖范围内。应用优先使用系统硬件编码器（VideoToolbox / NVENC / QSV / AMF /
+   Media Foundation），只在都不可用时回落到 OpenH264。在 H.264 专利仍有效的
+   地区，再分发者需自行评估专利许可问题。
 
 ======================================================================
 二、字体

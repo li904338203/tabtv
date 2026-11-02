@@ -3,7 +3,6 @@ package domain
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"strings"
 	"testing"
 )
@@ -36,11 +35,6 @@ func planOf(t *testing.T, snap RenderSnapshot, io RenderIO) RenderPlan {
 	}
 	if io.WorkDir == "" {
 		io.WorkDir = "/tmp/work"
-	}
-	// TABTV_TEST_H264=h264_videotoolbox 等：用别的编码器把真实 ffmpeg 的渲染测试再跑一遍（TT-T-27）。
-	// 滤镜图与编码器无关，换编码器后这些量产物的断言必须照样成立。
-	if io.Encoder.Name == "" {
-		io.Encoder.Name = os.Getenv("TABTV_TEST_H264")
 	}
 	plan, err := BuildRenderPlan(snap, io)
 	if err != nil {

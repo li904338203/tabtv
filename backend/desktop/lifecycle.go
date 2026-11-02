@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/buildinfo"
 	"github.com/li904338203/tabtv/backend/internal/platform/settings"
 )
 
@@ -47,3 +48,9 @@ func (r *Runtime) SetCloseAlwaysMinimize(ctx context.Context, on bool) error {
 	_, err := r.settings.Set(ctx, map[string]json.RawMessage{settings.AppCloseMinimize: raw})
 	return err
 }
+
+// UpdateAutoCheck 读「自动检查更新」（TT-T-31）。
+func (r *Runtime) UpdateAutoCheck() bool { return r.settings.Bool(settings.UpdateAutoCheck) }
+
+// BuildInfo 给宿主（自动更新、关于页）用：宿主在 backend 模块之外，不能直接引用 internal 包。
+func BuildInfo() buildinfo.Info { return buildinfo.Get() }

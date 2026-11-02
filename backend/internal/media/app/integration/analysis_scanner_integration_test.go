@@ -114,9 +114,9 @@ func TestAnalysisScanner_端到端_两个实例不重复(t *testing.T) {
 	ctx := context.Background()
 	video := e.make("land.mp4", "video/mp4", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=25",
 		"-f", "lavfi", "-i", "sine=frequency=440:sample_rate=44100", "-t", "3.2",
-		"-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest")
+		"-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest")
 	silent := e.make("silent.mp4", "video/mp4", "-f", "lavfi", "-i", "testsrc2=size=720x1280:rate=30",
-		"-t", "2.5", "-c:v", "libx264", "-pix_fmt", "yuv420p")
+		"-t", "2.5", "-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p")
 	// 120 BPM 的点击音轨（每 0.5 秒一下）。
 	music := e.make("click.mp3", "audio/mpeg", "-f", "lavfi", "-i",
 		"aevalsrc='if(lt(mod(t,0.5),0.02),sin(2*PI*1000*t),0)':s=22050:d=8", "-c:a", "libmp3lame", "-b:a", "128k")
@@ -251,7 +251,7 @@ func TestAnalysisScanner_活着的执行者不被接管(t *testing.T) {
 	e := newScanEnv(t)
 	ctx := context.Background()
 	video := e.make("v.mp4", "video/mp4", "-f", "lavfi", "-i", "testsrc2=size=640x360:rate=25", "-t", "2",
-		"-c:v", "libx264", "-pix_fmt", "yuv420p")
+		"-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p")
 	if n, err := e.svc.EnqueueAnalyses(ctx, ws, []int64{video}, []string{domain.AnalysisPreviewProxy}); err != nil || n != 1 {
 		t.Fatalf("排队：%d %v", n, err)
 	}

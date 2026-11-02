@@ -41,7 +41,7 @@ func sourceVideo(t *testing.T, seconds int) []byte {
 	out, err := exec.Command("ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
 		"-f", "lavfi", "-i", fmt.Sprintf("testsrc=size=160x120:rate=25:duration=%d", seconds),
 		"-f", "lavfi", "-i", fmt.Sprintf("sine=frequency=440:duration=%d", seconds),
-		"-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", path).CombinedOutput()
+		"-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", path).CombinedOutput()
 	if err != nil {
 		t.Fatalf("生成测试视频失败: %v %s", err, out)
 	}

@@ -99,6 +99,27 @@ func main() {
 		Ask:      askClose,
 		Minimize: wruntime.WindowMinimise,
 	}
+	// 自动更新（TT-T-31）：只访问 GitHub Releases；「自动检查」关掉时不发任何请求。
+	bi := desktop.BuildInfo()
+	app.ConfigureUpdate(a, app.UpdateConfig{
+		Current: bi.Version, Commit: bi.Commit, BuildTime: bi.BuildTime,
+		Quit: func() {
+			guard.ForceQuit() // 安装器 / 新版本要接手：不再询问「还有任务在跑」
+			if ctx := ctxOf(); ctx != nil {
+				wruntime.Quit(ctx)
+			}
+		},
+		Emit: func(info app.UpdateInfo) {
+			if ctx := ctxOf(); ctx != nil {
+				wruntime.EventsEmit(ctx, app.UpdateEventName, info)
+			}
+		},
+	})
+	go app.RunUpdateLoop(context.Background(), a, func() bool {
+		rt := runtimeNow()
+		return rt != nil && rt.UpdateAutoCheck()
+	})
+
 	// 系统关机 / 注销 / kill：走同一条退出路径，不询问（TT-T-30）。
 	// ⚠️ 不接的话 Go 默认直接结束进程，OnShutdown 不会被调用，内嵌 PG 被强杀，下次启动要做崩溃恢复。
 	sig := make(chan os.Signal, 1)

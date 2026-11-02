@@ -1,0 +1,146 @@
+# 随包 ffmpeg 的构建与发布（TT-T-26，dev/04 TTD-52）。手动触发，产物上传到本仓库的 Release。
+#
+# macOS：从源码静态构建 LGPL-2.1（build/ffmpeg/build-macos.sh）。
+# Windows / Linux：重打包 BtbN/FFmpeg-Builds 的 lgpl-shared 构建（build/ffmpeg/repack-btbn.sh）。
+#
+# ⚠️ 为什么要镜像到自己的 Release：BtbN 的带日期 tag 只保留 14 天（月度保留两年），
+#    third_party.lock 直接指向它的话，过两周构建就开始 404。
+# ⚠️ 跑完后把输出里的 SHA-256 填进 build/third_party.lock（每个平台一行）。
+name: ffmpeg
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "统一版本号（发布 tag 为 third-party-ffmpeg-<version>）"
+        required: true
+        default: "8.1.3"
+      btbn_tag:
+        description: "BtbN 的 release tag（如 autobuild-2026-11-01-12-49）"
+        required: true
+      btbn_build:
+        description: "BtbN 包名里 lgpl 前的那一段（如 ffmpeg-n8.1.3-29-gad3b795b72）"
+        required: true
+      btbn_branch:
+        description: "BtbN 包名末尾的分支号（如 8.1）"
+        required: true
+        default: "8.1"
+      publish:
+        description: "上传到 Release（否则只留 workflow 产物）"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x86_64]
+    # 两个架构都在苹果芯片的机器上构建：x86_64 交叉编译，用 Rosetta 跑自检。
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: 构建工具（只作工具用，不链接其库）
+        run: brew install meson ninja nasm pkg-config
+      - name: Rosetta（x86_64 产物的运行期自检要用）
+        if: matrix.arch == 'x86_64'
+        run: softwareupdate --install-rosetta --agree-to-license || true
+      - name: 构建
+        run: build/ffmpeg/build-macos.sh ${{ matrix.arch }}
+      - name: 源码包（LGPL 要求随发布提供源码）
+        if: matrix.arch == 'arm64'
+        run: |
+          mkdir -p build/ffmpeg/out/sources
+          cp build/third_party/.cache/ffmpeg-src/* build/ffmpeg/out/sources/
+          cp build/ffmpeg/build-macos.sh build/ffmpeg/out/sources/
+          tar -C build/ffmpeg/out -cf build/ffmpeg/out/ffmpeg-${{ inputs.version }}-darwin-sources.tar sources
+          rm -rf build/ffmpeg/out/sources
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-darwin-${{ matrix.arch }}
+          path: build/ffmpeg/out/*.tar*
+
+  btbn:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - plat: linux-amd64
+            asset: linux64-lgpl-shared
+            ext: tar.xz
+          - plat: linux-arm64
+            asset: linuxarm64-lgpl-shared
+            ext: tar.xz
+          - plat: windows-amd64
+            asset: win64-lgpl-shared
+            ext: zip
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: 下载 BtbN 构建
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          file="${{ inputs.btbn_build }}-${{ matrix.asset }}-${{ inputs.btbn_branch }}.${{ matrix.ext }}"
+          mkdir -p /tmp/btbn
+          gh release download "${{ inputs.btbn_tag }}" -R BtbN/FFmpeg-Builds -p "$file" -D /tmp/btbn
+          commit=$(gh api "repos/BtbN/FFmpeg-Builds/commits/${{ inputs.btbn_tag }}" --jq .sha)
+          echo "FILE=/tmp/btbn/$file" >> "$GITHUB_ENV"
+          echo "COMMIT=$commit" >> "$GITHUB_ENV"
+      - name: 重打包
+        run: build/ffmpeg/repack-btbn.sh "$FILE" ${{ matrix.plat }} ${{ inputs.version }} ${{ inputs.btbn_tag }} "$COMMIT"
+      - name: 运行期自检（只在 linux-amd64 上能直接跑）
+        if: matrix.plat == 'linux-amd64'
+        run: |
+          d=$(mktemp -d)
+          tar -xJf build/ffmpeg/out/ffmpeg-${{ inputs.version }}-linux-amd64.tar.xz -C "$d"
+          b="$d/ffmpeg-${{ inputs.version }}-linux-amd64/bin/ffmpeg"
+          enc=$("$b" -hide_banner -encoders)
+          for e in libopenh264 aac libmp3lame png mjpeg pcm_s16le; do grep -qw "$e" <<<"$enc" || { echo "缺编码器 $e"; exit 1; }; done
+          if grep -qw libx264 <<<"$enc"; then echo "不该有 libx264"; exit 1; fi
+          flt=$("$b" -hide_banner -filters)
+          for f in subtitles ass xfade loudnorm blackdetect tile overlay atempo amix; do grep -qE " $f " <<<"$flt" || { echo "缺滤镜 $f"; exit 1; }; done
+          "$b" -hide_banner -loglevel error -f lavfi -i color=s=64x64:d=0.1 -frames:v 1 -c:v libopenh264 -f null -
+          "$d/ffmpeg-${{ inputs.version }}-linux-amd64/bin/ffprobe" -version | head -1
+      - name: ffmpeg 源码（BtbN 构建对应的 commit）
+        if: matrix.plat == 'linux-amd64'
+        run: |
+          rev=$(grep -oE 'g[0-9a-f]{7,}$' <<<"${{ inputs.btbn_build }}" | cut -c2-)
+          curl -sSfL -o "build/ffmpeg/out/ffmpeg-${{ inputs.version }}-btbn-source-$rev.tar.gz" "https://github.com/FFmpeg/FFmpeg/archive/$rev.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ffmpeg-${{ matrix.plat }}
+          path: build/ffmpeg/out/*.tar*
+
+  publish:
+    needs: [macos, btbn]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: SHA-256（填进 build/third_party.lock）
+        run: |
+          cd dist
+          sha256sum * | tee SHA256SUMS
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          for f in ffmpeg-${{ inputs.version }}-*-*.tar.xz; do
+            plat=${f#ffmpeg-${{ inputs.version }}-}; plat=${plat%.tar.xz}
+            echo "ffmpeg $plat ${{ inputs.version }} https://github.com/${{ github.repository }}/releases/download/third-party-ffmpeg-${{ inputs.version }}/$f $(sha256sum "$f" | cut -d' ' -f1)" >> "$GITHUB_STEP_SUMMARY"
+          done
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+      - name: 上传到 Release
+        if: inputs.publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="third-party-ffmpeg-${{ inputs.version }}"
+          gh release view "$tag" -R "${{ github.repository }}" >/dev/null 2>&1 \
+            || gh release create "$tag" -R "${{ github.repository }}" --title "随包 ffmpeg ${{ inputs.version }}" \
+                 --notes "tabtv 随包的 LGPL ffmpeg / ffprobe 与对应源码。macOS 为 LGPL-2.1 自编，Windows / Linux 为 BtbN lgpl-shared 重打包（LGPL-3.0）。各包内 SOURCES.txt 列出组成与源码地址。" \
+                 --prerelease
+          gh release upload "$tag" -R "${{ github.repository }}" --clobber dist/*

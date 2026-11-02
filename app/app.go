@@ -29,6 +29,7 @@ type App struct {
 	mu      sync.Mutex
 	failure *StartupError
 	api     atomic.Pointer[http.Handler]
+	update  *updateState
 }
 
 // New 创建 App。boot 为 nil 时只提供静态页面（T03 的骨架阶段）。

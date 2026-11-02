@@ -316,7 +316,7 @@ func makeVideo(t *testing.T, dir, name, src string, secs int) string {
 	t.Helper()
 	p := filepath.Join(dir, name)
 	if out, err := exec.Command("ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi", "-i", src,
-		"-t", itoa(secs), "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", p).CombinedOutput(); err != nil {
+		"-t", itoa(secs), "-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p", p).CombinedOutput(); err != nil {
 		t.Fatalf("造素材：%v %s", err, out)
 	}
 	return p

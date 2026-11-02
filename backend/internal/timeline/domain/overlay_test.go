@@ -353,7 +353,7 @@ func TestOverlay_真实ffmpeg(t *testing.T) {
 		"-f", "lavfi", "-i", fmt.Sprintf("color=c=gray:s=%dx%d:r=25:d=3", w, h),
 		"-f", "concat", "-safe", "0", "-i", script,
 		"-filter_complex", "[1:v]format=rgba,fps=25[ov];[0:v][ov]overlay=0:0:eof_action=pass:format=auto,format=yuv420p[v]",
-		"-map", "[v]", "-c:v", "libx264", "-preset", "veryfast", out)
+		"-map", "[v]", "-c:v", "mpeg4", "-q:v", "2", out)
 	if b, err := cmd.CombinedOutput(); err != nil {
 		t.Fatalf("ffmpeg：%v %s", err, b)
 	}

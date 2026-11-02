@@ -24,3 +24,4 @@ build/wailsjs/
 frontend/dist
 backend/.test-it.log
 backend/headless
+build/ffmpeg/out/

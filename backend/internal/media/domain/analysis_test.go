@@ -297,7 +297,7 @@ func TestProxyArgs_真实ffmpeg(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			src := filepath.Join(dir, c.name+".mp4")
 			gen := []string{"-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
-				"-i", "testsrc2=size=" + c.size + ":rate=25", "-t", "2", "-c:v", "libx264", "-pix_fmt", "yuv420p", src}
+				"-i", "testsrc2=size=" + c.size + ":rate=25", "-t", "2", "-c:v", "mpeg4", "-q:v", "2", "-pix_fmt", "yuv420p", src}
 			if out, err := exec.Command("ffmpeg", gen...).CombinedOutput(); err != nil {
 				t.Fatalf("造素材失败：%v %s", err, out)
 			}
