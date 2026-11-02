@@ -49,6 +49,7 @@ import (
 	"github.com/li904338203/tabtv/backend/internal/platform/id"
 	"github.com/li904338203/tabtv/backend/internal/platform/secret"
 	"github.com/li904338203/tabtv/backend/internal/platform/settings"
+	"github.com/li904338203/tabtv/backend/internal/projectpkg"
 	providerrepo "github.com/li904338203/tabtv/backend/internal/provider/repo"
 	providertransport "github.com/li904338203/tabtv/backend/internal/provider/transport"
 	scriptapp "github.com/li904338203/tabtv/backend/internal/script/app"
@@ -287,6 +288,11 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 		contentHandler.MountUser(r, identity.RequireUser, wsCtx)
 		contentHandler.MountTasks(r, identity.RequireUser, wsGuard, wsCtx)
 		genHandler.Mount(r, identity.RequireUser, wsGuard, userID)
+		// 项目 zip 导出 / 导入（TT-T-33）：跨画布、脚本、时间线、导演台多张表的整体搬运，单机版在装配层编排。
+		projectpkg.NewHandler(projectpkg.New(pool, deps.ObjStore, gen.Next, buildinfo.Version),
+			func(*http.Request) projectpkg.Owner {
+				return projectpkg.Owner{WorkspaceID: ident.WorkspaceID, UserID: ident.UserID, PayerID: ident.PayerID}
+			}).Mount(r, identity.RequireUser, wsGuard)
 	})
 
 	bg := &background{
@@ -308,6 +314,9 @@ var longRunningRoutes = []*regexp.Regexp{
 	regexp.MustCompile(`^/api/v1/projects/[^/]+/smartcuts/[^/]+/plan/[^/]+/apply$`),
 	// 桌面版：媒体上传也放宽（本地盘写入快，但大视频读请求体仍可能超过 30 秒）。
 	regexp.MustCompile(`^/api/v1/media$`),
+	// 项目包：打包 / 解包要搬全部媒体字节（TT-T-33）。
+	regexp.MustCompile(`^/api/v1/projects/[^/]+/package$`),
+	regexp.MustCompile(`^/api/v1/projects/import$`),
 }
 
 // requestTimeout：同步调模型的端点用 long，其余用 normal。

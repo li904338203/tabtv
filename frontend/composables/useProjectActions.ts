@@ -1,5 +1,7 @@
 import type { components as ApiComponents } from "@tabtv/api-client";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { saveBlob } from "~/utils/download";
+import { projectImportMessage, projectPackageFileName, type ProjectImportResult } from "~/utils/projectPackage";
 
 type Folder = ApiComponents["schemas"]["Folder"];
 
@@ -115,5 +117,44 @@ export function useProjectActions() {
     }
   }
 
-  return { folders, loadFolders, rename, duplicate, moveToFolder, remove };
+  /**
+   * 导出项目包（TT-T-33）：后端同步打包，回 zip 字节；桌面版经系统「另存为」写到用户选的位置。
+   * ⚠️ 包里不含任何厂商配置与 Key —— 可以放心发给别人。
+   */
+  async function exportPackage(project: ProjectCardRef): Promise<boolean> {
+    if (!project.id) return false;
+    const notice = ElMessage.info({ message: "正在打包项目，媒体较多时需要一些时间…", duration: 0 });
+    try {
+      const blob = await useApi()<Blob>(`/projects/${project.id}/package`, { method: "POST", responseType: "blob" });
+      saveBlob(blob, projectPackageFileName(project.name ?? ""));
+      return true;
+    } catch (e) {
+      ElMessage.error((e as { message?: string }).message || "导出失败");
+      return false;
+    } finally {
+      notice.close();
+    }
+  }
+
+  /** 导入项目包为一个新项目（不覆盖任何已有项目）。返回新项目 ID；失败时提示原因并返回空串。 */
+  async function importPackage(file: File): Promise<string> {
+    const body = new FormData();
+    body.append("file", file);
+    const notice = ElMessage.info({ message: "正在导入项目…", duration: 0 });
+    try {
+      const result = await useApi()<ProjectImportResult>("/projects/import", { method: "POST", body });
+      const msg = projectImportMessage(result);
+      if (msg.warn) ElMessage.warning({ message: msg.text, duration: 8000 });
+      else ElMessage.success(msg.text);
+      return result.projectId;
+    } catch (e) {
+      // 包本身的问题（zip slip、版本太新、不是 zip）后端会说清原因，原样带出来
+      ElMessage.error((e as { message?: string }).message || "导入失败");
+      return "";
+    } finally {
+      notice.close();
+    }
+  }
+
+  return { folders, loadFolders, rename, duplicate, moveToFolder, remove, exportPackage, importPackage };
 }

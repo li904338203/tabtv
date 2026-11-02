@@ -8790,6 +8790,18 @@ type ProjectDocumentSummary struct {
 // ProjectDocumentSummarySource 最后一次由谁写入（mcp = 外部 AI 客户端，MCPT-11）
 type ProjectDocumentSummarySource string
 
+// ProjectImportResult defines model for ProjectImportResult.
+type ProjectImportResult struct {
+	// Name 导入后的项目名（重名时已追加「（导入）」）
+	Name string `json:"name"`
+
+	// ProjectId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
+	ProjectId Id `json:"projectId"`
+
+	// Warnings 缺文件的媒体、本机未配置的模型等
+	Warnings []string `json:"warnings"`
+}
+
 // ProjectListItem 列表里的项目：`Project` + `agent`。⚠️ `agent` **只有列表接口给**（`GET /projects`、`/projects/trash`）；
 // 详情 / 新建 / 改名不计算会话，不要拿那几处的项目去判断类型。
 type ProjectListItem struct {
@@ -12312,6 +12324,18 @@ type CreateProjectParams struct {
 	IdempotencyKey IdempotencyKey `json:"Idempotency-Key"`
 }
 
+// ImportProjectPackageMultipartBody defines parameters for ImportProjectPackage.
+type ImportProjectPackageMultipartBody struct {
+	File openapi_types.File `json:"file"`
+}
+
+// ImportProjectPackageParams defines parameters for ImportProjectPackage.
+type ImportProjectPackageParams struct {
+	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
+}
+
 // ListTrashParams defines parameters for ListTrash.
 type ListTrashParams struct {
 	// Cursor 上一页返回的 nextCursor；首页不传
@@ -12628,6 +12652,13 @@ type ResolveNodeInputs200JSONResponseBodyIssuesCode string
 
 // GetScriptByNodeParams defines parameters for GetScriptByNode.
 type GetScriptByNodeParams struct {
+	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
+}
+
+// ExportProjectPackageParams defines parameters for ExportProjectPackage.
+type ExportProjectPackageParams struct {
 	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
 	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
@@ -13880,6 +13911,9 @@ type MarkMessageReadJSONRequestBody MarkMessageReadJSONBody
 
 // CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
 type CreateProjectJSONRequestBody CreateProjectJSONBody
+
+// ImportProjectPackageMultipartRequestBody defines body for ImportProjectPackage for multipart/form-data ContentType.
+type ImportProjectPackageMultipartRequestBody ImportProjectPackageMultipartBody
 
 // UpdateProjectJSONRequestBody defines body for UpdateProject for application/json ContentType.
 type UpdateProjectJSONRequestBody UpdateProjectJSONBody
@@ -17552,6 +17586,9 @@ type ServerInterface interface {
 	// (POST /projects)
 	CreateProject(w http.ResponseWriter, r *http.Request, params CreateProjectParams)
 
+	// (POST /projects/import)
+	ImportProjectPackage(w http.ResponseWriter, r *http.Request, params ImportProjectPackageParams)
+
 	// (GET /projects/trash)
 	ListTrash(w http.ResponseWriter, r *http.Request, params ListTrashParams)
 
@@ -17626,6 +17663,9 @@ type ServerInterface interface {
 
 	// (GET /projects/{projectId}/nodes/{nodeId}/script)
 	GetScriptByNode(w http.ResponseWriter, r *http.Request, projectId ProjectId, nodeId string, params GetScriptByNodeParams)
+
+	// (POST /projects/{projectId}/package)
+	ExportProjectPackage(w http.ResponseWriter, r *http.Request, projectId ProjectId, params ExportProjectPackageParams)
 
 	// (DELETE /projects/{projectId}/purge)
 	PurgeProject(w http.ResponseWriter, r *http.Request, projectId ProjectId, params PurgeProjectParams)
@@ -18885,6 +18925,11 @@ func (_ Unimplemented) CreateProject(w http.ResponseWriter, r *http.Request, par
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// (POST /projects/import)
+func (_ Unimplemented) ImportProjectPackage(w http.ResponseWriter, r *http.Request, params ImportProjectPackageParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // (GET /projects/trash)
 func (_ Unimplemented) ListTrash(w http.ResponseWriter, r *http.Request, params ListTrashParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -19007,6 +19052,11 @@ func (_ Unimplemented) ResolveNodeInputs(w http.ResponseWriter, r *http.Request,
 
 // (GET /projects/{projectId}/nodes/{nodeId}/script)
 func (_ Unimplemented) GetScriptByNode(w http.ResponseWriter, r *http.Request, projectId ProjectId, nodeId string, params GetScriptByNodeParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /projects/{projectId}/package)
+func (_ Unimplemented) ExportProjectPackage(w http.ResponseWriter, r *http.Request, projectId ProjectId, params ExportProjectPackageParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -27584,6 +27634,51 @@ func (siw *ServerInterfaceWrapper) CreateProject(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// ImportProjectPackage operation middleware
+func (siw *ServerInterfaceWrapper) ImportProjectPackage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ImportProjectPackageParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "X-Workspace-Id" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
+		var XWorkspaceId WorkspaceId
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
+			return
+		}
+
+		params.XWorkspaceId = XWorkspaceId
+
+	} else {
+		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ImportProjectPackage(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListTrash operation middleware
 func (siw *ServerInterfaceWrapper) ListTrash(w http.ResponseWriter, r *http.Request) {
 
@@ -29085,6 +29180,60 @@ func (siw *ServerInterfaceWrapper) GetScriptByNode(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetScriptByNode(w, r, projectId, nodeId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportProjectPackage operation middleware
+func (siw *ServerInterfaceWrapper) ExportProjectPackage(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "projectId" -------------
+	var projectId ProjectId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "projectId", chi.URLParam(r, "projectId"), &projectId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "projectId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportProjectPackageParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "X-Workspace-Id" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
+		var XWorkspaceId WorkspaceId
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
+			return
+		}
+
+		params.XWorkspaceId = XWorkspaceId
+
+	} else {
+		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportProjectPackage(w, r, projectId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -34343,6 +34492,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/projects/{projectId}/duplicate", wrapper.DuplicateProject)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/projects/{projectId}/package", wrapper.ExportProjectPackage)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/projects/import", wrapper.ImportProjectPackage)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/projects/{projectId}/restore", wrapper.RestoreProject)
@@ -45223,6 +45378,71 @@ func (response CreateProject409JSONResponse) VisitCreateProjectResponse(w http.R
 	return err
 }
 
+type ImportProjectPackageRequestObject struct {
+	Params ImportProjectPackageParams
+	Body   *multipart.Reader
+}
+
+type ImportProjectPackageResponseObject interface {
+	VisitImportProjectPackageResponse(w http.ResponseWriter) error
+}
+
+type ImportProjectPackage201JSONResponse ProjectImportResult
+
+func (response ImportProjectPackage201JSONResponse) VisitImportProjectPackageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ImportProjectPackage400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response ImportProjectPackage400JSONResponse) VisitImportProjectPackageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ImportProjectPackage403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response ImportProjectPackage403JSONResponse) VisitImportProjectPackageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ImportProjectPackage413JSONResponse struct{ PayloadTooLargeJSONResponse }
+
+func (response ImportProjectPackage413JSONResponse) VisitImportProjectPackageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(413)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListTrashRequestObject struct {
 	Params ListTrashParams
 }
@@ -46973,6 +47193,63 @@ func (response GetScriptByNode200JSONResponse) VisitGetScriptByNodeResponse(w ht
 type GetScriptByNode404JSONResponse struct{ NotFoundJSONResponse }
 
 func (response GetScriptByNode404JSONResponse) VisitGetScriptByNodeResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportProjectPackageRequestObject struct {
+	ProjectId ProjectId `json:"projectId"`
+	Params    ExportProjectPackageParams
+}
+
+type ExportProjectPackageResponseObject interface {
+	VisitExportProjectPackageResponse(w http.ResponseWriter) error
+}
+
+type ExportProjectPackage200ApplicationzipResponse struct {
+	Body          io.Reader
+	ContentLength int64
+}
+
+func (response ExportProjectPackage200ApplicationzipResponse) VisitExportProjectPackageResponse(w http.ResponseWriter) error {
+
+	w.Header().Set("Content-Type", "application/zip")
+	if response.ContentLength != 0 {
+		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
+	}
+	w.WriteHeader(200)
+
+	if closer, ok := response.Body.(io.ReadCloser); ok {
+		defer closer.Close()
+	}
+	_, err := io.Copy(w, response.Body)
+	return err
+}
+
+type ExportProjectPackage403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response ExportProjectPackage403JSONResponse) VisitExportProjectPackageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ExportProjectPackage404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response ExportProjectPackage404JSONResponse) VisitExportProjectPackageResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -51954,6 +52231,9 @@ type StrictServerInterface interface {
 	// (POST /projects)
 	CreateProject(ctx context.Context, request CreateProjectRequestObject) (CreateProjectResponseObject, error)
 
+	// (POST /projects/import)
+	ImportProjectPackage(ctx context.Context, request ImportProjectPackageRequestObject) (ImportProjectPackageResponseObject, error)
+
 	// (GET /projects/trash)
 	ListTrash(ctx context.Context, request ListTrashRequestObject) (ListTrashResponseObject, error)
 
@@ -52028,6 +52308,9 @@ type StrictServerInterface interface {
 
 	// (GET /projects/{projectId}/nodes/{nodeId}/script)
 	GetScriptByNode(ctx context.Context, request GetScriptByNodeRequestObject) (GetScriptByNodeResponseObject, error)
+
+	// (POST /projects/{projectId}/package)
+	ExportProjectPackage(ctx context.Context, request ExportProjectPackageRequestObject) (ExportProjectPackageResponseObject, error)
 
 	// (DELETE /projects/{projectId}/purge)
 	PurgeProject(ctx context.Context, request PurgeProjectRequestObject) (PurgeProjectResponseObject, error)
@@ -57986,6 +58269,39 @@ func (sh *strictHandler) CreateProject(w http.ResponseWriter, r *http.Request, p
 	}
 }
 
+// ImportProjectPackage operation middleware
+func (sh *strictHandler) ImportProjectPackage(w http.ResponseWriter, r *http.Request, params ImportProjectPackageParams) {
+	var request ImportProjectPackageRequestObject
+
+	request.Params = params
+
+	if reader, err := r.MultipartReader(); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode multipart body: %w", err))
+		return
+	} else {
+		request.Body = reader
+	}
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ImportProjectPackage(ctx, request.(ImportProjectPackageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ImportProjectPackage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ImportProjectPackageResponseObject); ok {
+		if err := validResponse.VisitImportProjectPackageResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // ListTrash operation middleware
 func (sh *strictHandler) ListTrash(w http.ResponseWriter, r *http.Request, params ListTrashParams) {
 	var request ListTrashRequestObject
@@ -58760,6 +59076,33 @@ func (sh *strictHandler) GetScriptByNode(w http.ResponseWriter, r *http.Request,
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(GetScriptByNodeResponseObject); ok {
 		if err := validResponse.VisitGetScriptByNodeResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ExportProjectPackage operation middleware
+func (sh *strictHandler) ExportProjectPackage(w http.ResponseWriter, r *http.Request, projectId ProjectId, params ExportProjectPackageParams) {
+	var request ExportProjectPackageRequestObject
+
+	request.ProjectId = projectId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ExportProjectPackage(ctx, request.(ExportProjectPackageRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ExportProjectPackage")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ExportProjectPackageResponseObject); ok {
+		if err := validResponse.VisitExportProjectPackageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

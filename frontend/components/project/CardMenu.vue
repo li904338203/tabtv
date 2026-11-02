@@ -9,7 +9,7 @@
  * 样式沿用全部项目页的 `.library-actions*` —— 三处看起来一样，是因为它们**就是**同一套。
  */
 import type { components as ApiComponents } from "@tabtv/api-client";
-import { ChevronRight, Copy, FolderClosed, Inbox, LayoutDashboard, MoreHorizontal, Pencil, SquareArrowOutUpRight, Trash2 } from "@lucide/vue";
+import { ChevronRight, Copy, Download, FolderClosed, Inbox, LayoutDashboard, MoreHorizontal, Pencil, SquareArrowOutUpRight, Trash2 } from "@lucide/vue";
 import type { ProjectCardRef } from "~/composables/useProjectActions";
 import { folderMenuMode } from "~/utils/projectMenu";
 
@@ -23,6 +23,8 @@ const props = defineProps<{
    * 由调用方按列表项的 `agent` 字段传，菜单自己不判类型。
    */
   agent?: boolean;
+  /** 显示「导出项目包」（TT-T-33）。只有全部项目页开着：首页与 AI 视频页的菜单保持原样。 */
+  exportable?: boolean;
 }>();
 const emit = defineEmits<{
   open: [];
@@ -30,6 +32,8 @@ const emit = defineEmits<{
   openCanvas: [];
   rename: [];
   duplicate: [];
+  /** 只在 `exportable` 时出现：导出项目包。 */
+  export: [];
   move: [folderId: string];
   remove: [];
   /** 菜单第一次展开时发出：调用方可以在这时才去取文件夹列表（首页不必一进来就取）。 */
@@ -98,6 +102,9 @@ onBeforeUnmount(() => document.removeEventListener("click", hide));
       </button>
       <button type="button" role="menuitem" @click="pick(() => emit('duplicate'))">
         <Copy :size="15" />创建副本
+      </button>
+      <button v-if="exportable" type="button" role="menuitem" @click="pick(() => emit('export'))">
+        <Download :size="15" />导出项目包
       </button>
       <!-- 已在文件夹里只给「移出」：再列一遍文件夹、选回它自己所在的那个是空操作 -->
       <button

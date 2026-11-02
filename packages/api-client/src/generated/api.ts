@@ -1168,6 +1168,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/projects/{projectId}/package": {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 把项目打成 `<项目名>.tabtv.zip`（TT-T-33，dev/02 §6）：manifest、project.json（画布原文）、
+         *     项目从属表（脚本、镜头、资产、组、时间线、导演台、生成记录与产物、上传参考、项目文档）与引用的媒体字节。
+         *     **不含**厂商配置、Key、上游原文、Agent 会话与调用日志。文件取不到的媒体记进 manifest 的 warnings。
+         *     建议文件名在 `Content-Disposition` 与 `X-Filename`（URL 编码）里。
+         */
+        post: operations["exportProjectPackage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/import": {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 从项目包导入为一个**新项目**（TT-T-33）：全部重新发号、引用按清单映射、未知字段保留，不覆盖任何已有数据；
+         *     重名时追加「（导入）」。包有问题（zip slip、未知大版本、缺清单、不是 zip）回 400 并给出原因，失败时库里与存储里都不留东西。
+         *     引用的模型本机没有配置时不报错，记进 warnings。
+         */
+        post: operations["importProjectPackage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/projects/{projectId}/restore": {
         parameters: {
             query?: never;
@@ -10146,6 +10203,13 @@ export interface components {
                 blockers?: components["schemas"]["ModelPublishBlocker"][] | null;
             }[];
         };
+        ProjectImportResult: {
+            projectId: components["schemas"]["Id"];
+            /** @description 导入后的项目名（重名时已追加「（导入）」） */
+            name: string;
+            /** @description 缺文件的媒体、本机未配置的模型等 */
+            warnings: string[];
+        };
         AdminAgentSkill: {
             id: components["schemas"]["Id"];
             code: string;
@@ -12960,6 +13024,72 @@ export interface operations {
             };
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+        };
+    };
+    exportProjectPackage: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path: {
+                projectId: components["parameters"]["ProjectId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 项目包 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/zip": string;
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    importProjectPackage: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                };
+            };
+        };
+        responses: {
+            /** @description 导入结果 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProjectImportResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            413: components["responses"]["PayloadTooLarge"];
         };
     };
     restoreProject: {

@@ -2,7 +2,7 @@
 import type { components as ApiComponents } from "@tabtv/api-client";
 import { projectCoverUrl } from "~/utils/authorizedMedia";
 import { PROJECT_KIND_OPTIONS, projectBadgeVariant, projectCanvasPath, projectKindEmptyText, projectOpenPath, readProjectKind, writeProjectKind, type ProjectKind } from "~/utils/projectKind";
-import { ChevronLeft, FolderClosed, FolderPlus, MoreHorizontal, Pencil, Plus, Search, SquareArrowOutUpRight, Trash2, Video } from "@lucide/vue";
+import { ChevronLeft, FolderClosed, FolderPlus, MoreHorizontal, Pencil, Plus, Search, SquareArrowOutUpRight, Trash2, Upload, Video } from "@lucide/vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 // 模板里不直接调 navigateTo：自动导入在模板上下文里 vue-tsc 解析不到（运行时没问题，但门禁会红）。
@@ -253,6 +253,22 @@ async function renameProject(project: ProjectSummary, next: string) {
   if (await projectActions.rename(project, next)) await list.reset();
 }
 
+/** 导入项目包（TT-T-33）：生成一个新项目，不覆盖已有项目；导入到根目录（包里不带文件夹）。 */
+const importInput = ref<HTMLInputElement>();
+const importing = ref(false);
+async function onImportFile(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  input.value = ""; // 同一个文件再选一次也要触发 change
+  if (!file) return;
+  importing.value = true;
+  try {
+    if (await projectActions.importPackage(file)) await list.reset();
+  } finally {
+    importing.value = false;
+  }
+}
+
 async function duplicateProject(project: ProjectSummary) {
   if (!(await projectActions.duplicate(project))) return;
   syncQuery();
@@ -320,6 +336,10 @@ onBeforeUnmount(() => {
             <input v-model="keyword" type="search" placeholder="搜索项目" @input="onSearch">
           </label>
           <NuxtLink to="/video/trash" class="library-command"><Trash2 :size="15" />回收站</NuxtLink>
+          <button type="button" class="library-command" :disabled="importing" @click="importInput?.click()">
+            <Upload :size="15" />{{ importing ? "正在导入" : "导入项目" }}
+          </button>
+          <input ref="importInput" type="file" accept=".zip,application/zip" hidden @change="onImportFile">
           <button v-if="currentFolder" type="button" class="library-command" :disabled="creating" @click="createProject">
             <Plus :size="15" />新建项目
           </button>
@@ -417,10 +437,12 @@ onBeforeUnmount(() => {
               :project="project"
               :folders="folders"
               :agent="Boolean(project.agent)"
+              exportable
               @open="go(projectOpenPath(project))"
               @open-canvas="go(projectCanvasPath(project))"
               @rename="closeMenu(); editingId = project.id ?? ''"
               @duplicate="duplicateProject(project)"
+              @export="projectActions.exportPackage(project)"
               @move="folderId => moveProject(project, folderId)"
               @remove="removeProject(project)"
             />
