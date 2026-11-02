@@ -7,6 +7,7 @@
     "dev": "TMPDIR=/tmp NUXT_TELEMETRY_DISABLED=1 nuxt dev --port 3000",
     "build": "nuxt build",
     "generate": "nuxt generate",
+    "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
     "test": "vitest run --passWithNoTests",

@@ -1,0 +1,12 @@
+# 统一 LF（TT-T-29）：Windows 上 git 默认把文本检出成 CRLF，
+# 锁文件里的哈希会带上 \r 而永远对不上，shell 脚本也会因 \r 报「command not found」。
+* text=auto eol=lf
+*.sh text eol=lf
+*.lock text eol=lf
+*.nsi text eol=crlf
+*.png binary
+*.jpg binary
+*.ico binary
+*.icns binary
+*.otf binary
+*.ttf binary

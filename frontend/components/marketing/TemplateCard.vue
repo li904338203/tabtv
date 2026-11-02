@@ -31,6 +31,8 @@ const video = ref<HTMLVideoElement>();
 const playing = ref(false);
 
 const withPreview = computed(() => props.hoverPlay && props.option.hasPreview);
+// Linux 桌面上直接地址播不了，换成 blob（TT-T-16）；不用 PlayableVideo 组件是因为这里要拿 <video> 元素 ref。
+const previewSrc = usePlayableSrc(() => (withPreview.value ? optionPreviewUrl(props.apiBase, props.option.code) : null));
 
 watch(() => props.option.code, () => {
   broken.value = new Set();
@@ -85,7 +87,7 @@ function leave() {
         ref="video"
         class="tpl-preview"
         :class="{ on: playing }"
-        :src="optionPreviewUrl(apiBase, option.code)"
+        :src="previewSrc"
         muted
         loop
         playsinline

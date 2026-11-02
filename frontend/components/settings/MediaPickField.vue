@@ -67,7 +67,7 @@ function first(i: number) {
       <figure v-for="(id, i) in ids" :key="id + i" class="media-pick-item">
         <img v-if="kind === 'image'" :src="settingsMediaUrl(id)" alt="">
         <audio v-else-if="kind === 'audio'" :src="settingsMediaUrl(id)" controls />
-        <video v-else :src="settingsMediaUrl(id)" muted />
+        <MediaPlayableVideo v-else :src="settingsMediaUrl(id)" muted />
         <figcaption>
           <button v-if="i > 0 && !disabled" type="button" class="portal-link-button" @click="first(i)">设为第一张</button>
           <button v-if="!disabled" type="button" class="portal-link-button danger" @click="remove(i)">移除</button>

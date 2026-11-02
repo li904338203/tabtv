@@ -64,6 +64,8 @@ const { urls: bannerImageUrls, loadAll: loadBannerImages } = useAuthenticatedMed
 const apiBanners = computed(() => ((home.value as { banners?: ApiHomeBanner[] }).banners ?? []));
 const banners = computed(() => toCarouselBanners(apiBanners.value, bannerImageUrls.value));
 const activeBanner = computed(() => banners.value[activeBannerIndex.value]);
+// 只有当前那一张视频 Banner 会挂 <video>：在 Linux 桌面上把它的地址换成 blob（TT-T-16，要保留元素 ref 所以不用组件）。
+const activeVideoSrc = usePlayableSrc(() => (isVideoBanner(activeBanner.value) ? activeBanner.value?.videoUrl : null));
 const carouselAutoplay = computed(() =>
   banners.value.length > 1 && (!isVideoBanner(activeBanner.value) || videoPaused.value));
 
@@ -230,7 +232,7 @@ onMounted(() => {
                 <video
                   v-if="item.position === 'current' && slideIndex === activeBannerIndex && isVideoBanner(item.banner)"
                   :ref="setActiveVideo"
-                  :src="item.banner.videoUrl"
+                  :src="activeVideoSrc"
                   :poster="item.banner.cover"
                   muted
                   playsinline

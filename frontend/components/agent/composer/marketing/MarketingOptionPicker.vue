@@ -384,7 +384,7 @@ function reasonText(block: OptionBlock): string {
             <div class="option-cover">
               <img v-if="coverOf(option)" :src="coverOf(option)" :alt="option.name" loading="lazy" @error="markBroken(option.code)">
               <span v-else class="option-placeholder">{{ option.name.slice(0, 1) }}</span>
-              <video
+              <MediaPlayableVideo
                 v-if="playing === option.code"
                 class="option-preview"
                 :src="optionPreviewUrl(apiBase, option.code)"

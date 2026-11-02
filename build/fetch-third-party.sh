@@ -54,6 +54,7 @@ download() {
 
 found=0
 while read -r name plat ver url sum; do
+  sum="${sum%$'\r'}" # Windows 上 git 可能把锁文件检出成 CRLF：不去掉的话哈希永远对不上（.gitattributes 也钉了 LF）
   case "$name" in ''|'#'*) continue ;; esac
   [ -n "$want_name" ] && [ "$want_name" != "$name" ] && continue
   [ "$want_plat" != "all" ] && [ "$want_plat" != "$plat" ] && continue

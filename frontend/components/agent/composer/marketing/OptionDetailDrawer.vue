@@ -83,7 +83,7 @@ onMounted(() => nextTick(() => panel.value?.focus()));
         </header>
         <div class="detail-body">
           <div class="detail-media">
-            <video
+            <MediaPlayableVideo
               v-if="current.hasPreview && !gone"
               :key="`v-${current.code}`"
               :src="optionPreviewUrl(apiBase, current.code)"
