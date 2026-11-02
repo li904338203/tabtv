@@ -2,6 +2,10 @@
 
 tabtv 是一个开源的 AI 视频创作桌面应用：在节点画布上把文本、图片、视频、音频串起来，调用你自己配置的模型完成从剧本到成片的整条流程。
 
+<p align="center">
+  <img src="assets/screenshots/canvas.jpg" alt="tabtv 节点画布：创意描述、角色与场景图连到全能参考视频节点" width="100%">
+</p>
+
 - **单机、离线可用**：一个窗口、一个进程，数据库与素材都在本机。只在调用模型和检查更新时联网。
 - **没有账号**：不需要注册登录，也没有积分和计价 —— 模型费用由你和模型厂商直接结算。
 - **自带 Key**：在设置里填写各厂商的 API Key，Key 只保存在本机数据库里。
@@ -14,6 +18,14 @@ tabtv 是一个开源的 AI 视频创作桌面应用：在节点画布上把文�
 - **时间线与成片**：剪辑、转场、字幕、按分镜自动装配，用 ffmpeg 在本机渲染成片。
 - **智能剪辑与导演台**：自动粗剪；3D 素模摆姿势、定机位。
 - **图片工具**：设定图、打光、高清、多角度、涂抹重绘、抠图、宫格切分等。
+
+## 截图
+
+| 和 AI 一起创作 | 营销 Agent |
+| --- | --- |
+| <img src="assets/screenshots/create.jpg" alt="创造页：描述想做的视频，Agent 规划并生成" width="100%"> | <img src="assets/screenshots/marketing-agent.jpg" alt="营销 Agent：选商品、角色、创意与 Hook，批量生成推广视频" width="100%"> |
+| **节点画布（浅色）** | **模型与厂商：填 Key 即用** |
+| <img src="assets/screenshots/canvas-light.jpg" alt="节点画布浅色主题" width="100%"> | <img src="assets/screenshots/settings-models.jpg" alt="设置：内置 OpenAI、Anthropic、可灵、火山方舟等厂商模板" width="100%"> |
 
 ## 下载与安装
 
