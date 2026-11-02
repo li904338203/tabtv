@@ -273,9 +273,22 @@ func pgctlStart(ctx context.Context, o Options, port int) error {
 	if err := os.MkdirAll(filepath.Dir(o.LogFile), 0o755); err != nil {
 		return err
 	}
+	// ⚠️ pg_ctl 自己的输出写文件，不能用管道（CombinedOutput）：Windows 上它拉起的 postgres 会继承
+	//    这两个句柄，管道就永远等不到 EOF —— pg_ctl 早就返回了，Go 这边却一直卡在 Wait（CI 实测卡满 10 分钟）。
+	//    macOS / Linux 上 pg_ctl 会把子进程与这两个句柄断开，所以只有 Windows 撞上。
+	outFile, err := os.CreateTemp(filepath.Dir(o.LogFile), "pg_ctl-*.out")
+	if err != nil {
+		return err
+	}
+	defer func() {
+		outFile.Close()
+		os.Remove(outFile.Name())
+	}()
 	cmd := command(ctx, o.bin("pg_ctl"), "start", "-D", o.Data, "-w", "-t", "60",
 		"-l", o.LogFile, "-o", "-p "+strconv.Itoa(port))
-	if out, err := cmd.CombinedOutput(); err != nil {
+	cmd.Stdout, cmd.Stderr = outFile, outFile
+	if err := cmd.Run(); err != nil {
+		out, _ := os.ReadFile(outFile.Name())
 		return fmt.Errorf("启动数据库失败：%w\n%s\n（详见 %s）", err, tail(out), o.LogFile)
 	}
 	return nil

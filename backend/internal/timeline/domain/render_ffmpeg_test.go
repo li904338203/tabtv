@@ -6,10 +6,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
+
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 )
 
 // 源素材一律用 ffmpeg 自带的 mpeg4 编码器造（TT-T-27）：随包的 LGPL 构建没有 libx264，
@@ -18,15 +22,40 @@ import (
 // 用真的 ffmpeg 量产物（SCT-11）：argv 断言只能证明命令长这样，证明不了片子对 ——
 // 这一域的错几乎都是「渲染成功、片子不对」。本机没有 ffmpeg 时跳过。
 
-// realPlanOf 是真实 ffmpeg 测试用的 planOf：TABTV_TEST_H264=h264_videotoolbox / libopenh264 等时用那个编码器
-// 再跑一遍（TT-T-27）。滤镜图与编码器无关，换编码器后量产物的断言必须照样成立。
-// ⚠️ 只给真实 ffmpeg 的测试用：argv 断言测试钉的是来源系统的 libx264 参数，不能跟着环境变量变。
+// realPlanOf 是真实 ffmpeg 测试用的 planOf：编码器与产品同一套选法（h264.Detect，TT-T-27）——
+// 随包的 LGPL ffmpeg 没有 libx264，照 argv 测试的缺省（libx264）去跑必然「Option not found」。
+// TABTV_TEST_H264=h264_videotoolbox / libopenh264 等可指定编码器再跑一遍：滤镜图与编码器无关，换编码器后量产物的断言必须照样成立。
+// ⚠️ 只给真实 ffmpeg 的测试用：argv 断言测试钉的是来源系统的 libx264 参数，不能跟着本机变。
 func realPlanOf(t *testing.T, snap RenderSnapshot, io RenderIO) RenderPlan {
 	t.Helper()
 	if io.Encoder.Name == "" {
 		io.Encoder.Name = os.Getenv("TABTV_TEST_H264")
 	}
+	if io.Encoder.Name == "" {
+		io.Encoder = detectedEncoder(t)
+	}
 	return planOf(t, snap, io)
+}
+
+var (
+	encOnce sync.Once
+	encSel  h264.Selection
+)
+
+// detectedEncoder 用 PATH 上的 ffmpeg 探测一次编码器（与产品的 ffbin.H264 同一套规则）。
+func detectedEncoder(t *testing.T) h264.Encoder {
+	t.Helper()
+	encOnce.Do(func() {
+		run := func(ctx context.Context, args ...string) (string, error) {
+			out, err := exec.CommandContext(ctx, "ffmpeg", args...).CombinedOutput()
+			return string(out), err
+		}
+		encSel = h264.Detect(context.Background(), runtime.GOOS, run)
+	})
+	if encSel.Encoder.Name == "" {
+		t.Skipf("本机 ffmpeg 没有可用的 H.264 编码器：%+v", encSel.Skipped)
+	}
+	return encSel.Encoder
 }
 
 func needFFmpeg(t *testing.T) string {
