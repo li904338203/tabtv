@@ -22,3 +22,4 @@ backend/assets/fonts/*.ttf
 *.log
 build/wailsjs/
 frontend/dist
+backend/.test-it.log

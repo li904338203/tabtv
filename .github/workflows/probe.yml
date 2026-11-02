@@ -44,7 +44,11 @@ jobs:
           TABTV_PROBE: "1"
           NUXT_TELEMETRY_DISABLED: "1"
       - name: 构建探针应用
-        run: wails build -tags probe -s
+        shell: bash
+        run: |
+          # ⚠️ Linux 必须带 webkit2_40：否则 Wails v2 不把 POST/PUT 的请求体交给 AssetServer（接口全坏）
+          if [ "$RUNNER_OS" = "Linux" ]; then tags="probe webkit2_40"; else tags="probe"; fi
+          wails build -tags "$tags" -s
       - name: 运行探针（Linux）
         if: runner.os == 'Linux'
         run: timeout 240 xvfb-run -a ./build/bin/tabtv || true

@@ -353,3 +353,34 @@ func (s *Server) WaitReady(ctx context.Context, timeout time.Duration) error {
 		time.Sleep(200 * time.Millisecond)
 	}
 }
+
+// Attach 连接一个已经在运行的集群（不启动、不停止）。共享测试集群用：
+// 多个测试进程同时起来时，后来者直接用先到者起好的那个，而不是把它停掉重起。
+func Attach(ctx context.Context, o Options) (*Server, error) {
+	st, err := loadState(o.State)
+	if err != nil {
+		return nil, err
+	}
+	if st.Port == 0 || st.Password == "" {
+		return nil, errors.New("集群尚未初始化")
+	}
+	s := &Server{opts: o, state: st}
+	cctx, cancel := context.WithTimeout(ctx, 2*time.Second)
+	defer cancel()
+	conn, err := pgx.Connect(cctx, s.DSN())
+	if err != nil {
+		return nil, err
+	}
+	conn.Close(ctx)
+	return s, nil
+}
+
+// AdminDSN 返回连到 postgres 库的连接串（建库、删库用）。
+func (s *Server) AdminDSN() string {
+	return fmt.Sprintf("postgres://%s:%s@127.0.0.1:%d/postgres?sslmode=disable", user, s.state.Password, s.state.Port)
+}
+
+// DSNFor 返回连到指定库的连接串。
+func (s *Server) DSNFor(db string) string {
+	return fmt.Sprintf("postgres://%s:%s@127.0.0.1:%d/%s?sslmode=disable", user, s.state.Password, s.state.Port, db)
+}

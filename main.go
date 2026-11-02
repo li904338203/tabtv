@@ -2,15 +2,20 @@
 package main
 
 import (
+	"context"
 	"embed"
 	"io/fs"
 	"log"
+	"net/http"
+	"sync"
+	"time"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 
 	"github.com/li904338203/tabtv/app"
+	"github.com/li904338203/tabtv/backend/desktop"
 )
 
 // 前端产物：Nuxt `ssr:false` + `nuxi generate` 输出到 frontend/.output/public。
@@ -24,8 +29,37 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// TT-T-04 起这里接入内嵌数据库与后端装配；TT-T-03 阶段后端未就绪，接口一律 503。
-	a := app.New(nil, "", "")
+	dirs, _ := desktop.Dirs() // 失败也要拿到默认位置给错误页显示；真正的错误由 Boot 报
+	logger, closeLog := desktop.OpenLog(dirs)
+	defer closeLog()
+
+	var (
+		mu  sync.Mutex
+		cur *desktop.Runtime
+	)
+	shutdown := func() {
+		mu.Lock()
+		defer mu.Unlock()
+		if cur != nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+			cur.Close(ctx)
+			cancel()
+			cur = nil
+		}
+	}
+	boot := func(ctx context.Context) (http.Handler, error) {
+		shutdown() // 重试时先收掉上一次的半成品
+		rt, err := desktop.Boot(ctx, logger)
+		if err != nil {
+			logger.Error("启动失败", "err", err)
+			return nil, err
+		}
+		mu.Lock()
+		cur = rt
+		mu.Unlock()
+		return rt.Handler, nil
+	}
+	a := app.New(boot, dirs.Root, dirs.Logs)
 
 	err = wails.Run(&options.App{
 		Title:     "tabtv",
@@ -38,8 +72,9 @@ func main() {
 			Handler:    app.SPAFallback(assets),
 			Middleware: app.APIMiddleware(app.WithProbe(a.API())),
 		},
-		OnStartup: a.Startup,
-		Bind:      []interface{}{a},
+		OnStartup:  a.Startup,
+		OnShutdown: func(context.Context) { shutdown() },
+		Bind:       []interface{}{a},
 	})
 	if err != nil {
 		log.Fatal(err)

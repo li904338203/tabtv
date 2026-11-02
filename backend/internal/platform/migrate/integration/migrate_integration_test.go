@@ -1,7 +1,7 @@
 //go:build integration
 
-// 真库集成测试（AC-25、INIT-01）。用 testcontainers 起一次性 PostgreSQL，
-// 不依赖开发者本地已起的容器，CI 里也能跑。
+// 真库集成测试（AC-25、INIT-01）。在共享的内嵌 PG 集群里建一个空库（TT-T-04），
+// 不依赖 docker，CI 里也能跑。
 //
 // 04 §5 指出旧系统"未见 Testcontainers 集成链路"，Service 测试大多 mock mapper，
 // 因此关键的 schema 事实必须由真库证明，而不是靠读 SQL 文件推断。
@@ -13,38 +13,20 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-	"time"
-
-	"github.com/testcontainers/testcontainers-go"
-	tcpostgres "github.com/testcontainers/testcontainers-go/modules/postgres"
-	"github.com/testcontainers/testcontainers-go/wait"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/bootstrapadmin"
 	"github.com/li904338203/tabtv/backend/internal/platform/id"
 	"github.com/li904338203/tabtv/backend/internal/platform/migrate"
+	"github.com/li904338203/tabtv/backend/internal/platform/pgembed/testcluster"
 	"github.com/li904338203/tabtv/backend/internal/platform/seed"
 	"github.com/li904338203/tabtv/backend/migrations"
 )
 
 func startPG(t *testing.T) string {
 	t.Helper()
-	ctx := context.Background()
-	c, err := tcpostgres.Run(ctx, "postgres:17-alpine",
-		tcpostgres.WithDatabase("seeaitv"),
-		tcpostgres.WithUsername("seeaitv"),
-		tcpostgres.WithPassword("seeaitv"),
-		testcontainers.WithWaitStrategy(
-			wait.ForLog("database system is ready to accept connections").
-				WithOccurrence(2).WithStartupTimeout(90*time.Second)),
-	)
+	dsn, err := testcluster.EmptyDatabase(context.Background())
 	if err != nil {
-		t.Fatalf("启动 PostgreSQL 容器失败: %v", err)
-	}
-	t.Cleanup(func() { _ = c.Terminate(context.Background()) })
-
-	dsn, err := c.ConnectionString(ctx, "sslmode=disable")
-	if err != nil {
-		t.Fatalf("获取连接串失败: %v", err)
+		t.Fatalf("建测试库失败: %v", err)
 	}
 	return dsn
 }

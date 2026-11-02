@@ -87,14 +87,24 @@ test-scripts:
 test-race: fonts
 	@cd $(GO_DIR) && $(GO) test -race ./...
 
-# 集成测试：TT-T-04 起改用内嵌 PG，不再依赖 docker。
-# ⚠️ 退出码取 go test 自己的（不能取管道末端的）。
+# 集成测试：共享内嵌 PG 集群（pgembed/testcluster），不依赖 docker（TT-T-04）。
+# ⚠️ 退出码取 go test 自己的（不能取管道末端的）。跑完删掉本轮的测试库（集群保留，下次免 initdb）。
 IT_LOG := $(GO_DIR)/.test-it.log
-test-it: fonts
-	@sh -c 'cd $(GO_DIR) && $(GO) test -tags=integration -count=1 -p 2 ./... -v' > $(IT_LOG) 2>&1; status=$$?; \
+test-it: fonts pg
+	@sh -c 'cd $(GO_DIR) && $(GO) test -tags=integration -count=1 -p 4 ./... -v' > $(IT_LOG) 2>&1; status=$$?; \
 	 grep -E "^(--- FAIL|FAIL|ok  )" $(IT_LOG) || true; \
 	 echo "通过用例 $$(grep -c '^--- PASS' $(IT_LOG))，失败 $$(grep -c '^--- FAIL' $(IT_LOG))，完整日志 $(IT_LOG)"; \
+	 (cd $(GO_DIR) && $(GO) run ./tools/testpg clean); \
 	 exit $$status
+
+# 停掉共享测试集群（数据目录在系统临时目录下的 tabtv-test-pg）。
+.PHONY: test-clean pg
+test-clean:
+	@cd $(GO_DIR) && $(GO) run ./tools/testpg clean && $(GO) run ./tools/testpg stop
+
+# 开发用 PG 二进制（按 build/third_party.lock 下载并校验）。
+pg:
+	@bash build/fetch-third-party.sh postgres
 
 build: build-go build-web
 
