@@ -49,6 +49,31 @@ async function probeRange() {
   put("请求明细", hits.map(h => `${h.range || "(无 Range)"}→${h.status}`).join("；"));
 }
 
+/** 来源前端多数视频走 blob → object URL（useAuthenticatedMedia）：这条路在各内核上能不能播、能不能拖。 */
+async function probeBlob() {
+  const el = document.createElement("video");
+  el.muted = true;
+  const blob = await (await fetch("/api/_probe/video")).blob();
+  put("blob 大小", `${(blob.size / 1048576).toFixed(1)} MB`);
+  const url = URL.createObjectURL(blob);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      el.onloadedmetadata = () => resolve();
+      el.onerror = () => reject(new Error(`video error ${el.error?.code}`));
+      el.src = url;
+      setTimeout(() => reject(new Error("加载超时")), 15000);
+    });
+    const target = el.duration * 0.8;
+    el.currentTime = target;
+    await new Promise<void>(resolve => { el.onseeked = () => resolve(); setTimeout(resolve, 8000); });
+    put("blob 播放 seek", `currentTime=${el.currentTime.toFixed(1)}（目标 ${target.toFixed(1)}）→ ${Math.abs(el.currentTime - target) < 2 ? "到位" : "未到位"}`);
+  } catch (e) {
+    put("blob 播放", `失败：${(e as Error).message}`);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 async function probeWebCodecs() {
   const g = globalThis as Record<string, unknown>;
   for (const k of ["VideoEncoder", "VideoDecoder", "AudioEncoder", "AudioDecoder", "VideoFrame"]) {
@@ -80,6 +105,7 @@ async function probeWebCodecs() {
 onMounted(async () => {
   put("userAgent", navigator.userAgent);
   try { await probeRange(); } catch (e) { put("视频探针", `失败：${(e as Error).message}`); }
+  try { await probeBlob(); } catch (e) { put("blob 探针", `失败：${(e as Error).message}`); }
   await probeWebCodecs();
   done.value = true;
   // 把结果交给 Go 侧落盘并退出（无人值守跑三平台时用）。
