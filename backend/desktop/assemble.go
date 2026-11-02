@@ -261,8 +261,11 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 		}
 		wsCtx := collab.RequireWorkspace
 		catalogHandler.MountUser(r, identity.RequireUser)
+		catalogHandler.MountQuote(r, identity.RequireUser)
 		catalogHandler.MountAdmin(r, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountModelAdmin(r, identity.RequireAdmin, identity.RequirePermission)
+		mountModelTemplates(r, modelTemplates{svc: catalogSvc, repo: catalogrepo.New(pool), who: subjectID},
+			identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountMaterial(r, identity.RequireUser, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountPrompt(r, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountPresetAdmin(r, identity.RequireAdmin, identity.RequirePermission)

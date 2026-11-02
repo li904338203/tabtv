@@ -4,127 +4,6 @@
  */
 
 export interface paths {
-    "/auth/code": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 发送验证码。响应**不回显验证码，也不回显账号是否存在** ——
-         *     回显存在性等于把「这个手机号注册过没有」做成了公开查询接口。
-         */
-        post: operations["sendVerificationCode"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["register"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/password/reset": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["resetPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 必须校验用户状态与 `auth_session.revoked_at`，不能只验签。
-         *     修 GAP-19：旧实现 refresh 不查用户状态，封禁后旧 token 仍可续期。
-         *
-         *     ⚠️ refresh **会轮换**：旧的作废，调用方必须保存返回的新 refresh（只存新 access 的话，
-         *     下一次续期拿着已作废的旧 refresh 必然 40103 —— 用户约 30 分钟就被踢回登录页）。
-         *
-         *     被轮换掉的 refresh 有 **30 秒宽限期**：期间再拿它来续，返回的是这条链**当前那一个会话**的凭证
-         *     （不再轮换、不新开会话）。给的是「服务端已轮换、响应没回到浏览器」那一次 —— 续期途中换页、
-         *     断网、两个标签页同时续 —— 否则浏览器只剩那张已作废的旧 refresh，下一次续期就被踢。
-         *     退出、封禁、改密撤销的会话**没有宽限期**。只有本接口明确回 4xx 才说明续不上了；
-         *     断网 / 5xx 不是定论，调用方不应因此清会话。
-         */
-        post: operations["refreshToken"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 撤销当前会话（写 `auth_session.revoked_at`），并推送 session.revoked 断开 WebSocket。
-         *
-         *     ⚠️ 撤销的是**这一对 token 所属的会话**（access 里的 `sid` = 同一对 refresh 的 jti）。
-         *     此前撤销的是 access 自己的 jti，而会话表只登记 refresh —— 什么都没撤销，
-         *     退出之后同一对里的 refresh 还能续期整整 30 天。
-         *     `sid` 指向的会话若已被轮换，沿轮换链撤销到**当前那一个**（手里的可能是续期之前的旧 access）。
-         */
-        post: operations["logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/auth/me": {
         parameters: {
             query?: never;
@@ -150,183 +29,6 @@ export interface paths {
         };
         /** @description 当前用户的全部 active 成员资格。不需要 X-Workspace-Id。 */
         get: operations["listWorkspaces"];
-        put?: never;
-        /** @description 新建团队工作区。会同时建出它自己的 payer_account（NEW-20）。 */
-        post: operations["createTeamWorkspace"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 归档（软删）团队工作区，**只有 owner 能做**。
-         *     会连带撤销它授出的全部共享与未接受的邀请 —— 它们都是"让外面的人进得来"
-         *     的凭据，而归档的语义是"这个团队关掉了"。成员行保留不动，便于将来恢复。
-         */
-        delete: operations["archiveWorkspace"];
-        options?: never;
-        head?: never;
-        patch: operations["renameWorkspace"];
-        trace?: never;
-    };
-    "/workspaces/current/transfer": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 把工作区转让给另一个成员，**只有 owner 能做**。
-         *     原 owner 降为 admin 而不是被移除；payer_account 不跟着换
-         *     （转让的是管理权不是账目，跟着换会让历史消费流水指向一个新主体）。
-         */
-        post: operations["transferWorkspace"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/members": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["listWorkspaceMembers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/members/{userId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 移除成员；`userId` 是自己时表示主动退出，不需要管理权限。
-         *     owner 既不能被移除也不能自行退出 —— 否则工作区会没有归属人。
-         *     移除会同步撤销该成员的事件订阅（NEW-18）。
-         */
-        delete: operations["removeWorkspaceMember"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/members/{userId}/role": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** @description owner 角色只能通过转让产生，不能直接授予。 */
-        put: operations["setWorkspaceMemberRole"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/invitations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 本工作区**待处理且未过期**的邀请。不回 token。 */
-        get: operations["listWorkspaceInvitations"];
-        put?: never;
-        /**
-         * @description 发起邀请。同一工作区对同一受邀人只保留一条待处理邀请：
-         *     再邀请一次会**顶掉**上一条并在 `replacedPending` 里说明条数
-         *     —— 不说的话用户会以为之前发出去的码还能用。
-         *     已经是成员的人不能再被邀请（会在接受时悄悄改掉他的角色）。
-         */
-        post: operations["createWorkspaceInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/invitations/{invitationId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["revokeWorkspaceInvitation"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/invitations/accept": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 用邀请码加入工作区。不存在、已用过、已撤销、已过期一律回同一个错误
-         *     —— 区分它们会泄漏邀请码的有效性，便于爆破。
-         */
-        post: operations["acceptWorkspaceInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/invitations/mine": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 发给当前账号（按邮箱/手机号匹配）的待处理邀请。
-         *     **不回 token** —— 回了等于把邀请码变成"只要能登录就能看到的东西"。
-         *     这个列表只负责让用户知道有人邀请过他，接受仍要用收到的那个码。
-         */
-        get: operations["listMyInvitations"];
         put?: never;
         post?: never;
         delete?: never;
@@ -355,95 +57,6 @@ export interface paths {
          *     ⚠️ `position` 非法时**回落到 `home`** 而不是报错。
          */
         get: operations["home"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/showcase": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 精选作品墙，**不需要登录**（P13-01）。没登录的人看到一张空白首页
-         *     正是他决定要不要注册的那一眼。
-         *
-         *     公开可见性 = `approved ∧ featured ∧ ¬offline`，三个条件缺一不可：
-         *     审核只回答"有没有违规"，**加精才是运营的一次显式发布决定**，
-         *     而下架要能立刻收回（所以它是独立的一位，不是把审核状态改回去）。
-         *
-         *     ⚠️ **不下发 `mediaObjectId`**：那是受保护端点的 ID，访客拿着它一律 401，
-         *     首页那一栏会全是破图。取图走 `/showcase/{workId}/media`。
-         *
-         *     按媒体类型筛选在**服务端**做（AGT-41）：在已取的一页里筛会得出
-         *     「没有音频作品」的错误结论。
-         */
-        get: operations["listShowcase"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/showcase/{workId}/media": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 公开取图，**不需要登录**（P13-01）。
-         *
-         *     ⚠️ **另开一条路，不复用 `/generations/{id}/outputs/{i}`**：后者按 workspace
-         *     卡归属，作者之外的人（含访客）一律取不到。可见性判定写在 SQL 里，
-         *     所以**取消加精或下架之后立刻取不到** —— 与首页列表的可见性始终一致，
-         *     不会出现"列表里没有但直链还能打开"。
-         *
-         *     ⚠️ 查不到与不可见回**同一个 404**：区分开等于提供一个探测接口
-         *     （"这件作品存在但没加精"本身就是信息）。
-         *
-         *     ⚠️ 默认给**缩略图**（`w=320`）：公开墙一屏几十张，原图单张动辄几 MB。
-         *     响应带 `Cache-Control: public, max-age=300` —— 缓存期就是"撤不下来"
-         *     的窗口，所以时间不能长。
-         */
-        get: operations["showcaseMedia"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/showcase/{workId}/cover": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 公开作品的**封面图**，不需要登录（2026-11-01）。图片作品是它自己的缩略图；视频作品是
-         *     Worker 截的第一帧（video_poster）按宽度缩，只有十几 KB；音频与其余类型、以及封面帧还没截出来的视频回 404，
-         *     由前端退回别的显示方式。
-         *
-         *     ⚠️ 为什么单开：作品墙的视频卡此前用 `<video preload=metadata>` 取封面，而 `/showcase/{workId}/media`
-         *     不支持 Range，浏览器只能把整段视频（一段 10~20MB）下完；几段同时下会占满浏览器对同一主机的连接，
-         *     页面上别的接口跟着排队好几秒。也不能改成「取图带宽度就给封面」：取图端点不带 `w` 时默认按 320 缩，
-         *     视频播放也走它。
-         *
-         *     可见性判定、404 口径与缓存头都与 `/showcase/{workId}/media` 相同。
-         */
-        get: operations["showcaseCover"];
         put?: never;
         post?: never;
         delete?: never;
@@ -548,133 +161,6 @@ export interface paths {
          *     "发布时间早于我的已读时间"（运营可以改 published_at）被误判成已读。
          */
         post: operations["markAllMessagesRead"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/banners": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Banner 列表。⚠️ **不过滤排期** —— 管理端看"配了什么"，用户端看
-         *     "现在投什么"。管理端也按排期过滤的话，运营排好的明天那条会从列表里
-         *     消失，他会以为没保存成功然后再配一条。权限 `content:read`。
-         */
-        get: operations["adminListBanners"];
-        put?: never;
-        /**
-         * @description 新建。⚠️ 倒置或零长度的投放窗口在**保存时**就拒掉 ——
-         *     存进去的话它永远投不出去，而运营在列表里看到的是一条"已启用"的
-         *     Banner，找不出哪里不对。⚠️ 时间解析失败**明确报错**不当成没传：
-         *     少一个排期端点意味着一条本该定时下线的 Banner 会一直挂在首页上。
-         *     权限 `content:write`。
-         */
-        post: operations["adminCreateBanner"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/banners/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["adminUpdateBanner"];
-        post?: never;
-        delete: operations["adminDeleteBanner"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/announcements": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["adminListAnnouncements"];
-        put?: never;
-        /**
-         * @description 新建。⚠️ **一律落草稿** —— 一次误保存不该等于给全站误发。
-         *     权限 `content:write`。
-         */
-        post: operations["adminCreateAnnouncement"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/announcements/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        get?: never;
-        /** @description 改内容。⚠️ **不碰 status** —— 发布与下线各有自己的路径。 */
-        put: operations["adminUpdateAnnouncement"];
-        post?: never;
-        delete: operations["adminDeleteAnnouncement"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/announcements/{id}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 发布 —— **独立的动作**，不是 update 的一个字段。
-         *     只有 `draft` 能发布；并发时靠 CAS 保证只有一个成功
-         *     （不带 CAS 的话第二次点会刷新 `published_at`，而公告按发布时间排序，
-         *     于是它会莫名其妙地跳到最前面）。
-         */
-        post: operations["adminPublishAnnouncement"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/announcements/{id}/offline": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 下线。之后它**立刻**从所有人的消息中心消失 ——
-         *     状态写在查询条件里，不需要去删每个人的那一行（本来也没有那一行）。
-         */
-        post: operations["adminOfflineAnnouncement"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1465,631 +951,6 @@ export interface paths {
          *     看板上两个数字对不上，而看的人只会觉得"这个看板不准"、说不出哪里不准。
          */
         get: operations["adminStatsSeries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/tasks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 后台任务运营台：跨全部工作区检索四类任务（P13-03）。
-         *
-         *     ⚠️ 它与用户侧 `/tasks` **共用同一个 SQL union 与同一份状态映射**，
-         *     只是换了租户条件、多挑几列。另写一份的话，新增一个状态词时会漏掉
-         *     一处 —— 而漏掉的症状是**某一类任务在那个筛选下整体消失**，
-         *     没有任何报错（CD-62 已经记过一次）。
-         *
-         *     ⚠️ 权限位是 **`ops:read`** 而不是 `content:read`：这条查询跨全部
-         *     工作区，而 `content:read` 是给运营看首页配置的 —— 配 Banner 的人
-         *     不该顺手就能翻全站的任务。
-         *
-         *     ⚠️ 同时给**统一状态**与**原始状态**：前者回答"给用户怎么显示"，
-         *     后者回答"库里到底是什么"。排障问的是后者 —— 只给统一状态的话，
-         *     整图运行的 `pending` 与生成的 `queued` 在运维台上长得一模一样，
-         *     而它们的处置完全不同。
-         *
-         *     ⚠️ `stuck`（本该结束却没结束）由**服务端**算。让前端拿 `deadlineAt`
-         *     去跟本地时钟比的话，用户机器的时钟偏几分钟，这一列就会整片显示错。
-         */
-        get: operations["adminListTasks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/dead-letters": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 死信列表（P13-03；GAP-07 的另一半）。
-         *
-         *     死信此前**只存在于 RabbitMQ 的 `.dead` 队列里**，没有任何人看得到
-         *     —— 而 `AckDead` 的两种情形（消息解不开、提交结果不确定）恰恰都要求
-         *     人去对账。Worker 的排空器把它们搬进库，运维在这里处置。
-         *
-         *     ⚠️ `payloadPreview` 是**截断过的**，同时给 `payloadLength` ——
-         *     只截不说的话运维会以为消息就这么长。
-         */
-        get: operations["adminListDeadLetters"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/dead-letters/{id}/replay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 把一条死信**原样投回原队列**。
-         *
-         *     ⚠️ 用**原始 routing key**，不按队列名猜一个：猜错的话消息会落到别的
-         *     消费者手上、解不开、再进一次死信 —— 看起来像"重投没生效"。
-         *
-         *     ⚠️ 实现上是**先 CAS 标记、再投递**，顺序不能反。反过来的话，标记
-         *     失败时它仍显示 pending，运维会再点一次 —— 而死信里有一类是
-         *     「提交结果不确定，可能已在上游计费」，那一类重投两次就是**让用户被
-         *     计两次费**。代价是：投递失败时这条记录已经是 `replayed`，那时回
-         *     **50301** 并把原因追加到备注里，**状态不回退**（退回 pending 的话
-         *     另一个运维会再投一次，而第一次可能其实已经投出去了）。
-         *
-         *     ⚠️ 只有 `pending` 能重投；已处置的回 **40905**。
-         */
-        post: operations["adminReplayDeadLetter"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/dead-letters/{id}/discard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 丢弃一条死信。
-         *
-         *     ⚠️ **理由必填**：丢弃是"决定不再处理这条消息"，而那条消息可能对应
-         *     一次已经在上游扣过钱的调用。不写理由的话，半年后没人说得清当时为
-         *     什么丢它 —— 而这正是死信落库（而不是留在队列里）的全部意义。
-         */
-        post: operations["adminDiscardDeadLetter"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/ops/tasks/{kind}/{id}/compensate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 人工补偿：把一条**卡住的**任务判失败并退款（P13-03）。
-         *
-         *     ⚠️ 补偿**不是取消**。取消的语义是"用户决定不要了"，补偿是"平台判定
-         *     这条任务已经死了"。混用的话成功率指标里会多出一批不存在的用户取消，
-         *     而用户在自己的列表里看到一条他从没取消过的"已取消"。所以落的是
-         *     `failed` + 专用错误码 `ops_compensated`。
-         *
-         *     ⚠️ **绝不绕过账本**：退款走与正常失败完全相同的路径，按原消费批次
-         *     回补、由账本的唯一索引保证只成功一次。后台不存在"直接把积分加回去"
-         *     的入口。
-         *
-         *     ⚠️ **默认要求已过死线**。一个只是慢的任务被人工判失败之后，钱退了，
-         *     而它随后可能在上游**真的成功** —— 用户拿到退款又拿到产物。
-         *     没过死线时必须显式 `force`，而错误里会说清**还差多久**
-         *     （一句"尚未超时"会让运维反复去点，他并不知道该等多久）。
-         *
-         *     ⚠️ **只支持 generation 与 render 两类**：整图运行由它的子任务推进
-         *     （补偿单个节点才有意义），打包导出不扣费（补偿它只是改个状态，
-         *     没有账务可言）。
-         *
-         *     ⚠️ 任务刚好在这一刻跑完时 CAS 会拦下来，回 **40901** 而不是静默成功
-         *     —— 静默成功的话运维以为自己处置了，而那条任务其实是成功结束的。
-         */
-        post: operations["adminCompensateTask"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/ops/tasks/generation/{id}/retry": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 受控重试：由运维代用户重新发起一次生成。
-         *
-         *     ⚠️ 走**与用户完全相同**的重试路径 —— 重新校验、重新报价、
-         *     **重新扣费**，费用记**原任务的付费主体**。后台没有"免费重试"这条路：
-         *     平台替用户吃掉上游成本是一个**商业决定**，不能由一个运维按钮隐式
-         *     做出（GO-04 同一条）。上一次失败的钱已经退回去了，所以这次扣费在
-         *     账面上是自洽的。
-         *
-         *     ⚠️ 归属三要素取**原任务的**（工作区 / 付费主体 / 发起人），不是运维
-         *     自己的：记成运维的话，这笔消费会从用户的账单里消失，而用量审计里
-         *     会多出一个从来不生成内容的"用户"。
-         *
-         *     ⚠️ 响应里**明说扣了多少积分**：不说的话运维会以为后台重试是免费的，
-         *     而那笔钱记在用户账上。余额不足时报错原样带回 —— 他才知道该去让
-         *     用户充值。
-         *
-         *     只允许对 `failed` 的任务重试。
-         */
-        post: operations["adminRetryGeneration"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/projects": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 后台项目检索（AD-08）。
-         *
-         *     ⚠️ **默认包含回收站里的**：后台来查项目十有八九正是因为"用户说他的
-         *     项目不见了"。要只看在用的显式传 `status=active`。
-         *
-         *     ⚠️ 节点/边条数**从 canvasData 当场算**，不另存两列计数：那两列要在
-         *     每条保存路径上同步更新，而漏掉任何一条都不会报错 —— 症状是后台显示
-         *     的与用户看到的对不上，且没人说得清哪个是对的。
-         *
-         *     ⚠️ 权限位是 **`ops:read`** 而不是 `user:read`：详情会吐出**画布原文**，
-         *     那是用户的创作内容。能看用户资料的人不该顺手就能翻他的画布。
-         */
-        get: operations["adminListProjects"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/projects/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 项目详情，含**画布原文**。
-         *
-         *     ⚠️ 原样给，不重新组装：排障要看的恰恰是"库里到底存着什么"。
-         *     重新序列化一遍会引入第二种解释，而两种解释不一致时没人知道该信哪个
-         *     （同渲染追溯给快照原文的理由）。
-         */
-        get: operations["adminGetProject"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/projects/{id}/actions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 后台对用户项目的三种操作：恢复 / 删除 / 改名。
-         *
-         *     ⚠️ **理由必填**：这三件事都直接改变用户看得到的东西，而用户本人不在
-         *     场。不写理由的话，客服事后只能说"系统里显示被删了"，说不出是谁删的、
-         *     为什么。全部进审计。
-         *
-         *     ⚠️ 删除仍然是**软删**，后台没有硬删的入口：硬删不可逆，而回收站的
-         *     清理作业已经会在保留期后清掉它。给后台一个"彻底删除"按钮，只会让
-         *     一次误点变成不可恢复的事故。
-         *
-         *     ⚠️ **后台改不了画布**，只能改名字。画布有乐观锁与在线协作，后台在
-         *     用户不知情时写一次 `canvasData`，用户那边的自动保存要么撞 409
-         *     （他刚画的连线保不进去），要么被这次写入直接覆盖 —— 而两种情况他都
-         *     看不出发生了什么。「代编辑画布」要先有一套"接管编辑权"的交互
-         *     （见 P13-03 挂账）。
-         *
-         *     ⚠️ 恢复**不刷 `version`**：那是画布的乐观锁，动了它用户那个还开着的
-         *     标签页下一次保存会撞冲突，而他什么都没做错。
-         *
-         *     ⚠️ 「本来就没删 / 本来就在回收站」一律回 **40905** 而不是静默成功：
-         *     静默成功的话客服会告诉用户"我已经帮你恢复了"，而用户那边什么都没变。
-         */
-        post: operations["adminProjectAction"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/works": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 后台审核队列。⚠️ **不带工作区条件**：运营要看全站的，
-         *     归属由权限位（`review:read`）把关 —— 后台本来就没有工作区上下文。
-         *
-         *     运营最常用的筛选是 `status=pending`。
-         */
-        get: operations["adminListWorks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/works/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 作品详情 + **全部审核留痕**（P13 出口条款「后台可追踪发布原因」）。
-         *
-         *     ⚠️ 留痕**正序**（从旧到新）：排查"它为什么现在是这个状态"时人是
-         *     顺着时间读的，倒序的话中间任何一次"驳回又通过"都容易看反。
-         *
-         *     ⚠️ `authorUserId` 是从**来源任务反查**的，不在 work 上另存一列：
-         *     那一列会与来源那边不一致（转让、代操作），而"这件作品是谁做的"
-         *     只有来源任务说了算。
-         */
-        get: operations["adminGetWork"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/works/{id}/review": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 审核动作：通过 / 驳回 / 下架 / 加精 / 取消加精（AD-09）。
-         *
-         *     ⚠️ **驳回与下架必须填原因**：它会原样发给作者。不填的话他只看到
-         *     "未通过"，既不知道改什么也只能来问客服 —— 而那条原因运营本来
-         *     就在心里想过一遍了。加精/取消加精不强制（那是编辑取舍不是处罚）。
-         *
-         *     ⚠️ **加精要求已通过审核**：否则"加精"就绕过了审核这一步，
-         *     而一件没人看过的作品会直接出现在首页。
-         *
-         *     ⚠️ **下架不改 `reviewStatus`**：它是独立的一位。把审核状态改回
-         *     `rejected` 的话，"审核结论"与"当前是否可见"就再也分不开了 ——
-         *     而重新上架时不知道该恢复成什么。
-         *
-         *     ⚠️ **驳回连带取消加精**：一件被驳回的作品不该还挂在精选里。
-         *
-         *     ⚠️ 落地是 **CAS**：两个运营同时审同一件时只有一个成功，
-         *     后点的那个回 409。不带的话后者会把前者的结论悄悄覆盖，
-         *     而留痕里会留下两条互相矛盾的记录。
-         *
-         *     ⚠️ **加精/取消加精不发通知**：那是编辑取舍，会反复调整 ——
-         *     每调一次给作者发一条的话，消息中心会被这类噪音淹没。
-         *     通过 / 驳回 / 下架发（`uk_notification_ref` 幂等，refId 是
-         *     `作品ID:动作` 而**不能只用作品 ID** —— 先驳回后通过要发两条）。
-         */
-        post: operations["adminReviewWork"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/usage": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 按操作者汇总「这个工作区的积分被谁花了」（P12-04、NEW-20「能审计追踪」）。
-         *
-         *     ⚠️ 要 **manage** 而不是 view：这是管理动作。editor 能花钱不等于他该看得到
-         *     同事花了多少（在按人头计费的团队里，这是个会引起摩擦的信息）。
-         *
-         *     ⚠️ **口径只能是账本**，不是各业务表的 `credits_cost` 相加 —— 那一列是
-         *     **报价**，任务失败退款之后它不会变，于是一个失败又退款的任务会被算成
-         *     花了钱，而两个数都"没错"。
-         *
-         *     ⚠️ `consumed` 与 `refunded` **分开给，不合并成净值**：合并之后用户拿这个数
-         *     去对账本流水会**对不上**，而他无从知道差额是怎么来的。净消耗由看的人自己减。
-         *
-         *     ⚠️ 退款**归回原消费的操作者**（按 refType+refId 关回那条 consume）——
-         *     自动退款那条流水自己没有操作者，按它自己分组的话扣费算在操作者头上、
-         *     退款算在"未知"头上，两边对不齐。
-         *
-         *     ⚠️ `userId` 为 `"0"` 的那一行是**没有操作者**的流水（过期扣减、系统调账），
-         *     **不能丢**：丢掉的话各成员之和对不上总额，而那个差额没人解释得了。
-         */
-        get: operations["workspaceUsage"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/usage/entries": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 用量明细，供「这个人到底花在什么上」追下去。游标分页（流水一直在新增，
-         *     offset 翻页会漏掉或重复）。同样要 manage。
-         */
-        get: operations["workspaceUsageEntries"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/presence": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 续期一条在线记录并**回带当前在线列表**（P12-02、NEW-19）。
-         *
-         *     心跳与列表合成一个接口：客户端本来就要每 15 秒发一次心跳，再单独轮询
-         *     一次列表等于把请求翻倍，而两者的数据完全一样；分开还会出现
-         *     「心跳成功但列表是上一轮的」这种自相矛盾的界面。
-         *
-         *     ⚠️ **协作策略是乐观锁 + 在线提示，不是强锁**（CD-58）：本接口的产出是
-         *     **提示不是权限**。画布编辑是长时间的 —— 锁整张画布等于退回单人编辑，
-         *     锁单个节点又挡不住跨节点的连线，而持锁人关掉页面之后资源会被锁死。
-         *     保存的正确性仍然由 `PUT /projects/{id}/canvas` 的 version CAS 兜底。
-         *
-         *     ⚠️ `clientId` 是**每个标签页一个**，不是每个用户一个：用 userId 当键的话，
-         *     同一个人开三个标签页会互相续期 —— 关掉两个之后他仍然显示在线。
-         *
-         *     ⚠️ 昵称**不从请求体收**，由服务端按 userId 查：让客户端自己报的话，
-         *     任何成员都能在成员条上显示成别人的名字（GO-27 同一条）。
-         *
-         *     在线是**算出来的**（还在续期就是在线），不是标出来的：靠「离开时删掉」
-         *     的话，进程被杀、浏览器崩溃、网络直接断开这三种都不会发来离开事件。
-         *     记录只存 Redis，TTL 45 秒；Redis 不可用时降级为"看不到别人"，
-         *     **绝不影响画布打开与保存**（GO-11）。
-         */
-        post: operations["presenceHeartbeat"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/presence/leave": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 主动离开。⚠️ 它是**优化不是正确性**：不调也会在 TTL 之后自动消失
-         *     （关标签页、断电、进程被杀都不会走到这里），所以**从不报错**。
-         */
-        post: operations["presenceLeave"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/presence/{resourceType}/{resourceId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 只读当前在线列表，**不续期**。单独留一个只读入口是给"我只是想看看"的
-         *     场景（例如项目列表上的小圆点）—— 用心跳去查的话，一个从没打开过画布
-         *     的人会把自己写进在线列表里。
-         */
-        get: operations["listOnline"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/shares": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 本工作区**授出**的全部有效共享（授予方视角）。 */
-        get: operations["listGrantedShares"];
-        put?: never;
-        /**
-         * @description 把本工作区的一份资源共享出去。**需要 manage 权限**：共享是一次对外
-         *     发布决定，不是日常编辑动作 —— 按 edit 放行的话，任何被拉进来的临时
-         *     编辑都能把整个项目共享出去，而 owner 在成员列表里看不到任何异常。
-         *
-         *     `permissions` 只接受 view/edit/generate/export（manage/transfer 不可共享），
-         *     且会**自动补上 view**：没有 view 的 edit 是自相矛盾的。
-         *     重复授予同一受让方是**改权限**，不是冲突。
-         */
-        post: operations["grantShare"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/shares/{shareId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 撤销共享。**立刻生效**，不靠任何缓存过期 —— 受让方的每次读取都实时
-         *     查授权表（NEW-18）。已撤销的再撤一次回 404，不是静默成功。
-         */
-        delete: operations["revokeShare"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/shares/import": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 把一份共享给我的资源复制进**当前**工作区。
-         *
-         *     两道权限缺一不可：对源资源要有 export（把内容取出去就是导出），
-         *     对当前工作区要有 edit（导入是在我的工作区里新建一份）。
-         *
-         *     目前只有 `script_asset` 支持导入：项目的 canvasData 里存着一串产出 ID，
-         *     整份搬走后引用全部指向别人的资源 —— 画布能打开但每个节点的产出都是裂的，
-         *     而这不报错。资产的图会**真的复制一份字节**到当前工作区，
-         *     源工作区后续清理素材不会让它裂掉。
-         */
-        post: operations["importSharedResource"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/shares/received": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 共享给我的资源（受让方视角）。命中方式有两条：直接给我本人，
-         *     或给了我所属的某个工作区 —— 后者**实时按成员资格算**，
-         *     离开那个工作区即刻失去访问。
-         *
-         *     ⚠️ 这一组接口**不需要 X-Workspace-Id**：受让方不是源工作区的成员，
-         *     让他先"切换到别人的工作区"才能看共享给他的东西，等于把共享退化成了
-         *     临时成员资格。
-         */
-        get: operations["listReceivedShares"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/shares/received/{resourceType}/{resourceId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 打开一份共享给我的资源。已撤销与从未共享回同一个错误（40305）——
-         *     区分开就等于告诉对方"这个资源确实存在，而且曾经共享给过你"。
-         */
-        get: operations["openSharedResource"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5634,850 +4495,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/payments/callback/{channel}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                channel: "wechat" | "alipay";
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 支付渠道回调。**公开端点** —— 渠道不会带我们的 token，
-         *     所以这里没有任何鉴权中间件，安全性完全靠**验签**。
-         *
-         *     处理顺序是 **验签 → 落库 → 找单 → 核金额 → 履约**，
-         *     每一步的失败都单独记 `payment_callback.stage`。支付排障要回答的
-         *     恰恰是"到哪一步断的"：验签就没过（配置错或有人在打我们）·
-         *     验签过了但订单找不到（串了环境）· 订单找到了但金额不对（被改过）·
-         *     履约本身炸了（我们的 bug）。只记一个"失败"的话这四种分不出来。
-         *
-         *     ⚠️ **只看"状态=成功"是不够的**：渠道只负责告诉你"用户付了多少"，
-         *     "付够没付够"是我们的事。不核对金额的话，有人付 1 分钱就能拿走
-         *     一年会员，而那个回调完全合法、验签也过。
-         *
-         *     ⚠️ **重复回调返回成功**：它是 at-least-once 投递的正常结局，
-         *     不是错误（与 MQ 的重复消息走 ack 不走 nack 同一条）。
-         *
-         *     ⚠️ **应答体逐渠道不同且必须答对**：微信要 `{"code":"SUCCESS"}`，
-         *     支付宝要纯文本 `success`。答错的话渠道会认为我们没收到，
-         *     于是按小时级重试一整天 —— 而我们每次都在正确地处理。
-         *
-         *     ⚠️ **状态码表达"要不要重试"**：履约失败回 5xx（钱已经收了，
-         *     必须让渠道重试）；验签失败/订单不存在/金额不符回 4xx
-         *     （重试也没用，回 5xx 的话渠道会白白重试一整天）。
-         */
-        post: operations["paymentCallback"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/pay": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 向渠道下单，拿回拉起支付所需的参数。
-         *
-         *     ⚠️ **这一步不改订单状态**：拿到二维码不等于付了钱。
-         *     顺手标成"支付中"的话，状态机会多出一个没人能推进的中间态 ——
-         *     用户关掉页面之后它永远停在那儿。
-         *
-         *     ⚠️ **跳转完成 ≠ 支付成功**（GAP-14 的同类）。付款结果以渠道回调为准；
-         *     回调迟迟不到时调 `/orders/{id}/sync` 主动查单。响应里的 `note`
-         *     就是这句话 —— 前端必须把它显示出来。
-         *
-         *     ⚠️ 已经不是待支付的单**不给支付参数**：给了的话用户会去付第二笔，
-         *     而那笔钱进来时订单已经是 paid，只能人工退。
-         */
-        post: operations["createPayment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/sync": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 主动查单并按结果补履约。
-         *
-         *     ⚠️ 这是**「用户说付了但回调没来」的出口**。没有它的话只能让用户等
-         *     下一次重试，而渠道的重试是有次数上限的 —— 上限用完之后那笔钱
-         *     就只能人工对账。
-         *
-         *     ⚠️ 查单走**与回调同一段履约代码**：另写一份的话，两条路会对同一笔钱
-         *     做出不同的事，而差异只在生产上暴露。
-         *
-         *     ⚠️ **查不到不是错误**：用户可能根本没去付。判成错误的话
-         *     对账页上全是红字，而绝大多数只是"还没付"。
-         */
-        post: operations["syncOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/payments/channels": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 支付渠道配置（`system:read`）。
-         *
-         *     ⚠️ **不回任何密钥内容**，连掩码都不回 —— 只回"配没配"三个布尔。
-         *     回掩码的话前端会把它当值提交回来（那正是三态要解决的问题）。
-         *
-         *     ⚠️ 走 `system:*` 而不是 `member:*`：改支付凭据是**运维**动作
-         *     （凭据来自商户平台、配错了钱会打到别人账上），而改商品价格是
-         *     运营的日常。合在一起的话运营会拿到改支付凭据的权限。
-         */
-        get: operations["listPaymentChannels"];
-        /**
-         * @description 保存渠道配置（`system:write`），保存后**立即重新装配适配器**
-         *     （不重载的话运维改完要重启进程才生效，而支付凭据出问题时
-         *     正是最不能重启的时候 —— 在途订单会一起中断）。
-         *
-         *     ⚠️ 三个密钥都是**三态**：`keep` 保留 · `replace` 替换 · `clear` 清除。
-         *     只用"有值就写"的话，回显值会被当成新密钥存回去，
-         *     而那一刻起这个渠道就再也用不了了。**未知的 action 按保留处理**
-         *     —— 按替换的话一个拼错的 action 会把密钥清成空串。
-         *
-         *     ⚠️ `isSandbox` **默认 true**：漏传时按沙箱处理而不是按生产 ——
-         *     反过来的话一次漏传就会拿真钱去试。
-         *
-         *     ⚠️ 密钥在保存时就**验一遍能不能解析**：存进去之后才发现格式不对的话，
-         *     症状是"配好了但一到真实回调就验签失败"，而那时钱已经在路上了。
-         */
-        put: operations["savePaymentChannel"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/payments/callbacks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 回调留痕（`order:read`）—— 对账与排障入口：
-         *     「这笔为什么没到账」的答案就在 `stage` 里。
-         *
-         *     ⚠️ **不下发 `rawPayload`**：它是渠道原文，里面有交易号与用户在
-         *     渠道侧的标识，属于敏感面。要看原文只能直接查库
-         *     （与请求日志单开 `system:log` 是同一条考量）。
-         */
-        get: operations["listPaymentCallbacks"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storefront": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 购买页的一整份数据：套餐 + 积分包 + 当前会员 + 余额。
-         *
-         *     ⚠️ **合成一个端点**而不是让前端发四个请求：四个请求会各自到达，
-         *     页面上会出现"套餐已经画出来了但当前会员还没回来"的半截状态，
-         *     而**升级差价恰恰取决于当前会员是什么**。
-         *
-         *     ⚠️ 只列**两边都启用**的套餐（等级 ∧ 套餐）：等级停用了而套餐还挂着的话，
-         *     用户能买到一个买完就没有权益的等级。
-         */
-        get: operations["getStorefront"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/membership": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 当前会员与历史。
-         *
-         *     ⚠️ **有效性是算出来的**（`expireAt > now`），不是某个作业标出来的：
-         *     靠作业标记的话，作业停一天就有一整天的人在用已经过期的等级权益，
-         *     而权益差异直接体现在"能不能调那个贵模型"上。`status` 只用于展示。
-         */
-        get: operations["getMembership"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 订单列表（游标分页，按时间倒序）。 */
-        get: operations["listOrders"];
-        put?: never;
-        /**
-         * @description 下单（或只报价）。
-         *
-         *     ⚠️ `dryRun` 不可省：**升级的差价由服务端按剩余天数算**，
-         *     前端按"套餐差价"自己估出来的根本不是一回事 —— 用户会照着一个
-         *     错的数字做决定。
-         *
-         *     ⚠️ 会员单分三种意图，由服务端按当前会员判定、不由客户端报：
-         *     `new`（没有会员）· `renew`（同等级，**从当前有效期顺延**，
-         *     不是从今天重新起算 —— 重新起算的话提前续费就白白损失一段时间）·
-         *     `upgrade`（**维持原到期时间**，按剩余天数与日价差计价并向上取整）。
-         *     **不支持直接降级购买**，明确报 400。
-         *
-         *     ⚠️ 履约要用的数据（发多少分、会员到期到哪天）**在下单时就冻结**，
-         *     与生成任务的 `paramsSnapshot` 同一条规则：一旦受理，
-         *     后台此后改价或改赠分都不得改变这一单的解释。
-         */
-        post: operations["createOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get: operations["getOrder"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/cancel": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 取消一张待支付订单。
-         *
-         *     ⚠️ 已经付款/已关闭的订单要**明确报 40905**，不是静默成功 ——
-         *     静默的话用户以为取消了（甚至以为退了钱），而其实什么都没发生。
-         */
-        post: operations["cancelOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/dev-pay": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description **开发支付**：直接把订单当作已付款并履约。
-         *
-         *     ⚠️ **不是真实支付**（GO-04：开发支付必须仅限明确开启的开发环境）。
-         *     只在 `SEEAITV_DEV_FAKE_PAYMENT=true` 且非 production 时存在，
-         *     否则一律 **404**（返回 403 等于告诉外面"这里有个后门，只是你没权限"）。
-         *
-         *     ⚠️ 它调的是**与真实渠道回调同一段履约代码**。另写一份"开发版履约"的话，
-         *     P11-02 接真实渠道时两条路会出现差异，而差异只会在真实支付上暴露 ——
-         *     那时已经收了用户的钱。
-         *
-         *     ⚠️ `alreadyFulfilled` 要如实回：不说的话联调脚本会把第二次调用的成功
-         *     当成"又发了一次权益"，而它其实什么都没做（重复回调不得重复发放权益）。
-         */
-        post: operations["devPayOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/refund-check": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        /**
-         * @description 能不能退、退多少、**会收回什么**（只读，可反复调）。
-         *
-         *     ⚠️ 与下单的 `dryRun` 同一条：退款不可逆，必须能**先看再决定**。
-         *     尤其要在确认之前告诉他 `revokeCredits` —— 不说的话用户以为
-         *     "退钱就是退钱"，点完发现积分也没了，而那笔积分他可能正准备用。
-         *
-         *     ⚠️ 不可退时给 `code` 而不只是一句话：前端按**分类**决定语气
-         *     （`userFixable`），按文案匹配的话改一个字分类就失效。
-         */
-        get: operations["checkRefund"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/refund": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 申请退款。
-         *
-         *     ⚠️ **顺序是设计的一部分**：校验可退 → **本地回收权益 + 建 pending
-         *     退款单（一个事务）** → 调渠道退钱 → 按结果落 success/failed。
-         *     反过来（先退钱再回收）的话，退钱成功而回收失败就**没有任何办法
-         *     自动补救**（钱已经出去了）；现在这个顺序下，回收成功而退钱失败是
-         *     **可恢复**的。
-         *
-         *     ⚠️ **用掉一分就不给退**（GO-04「关联发放批次未使用」）。
-         *     按比例退要回答"用掉的那部分按什么价折算"—— 积分单价随套餐浮动，
-         *     没有唯一答案。这条保守在**可解释**的一侧。
-         *
-         *     ⚠️ **退升级单要恢复上一段会员**：升级会把旧那条标成 `superseded`，
-         *     不恢复的话用户退的是升级差价、结果连原来的基础会员也没了。
-         *
-         *     ⚠️ **调渠道时网络出错 ≠ 退款失败**：请求可能已经到了上游。
-         *     这时返回 **202** 并**把退款单号一起给出去** ——
-         *     状态留在 `pending` 等人核对，用户手上要有那个号才能跟客服对上。
-         */
-        post: operations["refundOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orders/{orderId}/refunds": {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        /**
-         * @description 一张订单的退款历史（**含失败的**）。
-         *
-         *     ⚠️ 失败的也要留着：用户问"我申请过退款"时，
-         *     只留成功的话他查不到任何记录。
-         */
-        get: operations["listRefunds"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/orders/{orderId}/refund-check": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        /**
-         * @description 后台判定可退性（`order:read`）。
-         *
-         *     ⚠️ 后台**没有工作区上下文**：客服处理的是别人的订单，手上只有订单号。
-         *     所以付费主体从订单自己身上取，不从请求里取。
-         */
-        get: operations["adminCheckRefund"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/orders/{orderId}/refund": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 客服代办退款（`order:write`）。走**与用户申请同一段代码**。
-         *
-         *     ⚠️ 权限位走 `order:*` 而不是 `member:*`：处理退款是客服/财务动作，
-         *     改商品价格是运营动作 —— 合在一起的话，改价的人顺手就能退款。
-         */
-        post: operations["adminRefundOrder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/orders/reconcile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 跑一轮对账（`order:write` —— 它会改 `reconcileStatus`）。
-         *
-         *     ⚠️ **必须包含 `pending` 的订单**：「渠道收了钱而回调丢了」正藏在那里。
-         *     只对已支付的单对账的话，**最该被发现的那一类永远发现不了**。
-         *
-         *     ⚠️ 只取**拉起过支付且非开发支付**的单：没拉起过的单渠道那边
-         *     根本没有记录，去查一遍只会把"交易不存在"当成差异刷满对账页。
-         *
-         *     ⚠️ `skipped`（查不动的）要与 `diff` **分开计**：
-         *     把一次网络抖动记成差异的话，对账页上会刷出一屏红字，
-         *     而真正的差异淹没在里面。
-         */
-        post: operations["reconcileOrders"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/orders/reconcile/diffs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 有差异的订单（`order:read`）。
-         *
-         *     ⚠️ 对账的全部价值在 `reconcileDetail` 那一句：只标一个 `diff`
-         *     等于只说"有问题"，而可行动的前提是说清"本地 2900 分、渠道 100 分"。
-         */
-        get: operations["listReconcileDiffs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing-ops/orders": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 后台订单检索 + 汇总（`order:read`，AD-06）。
-         *
-         *     ⚠️ **列表与汇总用同一套过滤条件**：分开算的话运营看到的
-         *     "共 132 笔 / ¥8,900" 与下面列出来的不是同一批 —— 而两个数字都"没错"。
-         *
-         *     ⚠️ `keyword` 一个框查三样（订单号 / 付费主体 / 渠道交易号）：
-         *     客服手上拿到的可能是任意一个，分成三个框的话他得先判断
-         *     "这串数字是什么"，而那正是他来查的原因。
-         *
-         *     ⚠️ 汇总里的 `paidCents` **只算已支付的**：把待支付的也算进收入
-         *     会让报表凭空多出一截，而那些钱根本没收到。
-         *
-         *     ⚠️ 时间参数解析失败时**当成没传**而不是报错：运营从别处粘来的
-         *     格式五花八门，为一个格式问题把整个列表挡掉不值。
-         */
-        get: operations["searchOrders"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing-ops/orders/{orderId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        /**
-         * @description 订单全貌（`order:read`）：订单 + 退款历史 + **积分批次（含已回收的）**
-         *     + 会员 + **回调条数**。
-         *
-         *     ⚠️ 批次要含已回收的：只列 active 的话，一张退过款的订单在详情页上
-         *     看起来"从来没发过积分"，而客服正是来查这个的。
-         *
-         *     ⚠️ `callbackCount` 是「回调丢了」**最直接的证据**：0 条 + 订单待支付
-         *     就是那一类。详情里不给的话客服得再去翻回调留痕页。
-         */
-        get: operations["adminOrderDetail"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing-ops/orders/{orderId}/reconcile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 人工标记对账结论（`order:write`）。
-         *
-         *     ⚠️ 人工标记与自动对账**写同一列**：另开一列的话"这笔到底对没对上"
-         *     会有两个答案，而报表只会读其中一个。覆盖自动结论是财务的正当权力，
-         *     但 `reconcileDetail` 里会带上是**谁**覆盖的，且进审计。
-         */
-        post: operations["markReconcile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing-ops/payers/{payerId}/adjust": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payerId: string;
-            };
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description 人工积分调账（**`credits:adjust`**）。
-         *
-         *     ⚠️ **单开权限位，不随 `order:write` 放开**：它是后台唯一能
-         *     **直接改用户资产**的操作，处理退款的客服不该顺手就能给任意账户加积分
-         *     （与请求日志单开 `system:log` 同一条考量）。
-         *
-         *     ⚠️ **加与减是两条不同的路**：加 = 发一个新批次（有来源、有有效期，
-         *     能被后续消费与退款正常处理）；减 = 按**消费顺序**从现有批次里扣
-         *     （先扣快到期的，与正常消费同一套规则）。写成"直接改某个批次的
-         *     remaining"的话，逐批明细与流水就对不上了 —— 而那正是账本存在的理由。
-         *
-         *     ⚠️ 扣减时余额不足**整笔拒绝**，不扣到 0：扣到 0 的话管理员以为
-         *     扣了 500 而实际只扣了 120，审计里记的又是 500 —— 三方对不上。
-         *
-         *     ⚠️ **原因必填**（不补默认值）：事后审计时"这 5000 积分是谁、为什么给的"
-         *     只有这一行能回答。⚠️ **必须带 `Idempotency-Key`**：后台按钮一慢
-         *     就会被点第二次，而这一下是直接改钱。
-         */
-        post: operations["adjustCredits"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing-ops/payers/{payerId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payerId: string;
-            };
-            cookie?: never;
-        };
-        /**
-         * @description 付费主体全貌（`order:read`）：余额、当前会员、**挂在它下面的工作区**。
-         *
-         *     ⚠️ `workspaceIds` **可能不止一个**：个人工作区与团队工作区各有自己的
-         *     付费主体，但历史数据或误配会让两个工作区指向同一个 ——
-         *     那意味着**一个团队的消费会记到个人账上**。后台要能一眼看出来。
-         */
-        get: operations["payerOverview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing/catalog": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 商品目录（含停用的），`member:read`。
-         *
-         *     ⚠️ 商品是**配置不是代码**：改价、调赠分、上下架都不该发版
-         *     （与图片预设、提示词模板、渲染水印同一条）。
-         */
-        get: operations["getBillingCatalog"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing/levels": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /**
-         * @description 新增或更新会员等级（`member:write`）。`code` 是业务键。
-         *
-         *     ⚠️ `sort` 决定**等级高低**（升级/降级判定按它比，不按 id ——
-         *     id 是雪花号，先建的等级不一定更低）。两个等级配成同一个 sort
-         *     会让"升级"变成一次 0 元补差 —— **保存时拒绝**（P15-05）。
-         */
-        put: operations["saveMemberLevel"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing/plans": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /**
-         * @description 新增或更新套餐（`member:write`）。`(levelId, period)` 是业务键。
-         *
-         *     ⚠️ **升级差价要拿同周期的两个套餐比**（跨周期比价算出来的"日价"
-         *     完全不是一回事，年卡的日价天然便宜）。所以每个等级最好三个周期都配齐 ——
-         *     缺了的话，持有该周期会员的用户升级会被明确拒绝而不是按全款收。
-         */
-        put: operations["saveMemberPlan"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/billing/packages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** @description 新增或更新积分包（`member:write`）。`code` 是业务键。 */
-        put: operations["saveCreditPackage"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/credits": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 余额与最近流水。⚠️ 余额**由批次推导**（`sum(active grant.remaining)`），
-         *     不存单字段 —— 单字段余额与逐批明细迟早对不上，而对不上时没人知道哪个是对的。
-         */
-        get: operations["getCredits"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/credits/transactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 账本流水。⚠️ **退款流水必须展示**：预扣即消费的代价是余额先降后升，
-         *     只让数字变回去而不显示这笔退款，用户会以为系统在乱扣。
-         */
-        get: operations["listCreditTransactions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/admin/media": {
         parameters: {
             query?: never;
@@ -7968,62 +5985,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/mcp/keys": {
+    "/settings": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
+        /** @description 全部设置项（按定义顺序）与数据目录。密钥类设置只回掩码（末 4 位）。 */
+        get: operations["getAppSettings"];
         /**
-         * @description 我的全部访问密钥（含已撤销 / 已过期，新的在前，最多 200 条）。**不含明文**：
-         *     明文只在创建响应里出现一次，库里只有哈希与前缀。
+         * @description 只提交改过的键（`{键: 值}`）。未知键、类型不对、超出范围一律 400，整批不落库。
+         *     响应带 `restartRequired`：其中的键要重启应用才生效。
          */
-        get: operations["listMcpAccessKeys"];
-        put?: never;
-        /**
-         * @description 为某个工作区建一把访问密钥（同时建一条 `source=access_key` 的授权）。
-         *     调用者必须是该工作区的 active 成员（否则 403 / 40302）。
-         *     有效权限在**每次调用时**按「密钥 scope ∩ 当时的成员角色」实时计算 —— 这里授予的 scope
-         *     是上限，不是承诺：成员被降级或移出后，下一次调用即失效。
-         *     创建写平台审计 `mcp.key.create`（不含明文与哈希）。
-         */
-        post: operations["createMcpAccessKey"];
+        put: operations["updateAppSettings"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/me/mcp/keys/{keyId}": {
+    "/settings/diagnostics": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 撤销访问密钥（= 撤销它的授权）。下一次用它调 /mcp 即 401 TOKEN_REVOKED。
-         *     已撤销的再撤销回 409 / 40905（不静默成功）。写平台审计 `mcp.key.revoke`。
-         */
-        delete: operations["revokeMcpAccessKey"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/me/mcp/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 已连接的客户端（访问密钥与 OAuth 授权；含已撤销，新的在前，最多 200 条）。 */
-        get: operations["listMcpGrants"];
+        /** @description 环境自检。每一项给状态、现值与处置建议；`na` 表示本平台不适用。 */
+        get: operations["getDiagnostics"];
         put?: never;
         post?: never;
         delete?: never;
@@ -8032,46 +6023,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/mcp/grants/{grantId}": {
+    "/settings/storage/usage": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 撤销授权：其下的访问密钥 / 令牌随之失效。已撤销的再撤销回 409 / 40905。
-         *     写平台审计 `mcp.grant.revoke`。
-         */
-        delete: operations["revokeMcpGrant"];
-        options?: never;
-        head?: never;
-        /**
-         * @description 切换本人一条 active 授权的「花钱需在 seeAitv 页面确认」（MCPT-13，MCP-F-44）。**立即生效**：
-         *     确认服务每次调用都按授权上的当前值判定 —— 打开之后，开关打开前签发、还没用掉的报价也必须到审批页批准；
-         *     关闭之后回到客户端里确认即可（前端关闭前须二次确认）。不存在或不属于本人 → 404；已撤销 → 409 / 40905。
-         *     值真的变了才写平台审计 `mcp.grant.page_confirm`（含改前改后）。
-         */
-        patch: operations["updateMcpGrant"];
-        trace?: never;
-    };
-    "/me/mcp/client-snippets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 各客户端的配置片段（MCPT-11F，MCP-F-08）。地址由服务端按 `SEEAITV_MCP_PUBLIC_URL` 渲染，
-         *     **密钥位置一律是占位符 `keyPlaceholder`**，响应里不含任何密钥与用户信息 ——
-         *     刚建完密钥时由前端在内存里替换占位符供复制。片段格式以 MCPT-15 兼容矩阵实测为准。
-         *     顺带给出各工具集在当前注册表里是否真有工具（`toolsets[].available`），页面据此标「后续开放」。
-         */
-        get: operations["getMcpClientSnippets"];
+        /** @description 数据目录各部分占用（字节）。 */
+        get: operations["getStorageUsage"];
         put?: never;
         post?: never;
         delete?: never;
@@ -8080,217 +6040,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/workspaces/current/mcp/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 本工作区所有成员的 MCP 连接（访问密钥与 OAuth；含已撤销，id 倒序、游标分页）。要 **manage**
-         *     （owner / admin）：「同事连了哪些外部客户端」是管理信息，editor / viewer 403 / 40303。
-         *     `userName` 取本工作区 active 成员的昵称，已离开的成员为 null（`userId` 仍在）。
-         */
-        get: operations["listWorkspaceMcpGrants"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/mcp/grants/{grantId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 工作区管理员撤销本工作区的一条连接（与用户本人撤销走同一个服务方法，只差范围）：grant 置 revoked、
-         *     同事务作废其全部 OAuth 令牌；该凭据下一次调用即 401 TOKEN_REVOKED。不属于本工作区与不存在都回 404；
-         *     已撤销 409 / 40905。写平台审计 `mcp.grant.revoke`（`revokedBy=workspace_admin`）。理由可选。
-         */
-        delete: operations["revokeWorkspaceMcpGrant"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workspaces/current/mcp/settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 本工作区的 MCP 开关，以及平台总开关（平台关着时工作区开着也没用，页面要如实说明）。要 manage。 */
-        get: operations["getWorkspaceMcpSettings"];
-        /**
-         * @description 打开 / 关闭本工作区的 MCP。关闭后外部客户端对本工作区的调用回 403 / 40308 `MCP_DISABLED`；
-         *     **不撤销任何连接**，重新打开即恢复；站内功能不受影响。每次调用实时读，**无生效延迟**。
-         *     要 manage。写平台审计 `mcp.workspace.switch`。
-         */
-        put: operations["updateWorkspaceMcpSettings"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/mcp/grants": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 全站 MCP 连接（`mcp:read`）。id 倒序、游标分页；可按用户 / 工作区 / 客户端名 / 来源 / 状态 / 登记方式筛。
-         *     `calls` 是该连接在调用审计里的次数（审计保留 30 天，即近 30 天）。平台视角不取昵称（`userName` 恒为 null）。
-         */
-        get: operations["adminListMcpGrants"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/mcp/grants/{grantId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * @description 平台管理员撤销一条连接（`mcp:write`）：与用户 / 工作区撤销同一个服务方法。**理由必填**（进审计
-         *     `mcp.grant.revoke`，`revokedBy=platform_admin`）。该客户端下一次调用即 401，用户需要重新授权。
-         *     只能撤销，不能改他人的 scope / 工具集。
-         */
-        delete: operations["adminRevokeMcpGrant"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/mcp/settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description 平台 MCP 总开关（`mcp:read`）。`envEnabled=false` 时 `/mcp` 根本没挂，这里开着也没用。 */
-        get: operations["adminGetMcpSettings"];
-        /**
-         * @description 打开 / 关闭平台 MCP（`mcp:write`，单行表 `mcp_setting`，主键固定 1）。关闭后 `/mcp*`、OAuth 元数据 /
-         *     授权 / 令牌 / 注册与同意接口一律 404（`/oauth/revoke` 例外，收回授权永远可用）；**不撤销任何连接**，
-         *     重新打开即恢复。每次调用实时读库，**无生效延迟**；读库失败按「开启」处理并告警（总开关是止损手段，
-         *     库抖动不该让全体用户掉线）。写平台审计 `mcp.platform.switch`。
-         */
-        put: operations["adminUpdateMcpSettings"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admin/mcp/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description MCP 统计（MCP-N-09，`mcp:read`）。口径只取 `mcp_call_log` 与 `mcp_quote`，筛选条件与连接列表**同一套**。
-         *     - 范围左闭右开；缺省近 7 天，最多 30 天（= 调用审计保留期），倒置交换、超长夹到 30 天，回**实际用的**范围。
-         *     - `errorRate` = `result=error` / 全部调用；denied / rate_limited / needs_confirm 不算错误。
-         *     - `confirmRate` = 已使用的报价 / 范围内签发的报价（按签发时间）。
-         *     - 比率为 **-1 表示暂无数据**，不是 0%。
-         *     - `byClient`：前 20 名 + `other` 合并项 + `unknown`（调用记录里没有客户端名）单列；**各项之和 == calls**。
-         */
-        get: operations["adminMcpStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/mcp/consent": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description OAuth 同意页（用户端 `/mcp/authorize?req=…`，MCPT-13）要展示的内容（MCPT-12）。
-         *     `req` 是 `/oauth/authorize` 校验完客户端参数后签发的**签名句柄**（10 分钟过期，内容不可篡改，
-         *     不含任何令牌）。无效或过期 → 400 / 40007 `MCP_CONSENT_EXPIRED`（文案「请回到客户端重新连接」）。
-         *     `client.verified`：CIMD 客户端的身份由其元数据文档所在域名担保（`client.host`）；DCR 客户端是自报的，
-         *     同意页须醒目提示「未验证的客户端」。OAuth 协议端点本身不在本契约里，见 `api/mcp/README.md`。
-         */
-        get: operations["getMcpConsent"];
-        put?: never;
-        /**
-         * @description 用户在同意页上允许或拒绝（MCPT-12）。
-         *     - `allow`：校验当前用户是 `workspaceId` 的 active 成员（否则 403 / 40302）→ 写授权
-         *       （同一用户 × 工作区 × 客户端已有 active 授权时**更新那一条**）→ 生成一次性授权码（库里只存哈希，5 分钟）。
-         *       `scopes` 必须 ⊆ 客户端申请的 `requestedScopes`（为空取申请的全部；自动补 `seeaitv:view`）；
-         *       `toolsets` 为空取默认开启集。有效权限仍是 scope ∩ **调用当时**的成员角色。
-         *       写平台审计 `mcp.grant.oauth_create` / `mcp.grant.oauth_update`（不含授权码）。
-         *     - `deny`：回跳地址带 `error=access_denied`。
-         *     返回的 `redirectTo` 是客户端回调地址（含 `code` / `state` / `iss`，或 `error`），**页面只做跳转，
-         *     不得取 URL 参数拼地址**。
-         */
-        post: operations["submitMcpConsent"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/mcp/approvals/{quoteId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description 审批页（用户端 `/mcp/approve/[quoteId]`）的数据。凭据开了「花钱需在 seeAitv 页面确认」时，
-         *     花钱工具返回的审批链接指向这里。判定顺序：quote 不存在 → 404；**quote 所属授权的用户不是当前用户 →
-         *     403 / 40309 `MCP_APPROVAL_NOT_OWNER`，不返回任何报价内容**（防钓鱼）；授权已撤销 → 409 / 40905
-         *     （details.reason=`grant_revoked`）；其余 200 + 当前状态。状态由事实算出：
-         *     voided（因价格变化作废）> used（已执行）> rejected > expired（含已批准未用而过期的）> approved > pending。
-         *     只读，不写任何数据。
-         */
-        get: operations["getMcpApproval"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/mcp/approvals/{quoteId}/approve": {
+    "/settings/storage/test": {
         parameters: {
             query?: never;
             header?: never;
@@ -8300,19 +6050,375 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * @description 批准（判定顺序同 GET）。CAS：未批准、未拒绝、未用、未过期且授权 active 才写 `approved_at`；
-         *     不满足时**不报错**，回当前真实状态（重复点、两个标签页同时点）。pending 而余额不足 → 422 / 42201
-         *     （details.required / balance / shortfall）。批准之后客户端带同一个 confirmQuoteId 重调才会受理并扣费
-         *     （恰好一次）；批准后到受理前价格变了仍按 MCPT-10 作废并返回新报价。写平台审计 `mcp.quote.approve`。
+         * @description 用给定参数逐步测试 S3 兼容存储（建立客户端 → 访问存储桶 → 上传 → 签发下载地址 → 删除）。
+         *     测试结果在 200 响应体里（`ok=false` 也是 200）。`keepSecret=true` 时沿用已保存的 SecretKey。
          */
-        post: operations["approveMcpQuote"];
+        post: operations["testS3Storage"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/mcp/approvals/{quoteId}/reject": {
+    "/auth/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description 改本机用户资料。目前只有水印开关（`isAiWatermarkOff`，必填）；只影响之后的渲染。 */
+        put: operations["updateProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations/{generationId}/outputs": {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        /** @description 一次生成的**全部**产物（裸数组，GO-40）。`url` 指向媒体域的受保护端点。 */
+        get: operations["listGenerationOutputs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 音色目录（启用的）。裸数组。 */
+        get: operations["listVoices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/voices/{code}/favorite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 收藏 / 取消收藏一个音色。重复收藏不是错误。 */
+        post: operations["toggleVoiceFavorite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/canvas/param-definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 参数定义（控件字典，含停用的）。权限 `canvas:read`。 */
+        get: operations["adminListParamDefinitions"];
+        /** @description 新建或修改一个参数定义（按 code upsert）。`isEnabled` 不传 = 不改。权限 `canvas:write`。 */
+        put: operations["adminSaveParamDefinition"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/canvas/param-definitions/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description 停用（不删行：已有节点的参数仍可解释）。权限 `canvas:write`。 */
+        delete: operations["adminDisableParamDefinition"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/canvas/connection-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description 修改一条连线规则（源类型 → 目标类型）。权限 `canvas:write`。 */
+        put: operations["adminSaveConnectionRule"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/canvas/revision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 画布配置的当前版本号（配置每改一次加一）。权限 `canvas:read`。 */
+        get: operations["adminGetCanvasRevision"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 全部图片预设（含停用的，带配方提示词）。权限 `canvas:read`。 */
+        get: operations["adminListImagePresets"];
+        put?: never;
+        /**
+         * @description 新建预设。校验：三个枚举、`params` 为对象、`dimensions` 为带选项的数组、操作码存在；
+         *     code 重复回 409。`isBuiltin` / `isUserModified` 由服务端决定，请求里的值忽略。权限 `canvas:write`。
+         */
+        post: operations["adminCreateImagePreset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 按服务端拼词规则预览出词（未选的维度取 default）。只读，不落库。权限 `canvas:read`。 */
+        post: operations["adminPreviewImagePreset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description 修改预设（以路径 code 为准）。内置预设改过后标记为已修改，启动时不再被内置内容覆盖。权限 `canvas:write`。 */
+        put: operations["adminUpdateImagePreset"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets/{code}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 启用。权限 `canvas:write`。 */
+        post: operations["adminEnableImagePreset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets/{code}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 停用（不删行：已有节点里的 presetCode 仍可追溯）。权限 `canvas:write`。 */
+        post: operations["adminDisableImagePreset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/image-presets/{code}/restore-builtin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 恢复内置版本（内容回到随包那份，启用状态不变）。非内置预设回 404。权限 `canvas:write`。 */
+        post: operations["adminRestoreImagePreset"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/materials/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 素材目录（含停用的，带提示词）。裸数组。权限 `canvas:read`。 */
+        get: operations["adminListMaterials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/materials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description 新建或修改一个素材（按 type + code upsert）。权限 `canvas:write`。 */
+        put: operations["adminSaveMaterial"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/voices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 音色目录（含停用的）。裸数组。权限 `voice:read`。 */
+        get: operations["adminListVoices"];
+        /** @description 新建或修改一个音色（按 code upsert）。权限 `voice:write`。 */
+        put: operations["adminSaveVoice"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 操作目录（只读）。权限 `model:read`。 */
+        get: operations["adminListOperations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/protocols": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 协议目录，来自代码注册表（`provider/protocol`）。权限 `model:read`。 */
+        get: operations["adminListModelProtocols"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 厂商（Provider）列表。**绝不回显密钥**，只给 `hasApiKey`。权限 `model:read`。 */
+        get: operations["adminListProviders"];
+        /**
+         * @description 新建或修改厂商（按 code upsert，`version` 乐观锁）。密钥三态：`keep` 保留 / `replace` 替换 / `clear` 清除；
+         *     掩码值不会被当作新密钥。权限 `model:write`。
+         */
+        put: operations["adminSaveProvider"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/providers/{code}/probe": {
         parameters: {
             query?: never;
             header?: never;
@@ -8322,10 +6428,334 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * @description 拒绝（判定顺序同 GET，CAS 条件同 approve，写 `rejected_at`）。拒绝的报价对任何确认凭证都无效
-         *     （MCP_QUOTE_INVALID，reason=`rejected`），不扣费。不满足条件时回当前真实状态。写平台审计 `mcp.quote.reject`。
+         * @description 连接测试：真的向上游发一次请求（所以是 POST）。连不上不是错误，结果在 200 的响应体里。
+         *     权限 `model:write`。
          */
-        post: operations["rejectMcpQuote"];
+        post: operations["adminProbeProvider"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 模型列表（含停用的），每个模型带操作绑定。权限 `model:read`。 */
+        get: operations["adminListModels"];
+        /**
+         * @description 新建或修改模型（按 code upsert）。有历史生成记录后，厂商 / 协议 / 模型类型 / 上游模型名锁定。
+         *     `maxDurationSec` 显式传 null = 清除；不传 = 不改。权限 `model:write`。
+         */
+        put: operations["adminSaveModel"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/publishable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 发布检查：给出具体阻塞原因（模型 / 厂商 / 操作 / 绑定 / 计价 / 能力矩阵…）。权限 `model:read`。 */
+        get: operations["adminCheckModelPublishable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/operations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * @description 绑定 / 修改模型的一个操作。协议表达不了的操作在这里就 422（不等 Worker 构造请求时才失败）。
+         *     `estSeconds` 为空 = 用模型级预计耗时。权限 `model:write`。
+         */
+        put: operations["adminSaveModelOperation"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/capabilities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 能力矩阵，按操作码分组（`{operation: [行]}`）。权限 `model:read`。 */
+        get: operations["adminListModelCapabilities"];
+        /** @description 新建或修改一行能力（操作 × 输入角色）。协议表达不了的组合回 422。权限 `model:write`。 */
+        put: operations["adminSaveModelCapability"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/capabilities/{operation}/{role}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description 删除一行能力。权限 `model:write`。 */
+        delete: operations["adminDeleteModelCapability"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/param-supports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 模型的参数支持（`model_param_support`）与可配置的参数目录（TT-T-18）。权限 `model:read`。 */
+        get: operations["adminListModelParamSupports"];
+        /** @description 新建或修改一个参数的支持（同一参数再写一次是修改）。默认值必须在可选值之中。权限 `model:write`。 */
+        put: operations["adminSaveModelParamSupport"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/models/{code}/param-supports/{paramCode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description 删除一个参数的支持。权限 `model:write`。 */
+        delete: operations["adminDeleteModelParamSupport"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/model-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 随应用附带的厂商模板（TT-T-18、TT-T-23），按 providers.json 的编码与库里实际状态合并。权限 `model:read`。 */
+        get: operations["adminListModelTemplates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/model-templates/{code}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 启用一个厂商模板：先保存 Key 并启用厂商，再逐个模型跑发布检查，有阻塞的不启用并给出原因。
+         *     再点一次会跳过已启用的模型。厂商需要认证却没有 Key 时回 400。权限 `model:write`。
+         */
+        post: operations["adminEnableModelTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/specs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 可配置的提示词清单（代码登记），含变量要求与内置原文。权限 `prompt:read`。 */
+        get: operations["adminListPromptSpecs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 库里的覆盖行（通用版与模型专属版）。权限 `prompt:read`。 */
+        get: operations["adminListPrompts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description 一条提示词的发布历史（新的在前）。权限 `prompt:read`。 */
+        get: operations["adminListPromptVersions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/draft": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description 保存草稿（不生效，发布是单独一次操作）。权限 `prompt:write`。 */
+        put: operations["adminSavePromptDraft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 发布当前草稿，返回新版本号。权限 `prompt:write`。 */
+        post: operations["adminPublishPrompt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/rollback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 回滚到某个历史版本（以新版本发布，历史保留）。权限 `prompt:write`。 */
+        post: operations["adminRollbackPrompt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 归档一条覆盖行（= 恢复内置版本）：通用版归档后回落到代码内置原文，模型专属版归档后回落到通用版。
+         *     版本历史保留。权限 `prompt:write`。
+         */
+        post: operations["adminArchivePrompt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/prompts/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description 试渲染（不落库）。`content` 为空时渲染当前生效内容。权限 `prompt:read`。 */
+        post: operations["adminPreviewPrompt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/agent/skills/{skillId}/restore-builtin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 恢复内置版本：内容与附属文档回到随包那份（**用户后加的附属文档会被删除**），版本 +1、清除「已修改」标记。
+         *     封面、模型绑定、场景、输入槽与预填文本不动。非内置技能回 404。权限 `agent:write`。
+         */
+        post: operations["adminRestoreAgentSkillBuiltin"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8977,47 +7407,6 @@ export interface components {
             /** @description 费用承担账户。个人与团队工作区指向不同的 payer_account（NEW-20）。 */
             payerAccountId: components["schemas"]["Id"];
         };
-        WorkspaceMember: {
-            userId: components["schemas"]["Id"];
-            nickname: string;
-            /** @enum {string} */
-            role: "owner" | "admin" | "editor" | "viewer";
-            /** Format: date-time */
-            joinedAt: string;
-        };
-        WorkspaceInvitation: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            targetKind: "email" | "phone";
-            targetValue: string;
-            /** @enum {string} */
-            role: "admin" | "editor" | "viewer";
-            /** Format: date-time */
-            expiresAt: string;
-        };
-        InvitationCreated: {
-            invitationId: components["schemas"]["Id"];
-            /** @description 明文邀请码，**只在创建时返回一次**；库里只存哈希。 */
-            token: string;
-            /** Format: date-time */
-            expiresAt: string;
-            /**
-             * @description 本次顶掉的旧邀请条数。必须在界面上说出来 —— 不说的话用户以为
-             *     之前发出去的码还能用，而同事点开收到的是"邀请码无效"。
-             */
-            replacedPending: number;
-        };
-        MyInvitation: {
-            id: components["schemas"]["Id"];
-            workspaceId: components["schemas"]["Id"];
-            workspaceName: string;
-            /** @enum {string} */
-            role: "admin" | "editor" | "viewer";
-            /** @description 邀请人昵称 */
-            invitedBy: string;
-            /** Format: date-time */
-            expiresAt: string;
-        };
         HomeBanner: {
             id: components["schemas"]["Id"];
             title: string;
@@ -9350,286 +7739,6 @@ export interface components {
                  */
                 avgDurationMs: number;
             }[];
-        };
-        OpsTask: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            kind: "generation" | "workflow" | "render" | "export";
-            state: components["schemas"]["TaskState"];
-            /**
-             * @description ⚠️ **各表自己的原始状态**。统一状态回答"给用户怎么显示"，
-             *     原始状态回答"库里到底是什么" —— 排障问的是后者。
-             *     只给统一状态的话，整图运行的 `pending` 与生成的 `queued`
-             *     在运维台上长得一模一样，而它们的处置完全不同。
-             */
-            rawStatus: string;
-            title: string;
-            credits: number;
-            error: string;
-            /**
-             * @description ⚠️ 人工补偿落的是专用码 `ops_compensated` —— 统计与排障都要能把
-             *     "平台补偿"与真实的上游失败分开。
-             */
-            errorCode: string;
-            /**
-             * @description 上游返回的原始错误（只有生成任务有，其余为空串）。⚠️ 只在运维台下发：
-             *     用户侧的 `error` 是归类后的中文说法，上游原话可能含内部地址、模型名、
-             *     供应商报文，不能给最终用户看。
-             */
-            errorDetail?: string;
-            refId: string;
-            workspaceId: string;
-            /** @description ⚠️ 打包导出**没有**这一项（导出不扣费），那时字段缺席。 */
-            payerAccountId?: string;
-            createdByUserId: string;
-            attempt: number;
-            /** @description 仅生成任务有；用于按供应商筛一批故障。 */
-            provider: string;
-            model: string;
-            /**
-             * @description 本该结束却没结束（未终结 ∧ 死线已过）。⚠️ **服务端算** ——
-             *     让前端拿 `deadlineAt` 去跟本地时钟比的话，用户机器的时钟偏几分钟，
-             *     这一列就会整片显示错。
-             */
-            stuck: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** @description 排队中还没派发的任务**没有死线**，那时为空串。 */
-            deadlineAt: string;
-            finishedAt: string;
-        };
-        DeadLetter: {
-            id: components["schemas"]["Id"];
-            /** @description 产生它的主队列（generation.jobs / render.jobs / export.jobs）。 */
-            queue: string;
-            /**
-             * @description 原始 routing key。重投时**原样用它** —— 按队列名猜一个的话消息会
-             *     落到别的消费者手上、解不开、再进一次死信，看起来像"重投没生效"。
-             */
-            routingKey: string;
-            /** @description ⚠️ 空串是**正常结果**：解不开的消息本来就没有业务引用，而那恰恰是运维要看到的信号。 */
-            aggregateType: string;
-            aggregateId: string;
-            /** @description broker 给的死信原因（rejected / expired / maxlen）。 */
-            reason: string;
-            /** @enum {string} */
-            status: "pending" | "replayed" | "discarded";
-            replayCount: number;
-            handledByAdminId?: string;
-            handledAt: string;
-            note: string;
-            /**
-             * @description 消息体（截断）。⚠️ 不整条下发：一条死信的消息体可能是几 MB 的
-             *     内联 base64，整个列表带上它会把管理端卡死。
-             */
-            payloadPreview: string;
-            /** @description 消息体的完整长度。⚠️ 只截不说的话运维会以为消息就这么长。 */
-            payloadLength: number;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        AdminProject: {
-            id: components["schemas"]["Id"];
-            workspaceId: string;
-            workspaceName: string;
-            ownerUserId: string;
-            ownerName: string;
-            name: string;
-            /** @enum {string} */
-            status: "active" | "deleted";
-            /**
-             * @description 画布的**服务端乐观锁**（与 `canvasData.schemaVersion` 是两件事）。
-             *     ⚠️ 后台的恢复/删除都**不动它** —— 动了的话用户那个还开着的标签页
-             *     下一次保存会撞冲突，而他什么都没做错。
-             */
-            version: number;
-            /** @description 从 canvasData 当场算，不另存计数列。 */
-            nodeCount: number;
-            edgeCount: number;
-            generationCount: number;
-            deletedAt: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        ReviewRecord: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            action: "approved" | "rejected" | "offline" | "featured" | "unfeatured";
-            adminId: string;
-            reason: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        Banner: {
-            id: components["schemas"]["Id"];
-            /**
-             * @description ⚠️ **只有 home 与 video**。旧系统还有 writing / avatar，
-             *     而那两个产品在本项目明确排除 —— 保留一个选不生效的位置比没有更糟。
-             * @enum {string}
-             */
-            position: "home" | "video";
-            title: string;
-            mediaObjectId?: string;
-            coverMediaId?: string;
-            linkUrl?: string;
-            sort: number;
-            isEnabled: boolean;
-            /**
-             * @description 此刻的投放状态（展示中 / 待开始 / 已结束 / 已停用），**服务端现算**，
-             *     `active` 当且仅当用户首页此刻会投放它（同一个 `domain.ActiveAt` 判定）。
-             *     ⚠️ 不让管理端拿本地时钟再算一遍：边界各写一份迟早不一致，
-             *     而运营看到的「展示中」与首页实际投放的就不是同一批了。
-             * @enum {string}
-             */
-            lifecycle?: "active" | "scheduled" | "expired" | "disabled";
-            /** @description RFC3339；空表示不限。投放窗口是 [start, end)。 */
-            startAt?: string;
-            endAt?: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        Announcement: {
-            id: components["schemas"]["Id"];
-            title: string;
-            content: string;
-            /**
-             * @description ⚠️ **新建一律落草稿，发布是单独一次显式操作**（`POST .../publish`），
-             *     不混进 update —— 混进去的话运营改个错字保存一下就等于给全站重新
-             *     发了一次公告，**而这个动作不可撤销**。
-             * @enum {string}
-             */
-            status: "draft" | "published" | "offline";
-            linkUrl: string;
-            publishedAt: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        BannerInput: {
-            /** @enum {string} */
-            position: "home" | "video";
-            title: string;
-            mediaObjectId?: string;
-            coverMediaId?: string;
-            linkUrl?: string;
-            sort?: number;
-            isEnabled?: boolean;
-            /** @description RFC3339；空/缺省表示不限。 */
-            startAt?: string | null;
-            endAt?: string | null;
-        };
-        AnnouncementInput: {
-            title: string;
-            content: string;
-            linkUrl?: string;
-        };
-        MemberUsage: {
-            /** @description `"0"` 表示没有操作者的流水（过期扣减、系统调账）。这一行不能丢。 */
-            userId: components["schemas"]["Id"];
-            nickname: string;
-            /** @description 扣掉的总额（正数）。 */
-            consumed: number;
-            /** @description 退回的总额（正数）。**不从 consumed 里减掉**。 */
-            refunded: number;
-            /**
-             * @description 产生过扣费的业务条数（按 refId 去重）。⚠️ 不是流水条数 ——
-             *     退款会再加一条流水，数流水的话"任务数"会随失败率上涨。
-             */
-            tasks: number;
-            /** Format: date-time */
-            lastAt: string;
-        };
-        UsageEntry: {
-            id: components["schemas"]["Id"];
-            userId: components["schemas"]["Id"];
-            nickname: string;
-            /** @enum {string} */
-            type: "consume" | "refund";
-            /** @description 消费为负、退款为正，与账本流水一致。 */
-            change: number;
-            refType: string;
-            refId: string;
-            reason: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        OnlineUser: {
-            userId: components["schemas"]["Id"];
-            nickname: string;
-            /**
-             * @description 这个人开着几个端。⚠️ 必须给出来：用户撞上版本冲突时的第一反应是去找
-             *     同事，而真相往往是他自己另开了一个标签页 —— 这个数字直接回答那个问题。
-             *     同一个人的多个端在服务端就已经合并成一条，前端不必再去重
-             *     （不合并的话成员条上会出现三个同名的人）。
-             */
-            clients: number;
-            /**
-             * Format: date-time
-             * @description 该用户所有端里**最近**的一次心跳。
-             */
-            seenAt: string;
-            /** @description 这条是不是请求者自己；自己排在列表最前。 */
-            isSelf: boolean;
-        };
-        /**
-         * @description 可共享的操作。manage/transfer **不在其中**：共享是把一份资源给外人看或用，
-         *     不是把工作区的管理权交出去。
-         * @enum {string}
-         */
-        SharePermission: "view" | "edit" | "generate" | "export";
-        Share: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            resourceType: "project" | "script_asset" | "timeline";
-            resourceId: components["schemas"]["Id"];
-            /** @description 资源已被删除时是空串。前端仍要给撤销入口 —— 留着一条指向空气的授权比看不到它更糟。 */
-            resourceName?: string;
-            /** @enum {string} */
-            granteeType: "user" | "workspace";
-            granteeId: components["schemas"]["Id"];
-            granteeName?: string;
-            permissions: components["schemas"]["SharePermission"][];
-            /** Format: date-time */
-            createdAt: string;
-        };
-        ReceivedShare: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            resourceType: "project" | "script_asset" | "timeline";
-            resourceId: components["schemas"]["Id"];
-            resourceName?: string;
-            /** @description 资源所属工作区 —— 受让方要知道东西是谁给的。 */
-            ownerWorkspaceName: string;
-            permissions: components["schemas"]["SharePermission"][];
-            /**
-             * @description 源资源已不存在。与"被撤销"是两件事：撤销后这一行根本不会出现，
-             *     gone 表示对方把东西删了。合成一个的话用户会怪错人。
-             */
-            gone: boolean;
-            /** @description 能否导入到我的工作区（资源类别 ∧ export 权限）。 */
-            importable: boolean;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        SharedResource: {
-            id: components["schemas"]["Id"];
-            name: string;
-            /** @description 项目为 project；资产为 character/scene/prop。 */
-            kind: string;
-            /** Format: date-time */
-            updatedAt: string;
-            permissions: components["schemas"]["SharePermission"][];
-            /**
-             * @description 资源内容，按 kind 分流。项目给 canvasData；资产给档案与描述。
-             *     ⚠️ 资产**不给 mediaObjectId**：那是源工作区的媒体，受让方拿着它
-             *     调下载端点一律 401，界面上看到的是一张裂图。要用那张图只有导入一条路。
-             */
-            detail?: unknown;
         };
         Project: {
             id: components["schemas"]["Id"];
@@ -10842,344 +8951,6 @@ export interface components {
             clipCount: number;
             subtitles?: number;
         };
-        /** @description 拉起支付所需的参数。形状**逐渠道不同**，所以 values 是开放的。 */
-        PayParams: {
-            channel: string;
-            /**
-             * @description 告诉前端怎么用这些参数。
-             * @enum {string}
-             */
-            kind: "qrcode" | "redirect" | "sdk" | "none";
-            values: {
-                [key: string]: string;
-            };
-            /** Format: date-time */
-            expireAt?: string;
-            /**
-             * @description ⚠️ **必须显示给用户**：「拉起支付不代表已付款」。
-             *     不说的话前端会在用户从渠道页面回来时直接显示"支付成功"
-             *     （GAP-14 的同类：浏览器那边发生了什么证明不了服务端的事实）。
-             */
-            note: string;
-        };
-        /**
-         * @description 密钥字段的三态表达。
-         *
-         *     ⚠️ 没有这个三态的话，管理端回显的值会被当成新密钥提交回去。
-         */
-        SecretField: {
-            /** @enum {string} */
-            action: "keep" | "replace" | "clear";
-            /** @description 仅 `replace` 时有意义。**永远不会在响应里出现**。 */
-            value?: string;
-        };
-        /** @description 支付渠道配置（**不含任何密钥内容**）。 */
-        PaymentChannel: {
-            /** @enum {string} */
-            code: "wechat" | "alipay";
-            name?: string;
-            merchantId?: string;
-            appId?: string;
-            baseUrl?: string;
-            notifyUrl?: string;
-            /**
-             * @description ⚠️ 要**显式记**：沙箱与生产的凭据长得一模一样，配错了的
-             *     唯一表现是"付款成功但钱没到账"（或反过来，真的扣了用户的钱）。
-             */
-            isSandbox: boolean;
-            /** @enum {string} */
-            status: "enabled" | "disabled";
-            keyVersion?: number;
-            hasPrivateKey?: boolean;
-            hasPlatformKey?: boolean;
-            hasApiV3Key?: boolean;
-            ready: boolean;
-            /**
-             * @description 不能用时说清**缺什么**。
-             *
-             *     ⚠️ 只回一句"未就绪"的话，运维得逐个字段猜 —— 而支付渠道的字段
-             *     有七八个，其中三个还是看不见的密钥。
-             */
-            blocked?: string;
-        };
-        /** @description 一条回调留痕。 */
-        PaymentCallback: {
-            id: components["schemas"]["Id"];
-            channel: string;
-            eventId: string;
-            /**
-             * @description 处理到哪一步。⚠️ 这几个值**不能合并成一个"失败"**：
-             *     验签没过（配置错或有人在打我们）· 订单找不到（串了环境）·
-             *     金额不对（被改过）· 履约炸了（我们的 bug）——
-             *     四种的处置完全不同。
-             * @enum {string}
-             */
-            stage: "received" | "signature_failed" | "order_not_found" | "amount_mismatch" | "not_succeeded" | "duplicated" | "fulfilled" | "fulfil_failed";
-            signatureOk: boolean;
-            outTradeNo?: string;
-            amountCents?: number;
-            orderId?: components["schemas"]["Id"];
-            errorMessage?: string;
-        };
-        /** @description 后台视角的订单（带付费主体与对账结论）。 */
-        AdminOrder: {
-            id: components["schemas"]["Id"];
-            payerId: components["schemas"]["Id"];
-            type: string;
-            amountCents: number;
-            payStatus: string;
-            credits?: number;
-            channel?: string;
-            channelTxnId?: string;
-            /** @enum {string} */
-            reconcileStatus?: "none" | "pending" | "matched" | "diff";
-            reconcileDetail?: string;
-            /** Format: date-time */
-            paidAt?: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        /**
-         * @description 与列表**同一套过滤条件**算出来的汇总。
-         *
-         *     ⚠️ `paidCents` 只算已支付的 —— 把待支付的也算进收入会让报表
-         *     凭空多出一截，而那些钱根本没收到。
-         */
-        OrderSummary: {
-            count: number;
-            paidCount: number;
-            paidCents: number;
-            refundCount: number;
-            refundCents: number;
-            diffCount: number;
-        };
-        AdminOrderDetail: {
-            order: components["schemas"]["AdminOrder"];
-            refunds: components["schemas"]["Refund"][];
-            /**
-             * @description 这一单发出的积分批次，**含已回收的**（`status=revoked`）。
-             *
-             *     ⚠️ 只列 active 的话，一张退过款的订单在详情页上看起来
-             *     "从来没发过积分"，而客服正是来查这个的。
-             */
-            grants: {
-                id?: components["schemas"]["Id"];
-                source?: string;
-                amount?: number;
-                remaining?: number;
-                /** @enum {string} */
-                status?: "active" | "exhausted" | "expired" | "revoked";
-                /** Format: date-time */
-                expireAt?: string;
-            }[];
-            membership?: {
-                id?: components["schemas"]["Id"];
-                levelCode?: string;
-                status?: string;
-                /** Format: date-time */
-                expireAt?: string;
-            };
-            /**
-             * @description 收到过几条回调。
-             *
-             *     ⚠️ **0 条 + 订单待支付**就是「回调丢了」那一类 ——
-             *     这是最直接的证据，详情里不给的话客服得再去翻回调留痕页。
-             */
-            callbackCount: number;
-        };
-        /** @description 付费主体全貌。 */
-        PayerOverview: {
-            payerId: components["schemas"]["Id"];
-            /** @enum {string} */
-            kind: "user" | "workspace";
-            ownerId: components["schemas"]["Id"];
-            balance: number;
-            membership?: {
-                levelCode?: string;
-                /** Format: date-time */
-                expireAt?: string;
-            };
-            /**
-             * @description 挂在这个付费主体下的工作区。
-             *
-             *     ⚠️ **可能不止一个**：个人与团队各有自己的 payer，
-             *     但误配会让两个工作区指向同一个 —— 那意味着一个团队的消费
-             *     会记到个人账上。后台要能一眼看出来。
-             */
-            workspaceIds: components["schemas"]["Id"][];
-        };
-        /**
-         * @description 能不能退、退多少、会收回什么。
-         *
-         *     ⚠️ `revokeCredits` **必须在确认之前告诉用户** —— 不说的话他以为
-         *     "退钱就是退钱"，点完发现积分也没了，而那笔积分他可能正准备用。
-         */
-        RefundEligibility: {
-            refundable: boolean;
-            /**
-             * @description 不可退的原因码。⚠️ **给码不只给文案**：前端按分类决定语气，
-             *     按文案匹配的话改一个字分类就失效。
-             * @enum {string}
-             */
-            code?: "not_paid" | "window_closed" | "credits_used" | "grant_missing" | "already_requested" | "membership_expired";
-            reason?: string;
-            /**
-             * @description 这个原因用户自己能不能解决。
-             *
-             *     ⚠️ 退款的拒绝理由**没有一条**是"再试一次"能绕过的，
-             *     所以恒为 false —— 显式给出来是为了让前端的语气判断有依据，
-             *     而不是靠"这里大概都不能吧"的默认假设（加新原因码时会悄悄失效）。
-             */
-            userFixable?: boolean;
-            amountCents: number;
-            revokeCredits: number;
-            revokeMembership: boolean;
-        };
-        /** @description 一笔订单退款。 */
-        Refund: {
-            id: components["schemas"]["Id"];
-            orderId: components["schemas"]["Id"];
-            amountCents: number;
-            /**
-             * @description ⚠️ `pending` 有两种来源：刚建出来还没调渠道，
-             *     以及**调渠道时网络出错**（结果不确定，留给人工核对）。
-             *     后者绝不能自动标成 failed —— 那会让用户再申请一次，
-             *     而渠道那边可能已经在退了。
-             * @enum {string}
-             */
-            status: "pending" | "success" | "failed";
-            reason?: string;
-            /**
-             * @description 这次收回了多少积分。
-             *
-             *     ⚠️ **要显示出来**：用户看到"退款成功"而积分没了，
-             *     不说的话他会以为系统出错了。
-             */
-            revokedCredits: number;
-            revokedMembership?: boolean;
-            /**
-             * @description 退掉升级单后**恢复了上一段会员**。
-             *
-             *     ⚠️ 要说：不说的话用户以为会员整个没了，会再来问一次。
-             */
-            restoredPreviousMembership?: boolean;
-            channelRefundId?: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        /** @description 某等级的一个周期套餐。金额一律**整数分**，只在展示层换算成元。 */
-        MemberPlan: {
-            id: components["schemas"]["Id"];
-            levelId: components["schemas"]["Id"];
-            levelCode: string;
-            levelName: string;
-            /** @description 等级高低按它比，**不按 id**（id 是雪花号，先建的不一定更低）。 */
-            levelSort?: number;
-            /** @enum {string} */
-            period: "month" | "quarter" | "year";
-            priceCents: number;
-            /** @description 赠送积分。⚠️ **随会员有效期到期**（与积分包的永久积分相反）。 */
-            giftCredits: number;
-        };
-        /** @description 积分包。⚠️ 发放的是**永久**积分（GO-04）。 */
-        CreditPackage: {
-            id: components["schemas"]["Id"];
-            code: string;
-            name: string;
-            credits: number;
-            priceCents: number;
-        };
-        /**
-         * @description 一次会员资格。挂在**付费主体**上而不是 user —— 团队工作区的成员
-         *     应当继承工作区的等级权益。
-         */
-        Membership: {
-            id: components["schemas"]["Id"];
-            levelId: components["schemas"]["Id"];
-            levelCode: string;
-            levelName: string;
-            levelSort?: number;
-            /** Format: date-time */
-            startAt: string;
-            /** Format: date-time */
-            expireAt: string;
-            /**
-             * @description ⚠️ **只用于展示，不用于权益判定**（判定按 `expireAt > now`）。
-             *
-             *     `superseded` 是被后续升级顶替 —— 与 `expired` 必须分开：
-             *     升级保持原到期时间，那条旧行的 expireAt 仍在**未来**，
-             *     合并的话"当前有效会员"会同时命中两行。
-             * @enum {string}
-             */
-            status: "active" | "expired" | "refunded" | "superseded";
-        };
-        /** @description 下单报价（`dryRun` 时只有这些，没有 order）。 */
-        PurchaseQuote: {
-            /**
-             * @description 由服务端按当前会员判定，**不由客户端报**。
-             * @enum {string}
-             */
-            intent: "new" | "renew" | "upgrade";
-            amountCents: number;
-            /** @description 这一单到账多少积分（会员是赠分、积分包是包内积分）。 */
-            credits: number;
-            title: string;
-            /**
-             * Format: date-time
-             * @description 买完之后会员到期到哪天（积分包单没有）。
-             */
-            membershipExpireAt?: string;
-            /**
-             * @description 升级折算用到的剩余天数。
-             *
-             *     ⚠️ 要**说出来**：只给一个差价数字的话，用户没法判断这个价
-             *     是怎么来的，也就没法信它。
-             */
-            remainingDays?: number;
-            order?: components["schemas"]["PurchaseOrder"];
-        };
-        PurchaseOrder: {
-            id: components["schemas"]["Id"];
-            /** @enum {string} */
-            type: "membership" | "credit_package";
-            refId?: components["schemas"]["Id"];
-            amountCents: number;
-            currency: string;
-            /** @enum {string} */
-            payStatus: "pending" | "paid" | "cancelled" | "refunded" | "expired";
-            credits: number;
-            channel?: string;
-            /** Format: date-time */
-            paidAt?: string;
-            /**
-             * Format: date-time
-             * @description 待支付的作废时间。
-             *
-             *     ⚠️ 订单超时**必须被清理**：它占着幂等键，不清掉的话
-             *     用户再下同一单会命中那张僵尸订单，看到的是一张早就付不了的单。
-             */
-            expireAt?: string;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        /** @description 商品管理页的一整份数据（含停用的）。 */
-        BillingCatalog: {
-            levels: {
-                id?: components["schemas"]["Id"];
-                code?: string;
-                name?: string;
-                sort?: number;
-                isEnabled?: boolean;
-            }[];
-            plans: (components["schemas"]["MemberPlan"] & {
-                sort?: number;
-                isEnabled?: boolean;
-            })[];
-            packages: (components["schemas"]["CreditPackage"] & {
-                sort?: number;
-                isEnabled?: boolean;
-            })[];
-        };
         /**
          * @description 平台级渲染配置（单行）。
          *
@@ -12184,15 +9955,6 @@ export interface components {
             /** @description 仅创意 */
             defaultSkillCode: string | null;
         };
-        /**
-         * @description 用户提交的一次选择（建会话时用，MKT-T-17）：只有 kind + code，版本由服务端在受理那一刻取当前版钉住。
-         *     不在投 / 不适用当前产出 → 422 `MARKETING_OPTION_UNAVAILABLE`（42215），
-         *     `details:{kind, code, reason, userFixable}`，reason ∈ disabled / not_started / ended / output_mismatch / not_found。
-         */
-        MarketingPick: {
-            kind: components["schemas"]["MarketingKind"];
-            code: string;
-        };
         AdminMarketingOptionFields: {
             name?: string;
             categoryCode?: string;
@@ -12331,6 +10093,59 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
+        ModelParamSupport: {
+            paramCode: string;
+            paramName: string;
+            paramEnabled: boolean;
+            /** @description 可选值（字符串或数字，照参数定义）；null = 不收窄 */
+            allowedValues: unknown[] | null;
+            defaultValue: string;
+            /** @description 覆盖参数定义的配置 */
+            override: {
+                [key: string]: unknown;
+            } | null;
+        };
+        ModelParamSupportInput: {
+            paramCode: string;
+            allowedValues?: unknown[] | null;
+            defaultValue?: string;
+            override?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        ModelTemplate: {
+            code: string;
+            name: string;
+            baseUrl: string;
+            authType: string;
+            headerName?: string;
+            /** @description 库里有这个厂商（被用户删掉后为 false） */
+            installed: boolean;
+            status: string;
+            hasApiKey: boolean;
+            isReady: boolean;
+            version: number;
+            models: {
+                code: string;
+                name: string;
+                domain: string;
+                installed: boolean;
+                status: string;
+            }[];
+        };
+        ModelTemplateEnableResult: {
+            provider: string;
+            enabledCount: number;
+            models: {
+                code: string;
+                name: string;
+                enabled: boolean;
+                /** @description 之前已启用，本次跳过 */
+                skipped?: boolean;
+                reason?: string;
+                blockers?: components["schemas"]["ModelPublishBlocker"][] | null;
+            }[];
+        };
         AdminAgentSkill: {
             id: components["schemas"]["Id"];
             code: string;
@@ -12359,6 +10174,10 @@ export interface components {
             prefillText: string;
             /** @description 批量标识（MKT-T-32）；只用于展示，不是计费依据 */
             isBatch: boolean;
+            /** @description 随应用附带的内置技能（可「恢复内置版本」，TT-T-19） */
+            isBuiltin?: boolean;
+            /** @description 内置技能被用户改过；改过之后启动时不再被内置内容覆盖 */
+            isUserModified?: boolean;
             /** @description 仅新建 / 修改的响应带：不拦截的提示（缺口播提示句、合规风险用语，MKT-F-76） */
             warnings?: components["schemas"]["AdminAgentSkillWarning"][];
             refCount?: number;
@@ -12668,22 +10487,6 @@ export interface components {
             createdAt: string;
         };
         /**
-         * @description 规划确认卡（`AgentCard.kind = plan_confirm`）的 payload。金额一律由服务端逐项报价。
-         *     营销会话（MKT-T-20）多出 `notices` 与计划项上的条目键 / 选图字段；通用会话的卡片形状不变（这些字段不出现）。
-         */
-        AgentPlanConfirmPayload: {
-            title: string;
-            docPath?: string;
-            planDocVersion?: number;
-            items: components["schemas"]["AgentPlanItem"][];
-            total: number;
-            balance: number;
-            shortfall: number;
-            canApprove: boolean;
-            /** @description 服务端追加的如实提示（如口播类选项的「画面为人物对镜讲解，不保证口型与语音逐字同步」）；不靠 Agent 写。 */
-            notices?: string[];
-        };
-        /**
          * @description 规划确认卡的一个计划项。`blockedCode` 非空时这一项此刻不可用（`credits = 0`），按 `userFixable` 定语气、不匹配文案；
          *     营销选项导致的不可用为 `MARKETING_OPTION_UNAVAILABLE`（如依赖出声的 Hook 配了不出声的模型），批准时回 422/42215。
          *
@@ -12889,329 +10692,340 @@ export interface components {
             refunded: number;
             entries: components["schemas"]["AgentLedgerEntry"][];
         };
-        /**
-         * @description 与工作区动作 view / edit / generate / export 一一对应（MCP-F-10）。
-         * @enum {string}
-         */
-        McpScope: "seeaitv:view" | "seeaitv:edit" | "seeaitv:generate" | "seeaitv:export";
-        /** @enum {string} */
-        McpToolset: "context" | "projects" | "canvas" | "catalog" | "generation" | "script" | "workflow" | "timeline" | "agent";
-        McpAccessKeyCreate: {
-            workspaceId: components["schemas"]["Id"];
-            /** @description 用来认出是哪个客户端（显示在已连接的客户端与画布节点来源角标上）。 */
-            clientName: string;
-            /** @description 至少一个；服务端会**自动补上 seeaitv:view**、去重并按固定顺序存。 */
-            scopes: components["schemas"]["McpScope"][];
-            /** @description 为空时取默认开启集（context / projects / canvas / catalog / generation）。 */
-            toolsets?: components["schemas"]["McpToolset"][];
-            /** @description 有效天数，缺省 90（MCP-PARAM-05，设计建议值）。与 neverExpires 二选一。 */
-            expiresInDays?: number;
-            /**
-             * @description 永久有效
-             * @default false
-             */
-            neverExpires: boolean;
-            /**
-             * @description 花钱操作一律走页面确认（MCPT-10 起生效）。
-             * @default false
-             */
-            requirePageConfirm: boolean;
-        };
-        /** @description 访问密钥。**没有明文、没有哈希**，只有用来认出它的前缀。 */
-        McpAccessKey: {
-            id: components["schemas"]["Id"];
-            grantId: components["schemas"]["Id"];
-            workspaceId: components["schemas"]["Id"];
-            clientName: string;
-            /** @description sk_mcp_ 之后的前 8 位明文，显示为 sk_mcp_xxxxxxxx… */
-            prefix: string;
-            scopes: components["schemas"]["McpScope"][];
-            toolsets: components["schemas"]["McpToolset"][];
-            requirePageConfirm: boolean;
-            /**
-             * @description 过期是**算出来的**（now ≥ expiresAt），不靠作业标记。
-             * @enum {string}
-             */
-            status: "active" | "expired" | "revoked";
-            /**
-             * Format: date-time
-             * @description 空 = 永久
-             */
-            expiresAt: string | null;
-            /**
-             * Format: date-time
-             * @description 最近一次成功通过凭据校验的时间（同一授权一分钟内最多更新一次）。
-             */
-            lastUsedAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            revokedAt: string | null;
-        };
-        McpAccessKeyCreated: components["schemas"]["McpAccessKey"] & {
-            /** @description 完整密钥（`sk_mcp_` + 43 位 base62），**只在创建时返回一次**，之后任何接口都取不回。 */
-            plaintext: string;
-        };
-        /** @description 已连接的客户端（用户 × 工作区 × 客户端）。有效权限 = scopes ∩ 调用当时的成员角色。 */
-        McpGrant: {
-            id: components["schemas"]["Id"];
-            workspaceId: components["schemas"]["Id"];
-            clientName: string;
+        AppSettingItem: {
+            key: string;
             /** @enum {string} */
-            source: "access_key" | "oauth";
-            /**
-             * @description OAuth 客户端的登记方式（CIMD 由域名担保 / DCR 自报，MCPT-14）；访问密钥为 null
-             * @enum {string|null}
-             */
-            clientRegistration: "cimd" | "dcr" | null;
-            /** @description CIMD 客户端元数据文档所在域名；其余为空串 */
-            clientHost: string;
-            /** @description 访问密钥来源时为其前缀 */
-            keyPrefix: string | null;
-            scopes: components["schemas"]["McpScope"][];
-            toolsets: components["schemas"]["McpToolset"][];
-            requirePageConfirm: boolean;
-            /** @enum {string} */
-            status: "active" | "revoked";
-            /** Format: date-time */
-            lastUsedAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            revokedAt: string | null;
+            kind: "bool" | "int" | "string" | "secret";
+            /** @description 当前值；`secret` 只给掩码（末 4 位） */
+            value: unknown;
+            /** @description 缺省值 */
+            default: unknown;
+            /** @description 用户设过（false = 用缺省值） */
+            set: boolean;
+            /** @description 改了要重启应用才生效 */
+            restart: boolean;
+            /** @description 仅 int */
+            min?: number;
+            /** @description 仅 int */
+            max?: number;
         };
-        /** @description 管理视角的一条连接（McpGrant + 是谁连的 + 近 30 天调用次数），MCPT-14。 */
-        McpConnection: components["schemas"]["McpGrant"] & {
-            userId: components["schemas"]["Id"];
-            /** @description 工作区视角为成员昵称（已离开为 null）；平台视角恒为 null */
-            userName: string | null;
+        AppSettings: {
+            items: components["schemas"]["AppSettingItem"][];
+            dataDir: string;
+        };
+        AppSettingsUpdated: {
+            items: components["schemas"]["AppSettingItem"][];
+            /** @description 本次改动里要重启才生效的键 */
+            restartRequired?: string[] | null;
+        };
+        DiagnosticsCheck: {
+            key: string;
+            label: string;
+            /** @enum {string} */
+            status: "ok" | "warn" | "fail" | "na";
+            value: string;
+            advice?: string;
+        };
+        DiagnosticsReport: {
+            version: string;
+            checks: components["schemas"]["DiagnosticsCheck"][];
+        };
+        StorageUsage: {
+            dataDir: string;
             /**
              * Format: int64
-             * @description 调用审计里的次数（审计保留 30 天）
+             * @description 字节
              */
-            calls: number;
+            media: number;
+            /** Format: int64 */
+            database: number;
+            /** Format: int64 */
+            logs: number;
+            /** Format: int64 */
+            backups: number;
         };
-        McpConnectionPage: {
-            items: components["schemas"]["McpConnection"][];
-            /** @description 为 null 表示没有下一页 */
-            nextCursor: string | null;
+        S3TestRequest: {
+            endpoint?: string;
+            region?: string;
+            bucket?: string;
+            accessKey?: string;
+            secretKey?: string;
+            prefix?: string;
+            pathStyle?: boolean;
+            /** @description true = 沿用已保存的 SecretKey */
+            keepSecret?: boolean;
         };
-        McpRevokeReason: {
-            /** @description 撤销理由（进审计）。平台管理员必填，工作区管理员可选 */
-            reason?: string;
+        S3TestResult: {
+            ok: boolean;
+            steps: {
+                step: string;
+                ok: boolean;
+                message?: string;
+            }[];
         };
-        McpSwitchUpdate: {
-            enabled: boolean;
-            /** @description 仅平台开关使用（进审计），可选 */
-            reason?: string;
+        VoiceItem: {
+            code: string;
+            name: string;
+            language?: string;
+            gender?: string;
+            /** @description 受保护媒体端点 */
+            iconUrl?: string;
+            /** @description 受保护媒体端点 */
+            previewUrl?: string;
+            isFavorited: boolean;
         };
-        McpWorkspaceSettings: {
-            /** @description 本工作区 MCP 是否开启（¬workspace.mcp_disabled） */
-            enabled: boolean;
-            /** @description 平台总开关；为 false 时工作区开着也不可用 */
-            platformEnabled: boolean;
+        AdminVoiceItem: components["schemas"]["VoiceItem"] & {
+            upstreamVoiceId?: string;
+            /** @description 为 false 时字段省略 */
+            isEnabled?: boolean;
+            iconMediaId?: string;
+            previewMediaId?: string;
+            sort?: number;
         };
-        McpPlatformSettings: {
-            enabled: boolean;
-            /** @description SEEAITV_MCP_ENABLED；为 false 时 /mcp 根本没挂 */
-            envEnabled: boolean;
-            /** @description 0 表示从没改过（按开启） */
-            version: number;
-            /** Format: date-time */
-            updatedAt: string | null;
-            updatedByAdminId: string | null;
+        AdminVoiceInput: {
+            code: string;
+            name: string;
+            upstreamVoiceId?: string;
+            language?: string;
+            gender?: string;
+            iconMediaId?: string | null;
+            previewMediaId?: string | null;
+            sort?: number;
+            isEnabled?: boolean;
         };
-        McpClientShare: {
-            /** @description kind=other / unknown 时为空串 */
-            clientName: string;
+        AdminMaterialItem: components["schemas"]["MaterialItem"] & {
+            prompt?: string;
+            /** @description 为 false 时字段省略 */
+            isEnabled?: boolean;
+            coverMediaId?: string;
+            sort?: number;
+        };
+        AdminMaterialInput: {
             /** @enum {string} */
-            kind: "client" | "other" | "unknown";
-            /** Format: int64 */
-            calls: number;
-            /** Format: int64 */
-            errors: number;
+            type: "style" | "effect" | "camera";
+            code: string;
+            name: string;
+            category?: string;
+            prompt?: string;
+            author?: string;
+            isCommercial?: boolean;
+            coverMediaId?: string | null;
+            sort?: number;
+            isEnabled?: boolean;
         };
-        McpStats: {
-            /** Format: date-time */
-            from: string;
-            /** Format: date-time */
-            to: string;
-            maxSpanDays: number;
-            /** @description 范围被校正过（倒置或超过 30 天） */
-            spanAdjusted: boolean;
-            /** Format: int64 */
-            calls: number;
-            /** Format: int64 */
-            errors: number;
-            /** Format: int64 */
-            denied: number;
-            /** Format: int64 */
-            rateLimited: number;
-            /** Format: int64 */
-            needsConfirm: number;
-            /** @description -1 = 暂无数据 */
-            errorRate: number;
-            /** Format: int64 */
-            quotesIssued: number;
-            /** Format: int64 */
-            quotesUsed: number;
-            /** @description -1 = 暂无数据 */
-            confirmRate: number;
-            byClient: components["schemas"]["McpClientShare"][];
-        };
-        McpGrantUpdate: {
-            /** @description 花钱需在 seeAitv 页面确认（MCPT-13） */
-            requirePageConfirm: boolean;
-        };
-        McpApprovalItem: {
-            /** @description 要做的一件事（模型 · 操作 · 数量）；不含提示词原文 */
-            label: string;
-            credits: number;
-        };
-        /** @description 页面审批数据（MCPT-13）。只给 quote 所属授权的用户本人。 */
-        McpApproval: {
-            quoteId: components["schemas"]["Id"];
-            /**
-             * @description 由事实算出（不存状态列）；过期按服务端时钟判
-             * @enum {string}
-             */
-            state: "pending" | "approved" | "rejected" | "used" | "voided" | "expired";
-            clientName: string;
-            workspaceId: components["schemas"]["Id"];
-            workspaceName: string;
-            /**
-             * @description 消耗的是个人还是团队的积分
-             * @enum {string}
-             */
-            workspaceKind: "personal" | "team";
-            /** @description generate | plan（报价来源） */
-            tool: string;
-            /** @description 要做什么（一句话） */
-            summary: string;
-            items: components["schemas"]["McpApprovalItem"][];
-            /** @description 合计积分 */
-            credits: number;
-            payerAccountId: components["schemas"]["Id"];
-            /** @description 付费账户当前可用积分 */
-            balance: number;
-            /** @description 确认后剩余（可能为负 = 余额不足） */
-            after: number;
-            /** @description 差额 = max(0 */
-            shortfall: number;
-            /** Format: date-time */
-            expiresAt: string;
-            /** Format: date-time */
-            approvedAt: string | null;
-            /** Format: date-time */
-            rejectedAt: string | null;
-            /** Format: date-time */
-            usedAt: string | null;
-        };
-        /** @description OAuth 同意页展示数据（MCPT-12）。 */
-        McpConsentInfo: {
-            client: {
-                /** @description CIMD 元数据文档 URL 或 DCR 注册得到的 ID */
-                clientId: string;
-                name: string;
-                /** @enum {string} */
-                registration: "cimd" | "dcr";
-                /** @description CIMD 为 true（身份由域名担保）；DCR 为 false */
-                verified: boolean;
-                /** @description CIMD 文档所在域名；DCR 为空串 */
-                host: string;
-                /** @description 客户端自报的主页（可能为空，DCR 下未经验证） */
-                clientUri: string;
+        AdminParamDefinition: {
+            code: string;
+            name: string;
+            control: string;
+            config: {
+                [key: string]: unknown;
             };
-            redirectUri: string;
-            /** @description 回调地址的主机（含端口） */
-            redirectHost: string;
-            requestedScopes: components["schemas"]["McpScope"][];
-            /** @description 令牌受众（本服务的某个 MCP 端点 URI） */
-            resource: string;
-            /** @description 申请的是 /mcp/readonly */
-            readOnly: boolean;
-            /** @description 申请的是 /mcp/x/{toolset} 时为该工具集，否则空串 */
-            toolset: string;
-            /**
-             * Format: date-time
-             * @description 授权请求句柄的过期时间
-             */
-            expiresAt: string;
+            isEnabled: boolean;
         };
-        McpConsentSubmit: {
-            req: string;
+        AdminParamDefinitionInput: {
+            code: string;
+            name: string;
+            control: string;
+            config?: {
+                [key: string]: unknown;
+            };
+            /** @description 不传 = 不改 */
+            isEnabled?: boolean | null;
+        };
+        AdminImagePreset: {
+            code: string;
+            name: string;
             /** @enum {string} */
-            decision: "allow" | "deny";
-            workspaceId?: components["schemas"]["Id"];
-            scopes?: components["schemas"]["McpScope"][];
-            toolsets?: components["schemas"]["McpToolset"][];
-            requirePageConfirm?: boolean;
-        };
-        McpConsentResult: {
-            /** @description 客户端回调地址（含 code / state / iss，或 error=access_denied） */
-            redirectTo: string;
-        };
-        /** @description 一个客户端的配置片段。`content` 里密钥位置是占位符，不含任何密钥。 */
-        McpClientSnippet: {
-            /**
-             * @description 稳定的客户端码，当前为 claude_code / codex / cursor / opencode / workbuddy / gemini_cli / stdio_bridge。
-             *     **不设枚举**：片段放服务端就是为了加客户端不必发前端版本，前端把不认识的排在最后照常显示。
-             */
-            client: string;
-            label: string;
+            presetGroup: "sheet" | "tuning" | "storyboard" | "space" | "tool" | "editor";
+            spec: string;
             /** @enum {string} */
-            format: "json" | "toml" | "shell";
-            /** @description 放到哪里（配置文件路径或「在终端执行」） */
-            location: string;
+            inputMode: "image_required" | "text_required" | "either";
+            icon?: string;
+            /** @description 配方追加词（只在服务端拼进生成请求） */
+            prompt: string;
+            params: {
+                [key: string]: unknown;
+            };
+            dimensions?: {
+                [key: string]: unknown;
+            }[] | null;
+            operation: string;
+            sort: number;
+            description?: string;
+            isNew?: boolean;
+            isEnabled: boolean;
+            readonly isBuiltin?: boolean;
+            readonly isUserModified?: boolean;
+        };
+        AdminOperation: {
+            code: string;
+            name: string;
+            domain: string;
+            /** @description 逗号分隔的节点类型 */
+            inNodeTypes: string;
+            outNodeType: string;
+            status: string;
+            /** @description 不绑模型（时间线渲染） */
+            modelless: boolean;
+        };
+        AdminModelProtocol: {
+            code: string;
+            name: string;
+            isAsync: boolean;
+            requiresQueryPath: boolean;
+            /** @description 能否作 Agent 推理模型 */
+            chatCapable: boolean;
+        };
+        AdminProvider: {
+            code: string;
+            name: string;
+            adapterType: string;
+            baseUrl: string;
+            authType: string;
+            /** @description 只说有没有，不回显密钥 */
+            hasApiKey: boolean;
+            /** @description 自定义请求头（JSON） */
+            headers: unknown;
+            testPath?: string;
+            connectTimeoutMs: number;
+            requestTimeoutMs: number;
+            idleTimeoutMs: number;
+            maxRetries: number;
+            /** @description 0 = 不限 */
+            maxConcurrent: number;
+            status: string;
+            isReady: boolean;
+            version: number;
+        };
+        /** @description 密钥三态。`keep` 保留 / `replace` 替换（带 value）/ `clear` 清除；未知 action 按保留。 */
+        SecretFieldInput: {
+            /** @enum {string} */
+            action: "keep" | "replace" | "clear";
+            value?: string;
+        };
+        AdminProviderInput: {
+            code: string;
+            name: string;
+            adapterType?: string;
+            baseUrl: string;
+            authType: string;
+            apiKey?: components["schemas"]["SecretFieldInput"];
+            /** @description 自定义请求头（JSON） */
+            headers?: unknown;
+            testPath?: string;
+            connectTimeoutMs?: number;
+            requestTimeoutMs?: number;
+            idleTimeoutMs?: number;
+            maxRetries?: number;
+            maxConcurrent?: number;
+            status?: string;
+            /** @description 乐观锁；新建传 0 */
+            version?: number;
+        };
+        ProviderProbeResult: {
+            ok: boolean;
+            statusCode?: number;
+            /** @enum {string} */
+            errorKind: "none" | "dns" | "connect" | "timeout" | "stream" | "http" | "policy";
+            message: string;
+            /** Format: int64 */
+            latencyMs: number;
+        };
+        AdminModelOperationBinding: {
+            operation: string;
+            enabled: boolean;
+            estSeconds?: number;
+        };
+        AdminModel: {
+            code: string;
+            name: string;
+            providerCode: string;
+            domain: string;
+            upstreamModelCode: string;
+            apiProtocol: string;
+            estSeconds: number;
+            status: string;
+            subType: string;
+            submitPath: string;
+            queryPath: string;
+            maxInputChars: number | null;
+            sort: number;
+            /** @description 桌面版恒为空串 */
+            minMemberLevelId: string;
+            operations: components["schemas"]["AdminModelOperationBinding"][];
+            maxDurationSec: number | null;
+            isMultiShot: boolean;
+            hasNativeAudio: boolean;
+            agentCapable: boolean;
+        };
+        AdminModelInput: {
+            code: string;
+            name: string;
+            providerCode: string;
+            domain: string;
+            subType?: string;
+            upstreamModelCode: string;
+            apiProtocol: string;
+            submitPath?: string;
+            queryPath?: string;
+            estSeconds?: number;
+            maxInputChars?: number | null;
+            status?: string;
+            sort?: number;
+            /** @description 桌面版不用 */
+            minMemberLevelId?: string | null;
+            /** @description 显式 null = 清除；不传 = 不改 */
+            maxDurationSec?: number | null;
+            isMultiShot?: boolean | null;
+            hasNativeAudio?: boolean | null;
+            agentCapable?: boolean | null;
+        };
+        ModelPublishBlocker: {
+            code: string;
+            detail: string;
+        };
+        ModelPublishCheck: {
+            publishable: boolean;
+            blockers: components["schemas"]["ModelPublishBlocker"][] | null;
+        };
+        ModelCapability: {
+            /** @enum {string} */
+            role: "text" | "image" | "audio" | "video" | "first_frame" | "last_frame" | "reference";
+            minCount: number;
+            maxCount: number;
+            allowedMime?: string[];
+        };
+        PromptSpec: {
+            code: string;
+            name: string;
+            /** @description 必填变量 */
+            required: string[];
+            optional: string[];
+            maxChars: number;
+            /** @description 代码内置原文 */
+            builtin: string;
+            hasBuiltin: boolean;
+        };
+        AdminPromptTemplate: {
+            code: string;
+            /** @description 空 = 通用版 */
+            modelCode?: string;
+            /** @enum {string} */
+            status: "draft" | "published" | "archived";
+            version: number;
+            /** @description 生效内容 */
             content: string;
-            /** @description 已知限制与「待实测」说明（format / location / content / note 是密钥方式的片段，与 modes 里 key 那一项相同） */
-            note: string;
-            /**
-             * @description 这个客户端支持的接入方式（`/mcp` 接入指南页）。顺序为 oauth 在前、key 在后。
-             *     某种方式**根本不适用**的客户端不出现那一项（stdio 桥接没有 oauth）；适用但未核实 / 不支持的给
-             *     `supported=false`，只有 `note` 说明原因。
-             */
-            modes: components["schemas"]["McpClientMode"][];
+            draftContent?: string;
+            hasUnpublishedDraft: boolean;
+            note?: string;
         };
-        /** @description 一个客户端在某种接入方式下的片段与话术。oauth 方式不含任何密钥位置；key 方式密钥位置是占位符。 */
-        McpClientMode: {
-            /**
-             * @description oauth 一键接入（浏览器授权，不需要密钥）/ key 访问密钥
-             * @enum {string}
-             */
-            mode: "oauth" | "key";
-            /** @description false 时 content / agentPrompt 为空，note 说明原因（例如建议改用密钥） */
-            supported: boolean;
-            /**
-             * @description 片段格式；不支持时缺省
-             * @enum {string}
-             */
-            format?: "json" | "toml" | "shell";
-            /** @description 放到哪里（配置文件路径或「在终端执行」）；不支持时为空 */
-            location: string;
-            /** @description 安装命令或配置片段 */
+        PromptVersion: {
+            version: number;
             content: string;
-            /** @description 可直接粘给 Agent 的中文话术（含安装命令 / 配置），只含占位符、不含任何密钥 */
-            agentPrompt: string;
-            /** @description 说明与限制；客户端侧未实测的写「待实测」 */
-            note: string;
-        };
-        McpToolsetInfo: {
-            name: components["schemas"]["McpToolset"];
-            /** @description 建密钥时不传工具集取的默认开启集 */
-            defaultOn: boolean;
-            /** @description 注册表里此刻真有该工具集的工具（没有的授予了也用不了） */
-            available: boolean;
-        };
-        McpClientSnippets: {
-            /** @description 渲染进片段的 MCP 地址；未配置时为地址占位符 */
-            mcpUrl: string;
-            /** @description 平台是否配置了 SEEAITV_MCP_PUBLIC_URL */
-            mcpUrlConfigured: boolean;
-            /** @description 片段里密钥的占位符（当前为 <YOUR_MCP_KEY>） */
-            keyPlaceholder: string;
-            toolsets: components["schemas"]["McpToolsetInfo"][];
-            items: components["schemas"]["McpClientSnippet"][];
+            note?: string;
+            publishedByAdminId?: string;
+            publishedAt: string;
+            rollbackOfVersion?: number;
         };
     };
     responses: {
@@ -13302,6 +11116,10 @@ export interface components {
         };
     };
     parameters: {
+        /** @description 模型编码 */
+        ModelCode: string;
+        /** @description 图片预设编码 */
+        PresetCode: string;
         /** @description 按名称或 code 模糊搜索。 */
         MaterialKeyword: string;
         /** @description 只看某个分类。 */
@@ -13323,14 +11141,6 @@ export interface components {
         /** @description 上一页返回的 nextCursor；首页不传 */
         Cursor: string;
         Limit: number;
-        /** @description 仅管理端表格使用（需要总数与跳页） */
-        Page: number;
-        Size: number;
-        /**
-         * @description 缩略图宽度，**只接受 160/320/640 三档**。开放任意值等于给人一个把 CPU 打满的 URL 参数。
-         *     非位图（视频/音频/无法解码）原样返回 —— 缩略图是优化，不能让本来能显示的东西显示不了。
-         */
-        ThumbWidth: 160 | 320 | 640;
         GroupId: string;
         ItemId: string;
         ScriptId: string;
@@ -13353,163 +11163,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    sendVerificationCode: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AccountRef"] & {
-                    /** @enum {string} */
-                    purpose: "register" | "login" | "reset_password";
-                };
-            };
-        };
-        responses: {
-            /** @description 已受理（无论账号是否存在都返回这个） */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            429: components["responses"]["RateLimited"];
-        };
-    };
-    register: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AccountRef"] & {
-                    code: string;
-                    password?: string;
-                    nickname?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 注册成功，直接返回登录态 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenPair"];
-                };
-            };
-            409: components["responses"]["Conflict"];
-        };
-    };
-    resetPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AccountRef"] & {
-                    code: string;
-                    password: string;
-                };
-            };
-        };
-        responses: {
-            /**
-             * @description 已重置。服务端同时 bump `token_version` 并吊销全部会话 ——
-             *     改密后旧 token 仍可用是旧系统的缺陷（GAP-19）。
-             */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginReq"];
-            };
-        };
-        responses: {
-            /** @description 登录成功 */
-            200: {
-                headers: {
-                    "X-Trace-Id": components["headers"]["TraceId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenPair"];
-                };
-            };
-            401: components["responses"]["Unauthenticated"];
-            403: components["responses"]["Forbidden"];
-            429: components["responses"]["RateLimited"];
-        };
-    };
-    refreshToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    refreshToken: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 续期成功 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TokenPair"];
-                };
-            };
-            401: components["responses"]["Unauthenticated"];
-        };
-    };
-    logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已撤销 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: components["responses"]["Unauthenticated"];
-        };
-    };
     getCurrentUser: {
         parameters: {
             query?: never;
@@ -13551,359 +11204,6 @@ export interface operations {
             };
         };
     };
-    createTeamWorkspace: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    name: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已创建 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Workspace"];
-                };
-            };
-        };
-    };
-    archiveWorkspace: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已归档，并回带本次连带作废的条数 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        revokedShares: number;
-                        revokedInvitations: number;
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    renameWorkspace: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    name: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已改名 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    transferWorkspace: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    toUserId: components["schemas"]["Id"];
-                };
-            };
-        };
-        responses: {
-            /** @description 已转让 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    listWorkspaceMembers: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 成员列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkspaceMember"][];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    removeWorkspaceMember: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                userId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已移除 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    setWorkspaceMemberRole: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                userId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    role: "admin" | "editor" | "viewer";
-                };
-            };
-        };
-        responses: {
-            /** @description 已修改 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    listWorkspaceInvitations: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 邀请列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkspaceInvitation"][];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    createWorkspaceInvitation: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    targetKind: "email" | "phone";
-                    targetValue: string;
-                    /** @enum {string} */
-                    role: "admin" | "editor" | "viewer";
-                };
-            };
-        };
-        responses: {
-            /** @description 已创建。token 是明文，**只在这里返回一次**，库里只存哈希。 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InvitationCreated"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    revokeWorkspaceInvitation: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                invitationId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已撤销 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    acceptWorkspaceInvitation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    token: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已加入 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Workspace"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    listMyInvitations: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 我收到的邀请 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MyInvitation"][];
-                };
-            };
-        };
-    };
     home: {
         parameters: {
             query?: {
@@ -13935,92 +11235,6 @@ export interface operations {
                 };
             };
             403: components["responses"]["Forbidden"];
-        };
-    };
-    listShowcase: {
-        parameters: {
-            query?: {
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-                /**
-                 * @description 按媒体类型筛选，缺省 = 全部。⚠️ 非法值回 400 `InvalidArgument`，
-                 *     **不回落成全部**（回落的话筛音频却出来一堆视频）。类型筛选只收窄、
-                 *     不放宽公开边界。
-                 */
-                type?: "video" | "image" | "audio";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 精选作品 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["ShowcaseItem"][];
-                        nextCursor: string;
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    showcaseMedia: {
-        parameters: {
-            query?: {
-                /** @description 缩略图宽度，只接受 160/320/640。 */
-                w?: 160 | 320 | 640;
-            };
-            header?: never;
-            path: {
-                workId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 图片字节 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "image/*": string;
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    showcaseCover: {
-        parameters: {
-            query?: {
-                /** @description 封面宽度，只接受 160/320/640，默认 320。 */
-                w?: 160 | 320 | 640;
-            };
-            header?: never;
-            path: {
-                workId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 图片字节 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "image/*": string;
-                };
-            };
-            404: components["responses"]["NotFound"];
         };
     };
     listMessages: {
@@ -14121,249 +11335,6 @@ export interface operations {
                     };
                 };
             };
-        };
-    };
-    adminListBanners: {
-        parameters: {
-            query?: {
-                position?: "home" | "video";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 全部 Banner */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Banner"][];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminCreateBanner: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BannerInput"];
-            };
-        };
-        responses: {
-            /** @description 已创建 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Banner"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminUpdateBanner: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BannerInput"];
-            };
-        };
-        responses: {
-            /** @description 已更新 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Banner"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminDeleteBanner: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已删除 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminListAnnouncements: {
-        parameters: {
-            query?: {
-                status?: "draft" | "published" | "offline";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 公告列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Announcement"][];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminCreateAnnouncement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AnnouncementInput"];
-            };
-        };
-        responses: {
-            /** @description 已创建（状态必为 draft） */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Announcement"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    adminUpdateAnnouncement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AnnouncementInput"];
-            };
-        };
-        responses: {
-            /** @description 已更新 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Announcement"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminDeleteAnnouncement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已删除 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminPublishAnnouncement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已发布 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Announcement"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminOfflineAnnouncement: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已下线 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Announcement"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
         };
     };
     listTasks: {
@@ -15575,802 +12546,6 @@ export interface operations {
                 };
             };
             403: components["responses"]["Forbidden"];
-        };
-    };
-    adminListTasks: {
-        parameters: {
-            query?: {
-                kind?: "generation" | "workflow" | "render" | "export";
-                state?: components["schemas"]["TaskState"];
-                /**
-                 * @description 一个框查三样：任务 ID / 工作区 ID / 付费主体 ID，**精确匹配**。
-                 *     运维手上拿到的可能是任意一个，分成三个框的话他得先判断
-                 *     "这串数字是什么" —— 而那正是他来查的原因。
-                 *     ⚠️ 非数字一律**当成没填**而不是报错（为一个格式问题把整个列表
-                 *     挡掉不值）。
-                 */
-                keyword?: string;
-                provider?: string;
-                /** @description 只看「还没结束且死线已过」的。只看"还没结束"的话筛出来的是整个待办队列。 */
-                stuck?: boolean;
-                cursorAt?: string;
-                cursorId?: string;
-                limit?: components["parameters"]["Limit"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 跨租户任务列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["OpsTask"][];
-                        counts: {
-                            [key: string]: number;
-                        };
-                        /**
-                         * @description 卡住的条数。⚠️ 与列表用**同一套过滤条件** ——
-                         *     分开算的话运维看到的数与下面列出来的不是同一批，
-                         *     **而两个数字都"没错"**（CD-56）。
-                         */
-                        stuck: number;
-                        nextCursorAt: string;
-                        nextCursorId: string;
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminListDeadLetters: {
-        parameters: {
-            query?: {
-                status?: "pending" | "replayed" | "discarded";
-                queue?: string;
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 死信列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["DeadLetter"][];
-                        /** @description 待处理总数（**与筛选无关**），供运维台顶上那个"还有几条要管"。 */
-                        pending: number;
-                        nextCursor: string;
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminReplayDeadLetter: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    /** @description 备注（可选，会记进审计）。 */
-                    note?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已重投 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeadLetter"];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            /** @description 已被别人处置过（CAS 落空），或这条不是待处理状态 */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-            /** @description 已标记为已重投，但投递到队列失败（原因已记在备注里） */
-            503: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    adminDiscardDeadLetter: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    note: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已丢弃 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeadLetter"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminCompensateTask: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                kind: "generation" | "render";
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description 必填且不补默认值：这里是管理员自己在操作，没有用户在等着。 */
-                    reason: string;
-                    /** @description 明确表示「我知道它还没超时，但上游确实挂了」。 */
-                    force?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description 已判失败并退款 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminRetryGeneration: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    reason: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已新建重试任务 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        newTaskId: string;
-                        /** @description 本次重试扣掉的积分（记在原任务的付费主体上）。 */
-                        credits: number;
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminListProjects: {
-        parameters: {
-            query?: {
-                /** @description 项目 ID / 工作区 ID，精确匹配；非数字当成没填。 */
-                keyword?: string;
-                /** @description 按名字模糊查（用户报障时往往只说得出项目叫什么）。⚠️ `%` `_` 按字面量处理。 */
-                name?: string;
-                status?: "active" | "deleted";
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 项目列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["AdminProject"][];
-                        nextCursor: string;
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminGetProject: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 项目详情 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminProject"] & {
-                        canvasData: {
-                            [key: string]: unknown;
-                        };
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminProjectAction: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    action: "restore" | "delete" | "rename";
-                    reason: string;
-                    /** @description 仅 rename 用，最多 100 字。 */
-                    name?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 操作后的项目 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminProject"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminListWorks: {
-        parameters: {
-            query?: {
-                status?: "pending" | "approved" | "rejected";
-                featured?: boolean;
-                offline?: boolean;
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 待审与已审作品 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["Work"][];
-                        nextCursor: string;
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    adminGetWork: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 作品与审核历史 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Work"] & {
-                        workspaceId: string;
-                        authorUserId: string;
-                        history: components["schemas"]["ReviewRecord"][];
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    adminReviewWork: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description ⚠️ 取值是**过去式**，与 `content_review.action` 的库约束
-                     *     `ck_review_action` 及通知的 `refId`（`作品ID:动作`）
-                     *     **逐字一致**。改成 `approve`/`reject` 这类祈使式的话
-                     *     三处就有了两套词，而不一致的表现是留痕写不进去（约束冲突）
-                     *     或通知的幂等键对不上 —— 都不是"参数写错了"那种一眼可见的错。
-                     * @enum {string}
-                     */
-                    action: "approved" | "rejected" | "offline" | "featured" | "unfeatured";
-                    /** @description 驳回与下架**必填**；会原样发给作者。 */
-                    reason?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 审核后的作品 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Work"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            /** @description 状态已被别人改过（CAS 落空） */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Error"];
-                };
-            };
-        };
-    };
-    workspaceUsage: {
-        parameters: {
-            query?: {
-                from?: string;
-                to?: string;
-            };
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 按操作者的用量与整体汇总 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        members: components["schemas"]["MemberUsage"][];
-                        summary: {
-                            consumed: number;
-                            refunded: number;
-                            tasks: number;
-                            members: number;
-                        };
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    workspaceUsageEntries: {
-        parameters: {
-            query?: {
-                userId?: string;
-                from?: string;
-                to?: string;
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-            };
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 明细与下一页游标 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["UsageEntry"][];
-                        nextCursor: string;
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    presenceHeartbeat: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example project */
-                    resourceType: string;
-                    resourceId: components["schemas"]["Id"];
-                    clientId: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 当前在线成员（已按用户合并、已剔除非成员与过期记录） */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OnlineUser"][];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    presenceLeave: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    resourceType: string;
-                    resourceId: components["schemas"]["Id"];
-                    clientId: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已离开（或本来就不在） */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    listOnline: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                resourceType: string;
-                resourceId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 当前在线成员 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OnlineUser"][];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    listGrantedShares: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 共享列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Share"][];
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    grantShare: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    resourceType: "project" | "script_asset" | "timeline";
-                    resourceId: components["schemas"]["Id"];
-                    /** @enum {string} */
-                    granteeType: "user" | "workspace";
-                    granteeId: components["schemas"]["Id"];
-                    permissions: ("view" | "edit" | "generate" | "export")[];
-                };
-            };
-        };
-        responses: {
-            /** @description 已授权 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Share"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    revokeShare: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                shareId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已撤销 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    importSharedResource: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    resourceType: "script_asset";
-                    resourceId: components["schemas"]["Id"];
-                };
-            };
-        };
-        responses: {
-            /** @description 已导入，回新建资源的 ID */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        resourceId: components["schemas"]["Id"];
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-        };
-    };
-    listReceivedShares: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 共享给我的列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ReceivedShare"][];
-                };
-            };
-        };
-    };
-    openSharedResource: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                resourceType: "project" | "script_asset" | "timeline";
-                resourceId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 资源内容与我的有效权限 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SharedResource"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
         };
     };
     listProjects: {
@@ -21467,1036 +17642,6 @@ export interface operations {
             404: components["responses"]["NotFound"];
         };
     };
-    paymentCallback: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                channel: "wechat" | "alipay";
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    [key: string]: unknown;
-                };
-                "application/x-www-form-urlencoded": {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description 已处理（含"重复"与"非成功状态"两种正常结局） */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 验签失败 / 订单不存在 / 金额不符 —— **不要重试** */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 我们这边出了问题（钱已收到）—— **请重试** */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    createPayment: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    channel: "wechat" | "alipay";
-                };
-            };
-        };
-        responses: {
-            /** @description 支付参数 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayParams"];
-                };
-            };
-            /** @description 支付域未装配 */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            409: components["responses"]["Conflict"];
-        };
-    };
-    syncOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 查单结果 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        paid: boolean;
-                        order: components["schemas"]["PurchaseOrder"];
-                    };
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    listPaymentChannels: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 渠道列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentChannel"][];
-                };
-            };
-        };
-    };
-    savePaymentChannel: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    code: "wechat" | "alipay";
-                    name?: string;
-                    merchantId?: string;
-                    appId?: string;
-                    baseUrl?: string;
-                    notifyUrl?: string;
-                    isSandbox?: boolean;
-                    /** @enum {string} */
-                    status?: "enabled" | "disabled";
-                    privateKey?: components["schemas"]["SecretField"];
-                    platformKey?: components["schemas"]["SecretField"];
-                    apiV3Key?: components["schemas"]["SecretField"];
-                };
-            };
-        };
-        responses: {
-            /** @description 保存后的渠道列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentChannel"][];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    listPaymentCallbacks: {
-        parameters: {
-            query?: {
-                outTradeNo?: string;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 回调记录 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentCallback"][];
-                };
-            };
-        };
-    };
-    getStorefront: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 商品与当前权益 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        plans: components["schemas"]["MemberPlan"][];
-                        packages: components["schemas"]["CreditPackage"][];
-                        membership?: components["schemas"]["Membership"];
-                        balance: number;
-                        /**
-                         * @description 开发支付是否可用。
-                         *
-                         *     ⚠️ **由服务端说**，前端不要去探那个 404 端点：
-                         *     探测每次打开页面都会打一个必然失败的请求，
-                         *     而且"404 就是没开"这个推断在网关挡掉请求时会得出错的结论。
-                         */
-                        devPayEnabled?: boolean;
-                        /**
-                         * @description 已装配好的**真实**支付渠道。
-                         *
-                         *     ⚠️ 由服务端说：前端硬编码一份的话，后台停用一个渠道
-                         *     之后界面上它还亮着，用户点了才发现不能用。
-                         */
-                        channels?: string[];
-                    };
-                };
-            };
-        };
-    };
-    getMembership: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 会员 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        current?: components["schemas"]["Membership"];
-                        history: components["schemas"]["Membership"][];
-                    };
-                };
-            };
-        };
-    };
-    listOrders: {
-        parameters: {
-            query?: {
-                limit?: number;
-                cursor?: string;
-            };
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 订单列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseOrder"][];
-                };
-            };
-        };
-    };
-    createOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    kind: "membership" | "credit_package";
-                    planId?: string;
-                    packageId?: string;
-                    dryRun?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description 报价（dryRun） */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseQuote"];
-                };
-            };
-            /** @description 已下单 */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseQuote"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    getOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 订单 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseOrder"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    cancelOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已取消 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PurchaseOrder"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    devPayOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已履约 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        order: components["schemas"]["PurchaseOrder"];
-                        alreadyFulfilled: boolean;
-                        grantId?: components["schemas"]["Id"];
-                        membershipId?: components["schemas"]["Id"];
-                    };
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    checkRefund: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 判定结果 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RefundEligibility"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    refundOrder: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    reason?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已退款 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        refund: components["schemas"]["Refund"];
-                    };
-                };
-            };
-            /** @description 已受理并回收权益，但调用渠道时结果不确定 —— **请勿重复申请**。 */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        refund?: components["schemas"]["Refund"];
-                        error?: string;
-                    };
-                };
-            };
-            409: components["responses"]["Conflict"];
-        };
-    };
-    listRefunds: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 退款列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Refund"][];
-                };
-            };
-        };
-    };
-    adminCheckRefund: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 判定结果 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RefundEligibility"];
-                };
-            };
-        };
-    };
-    adminRefundOrder: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    reason?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 已退款 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description 已受理但渠道结果不确定 */
-            202: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            409: components["responses"]["Conflict"];
-        };
-    };
-    reconcileOrders: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 本轮结果 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        checked: number;
-                        matched: number;
-                        diff: number;
-                        skipped: number;
-                    };
-                };
-            };
-        };
-    };
-    listReconcileDiffs: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 差异列表 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": (components["schemas"]["PurchaseOrder"] & {
-                        /** @enum {string} */
-                        reconcileStatus?: "none" | "pending" | "matched" | "diff";
-                        reconcileDetail?: string;
-                    })[];
-                };
-            };
-        };
-    };
-    searchOrders: {
-        parameters: {
-            query?: {
-                keyword?: string;
-                type?: "membership" | "credit_package";
-                status?: "pending" | "paid" | "cancelled" | "refunded" | "expired";
-                channel?: string;
-                reconcile?: "none" | "pending" | "matched" | "diff";
-                from?: string;
-                to?: string;
-                limit?: number;
-                cursor?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 订单与汇总 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        items: components["schemas"]["AdminOrder"][];
-                        summary: components["schemas"]["OrderSummary"];
-                        /**
-                         * @description 下一页游标（按 id 倒序），空串表示没有下一页。⚠️ 此前收 `cursor` 却从不回它 ——
-                         *     更早的订单在后台根本翻不到。
-                         */
-                        nextCursor: string;
-                    };
-                };
-            };
-        };
-    };
-    adminOrderDetail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 订单全貌 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminOrderDetail"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    markReconcile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    status: "none" | "pending" | "matched" | "diff";
-                    note?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 标记后的订单全貌 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdminOrderDetail"];
-                };
-            };
-        };
-    };
-    adjustCredits: {
-        parameters: {
-            query?: never;
-            header: {
-                "Idempotency-Key": string;
-            };
-            path: {
-                payerId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description 正数＝加、负数＝减。**不能为 0**。 */
-                    amount: number;
-                    reason: string;
-                    /**
-                     * Format: date-time
-                     * @description 加积分时的有效期（不传＝永久）。
-                     */
-                    expireAt?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description 调账结果 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        transactionId: components["schemas"]["Id"];
-                        grantId?: components["schemas"]["Id"];
-                        balanceAfter: number;
-                    };
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    payerOverview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                payerId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 付费主体全貌 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayerOverview"];
-                };
-            };
-            404: components["responses"]["NotFound"];
-        };
-    };
-    getBillingCatalog: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 目录 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillingCatalog"];
-                };
-            };
-        };
-    };
-    saveMemberLevel: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    code: string;
-                    /** @description 去掉首尾空白后非空，按字符数计 */
-                    name: string;
-                    /** @description 与其他等级不得相同 */
-                    sort?: number;
-                    isEnabled?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description 保存后的目录 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillingCatalog"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    saveMemberPlan: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    levelId: string;
-                    /** @enum {string} */
-                    period: "month" | "quarter" | "year";
-                    priceCents: number;
-                    giftCredits?: number;
-                    sort?: number;
-                    isEnabled?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description 保存后的目录 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillingCatalog"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    saveCreditPackage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    code: string;
-                    name: string;
-                    credits: number;
-                    priceCents: number;
-                    sort?: number;
-                    isEnabled?: boolean;
-                };
-            };
-        };
-        responses: {
-            /** @description 保存后的目录 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["BillingCatalog"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-        };
-    };
-    getCredits: {
-        parameters: {
-            query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 余额与批次 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        balance: number;
-                        /** @description 各批次剩余与到期时间，让用户看懂"哪些会先过期" */
-                        grants: {
-                            id?: components["schemas"]["Id"];
-                            source?: string;
-                            amount?: number;
-                            remaining?: number;
-                            /** Format: date-time */
-                            expireAt?: string | null;
-                        }[];
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    listCreditTransactions: {
-        parameters: {
-            query?: {
-                /** @description 上一页返回的 nextCursor；首页不传 */
-                cursor?: components["parameters"]["Cursor"];
-                limit?: components["parameters"]["Limit"];
-            };
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 流水分页 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CursorPage"] & {
-                        items: {
-                            id: components["schemas"]["Id"];
-                            /** @enum {string} */
-                            type: "grant" | "consume" | "refund" | "expire" | "adjust";
-                            /** @description 正数为进账，负数为消费/过期 */
-                            change: number;
-                            balanceAfter: number;
-                            refType?: string;
-                            refId?: string;
-                            reason?: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            /**
-                             * @description 以下几项只为展示（2026-11-01）：服务端按 `refType` 关回业务表（生成 / 提示词合成 /
-                             *     Agent 对话 / 成片渲染），说清「哪个项目、什么生成、哪个模型」。关不上就不出现，
-                             *     流水本身不依赖它们。
-                             */
-                            projectId?: components["schemas"]["Id"];
-                            projectName?: string;
-                            /** @description 所属项目已删除（名字照常给出，前端不再链过去） */
-                            projectDeleted?: boolean;
-                            /** @description 只有生成有（如 text2img） */
-                            operationCode?: string;
-                            /** @description 操作的中文名（如 文生图），取自后台的操作目录 */
-                            operationName?: string;
-                            modelName?: string;
-                            /** @description 成片渲染是时间线名，Agent 对话是会话标题 */
-                            refTitle?: string;
-                        }[];
-                    };
-                };
-            };
-            403: components["responses"]["Forbidden"];
-        };
-    };
     adminUploadMedia: {
         parameters: {
             query?: never;
@@ -24996,7 +20141,7 @@ export interface operations {
             404: components["responses"]["NotFound"];
         };
     };
-    listMcpAccessKeys: {
+    getAppSettings: {
         parameters: {
             query?: never;
             header?: never;
@@ -25005,19 +20150,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 访问密钥列表 */
+            /** @description 设置项 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpAccessKey"][];
+                    "application/json": components["schemas"]["AppSettings"];
                 };
             };
-            401: components["responses"]["Unauthenticated"];
         };
     };
-    createMcpAccessKey: {
+    updateAppSettings: {
         parameters: {
             query?: never;
             header?: never;
@@ -25026,122 +20170,614 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["McpAccessKeyCreate"];
+                "application/json": {
+                    [key: string]: unknown;
+                };
             };
         };
         responses: {
-            /** @description 已创建。`plaintext` **只在这里返回一次**。 */
+            /** @description 保存后的全部设置项 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppSettingsUpdated"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+        };
+    };
+    getDiagnostics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 自检结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DiagnosticsReport"];
+                };
+            };
+        };
+    };
+    getStorageUsage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 占用 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StorageUsage"];
+                };
+            };
+        };
+    };
+    testS3Storage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["S3TestRequest"];
+            };
+        };
+        responses: {
+            /** @description 逐步结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["S3TestResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+        };
+    };
+    updateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    isAiWatermarkOff: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+        };
+    };
+    listGenerationOutputs: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+                 */
+                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            };
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 产物列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationOutput"][];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    listVoices: {
+        parameters: {
+            query?: {
+                /** @description 按名称或 code 模糊搜索。 */
+                keyword?: components["parameters"]["MaterialKeyword"];
+                language?: string;
+                gender?: string;
+                /** @description `true` 只看我收藏的（「我的收藏」）。 */
+                favorited?: components["parameters"]["MaterialFavorited"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 音色列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VoiceItem"][];
+                };
+            };
+        };
+    };
+    toggleVoiceFavorite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    favorite: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description 当前收藏状态 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        isFavorited: boolean;
+                    };
+                };
+            };
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminListParamDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 参数定义列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminParamDefinition"][];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminSaveParamDefinition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminParamDefinitionInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminDisableParamDefinition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 已停用 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminSaveConnectionRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    sourceType: string;
+                    targetType: string;
+                    isAllowed: boolean;
+                    /** @description 默认建议的操作码；空 = 无 */
+                    defaultOperation?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminGetCanvasRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 版本号 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: int64 */
+                        revision: number;
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminListImagePresets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 预设列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["AdminImagePreset"][];
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminCreateImagePreset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminImagePreset"];
+            };
+        };
+        responses: {
+            /** @description 新建的预设 */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpAccessKeyCreated"];
+                    "application/json": components["schemas"]["AdminImagePreset"];
                 };
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
-        };
-    };
-    revokeMcpAccessKey: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                keyId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已撤销 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: components["responses"]["Unauthenticated"];
-            404: components["responses"]["NotFound"];
             409: components["responses"]["Conflict"];
         };
     };
-    listMcpGrants: {
+    adminPreviewImagePreset: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    prompt?: string;
+                    dimensions?: {
+                        [key: string]: unknown;
+                    }[] | null;
+                    /** @description 维度 key → 选中的选项 value */
+                    selected?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
         responses: {
-            /** @description 授权列表 */
+            /** @description 拼好的追加词 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpGrant"][];
+                    "application/json": {
+                        rendered: string;
+                    };
                 };
             };
-            401: components["responses"]["Unauthenticated"];
+            400: components["responses"]["BadRequest"];
         };
     };
-    revokeMcpGrant: {
+    adminUpdateImagePreset: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                grantId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 已撤销 */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: components["responses"]["Unauthenticated"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    updateMcpGrant: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                grantId: components["schemas"]["Id"];
+                /** @description 图片预设编码 */
+                code: components["parameters"]["PresetCode"];
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["McpGrantUpdate"];
+                "application/json": components["schemas"]["AdminImagePreset"];
             };
         };
         responses: {
-            /** @description 改后的授权 */
+            /** @description 保存后的预设 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpGrant"];
+                    "application/json": components["schemas"]["AdminImagePreset"];
                 };
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
         };
     };
-    getMcpClientSnippets: {
+    adminEnableImagePreset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 图片预设编码 */
+                code: components["parameters"]["PresetCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 当前预设 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminImagePreset"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminDisableImagePreset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 图片预设编码 */
+                code: components["parameters"]["PresetCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 当前预设 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminImagePreset"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminRestoreImagePreset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 图片预设编码 */
+                code: components["parameters"]["PresetCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 恢复后的预设 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminImagePreset"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminListMaterials: {
+        parameters: {
+            query?: {
+                /** @description 按名称或 code 模糊搜索。 */
+                keyword?: components["parameters"]["MaterialKeyword"];
+            };
+            header?: never;
+            path: {
+                type: "style" | "effect" | "camera";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 素材列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminMaterialItem"][];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminSaveMaterial: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminMaterialInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminListVoices: {
+        parameters: {
+            query?: {
+                /** @description 按名称或 code 模糊搜索。 */
+                keyword?: components["parameters"]["MaterialKeyword"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 音色列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminVoiceItem"][];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminSaveVoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminVoiceInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminListOperations: {
         parameters: {
             query?: never;
             header?: never;
@@ -25150,162 +20786,483 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 配置片段 */
+            /** @description 操作列表 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpClientSnippets"];
+                    "application/json": components["schemas"]["AdminOperation"][];
                 };
             };
-            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["Forbidden"];
         };
     };
-    listWorkspaceMcpGrants: {
+    adminListModelProtocols: {
         parameters: {
-            query?: {
-                /** @description 客户端名关键词（包含匹配，不区分大小写） */
-                client?: string;
-                source?: "access_key" | "oauth";
-                status?: "active" | "revoked";
-                registration?: "cimd" | "dcr";
-                /** @description 上一页的 nextCursor */
-                cursor?: string;
-                limit?: number;
-            };
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
+            query?: never;
+            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description 连接列表 */
+            /** @description 协议列表 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpConnectionPage"];
+                    "application/json": components["schemas"]["AdminModelProtocol"][];
                 };
             };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
         };
     };
-    revokeWorkspaceMcpGrant: {
+    adminListProviders: {
         parameters: {
             query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 厂商列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminProvider"][];
+                };
             };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminSaveProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminProviderInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    adminProbeProvider: {
+        parameters: {
+            query?: never;
+            header?: never;
             path: {
-                grantId: components["schemas"]["Id"];
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 测试结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderProbeResult"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminListModels: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 模型列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminModel"][];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminSaveModel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminModelInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    adminCheckModelPublishable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 检查结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelPublishCheck"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminSaveModelOperation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    operation: string;
+                    isEnabled: boolean;
+                    estSeconds?: number | null;
+                };
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    adminListModelCapabilities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 能力矩阵 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: components["schemas"]["ModelCapability"][];
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminSaveModelCapability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModelCapability"] & {
+                    operation: string;
+                };
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            422: components["responses"]["UnprocessableEntity"];
+        };
+    };
+    adminDeleteModelCapability: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+                operation: string;
+                role: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 已删除 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminListModelParamSupports: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 参数支持 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["ModelParamSupport"][];
+                        params: {
+                            code: string;
+                            name: string;
+                            controlType: string;
+                        }[];
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminSaveModelParamSupport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModelParamSupportInput"];
+            };
+        };
+        responses: {
+            /** @description 已保存 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminDeleteModelParamSupport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 模型编码 */
+                code: components["parameters"]["ModelCode"];
+                paramCode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 已删除 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminListModelTemplates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 模板列表 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["ModelTemplate"][];
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminEnableModelTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
             };
             cookie?: never;
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["McpRevokeReason"];
+                "application/json": {
+                    apiKey?: components["schemas"]["SecretFieldInput"];
+                };
             };
         };
         responses: {
-            /** @description 已撤销 */
-            204: {
+            /** @description 启用结果 */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ModelTemplateEnableResult"];
+                };
             };
-            401: components["responses"]["Unauthenticated"];
+            400: components["responses"]["BadRequest"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
         };
     };
-    getWorkspaceMcpSettings: {
+    adminListPromptSpecs: {
         parameters: {
             query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description 开关 */
+            /** @description 规格列表 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpWorkspaceSettings"];
+                    "application/json": components["schemas"]["PromptSpec"][];
                 };
             };
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
         };
     };
-    updateWorkspaceMcpSettings: {
+    adminListPrompts: {
         parameters: {
             query?: never;
-            header: {
-                /**
-                 * @description 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-                 *     ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-                 */
-                "X-Workspace-Id": components["parameters"]["WorkspaceId"];
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["McpSwitchUpdate"];
-            };
-        };
+        requestBody?: never;
         responses: {
-            /** @description 改后的开关 */
+            /** @description 覆盖行列表 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpWorkspaceSettings"];
+                    "application/json": components["schemas"]["AdminPromptTemplate"][];
                 };
             };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
         };
     };
-    adminListMcpGrants: {
+    adminListPromptVersions: {
         parameters: {
-            query?: {
-                userId?: components["schemas"]["Id"];
-                workspaceId?: components["schemas"]["Id"];
-                /** @description 客户端名关键词（包含匹配，不区分大小写） */
-                client?: string;
-                source?: "access_key" | "oauth";
-                status?: "active" | "revoked";
-                registration?: "cimd" | "dcr";
-                cursor?: string;
+            query: {
+                code: string;
+                /** @description 空 = 通用版 */
+                modelCode?: string;
                 limit?: number;
             };
             header?: never;
@@ -25314,36 +21271,39 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description 连接列表 */
+            /** @description 版本列表 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpConnectionPage"];
+                    "application/json": components["schemas"]["PromptVersion"][];
                 };
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
         };
     };
-    adminRevokeMcpGrant: {
+    adminSavePromptDraft: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                grantId: components["schemas"]["Id"];
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["McpRevokeReason"];
+                "application/json": {
+                    code: string;
+                    /** @description 空 = 通用版 */
+                    modelCode?: string;
+                    content: string;
+                    note?: string;
+                };
             };
         };
         responses: {
-            /** @description 已撤销 */
+            /** @description 已保存 */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -25351,35 +21311,10 @@ export interface operations {
                 content?: never;
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-        };
-    };
-    adminGetMcpSettings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 平台开关 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["McpPlatformSettings"];
-                };
-            };
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
         };
     };
-    adminUpdateMcpSettings: {
+    adminPublishPrompt: {
         parameters: {
             query?: never;
             header?: never;
@@ -25388,81 +21323,31 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["McpSwitchUpdate"];
+                "application/json": {
+                    code: string;
+                    modelCode?: string;
+                    note?: string;
+                };
             };
         };
         responses: {
-            /** @description 改后的平台开关 */
+            /** @description 新版本号 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpPlatformSettings"];
+                    "application/json": {
+                        version: number;
+                    };
                 };
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
-    adminMcpStats: {
-        parameters: {
-            query?: {
-                from?: string;
-                to?: string;
-                userId?: components["schemas"]["Id"];
-                workspaceId?: components["schemas"]["Id"];
-                client?: string;
-                source?: "access_key" | "oauth";
-                status?: "active" | "revoked";
-                registration?: "cimd" | "dcr";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 统计 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["McpStats"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
-            403: components["responses"]["Forbidden"];
-        };
-    };
-    getMcpConsent: {
-        parameters: {
-            query: {
-                req: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 同意页数据 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["McpConsentInfo"];
-                };
-            };
-            400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
-        };
-    };
-    submitMcpConsent: {
+    adminRollbackPrompt: {
         parameters: {
             query?: never;
             header?: never;
@@ -25471,101 +21356,117 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["McpConsentSubmit"];
+                "application/json": {
+                    code: string;
+                    modelCode?: string;
+                    targetVersion: number;
+                    note?: string;
+                };
             };
         };
         responses: {
-            /** @description 回跳地址 */
+            /** @description 新版本号 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpConsentResult"];
+                    "application/json": {
+                        version: number;
+                        rollbackOf: number;
+                    };
                 };
             };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
-    getMcpApproval: {
+    adminArchivePrompt: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                quoteId: components["schemas"]["Id"];
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    code: string;
+                    modelCode?: string;
+                };
+            };
+        };
         responses: {
-            /** @description 审批数据 */
+            /** @description 已归档 */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminPreviewPrompt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    code: string;
+                    modelCode?: string;
+                    content?: string;
+                    vars?: {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description 渲染结果 */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpApproval"];
+                    "application/json": {
+                        rendered: string;
+                    };
                 };
             };
-            401: components["responses"]["Unauthenticated"];
+            400: components["responses"]["BadRequest"];
             403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
         };
     };
-    approveMcpQuote: {
+    adminRestoreAgentSkillBuiltin: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                quoteId: components["schemas"]["Id"];
+                skillId: components["schemas"]["Id"];
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description 批准后的（或当前真实的）审批数据 */
+            /** @description 恢复后的技能（含附属文档） */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["McpApproval"];
+                    "application/json": components["schemas"]["AdminAgentSkill"];
                 };
             };
-            401: components["responses"]["Unauthenticated"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
-            422: components["responses"]["UnprocessableEntity"];
-        };
-    };
-    rejectMcpQuote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                quoteId: components["schemas"]["Id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 拒绝后的（或当前真实的）审批数据 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["McpApproval"];
-                };
-            };
-            401: components["responses"]["Unauthenticated"];
-            403: components["responses"]["Forbidden"];
-            404: components["responses"]["NotFound"];
-            409: components["responses"]["Conflict"];
         };
     };
 }

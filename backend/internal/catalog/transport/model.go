@@ -34,6 +34,10 @@ func (h *Handler) MountModelAdmin(r chi.Router, requireAdmin func(http.Handler) 
 		r.With(read).Get("/{code}/capabilities", h.listCapabilities)
 		r.With(write).Put("/{code}/capabilities", h.saveCapability)
 		r.With(write).Delete("/{code}/capabilities/{operation}/{role}", h.deleteCapability)
+		// 型号级参数覆盖（TT-T-18）：来源只有 seed 写这张表。
+		r.With(read).Get("/{code}/param-supports", h.listParamSupports)
+		r.With(write).Put("/{code}/param-supports", h.saveParamSupport)
+		r.With(write).Delete("/{code}/param-supports/{paramCode}", h.deleteParamSupport)
 	})
 	// 操作目录只读：后台的计价与模型绑定表单要能选到**还没有任何价格/绑定**的操作 ——
 	// 此前只能从已有的价格里凑操作码，新操作永远配不上价。
@@ -322,6 +326,44 @@ func (h *Handler) saveCapability(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) deleteCapability(w http.ResponseWriter, r *http.Request) {
 	if err := h.svc.DeleteCapability(r.Context(), h.adminID(r),
 		chi.URLParam(r, "code"), chi.URLParam(r, "operation"), chi.URLParam(r, "role")); err != nil {
+		httpx.Fail(w, r, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) listParamSupports(w http.ResponseWriter, r *http.Request) {
+	items, params, err := h.svc.ParamSupports(r.Context(), chi.URLParam(r, "code"))
+	if err != nil {
+		httpx.Fail(w, r, err)
+		return
+	}
+	httpx.JSON(w, http.StatusOK, map[string]any{"items": items, "params": params})
+}
+
+func (h *Handler) saveParamSupport(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		ParamCode     string          `json:"paramCode"`
+		AllowedValues json.RawMessage `json:"allowedValues"`
+		DefaultValue  string          `json:"defaultValue"`
+		Override      json.RawMessage `json:"override"`
+	}
+	if !decode(w, r, &req) {
+		return
+	}
+	if err := h.svc.SaveParamSupport(r.Context(), h.adminID(r), chi.URLParam(r, "code"), app.ParamSupportInput{
+		ParamCode: req.ParamCode, AllowedValues: req.AllowedValues,
+		DefaultValue: req.DefaultValue, Override: req.Override,
+	}); err != nil {
+		httpx.Fail(w, r, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *Handler) deleteParamSupport(w http.ResponseWriter, r *http.Request) {
+	if err := h.svc.DeleteParamSupport(r.Context(), h.adminID(r),
+		chi.URLParam(r, "code"), chi.URLParam(r, "paramCode")); err != nil {
 		httpx.Fail(w, r, err)
 		return
 	}

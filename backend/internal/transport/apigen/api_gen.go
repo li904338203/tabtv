@@ -12,7 +12,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -32,6 +31,57 @@ func (e AdminAccountStatus) Valid() bool {
 	case AdminAccountStatusActive:
 		return true
 	case AdminAccountStatusDisabled:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdminImagePresetInputMode.
+const (
+	AdminImagePresetInputModeEither        AdminImagePresetInputMode = "either"
+	AdminImagePresetInputModeImageRequired AdminImagePresetInputMode = "image_required"
+	AdminImagePresetInputModeTextRequired  AdminImagePresetInputMode = "text_required"
+)
+
+// Valid indicates whether the value is a known member of the AdminImagePresetInputMode enum.
+func (e AdminImagePresetInputMode) Valid() bool {
+	switch e {
+	case AdminImagePresetInputModeEither:
+		return true
+	case AdminImagePresetInputModeImageRequired:
+		return true
+	case AdminImagePresetInputModeTextRequired:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for AdminImagePresetPresetGroup.
+const (
+	AdminImagePresetPresetGroupEditor     AdminImagePresetPresetGroup = "editor"
+	AdminImagePresetPresetGroupSheet      AdminImagePresetPresetGroup = "sheet"
+	AdminImagePresetPresetGroupSpace      AdminImagePresetPresetGroup = "space"
+	AdminImagePresetPresetGroupStoryboard AdminImagePresetPresetGroup = "storyboard"
+	AdminImagePresetPresetGroupTool       AdminImagePresetPresetGroup = "tool"
+	AdminImagePresetPresetGroupTuning     AdminImagePresetPresetGroup = "tuning"
+)
+
+// Valid indicates whether the value is a known member of the AdminImagePresetPresetGroup enum.
+func (e AdminImagePresetPresetGroup) Valid() bool {
+	switch e {
+	case AdminImagePresetPresetGroupEditor:
+		return true
+	case AdminImagePresetPresetGroupSheet:
+		return true
+	case AdminImagePresetPresetGroupSpace:
+		return true
+	case AdminImagePresetPresetGroupStoryboard:
+		return true
+	case AdminImagePresetPresetGroupTool:
+		return true
+	case AdminImagePresetPresetGroupTuning:
 		return true
 	default:
 		return false
@@ -146,66 +196,42 @@ func (e AdminMarketingOptionUpdateOutputTypes) Valid() bool {
 	}
 }
 
-// Defines values for AdminOrderReconcileStatus.
+// Defines values for AdminMaterialInputType.
 const (
-	AdminOrderReconcileStatusDiff    AdminOrderReconcileStatus = "diff"
-	AdminOrderReconcileStatusMatched AdminOrderReconcileStatus = "matched"
-	AdminOrderReconcileStatusNone    AdminOrderReconcileStatus = "none"
-	AdminOrderReconcileStatusPending AdminOrderReconcileStatus = "pending"
+	AdminMaterialInputTypeCamera AdminMaterialInputType = "camera"
+	AdminMaterialInputTypeEffect AdminMaterialInputType = "effect"
+	AdminMaterialInputTypeStyle  AdminMaterialInputType = "style"
 )
 
-// Valid indicates whether the value is a known member of the AdminOrderReconcileStatus enum.
-func (e AdminOrderReconcileStatus) Valid() bool {
+// Valid indicates whether the value is a known member of the AdminMaterialInputType enum.
+func (e AdminMaterialInputType) Valid() bool {
 	switch e {
-	case AdminOrderReconcileStatusDiff:
+	case AdminMaterialInputTypeCamera:
 		return true
-	case AdminOrderReconcileStatusMatched:
+	case AdminMaterialInputTypeEffect:
 		return true
-	case AdminOrderReconcileStatusNone:
-		return true
-	case AdminOrderReconcileStatusPending:
+	case AdminMaterialInputTypeStyle:
 		return true
 	default:
 		return false
 	}
 }
 
-// Defines values for AdminOrderDetailGrantsStatus.
+// Defines values for AdminPromptTemplateStatus.
 const (
-	AdminOrderDetailGrantsStatusActive    AdminOrderDetailGrantsStatus = "active"
-	AdminOrderDetailGrantsStatusExhausted AdminOrderDetailGrantsStatus = "exhausted"
-	AdminOrderDetailGrantsStatusExpired   AdminOrderDetailGrantsStatus = "expired"
-	AdminOrderDetailGrantsStatusRevoked   AdminOrderDetailGrantsStatus = "revoked"
+	AdminPromptTemplateStatusArchived  AdminPromptTemplateStatus = "archived"
+	AdminPromptTemplateStatusDraft     AdminPromptTemplateStatus = "draft"
+	AdminPromptTemplateStatusPublished AdminPromptTemplateStatus = "published"
 )
 
-// Valid indicates whether the value is a known member of the AdminOrderDetailGrantsStatus enum.
-func (e AdminOrderDetailGrantsStatus) Valid() bool {
+// Valid indicates whether the value is a known member of the AdminPromptTemplateStatus enum.
+func (e AdminPromptTemplateStatus) Valid() bool {
 	switch e {
-	case AdminOrderDetailGrantsStatusActive:
+	case AdminPromptTemplateStatusArchived:
 		return true
-	case AdminOrderDetailGrantsStatusExhausted:
+	case AdminPromptTemplateStatusDraft:
 		return true
-	case AdminOrderDetailGrantsStatusExpired:
-		return true
-	case AdminOrderDetailGrantsStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminProjectStatus.
-const (
-	AdminProjectStatusActive  AdminProjectStatus = "active"
-	AdminProjectStatusDeleted AdminProjectStatus = "deleted"
-)
-
-// Valid indicates whether the value is a known member of the AdminProjectStatus enum.
-func (e AdminProjectStatus) Valid() bool {
-	switch e {
-	case AdminProjectStatusActive:
-		return true
-	case AdminProjectStatusDeleted:
+	case AdminPromptTemplateStatusPublished:
 		return true
 	default:
 		return false
@@ -307,25 +333,25 @@ func (e AgentLedgerEntryCategory) Valid() bool {
 
 // Defines values for AgentLedgerEntryType.
 const (
-	AgentLedgerEntryTypeAdjust  AgentLedgerEntryType = "adjust"
-	AgentLedgerEntryTypeConsume AgentLedgerEntryType = "consume"
-	AgentLedgerEntryTypeExpire  AgentLedgerEntryType = "expire"
-	AgentLedgerEntryTypeGrant   AgentLedgerEntryType = "grant"
-	AgentLedgerEntryTypeRefund  AgentLedgerEntryType = "refund"
+	Adjust  AgentLedgerEntryType = "adjust"
+	Consume AgentLedgerEntryType = "consume"
+	Expire  AgentLedgerEntryType = "expire"
+	Grant   AgentLedgerEntryType = "grant"
+	Refund  AgentLedgerEntryType = "refund"
 )
 
 // Valid indicates whether the value is a known member of the AgentLedgerEntryType enum.
 func (e AgentLedgerEntryType) Valid() bool {
 	switch e {
-	case AgentLedgerEntryTypeAdjust:
+	case Adjust:
 		return true
-	case AgentLedgerEntryTypeConsume:
+	case Consume:
 		return true
-	case AgentLedgerEntryTypeExpire:
+	case Expire:
 		return true
-	case AgentLedgerEntryTypeGrant:
+	case Grant:
 		return true
-	case AgentLedgerEntryTypeRefund:
+	case Refund:
 		return true
 	default:
 		return false
@@ -767,21 +793,24 @@ func (e AgentTurnLedgerTrigger) Valid() bool {
 	}
 }
 
-// Defines values for AnnouncementStatus.
+// Defines values for AppSettingItemKind.
 const (
-	AnnouncementStatusDraft     AnnouncementStatus = "draft"
-	AnnouncementStatusOffline   AnnouncementStatus = "offline"
-	AnnouncementStatusPublished AnnouncementStatus = "published"
+	Bool   AppSettingItemKind = "bool"
+	Int    AppSettingItemKind = "int"
+	Secret AppSettingItemKind = "secret"
+	String AppSettingItemKind = "string"
 )
 
-// Valid indicates whether the value is a known member of the AnnouncementStatus enum.
-func (e AnnouncementStatus) Valid() bool {
+// Valid indicates whether the value is a known member of the AppSettingItemKind enum.
+func (e AppSettingItemKind) Valid() bool {
 	switch e {
-	case AnnouncementStatusDraft:
+	case Bool:
 		return true
-	case AnnouncementStatusOffline:
+	case Int:
 		return true
-	case AnnouncementStatusPublished:
+	case Secret:
+		return true
+	case String:
 		return true
 	default:
 		return false
@@ -803,87 +832,6 @@ func (e AuditRecordActorType) Valid() bool {
 	case AuditRecordActorTypeSystem:
 		return true
 	case AuditRecordActorTypeUser:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for BannerLifecycle.
-const (
-	BannerLifecycleActive    BannerLifecycle = "active"
-	BannerLifecycleDisabled  BannerLifecycle = "disabled"
-	BannerLifecycleExpired   BannerLifecycle = "expired"
-	BannerLifecycleScheduled BannerLifecycle = "scheduled"
-)
-
-// Valid indicates whether the value is a known member of the BannerLifecycle enum.
-func (e BannerLifecycle) Valid() bool {
-	switch e {
-	case BannerLifecycleActive:
-		return true
-	case BannerLifecycleDisabled:
-		return true
-	case BannerLifecycleExpired:
-		return true
-	case BannerLifecycleScheduled:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for BannerPosition.
-const (
-	BannerPositionHome  BannerPosition = "home"
-	BannerPositionVideo BannerPosition = "video"
-)
-
-// Valid indicates whether the value is a known member of the BannerPosition enum.
-func (e BannerPosition) Valid() bool {
-	switch e {
-	case BannerPositionHome:
-		return true
-	case BannerPositionVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for BannerInputPosition.
-const (
-	BannerInputPositionHome  BannerInputPosition = "home"
-	BannerInputPositionVideo BannerInputPosition = "video"
-)
-
-// Valid indicates whether the value is a known member of the BannerInputPosition enum.
-func (e BannerInputPosition) Valid() bool {
-	switch e {
-	case BannerInputPositionHome:
-		return true
-	case BannerInputPositionVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for BillingCatalogPlansPeriod.
-const (
-	BillingCatalogPlansPeriodMonth   BillingCatalogPlansPeriod = "month"
-	BillingCatalogPlansPeriodQuarter BillingCatalogPlansPeriod = "quarter"
-	BillingCatalogPlansPeriodYear    BillingCatalogPlansPeriod = "year"
-)
-
-// Valid indicates whether the value is a known member of the BillingCatalogPlansPeriod enum.
-func (e BillingCatalogPlansPeriod) Valid() bool {
-	switch e {
-	case BillingCatalogPlansPeriodMonth:
-		return true
-	case BillingCatalogPlansPeriodQuarter:
-		return true
-	case BillingCatalogPlansPeriodYear:
 		return true
 	default:
 		return false
@@ -1067,21 +1015,24 @@ func (e CurrentUserStatus) Valid() bool {
 	}
 }
 
-// Defines values for DeadLetterStatus.
+// Defines values for DiagnosticsCheckStatus.
 const (
-	DeadLetterStatusDiscarded DeadLetterStatus = "discarded"
-	DeadLetterStatusPending   DeadLetterStatus = "pending"
-	DeadLetterStatusReplayed  DeadLetterStatus = "replayed"
+	DiagnosticsCheckStatusFail DiagnosticsCheckStatus = "fail"
+	DiagnosticsCheckStatusNa   DiagnosticsCheckStatus = "na"
+	DiagnosticsCheckStatusOk   DiagnosticsCheckStatus = "ok"
+	DiagnosticsCheckStatusWarn DiagnosticsCheckStatus = "warn"
 )
 
-// Valid indicates whether the value is a known member of the DeadLetterStatus enum.
-func (e DeadLetterStatus) Valid() bool {
+// Valid indicates whether the value is a known member of the DiagnosticsCheckStatus enum.
+func (e DiagnosticsCheckStatus) Valid() bool {
 	switch e {
-	case DeadLetterStatusDiscarded:
+	case DiagnosticsCheckStatusFail:
 		return true
-	case DeadLetterStatusPending:
+	case DiagnosticsCheckStatusNa:
 		return true
-	case DeadLetterStatusReplayed:
+	case DiagnosticsCheckStatusOk:
+		return true
+	case DiagnosticsCheckStatusWarn:
 		return true
 	default:
 		return false
@@ -1732,19 +1683,19 @@ func (e GroupSummaryGroupType) Valid() bool {
 
 // Defines values for ImageToolInputMode.
 const (
-	Either        ImageToolInputMode = "either"
-	ImageRequired ImageToolInputMode = "image_required"
-	TextRequired  ImageToolInputMode = "text_required"
+	ImageToolInputModeEither        ImageToolInputMode = "either"
+	ImageToolInputModeImageRequired ImageToolInputMode = "image_required"
+	ImageToolInputModeTextRequired  ImageToolInputMode = "text_required"
 )
 
 // Valid indicates whether the value is a known member of the ImageToolInputMode enum.
 func (e ImageToolInputMode) Valid() bool {
 	switch e {
-	case Either:
+	case ImageToolInputModeEither:
 		return true
-	case ImageRequired:
+	case ImageToolInputModeImageRequired:
 		return true
-	case TextRequired:
+	case ImageToolInputModeTextRequired:
 		return true
 	default:
 		return false
@@ -2066,435 +2017,6 @@ func (e MarketingSlotDeclKey) Valid() bool {
 	}
 }
 
-// Defines values for McpAccessKeyStatus.
-const (
-	McpAccessKeyStatusActive  McpAccessKeyStatus = "active"
-	McpAccessKeyStatusExpired McpAccessKeyStatus = "expired"
-	McpAccessKeyStatusRevoked McpAccessKeyStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the McpAccessKeyStatus enum.
-func (e McpAccessKeyStatus) Valid() bool {
-	switch e {
-	case McpAccessKeyStatusActive:
-		return true
-	case McpAccessKeyStatusExpired:
-		return true
-	case McpAccessKeyStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpAccessKeyCreatedStatus.
-const (
-	McpAccessKeyCreatedStatusActive  McpAccessKeyCreatedStatus = "active"
-	McpAccessKeyCreatedStatusExpired McpAccessKeyCreatedStatus = "expired"
-	McpAccessKeyCreatedStatusRevoked McpAccessKeyCreatedStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the McpAccessKeyCreatedStatus enum.
-func (e McpAccessKeyCreatedStatus) Valid() bool {
-	switch e {
-	case McpAccessKeyCreatedStatusActive:
-		return true
-	case McpAccessKeyCreatedStatusExpired:
-		return true
-	case McpAccessKeyCreatedStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpApprovalState.
-const (
-	McpApprovalStateApproved McpApprovalState = "approved"
-	McpApprovalStateExpired  McpApprovalState = "expired"
-	McpApprovalStatePending  McpApprovalState = "pending"
-	McpApprovalStateRejected McpApprovalState = "rejected"
-	McpApprovalStateUsed     McpApprovalState = "used"
-	McpApprovalStateVoided   McpApprovalState = "voided"
-)
-
-// Valid indicates whether the value is a known member of the McpApprovalState enum.
-func (e McpApprovalState) Valid() bool {
-	switch e {
-	case McpApprovalStateApproved:
-		return true
-	case McpApprovalStateExpired:
-		return true
-	case McpApprovalStatePending:
-		return true
-	case McpApprovalStateRejected:
-		return true
-	case McpApprovalStateUsed:
-		return true
-	case McpApprovalStateVoided:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpApprovalWorkspaceKind.
-const (
-	McpApprovalWorkspaceKindPersonal McpApprovalWorkspaceKind = "personal"
-	McpApprovalWorkspaceKindTeam     McpApprovalWorkspaceKind = "team"
-)
-
-// Valid indicates whether the value is a known member of the McpApprovalWorkspaceKind enum.
-func (e McpApprovalWorkspaceKind) Valid() bool {
-	switch e {
-	case McpApprovalWorkspaceKindPersonal:
-		return true
-	case McpApprovalWorkspaceKindTeam:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpClientModeFormat.
-const (
-	McpClientModeFormatJson  McpClientModeFormat = "json"
-	McpClientModeFormatShell McpClientModeFormat = "shell"
-	McpClientModeFormatToml  McpClientModeFormat = "toml"
-)
-
-// Valid indicates whether the value is a known member of the McpClientModeFormat enum.
-func (e McpClientModeFormat) Valid() bool {
-	switch e {
-	case McpClientModeFormatJson:
-		return true
-	case McpClientModeFormatShell:
-		return true
-	case McpClientModeFormatToml:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpClientModeMode.
-const (
-	McpClientModeModeKey   McpClientModeMode = "key"
-	McpClientModeModeOauth McpClientModeMode = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the McpClientModeMode enum.
-func (e McpClientModeMode) Valid() bool {
-	switch e {
-	case McpClientModeModeKey:
-		return true
-	case McpClientModeModeOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpClientShareKind.
-const (
-	McpClientShareKindClient  McpClientShareKind = "client"
-	McpClientShareKindOther   McpClientShareKind = "other"
-	McpClientShareKindUnknown McpClientShareKind = "unknown"
-)
-
-// Valid indicates whether the value is a known member of the McpClientShareKind enum.
-func (e McpClientShareKind) Valid() bool {
-	switch e {
-	case McpClientShareKindClient:
-		return true
-	case McpClientShareKindOther:
-		return true
-	case McpClientShareKindUnknown:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpClientSnippetFormat.
-const (
-	McpClientSnippetFormatJson  McpClientSnippetFormat = "json"
-	McpClientSnippetFormatShell McpClientSnippetFormat = "shell"
-	McpClientSnippetFormatToml  McpClientSnippetFormat = "toml"
-)
-
-// Valid indicates whether the value is a known member of the McpClientSnippetFormat enum.
-func (e McpClientSnippetFormat) Valid() bool {
-	switch e {
-	case McpClientSnippetFormatJson:
-		return true
-	case McpClientSnippetFormatShell:
-		return true
-	case McpClientSnippetFormatToml:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpConnectionClientRegistration.
-const (
-	McpConnectionClientRegistrationCimd        McpConnectionClientRegistration = "cimd"
-	McpConnectionClientRegistrationDcr         McpConnectionClientRegistration = "dcr"
-	McpConnectionClientRegistrationLessThannil McpConnectionClientRegistration = "<nil>"
-)
-
-// Valid indicates whether the value is a known member of the McpConnectionClientRegistration enum.
-func (e McpConnectionClientRegistration) Valid() bool {
-	switch e {
-	case McpConnectionClientRegistrationCimd:
-		return true
-	case McpConnectionClientRegistrationDcr:
-		return true
-	case McpConnectionClientRegistrationLessThannil:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpConnectionSource.
-const (
-	McpConnectionSourceAccessKey McpConnectionSource = "access_key"
-	McpConnectionSourceOauth     McpConnectionSource = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the McpConnectionSource enum.
-func (e McpConnectionSource) Valid() bool {
-	switch e {
-	case McpConnectionSourceAccessKey:
-		return true
-	case McpConnectionSourceOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpConnectionStatus.
-const (
-	McpConnectionStatusActive  McpConnectionStatus = "active"
-	McpConnectionStatusRevoked McpConnectionStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the McpConnectionStatus enum.
-func (e McpConnectionStatus) Valid() bool {
-	switch e {
-	case McpConnectionStatusActive:
-		return true
-	case McpConnectionStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpConsentInfoClientRegistration.
-const (
-	McpConsentInfoClientRegistrationCimd McpConsentInfoClientRegistration = "cimd"
-	McpConsentInfoClientRegistrationDcr  McpConsentInfoClientRegistration = "dcr"
-)
-
-// Valid indicates whether the value is a known member of the McpConsentInfoClientRegistration enum.
-func (e McpConsentInfoClientRegistration) Valid() bool {
-	switch e {
-	case McpConsentInfoClientRegistrationCimd:
-		return true
-	case McpConsentInfoClientRegistrationDcr:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpConsentSubmitDecision.
-const (
-	Allow McpConsentSubmitDecision = "allow"
-	Deny  McpConsentSubmitDecision = "deny"
-)
-
-// Valid indicates whether the value is a known member of the McpConsentSubmitDecision enum.
-func (e McpConsentSubmitDecision) Valid() bool {
-	switch e {
-	case Allow:
-		return true
-	case Deny:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpGrantClientRegistration.
-const (
-	McpGrantClientRegistrationCimd        McpGrantClientRegistration = "cimd"
-	McpGrantClientRegistrationDcr         McpGrantClientRegistration = "dcr"
-	McpGrantClientRegistrationLessThannil McpGrantClientRegistration = "<nil>"
-)
-
-// Valid indicates whether the value is a known member of the McpGrantClientRegistration enum.
-func (e McpGrantClientRegistration) Valid() bool {
-	switch e {
-	case McpGrantClientRegistrationCimd:
-		return true
-	case McpGrantClientRegistrationDcr:
-		return true
-	case McpGrantClientRegistrationLessThannil:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpGrantSource.
-const (
-	McpGrantSourceAccessKey McpGrantSource = "access_key"
-	McpGrantSourceOauth     McpGrantSource = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the McpGrantSource enum.
-func (e McpGrantSource) Valid() bool {
-	switch e {
-	case McpGrantSourceAccessKey:
-		return true
-	case McpGrantSourceOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpGrantStatus.
-const (
-	McpGrantStatusActive  McpGrantStatus = "active"
-	McpGrantStatusRevoked McpGrantStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the McpGrantStatus enum.
-func (e McpGrantStatus) Valid() bool {
-	switch e {
-	case McpGrantStatusActive:
-		return true
-	case McpGrantStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpScope.
-const (
-	SeeaitvEdit     McpScope = "seeaitv:edit"
-	SeeaitvExport   McpScope = "seeaitv:export"
-	SeeaitvGenerate McpScope = "seeaitv:generate"
-	SeeaitvView     McpScope = "seeaitv:view"
-)
-
-// Valid indicates whether the value is a known member of the McpScope enum.
-func (e McpScope) Valid() bool {
-	switch e {
-	case SeeaitvEdit:
-		return true
-	case SeeaitvExport:
-		return true
-	case SeeaitvGenerate:
-		return true
-	case SeeaitvView:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for McpToolset.
-const (
-	McpToolsetAgent      McpToolset = "agent"
-	McpToolsetCanvas     McpToolset = "canvas"
-	McpToolsetCatalog    McpToolset = "catalog"
-	McpToolsetContext    McpToolset = "context"
-	McpToolsetGeneration McpToolset = "generation"
-	McpToolsetProjects   McpToolset = "projects"
-	McpToolsetScript     McpToolset = "script"
-	McpToolsetTimeline   McpToolset = "timeline"
-	McpToolsetWorkflow   McpToolset = "workflow"
-)
-
-// Valid indicates whether the value is a known member of the McpToolset enum.
-func (e McpToolset) Valid() bool {
-	switch e {
-	case McpToolsetAgent:
-		return true
-	case McpToolsetCanvas:
-		return true
-	case McpToolsetCatalog:
-		return true
-	case McpToolsetContext:
-		return true
-	case McpToolsetGeneration:
-		return true
-	case McpToolsetProjects:
-		return true
-	case McpToolsetScript:
-		return true
-	case McpToolsetTimeline:
-		return true
-	case McpToolsetWorkflow:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MemberPlanPeriod.
-const (
-	MemberPlanPeriodMonth   MemberPlanPeriod = "month"
-	MemberPlanPeriodQuarter MemberPlanPeriod = "quarter"
-	MemberPlanPeriodYear    MemberPlanPeriod = "year"
-)
-
-// Valid indicates whether the value is a known member of the MemberPlanPeriod enum.
-func (e MemberPlanPeriod) Valid() bool {
-	switch e {
-	case MemberPlanPeriodMonth:
-		return true
-	case MemberPlanPeriodQuarter:
-		return true
-	case MemberPlanPeriodYear:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MembershipStatus.
-const (
-	MembershipStatusActive     MembershipStatus = "active"
-	MembershipStatusExpired    MembershipStatus = "expired"
-	MembershipStatusRefunded   MembershipStatus = "refunded"
-	MembershipStatusSuperseded MembershipStatus = "superseded"
-)
-
-// Valid indicates whether the value is a known member of the MembershipStatus enum.
-func (e MembershipStatus) Valid() bool {
-	switch e {
-	case MembershipStatusActive:
-		return true
-	case MembershipStatusExpired:
-		return true
-	case MembershipStatusRefunded:
-		return true
-	case MembershipStatusSuperseded:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for MessageSource.
 const (
 	MessageSourceAnnouncement MessageSource = "announcement"
@@ -2507,6 +2029,39 @@ func (e MessageSource) Valid() bool {
 	case MessageSourceAnnouncement:
 		return true
 	case MessageSourceNotification:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ModelCapabilityRole.
+const (
+	ModelCapabilityRoleAudio      ModelCapabilityRole = "audio"
+	ModelCapabilityRoleFirstFrame ModelCapabilityRole = "first_frame"
+	ModelCapabilityRoleImage      ModelCapabilityRole = "image"
+	ModelCapabilityRoleLastFrame  ModelCapabilityRole = "last_frame"
+	ModelCapabilityRoleReference  ModelCapabilityRole = "reference"
+	ModelCapabilityRoleText       ModelCapabilityRole = "text"
+	ModelCapabilityRoleVideo      ModelCapabilityRole = "video"
+)
+
+// Valid indicates whether the value is a known member of the ModelCapabilityRole enum.
+func (e ModelCapabilityRole) Valid() bool {
+	switch e {
+	case ModelCapabilityRoleAudio:
+		return true
+	case ModelCapabilityRoleFirstFrame:
+		return true
+	case ModelCapabilityRoleImage:
+		return true
+	case ModelCapabilityRoleLastFrame:
+		return true
+	case ModelCapabilityRoleReference:
+		return true
+	case ModelCapabilityRoleText:
+		return true
+	case ModelCapabilityRoleVideo:
 		return true
 	default:
 		return false
@@ -2540,27 +2095,6 @@ func (e MultiAngleOptionsPreset) Valid() bool {
 	case MultiAngleOptionsPresetHighFront:
 		return true
 	case MultiAngleOptionsPresetLowFront:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MyInvitationRole.
-const (
-	MyInvitationRoleAdmin  MyInvitationRole = "admin"
-	MyInvitationRoleEditor MyInvitationRole = "editor"
-	MyInvitationRoleViewer MyInvitationRole = "viewer"
-)
-
-// Valid indicates whether the value is a known member of the MyInvitationRole enum.
-func (e MyInvitationRole) Valid() bool {
-	switch e {
-	case MyInvitationRoleAdmin:
-		return true
-	case MyInvitationRoleEditor:
-		return true
-	case MyInvitationRoleViewer:
 		return true
 	default:
 		return false
@@ -2627,144 +2161,6 @@ func (e NodeTypeConfigKind) Valid() bool {
 	case NodeTypeConfigKindGenerator:
 		return true
 	case NodeTypeConfigKindMaterial:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for OpsTaskKind.
-const (
-	OpsTaskKindExport     OpsTaskKind = "export"
-	OpsTaskKindGeneration OpsTaskKind = "generation"
-	OpsTaskKindRender     OpsTaskKind = "render"
-	OpsTaskKindWorkflow   OpsTaskKind = "workflow"
-)
-
-// Valid indicates whether the value is a known member of the OpsTaskKind enum.
-func (e OpsTaskKind) Valid() bool {
-	switch e {
-	case OpsTaskKindExport:
-		return true
-	case OpsTaskKindGeneration:
-		return true
-	case OpsTaskKindRender:
-		return true
-	case OpsTaskKindWorkflow:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PayParamsKind.
-const (
-	PayParamsKindNone     PayParamsKind = "none"
-	PayParamsKindQrcode   PayParamsKind = "qrcode"
-	PayParamsKindRedirect PayParamsKind = "redirect"
-	PayParamsKindSdk      PayParamsKind = "sdk"
-)
-
-// Valid indicates whether the value is a known member of the PayParamsKind enum.
-func (e PayParamsKind) Valid() bool {
-	switch e {
-	case PayParamsKindNone:
-		return true
-	case PayParamsKindQrcode:
-		return true
-	case PayParamsKindRedirect:
-		return true
-	case PayParamsKindSdk:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PayerOverviewKind.
-const (
-	PayerOverviewKindUser      PayerOverviewKind = "user"
-	PayerOverviewKindWorkspace PayerOverviewKind = "workspace"
-)
-
-// Valid indicates whether the value is a known member of the PayerOverviewKind enum.
-func (e PayerOverviewKind) Valid() bool {
-	switch e {
-	case PayerOverviewKindUser:
-		return true
-	case PayerOverviewKindWorkspace:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PaymentCallbackStage.
-const (
-	AmountMismatch  PaymentCallbackStage = "amount_mismatch"
-	Duplicated      PaymentCallbackStage = "duplicated"
-	FulfilFailed    PaymentCallbackStage = "fulfil_failed"
-	Fulfilled       PaymentCallbackStage = "fulfilled"
-	NotSucceeded    PaymentCallbackStage = "not_succeeded"
-	OrderNotFound   PaymentCallbackStage = "order_not_found"
-	Received        PaymentCallbackStage = "received"
-	SignatureFailed PaymentCallbackStage = "signature_failed"
-)
-
-// Valid indicates whether the value is a known member of the PaymentCallbackStage enum.
-func (e PaymentCallbackStage) Valid() bool {
-	switch e {
-	case AmountMismatch:
-		return true
-	case Duplicated:
-		return true
-	case FulfilFailed:
-		return true
-	case Fulfilled:
-		return true
-	case NotSucceeded:
-		return true
-	case OrderNotFound:
-		return true
-	case Received:
-		return true
-	case SignatureFailed:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PaymentChannelCode.
-const (
-	PaymentChannelCodeAlipay PaymentChannelCode = "alipay"
-	PaymentChannelCodeWechat PaymentChannelCode = "wechat"
-)
-
-// Valid indicates whether the value is a known member of the PaymentChannelCode enum.
-func (e PaymentChannelCode) Valid() bool {
-	switch e {
-	case PaymentChannelCodeAlipay:
-		return true
-	case PaymentChannelCodeWechat:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PaymentChannelStatus.
-const (
-	PaymentChannelStatusDisabled PaymentChannelStatus = "disabled"
-	PaymentChannelStatusEnabled  PaymentChannelStatus = "enabled"
-)
-
-// Valid indicates whether the value is a known member of the PaymentChannelStatus enum.
-func (e PaymentChannelStatus) Valid() bool {
-	switch e {
-	case PaymentChannelStatusDisabled:
-		return true
-	case PaymentChannelStatusEnabled:
 		return true
 	default:
 		return false
@@ -2912,6 +2308,39 @@ func (e ProjectListItemStatus) Valid() bool {
 	}
 }
 
+// Defines values for ProviderProbeResultErrorKind.
+const (
+	ProviderProbeResultErrorKindConnect ProviderProbeResultErrorKind = "connect"
+	ProviderProbeResultErrorKindDns     ProviderProbeResultErrorKind = "dns"
+	ProviderProbeResultErrorKindHttp    ProviderProbeResultErrorKind = "http"
+	ProviderProbeResultErrorKindNone    ProviderProbeResultErrorKind = "none"
+	ProviderProbeResultErrorKindPolicy  ProviderProbeResultErrorKind = "policy"
+	ProviderProbeResultErrorKindStream  ProviderProbeResultErrorKind = "stream"
+	ProviderProbeResultErrorKindTimeout ProviderProbeResultErrorKind = "timeout"
+)
+
+// Valid indicates whether the value is a known member of the ProviderProbeResultErrorKind enum.
+func (e ProviderProbeResultErrorKind) Valid() bool {
+	switch e {
+	case ProviderProbeResultErrorKindConnect:
+		return true
+	case ProviderProbeResultErrorKindDns:
+		return true
+	case ProviderProbeResultErrorKindHttp:
+		return true
+	case ProviderProbeResultErrorKindNone:
+		return true
+	case ProviderProbeResultErrorKindPolicy:
+		return true
+	case ProviderProbeResultErrorKindStream:
+		return true
+	case ProviderProbeResultErrorKindTimeout:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for ProviderRequestLogErrorType.
 const (
 	ProviderRequestLogErrorTypeConnect ProviderRequestLogErrorType = "connect"
@@ -2939,72 +2368,6 @@ func (e ProviderRequestLogErrorType) Valid() bool {
 	case ProviderRequestLogErrorTypeStream:
 		return true
 	case ProviderRequestLogErrorTypeTimeout:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PurchaseOrderPayStatus.
-const (
-	PurchaseOrderPayStatusCancelled PurchaseOrderPayStatus = "cancelled"
-	PurchaseOrderPayStatusExpired   PurchaseOrderPayStatus = "expired"
-	PurchaseOrderPayStatusPaid      PurchaseOrderPayStatus = "paid"
-	PurchaseOrderPayStatusPending   PurchaseOrderPayStatus = "pending"
-	PurchaseOrderPayStatusRefunded  PurchaseOrderPayStatus = "refunded"
-)
-
-// Valid indicates whether the value is a known member of the PurchaseOrderPayStatus enum.
-func (e PurchaseOrderPayStatus) Valid() bool {
-	switch e {
-	case PurchaseOrderPayStatusCancelled:
-		return true
-	case PurchaseOrderPayStatusExpired:
-		return true
-	case PurchaseOrderPayStatusPaid:
-		return true
-	case PurchaseOrderPayStatusPending:
-		return true
-	case PurchaseOrderPayStatusRefunded:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PurchaseOrderType.
-const (
-	PurchaseOrderTypeCreditPackage PurchaseOrderType = "credit_package"
-	PurchaseOrderTypeMembership    PurchaseOrderType = "membership"
-)
-
-// Valid indicates whether the value is a known member of the PurchaseOrderType enum.
-func (e PurchaseOrderType) Valid() bool {
-	switch e {
-	case PurchaseOrderTypeCreditPackage:
-		return true
-	case PurchaseOrderTypeMembership:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for PurchaseQuoteIntent.
-const (
-	New     PurchaseQuoteIntent = "new"
-	Renew   PurchaseQuoteIntent = "renew"
-	Upgrade PurchaseQuoteIntent = "upgrade"
-)
-
-// Valid indicates whether the value is a known member of the PurchaseQuoteIntent enum.
-func (e PurchaseQuoteIntent) Valid() bool {
-	switch e {
-	case New:
-		return true
-	case Renew:
-		return true
-	case Upgrade:
 		return true
 	default:
 		return false
@@ -3047,27 +2410,6 @@ func (e QuickGenerationRequestMode) Valid() bool {
 	}
 }
 
-// Defines values for ReceivedShareResourceType.
-const (
-	ReceivedShareResourceTypeProject     ReceivedShareResourceType = "project"
-	ReceivedShareResourceTypeScriptAsset ReceivedShareResourceType = "script_asset"
-	ReceivedShareResourceTypeTimeline    ReceivedShareResourceType = "timeline"
-)
-
-// Valid indicates whether the value is a known member of the ReceivedShareResourceType enum.
-func (e ReceivedShareResourceType) Valid() bool {
-	switch e {
-	case ReceivedShareResourceTypeProject:
-		return true
-	case ReceivedShareResourceTypeScriptAsset:
-		return true
-	case ReceivedShareResourceTypeTimeline:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for RecentProjectOrigin.
 const (
 	RecentProjectOriginLessThannil RecentProjectOrigin = "<nil>"
@@ -3080,57 +2422,6 @@ func (e RecentProjectOrigin) Valid() bool {
 	case RecentProjectOriginLessThannil:
 		return true
 	case RecentProjectOriginMarketing:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for RefundStatus.
-const (
-	RefundStatusFailed  RefundStatus = "failed"
-	RefundStatusPending RefundStatus = "pending"
-	RefundStatusSuccess RefundStatus = "success"
-)
-
-// Valid indicates whether the value is a known member of the RefundStatus enum.
-func (e RefundStatus) Valid() bool {
-	switch e {
-	case RefundStatusFailed:
-		return true
-	case RefundStatusPending:
-		return true
-	case RefundStatusSuccess:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for RefundEligibilityCode.
-const (
-	AlreadyRequested  RefundEligibilityCode = "already_requested"
-	CreditsUsed       RefundEligibilityCode = "credits_used"
-	GrantMissing      RefundEligibilityCode = "grant_missing"
-	MembershipExpired RefundEligibilityCode = "membership_expired"
-	NotPaid           RefundEligibilityCode = "not_paid"
-	WindowClosed      RefundEligibilityCode = "window_closed"
-)
-
-// Valid indicates whether the value is a known member of the RefundEligibilityCode enum.
-func (e RefundEligibilityCode) Valid() bool {
-	switch e {
-	case AlreadyRequested:
-		return true
-	case CreditsUsed:
-		return true
-	case GrantMissing:
-		return true
-	case MembershipExpired:
-		return true
-	case NotPaid:
-		return true
-	case WindowClosed:
 		return true
 	default:
 		return false
@@ -3314,33 +2605,6 @@ func (e RenderSpecResolution) Valid() bool {
 	case RenderSpecResolutionN1080p:
 		return true
 	case RenderSpecResolutionN720p:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ReviewRecordAction.
-const (
-	ReviewRecordActionApproved   ReviewRecordAction = "approved"
-	ReviewRecordActionFeatured   ReviewRecordAction = "featured"
-	ReviewRecordActionOffline    ReviewRecordAction = "offline"
-	ReviewRecordActionRejected   ReviewRecordAction = "rejected"
-	ReviewRecordActionUnfeatured ReviewRecordAction = "unfeatured"
-)
-
-// Valid indicates whether the value is a known member of the ReviewRecordAction enum.
-func (e ReviewRecordAction) Valid() bool {
-	switch e {
-	case ReviewRecordActionApproved:
-		return true
-	case ReviewRecordActionFeatured:
-		return true
-	case ReviewRecordActionOffline:
-		return true
-	case ReviewRecordActionRejected:
-		return true
-	case ReviewRecordActionUnfeatured:
 		return true
 	default:
 		return false
@@ -3539,84 +2803,21 @@ func (e ScriptLlmCallStatus) Valid() bool {
 	}
 }
 
-// Defines values for SecretFieldAction.
+// Defines values for SecretFieldInputAction.
 const (
-	SecretFieldActionClear   SecretFieldAction = "clear"
-	SecretFieldActionKeep    SecretFieldAction = "keep"
-	SecretFieldActionReplace SecretFieldAction = "replace"
+	SecretFieldInputActionClear   SecretFieldInputAction = "clear"
+	SecretFieldInputActionKeep    SecretFieldInputAction = "keep"
+	SecretFieldInputActionReplace SecretFieldInputAction = "replace"
 )
 
-// Valid indicates whether the value is a known member of the SecretFieldAction enum.
-func (e SecretFieldAction) Valid() bool {
+// Valid indicates whether the value is a known member of the SecretFieldInputAction enum.
+func (e SecretFieldInputAction) Valid() bool {
 	switch e {
-	case SecretFieldActionClear:
+	case SecretFieldInputActionClear:
 		return true
-	case SecretFieldActionKeep:
+	case SecretFieldInputActionKeep:
 		return true
-	case SecretFieldActionReplace:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ShareGranteeType.
-const (
-	ShareGranteeTypeUser      ShareGranteeType = "user"
-	ShareGranteeTypeWorkspace ShareGranteeType = "workspace"
-)
-
-// Valid indicates whether the value is a known member of the ShareGranteeType enum.
-func (e ShareGranteeType) Valid() bool {
-	switch e {
-	case ShareGranteeTypeUser:
-		return true
-	case ShareGranteeTypeWorkspace:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ShareResourceType.
-const (
-	ShareResourceTypeProject     ShareResourceType = "project"
-	ShareResourceTypeScriptAsset ShareResourceType = "script_asset"
-	ShareResourceTypeTimeline    ShareResourceType = "timeline"
-)
-
-// Valid indicates whether the value is a known member of the ShareResourceType enum.
-func (e ShareResourceType) Valid() bool {
-	switch e {
-	case ShareResourceTypeProject:
-		return true
-	case ShareResourceTypeScriptAsset:
-		return true
-	case ShareResourceTypeTimeline:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SharePermission.
-const (
-	SharePermissionEdit     SharePermission = "edit"
-	SharePermissionExport   SharePermission = "export"
-	SharePermissionGenerate SharePermission = "generate"
-	SharePermissionView     SharePermission = "view"
-)
-
-// Valid indicates whether the value is a known member of the SharePermission enum.
-func (e SharePermission) Valid() bool {
-	switch e {
-	case SharePermissionEdit:
-		return true
-	case SharePermissionExport:
-		return true
-	case SharePermissionGenerate:
-		return true
-	case SharePermissionView:
+	case SecretFieldInputActionReplace:
 		return true
 	default:
 		return false
@@ -4658,24 +3859,6 @@ func (e UpscaleOptionsLevel) Valid() bool {
 	}
 }
 
-// Defines values for UsageEntryType.
-const (
-	UsageEntryTypeConsume UsageEntryType = "consume"
-	UsageEntryTypeRefund  UsageEntryType = "refund"
-)
-
-// Valid indicates whether the value is a known member of the UsageEntryType enum.
-func (e UsageEntryType) Valid() bool {
-	switch e {
-	case UsageEntryTypeConsume:
-		return true
-	case UsageEntryTypeRefund:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for VersionConflictErrorDetailsCurrentSource.
 const (
 	VersionConflictErrorDetailsCurrentSourceAgent  VersionConflictErrorDetailsCurrentSource = "agent"
@@ -4894,16 +4077,16 @@ func (e WorkflowRunStatus) Valid() bool {
 
 // Defines values for WorkspaceKind.
 const (
-	WorkspaceKindPersonal WorkspaceKind = "personal"
-	WorkspaceKindTeam     WorkspaceKind = "team"
+	Personal WorkspaceKind = "personal"
+	Team     WorkspaceKind = "team"
 )
 
 // Valid indicates whether the value is a known member of the WorkspaceKind enum.
 func (e WorkspaceKind) Valid() bool {
 	switch e {
-	case WorkspaceKindPersonal:
+	case Personal:
 		return true
-	case WorkspaceKindTeam:
+	case Team:
 		return true
 	default:
 		return false
@@ -4934,90 +4117,6 @@ func (e WorkspaceRole) Valid() bool {
 	}
 }
 
-// Defines values for WorkspaceInvitationRole.
-const (
-	WorkspaceInvitationRoleAdmin  WorkspaceInvitationRole = "admin"
-	WorkspaceInvitationRoleEditor WorkspaceInvitationRole = "editor"
-	WorkspaceInvitationRoleViewer WorkspaceInvitationRole = "viewer"
-)
-
-// Valid indicates whether the value is a known member of the WorkspaceInvitationRole enum.
-func (e WorkspaceInvitationRole) Valid() bool {
-	switch e {
-	case WorkspaceInvitationRoleAdmin:
-		return true
-	case WorkspaceInvitationRoleEditor:
-		return true
-	case WorkspaceInvitationRoleViewer:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for WorkspaceInvitationTargetKind.
-const (
-	WorkspaceInvitationTargetKindEmail WorkspaceInvitationTargetKind = "email"
-	WorkspaceInvitationTargetKindPhone WorkspaceInvitationTargetKind = "phone"
-)
-
-// Valid indicates whether the value is a known member of the WorkspaceInvitationTargetKind enum.
-func (e WorkspaceInvitationTargetKind) Valid() bool {
-	switch e {
-	case WorkspaceInvitationTargetKindEmail:
-		return true
-	case WorkspaceInvitationTargetKindPhone:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for WorkspaceMemberRole.
-const (
-	WorkspaceMemberRoleAdmin  WorkspaceMemberRole = "admin"
-	WorkspaceMemberRoleEditor WorkspaceMemberRole = "editor"
-	WorkspaceMemberRoleOwner  WorkspaceMemberRole = "owner"
-	WorkspaceMemberRoleViewer WorkspaceMemberRole = "viewer"
-)
-
-// Valid indicates whether the value is a known member of the WorkspaceMemberRole enum.
-func (e WorkspaceMemberRole) Valid() bool {
-	switch e {
-	case WorkspaceMemberRoleAdmin:
-		return true
-	case WorkspaceMemberRoleEditor:
-		return true
-	case WorkspaceMemberRoleOwner:
-		return true
-	case WorkspaceMemberRoleViewer:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ThumbWidth.
-const (
-	ThumbWidthN160 ThumbWidth = 160
-	ThumbWidthN320 ThumbWidth = 320
-	ThumbWidthN640 ThumbWidth = 640
-)
-
-// Valid indicates whether the value is a known member of the ThumbWidth enum.
-func (e ThumbWidth) Valid() bool {
-	switch e {
-	case ThumbWidthN160:
-		return true
-	case ThumbWidthN320:
-		return true
-	case ThumbWidthN640:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for AdminSetAdminStatusJSONBodyStatus.
 const (
 	AdminSetAdminStatusJSONBodyStatusActive   AdminSetAdminStatusJSONBodyStatus = "active"
@@ -5030,27 +4129,6 @@ func (e AdminSetAdminStatusJSONBodyStatus) Valid() bool {
 	case AdminSetAdminStatusJSONBodyStatusActive:
 		return true
 	case AdminSetAdminStatusJSONBodyStatusDisabled:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListAnnouncementsParamsStatus.
-const (
-	AdminListAnnouncementsParamsStatusDraft     AdminListAnnouncementsParamsStatus = "draft"
-	AdminListAnnouncementsParamsStatusOffline   AdminListAnnouncementsParamsStatus = "offline"
-	AdminListAnnouncementsParamsStatusPublished AdminListAnnouncementsParamsStatus = "published"
-)
-
-// Valid indicates whether the value is a known member of the AdminListAnnouncementsParamsStatus enum.
-func (e AdminListAnnouncementsParamsStatus) Valid() bool {
-	switch e {
-	case AdminListAnnouncementsParamsStatusDraft:
-		return true
-	case AdminListAnnouncementsParamsStatusOffline:
-		return true
-	case AdminListAnnouncementsParamsStatusPublished:
 		return true
 	default:
 		return false
@@ -5078,261 +4156,21 @@ func (e AdminListAuditLogsParamsActorType) Valid() bool {
 	}
 }
 
-// Defines values for AdminListBannersParamsPosition.
+// Defines values for AdminListMaterialsParamsType.
 const (
-	AdminListBannersParamsPositionHome  AdminListBannersParamsPosition = "home"
-	AdminListBannersParamsPositionVideo AdminListBannersParamsPosition = "video"
+	AdminListMaterialsParamsTypeCamera AdminListMaterialsParamsType = "camera"
+	AdminListMaterialsParamsTypeEffect AdminListMaterialsParamsType = "effect"
+	AdminListMaterialsParamsTypeStyle  AdminListMaterialsParamsType = "style"
 )
 
-// Valid indicates whether the value is a known member of the AdminListBannersParamsPosition enum.
-func (e AdminListBannersParamsPosition) Valid() bool {
+// Valid indicates whether the value is a known member of the AdminListMaterialsParamsType enum.
+func (e AdminListMaterialsParamsType) Valid() bool {
 	switch e {
-	case AdminListBannersParamsPositionHome:
+	case AdminListMaterialsParamsTypeCamera:
 		return true
-	case AdminListBannersParamsPositionVideo:
+	case AdminListMaterialsParamsTypeEffect:
 		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SearchOrdersParamsType.
-const (
-	SearchOrdersParamsTypeCreditPackage SearchOrdersParamsType = "credit_package"
-	SearchOrdersParamsTypeMembership    SearchOrdersParamsType = "membership"
-)
-
-// Valid indicates whether the value is a known member of the SearchOrdersParamsType enum.
-func (e SearchOrdersParamsType) Valid() bool {
-	switch e {
-	case SearchOrdersParamsTypeCreditPackage:
-		return true
-	case SearchOrdersParamsTypeMembership:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SearchOrdersParamsStatus.
-const (
-	SearchOrdersParamsStatusCancelled SearchOrdersParamsStatus = "cancelled"
-	SearchOrdersParamsStatusExpired   SearchOrdersParamsStatus = "expired"
-	SearchOrdersParamsStatusPaid      SearchOrdersParamsStatus = "paid"
-	SearchOrdersParamsStatusPending   SearchOrdersParamsStatus = "pending"
-	SearchOrdersParamsStatusRefunded  SearchOrdersParamsStatus = "refunded"
-)
-
-// Valid indicates whether the value is a known member of the SearchOrdersParamsStatus enum.
-func (e SearchOrdersParamsStatus) Valid() bool {
-	switch e {
-	case SearchOrdersParamsStatusCancelled:
-		return true
-	case SearchOrdersParamsStatusExpired:
-		return true
-	case SearchOrdersParamsStatusPaid:
-		return true
-	case SearchOrdersParamsStatusPending:
-		return true
-	case SearchOrdersParamsStatusRefunded:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SearchOrdersParamsReconcile.
-const (
-	SearchOrdersParamsReconcileDiff    SearchOrdersParamsReconcile = "diff"
-	SearchOrdersParamsReconcileMatched SearchOrdersParamsReconcile = "matched"
-	SearchOrdersParamsReconcileNone    SearchOrdersParamsReconcile = "none"
-	SearchOrdersParamsReconcilePending SearchOrdersParamsReconcile = "pending"
-)
-
-// Valid indicates whether the value is a known member of the SearchOrdersParamsReconcile enum.
-func (e SearchOrdersParamsReconcile) Valid() bool {
-	switch e {
-	case SearchOrdersParamsReconcileDiff:
-		return true
-	case SearchOrdersParamsReconcileMatched:
-		return true
-	case SearchOrdersParamsReconcileNone:
-		return true
-	case SearchOrdersParamsReconcilePending:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for MarkReconcileJSONBodyStatus.
-const (
-	MarkReconcileJSONBodyStatusDiff    MarkReconcileJSONBodyStatus = "diff"
-	MarkReconcileJSONBodyStatusMatched MarkReconcileJSONBodyStatus = "matched"
-	MarkReconcileJSONBodyStatusNone    MarkReconcileJSONBodyStatus = "none"
-	MarkReconcileJSONBodyStatusPending MarkReconcileJSONBodyStatus = "pending"
-)
-
-// Valid indicates whether the value is a known member of the MarkReconcileJSONBodyStatus enum.
-func (e MarkReconcileJSONBodyStatus) Valid() bool {
-	switch e {
-	case MarkReconcileJSONBodyStatusDiff:
-		return true
-	case MarkReconcileJSONBodyStatusMatched:
-		return true
-	case MarkReconcileJSONBodyStatusNone:
-		return true
-	case MarkReconcileJSONBodyStatusPending:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SaveMemberPlanJSONBodyPeriod.
-const (
-	SaveMemberPlanJSONBodyPeriodMonth   SaveMemberPlanJSONBodyPeriod = "month"
-	SaveMemberPlanJSONBodyPeriodQuarter SaveMemberPlanJSONBodyPeriod = "quarter"
-	SaveMemberPlanJSONBodyPeriodYear    SaveMemberPlanJSONBodyPeriod = "year"
-)
-
-// Valid indicates whether the value is a known member of the SaveMemberPlanJSONBodyPeriod enum.
-func (e SaveMemberPlanJSONBodyPeriod) Valid() bool {
-	switch e {
-	case SaveMemberPlanJSONBodyPeriodMonth:
-		return true
-	case SaveMemberPlanJSONBodyPeriodQuarter:
-		return true
-	case SaveMemberPlanJSONBodyPeriodYear:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListDeadLettersParamsStatus.
-const (
-	AdminListDeadLettersParamsStatusDiscarded AdminListDeadLettersParamsStatus = "discarded"
-	AdminListDeadLettersParamsStatusPending   AdminListDeadLettersParamsStatus = "pending"
-	AdminListDeadLettersParamsStatusReplayed  AdminListDeadLettersParamsStatus = "replayed"
-)
-
-// Valid indicates whether the value is a known member of the AdminListDeadLettersParamsStatus enum.
-func (e AdminListDeadLettersParamsStatus) Valid() bool {
-	switch e {
-	case AdminListDeadLettersParamsStatusDiscarded:
-		return true
-	case AdminListDeadLettersParamsStatusPending:
-		return true
-	case AdminListDeadLettersParamsStatusReplayed:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListMcpGrantsParamsSource.
-const (
-	AdminListMcpGrantsParamsSourceAccessKey AdminListMcpGrantsParamsSource = "access_key"
-	AdminListMcpGrantsParamsSourceOauth     AdminListMcpGrantsParamsSource = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the AdminListMcpGrantsParamsSource enum.
-func (e AdminListMcpGrantsParamsSource) Valid() bool {
-	switch e {
-	case AdminListMcpGrantsParamsSourceAccessKey:
-		return true
-	case AdminListMcpGrantsParamsSourceOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListMcpGrantsParamsStatus.
-const (
-	AdminListMcpGrantsParamsStatusActive  AdminListMcpGrantsParamsStatus = "active"
-	AdminListMcpGrantsParamsStatusRevoked AdminListMcpGrantsParamsStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the AdminListMcpGrantsParamsStatus enum.
-func (e AdminListMcpGrantsParamsStatus) Valid() bool {
-	switch e {
-	case AdminListMcpGrantsParamsStatusActive:
-		return true
-	case AdminListMcpGrantsParamsStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListMcpGrantsParamsRegistration.
-const (
-	AdminListMcpGrantsParamsRegistrationCimd AdminListMcpGrantsParamsRegistration = "cimd"
-	AdminListMcpGrantsParamsRegistrationDcr  AdminListMcpGrantsParamsRegistration = "dcr"
-)
-
-// Valid indicates whether the value is a known member of the AdminListMcpGrantsParamsRegistration enum.
-func (e AdminListMcpGrantsParamsRegistration) Valid() bool {
-	switch e {
-	case AdminListMcpGrantsParamsRegistrationCimd:
-		return true
-	case AdminListMcpGrantsParamsRegistrationDcr:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminMcpStatsParamsSource.
-const (
-	AdminMcpStatsParamsSourceAccessKey AdminMcpStatsParamsSource = "access_key"
-	AdminMcpStatsParamsSourceOauth     AdminMcpStatsParamsSource = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the AdminMcpStatsParamsSource enum.
-func (e AdminMcpStatsParamsSource) Valid() bool {
-	switch e {
-	case AdminMcpStatsParamsSourceAccessKey:
-		return true
-	case AdminMcpStatsParamsSourceOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminMcpStatsParamsStatus.
-const (
-	AdminMcpStatsParamsStatusActive  AdminMcpStatsParamsStatus = "active"
-	AdminMcpStatsParamsStatusRevoked AdminMcpStatsParamsStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the AdminMcpStatsParamsStatus enum.
-func (e AdminMcpStatsParamsStatus) Valid() bool {
-	switch e {
-	case AdminMcpStatsParamsStatusActive:
-		return true
-	case AdminMcpStatsParamsStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminMcpStatsParamsRegistration.
-const (
-	AdminMcpStatsParamsRegistrationCimd AdminMcpStatsParamsRegistration = "cimd"
-	AdminMcpStatsParamsRegistrationDcr  AdminMcpStatsParamsRegistration = "dcr"
-)
-
-// Valid indicates whether the value is a known member of the AdminMcpStatsParamsRegistration enum.
-func (e AdminMcpStatsParamsRegistration) Valid() bool {
-	switch e {
-	case AdminMcpStatsParamsRegistrationCimd:
-		return true
-	case AdminMcpStatsParamsRegistrationDcr:
+	case AdminListMaterialsParamsTypeStyle:
 		return true
 	default:
 		return false
@@ -5362,19 +4200,19 @@ func (e AdminUploadMediaMultipartBodyExpectKind) Valid() bool {
 
 // Defines values for AdminUploadMediaMultipartBodyPurpose.
 const (
-	AdminUploadMediaMultipartBodyPurposeAvatar        AdminUploadMediaMultipartBodyPurpose = "avatar"
-	AdminUploadMediaMultipartBodyPurposeBanner        AdminUploadMediaMultipartBodyPurpose = "banner"
-	AdminUploadMediaMultipartBodyPurposeMaterialCover AdminUploadMediaMultipartBodyPurpose = "material_cover"
+	Avatar        AdminUploadMediaMultipartBodyPurpose = "avatar"
+	Banner        AdminUploadMediaMultipartBodyPurpose = "banner"
+	MaterialCover AdminUploadMediaMultipartBodyPurpose = "material_cover"
 )
 
 // Valid indicates whether the value is a known member of the AdminUploadMediaMultipartBodyPurpose enum.
 func (e AdminUploadMediaMultipartBodyPurpose) Valid() bool {
 	switch e {
-	case AdminUploadMediaMultipartBodyPurposeAvatar:
+	case Avatar:
 		return true
-	case AdminUploadMediaMultipartBodyPurposeBanner:
+	case Banner:
 		return true
-	case AdminUploadMediaMultipartBodyPurposeMaterialCover:
+	case MaterialCover:
 		return true
 	default:
 		return false
@@ -5402,180 +4240,33 @@ func (e AdminDownloadMediaParamsW) Valid() bool {
 	}
 }
 
-// Defines values for AdminCompensateTaskParamsKind.
+// Defines values for AdminSaveModelCapabilityJSONBodyRole.
 const (
-	AdminCompensateTaskParamsKindGeneration AdminCompensateTaskParamsKind = "generation"
-	AdminCompensateTaskParamsKindRender     AdminCompensateTaskParamsKind = "render"
+	AdminSaveModelCapabilityJSONBodyRoleAudio      AdminSaveModelCapabilityJSONBodyRole = "audio"
+	AdminSaveModelCapabilityJSONBodyRoleFirstFrame AdminSaveModelCapabilityJSONBodyRole = "first_frame"
+	AdminSaveModelCapabilityJSONBodyRoleImage      AdminSaveModelCapabilityJSONBodyRole = "image"
+	AdminSaveModelCapabilityJSONBodyRoleLastFrame  AdminSaveModelCapabilityJSONBodyRole = "last_frame"
+	AdminSaveModelCapabilityJSONBodyRoleReference  AdminSaveModelCapabilityJSONBodyRole = "reference"
+	AdminSaveModelCapabilityJSONBodyRoleText       AdminSaveModelCapabilityJSONBodyRole = "text"
+	AdminSaveModelCapabilityJSONBodyRoleVideo      AdminSaveModelCapabilityJSONBodyRole = "video"
 )
 
-// Valid indicates whether the value is a known member of the AdminCompensateTaskParamsKind enum.
-func (e AdminCompensateTaskParamsKind) Valid() bool {
+// Valid indicates whether the value is a known member of the AdminSaveModelCapabilityJSONBodyRole enum.
+func (e AdminSaveModelCapabilityJSONBodyRole) Valid() bool {
 	switch e {
-	case AdminCompensateTaskParamsKindGeneration:
+	case AdminSaveModelCapabilityJSONBodyRoleAudio:
 		return true
-	case AdminCompensateTaskParamsKindRender:
+	case AdminSaveModelCapabilityJSONBodyRoleFirstFrame:
 		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListReconcileDiffs200JSONResponseBodyPayStatus.
-const (
-	ListReconcileDiffs200JSONResponseBodyPayStatusCancelled ListReconcileDiffs200JSONResponseBodyPayStatus = "cancelled"
-	ListReconcileDiffs200JSONResponseBodyPayStatusExpired   ListReconcileDiffs200JSONResponseBodyPayStatus = "expired"
-	ListReconcileDiffs200JSONResponseBodyPayStatusPaid      ListReconcileDiffs200JSONResponseBodyPayStatus = "paid"
-	ListReconcileDiffs200JSONResponseBodyPayStatusPending   ListReconcileDiffs200JSONResponseBodyPayStatus = "pending"
-	ListReconcileDiffs200JSONResponseBodyPayStatusRefunded  ListReconcileDiffs200JSONResponseBodyPayStatus = "refunded"
-)
-
-// Valid indicates whether the value is a known member of the ListReconcileDiffs200JSONResponseBodyPayStatus enum.
-func (e ListReconcileDiffs200JSONResponseBodyPayStatus) Valid() bool {
-	switch e {
-	case ListReconcileDiffs200JSONResponseBodyPayStatusCancelled:
+	case AdminSaveModelCapabilityJSONBodyRoleImage:
 		return true
-	case ListReconcileDiffs200JSONResponseBodyPayStatusExpired:
+	case AdminSaveModelCapabilityJSONBodyRoleLastFrame:
 		return true
-	case ListReconcileDiffs200JSONResponseBodyPayStatusPaid:
+	case AdminSaveModelCapabilityJSONBodyRoleReference:
 		return true
-	case ListReconcileDiffs200JSONResponseBodyPayStatusPending:
+	case AdminSaveModelCapabilityJSONBodyRoleText:
 		return true
-	case ListReconcileDiffs200JSONResponseBodyPayStatusRefunded:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListReconcileDiffs200JSONResponseBodyReconcileStatus.
-const (
-	ListReconcileDiffs200JSONResponseBodyReconcileStatusDiff    ListReconcileDiffs200JSONResponseBodyReconcileStatus = "diff"
-	ListReconcileDiffs200JSONResponseBodyReconcileStatusMatched ListReconcileDiffs200JSONResponseBodyReconcileStatus = "matched"
-	ListReconcileDiffs200JSONResponseBodyReconcileStatusNone    ListReconcileDiffs200JSONResponseBodyReconcileStatus = "none"
-	ListReconcileDiffs200JSONResponseBodyReconcileStatusPending ListReconcileDiffs200JSONResponseBodyReconcileStatus = "pending"
-)
-
-// Valid indicates whether the value is a known member of the ListReconcileDiffs200JSONResponseBodyReconcileStatus enum.
-func (e ListReconcileDiffs200JSONResponseBodyReconcileStatus) Valid() bool {
-	switch e {
-	case ListReconcileDiffs200JSONResponseBodyReconcileStatusDiff:
-		return true
-	case ListReconcileDiffs200JSONResponseBodyReconcileStatusMatched:
-		return true
-	case ListReconcileDiffs200JSONResponseBodyReconcileStatusNone:
-		return true
-	case ListReconcileDiffs200JSONResponseBodyReconcileStatusPending:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListReconcileDiffs200JSONResponseBodyType.
-const (
-	ListReconcileDiffs200JSONResponseBodyTypeCreditPackage ListReconcileDiffs200JSONResponseBodyType = "credit_package"
-	ListReconcileDiffs200JSONResponseBodyTypeMembership    ListReconcileDiffs200JSONResponseBodyType = "membership"
-)
-
-// Valid indicates whether the value is a known member of the ListReconcileDiffs200JSONResponseBodyType enum.
-func (e ListReconcileDiffs200JSONResponseBodyType) Valid() bool {
-	switch e {
-	case ListReconcileDiffs200JSONResponseBodyTypeCreditPackage:
-		return true
-	case ListReconcileDiffs200JSONResponseBodyTypeMembership:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SavePaymentChannelJSONBodyCode.
-const (
-	SavePaymentChannelJSONBodyCodeAlipay SavePaymentChannelJSONBodyCode = "alipay"
-	SavePaymentChannelJSONBodyCodeWechat SavePaymentChannelJSONBodyCode = "wechat"
-)
-
-// Valid indicates whether the value is a known member of the SavePaymentChannelJSONBodyCode enum.
-func (e SavePaymentChannelJSONBodyCode) Valid() bool {
-	switch e {
-	case SavePaymentChannelJSONBodyCodeAlipay:
-		return true
-	case SavePaymentChannelJSONBodyCodeWechat:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SavePaymentChannelJSONBodyStatus.
-const (
-	SavePaymentChannelJSONBodyStatusDisabled SavePaymentChannelJSONBodyStatus = "disabled"
-	SavePaymentChannelJSONBodyStatusEnabled  SavePaymentChannelJSONBodyStatus = "enabled"
-)
-
-// Valid indicates whether the value is a known member of the SavePaymentChannelJSONBodyStatus enum.
-func (e SavePaymentChannelJSONBodyStatus) Valid() bool {
-	switch e {
-	case SavePaymentChannelJSONBodyStatusDisabled:
-		return true
-	case SavePaymentChannelJSONBodyStatusEnabled:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListProjectsParamsStatus.
-const (
-	AdminListProjectsParamsStatusActive  AdminListProjectsParamsStatus = "active"
-	AdminListProjectsParamsStatusDeleted AdminListProjectsParamsStatus = "deleted"
-)
-
-// Valid indicates whether the value is a known member of the AdminListProjectsParamsStatus enum.
-func (e AdminListProjectsParamsStatus) Valid() bool {
-	switch e {
-	case AdminListProjectsParamsStatusActive:
-		return true
-	case AdminListProjectsParamsStatusDeleted:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminGetProject200JSONResponseBodyStatus.
-const (
-	AdminGetProject200JSONResponseBodyStatusActive  AdminGetProject200JSONResponseBodyStatus = "active"
-	AdminGetProject200JSONResponseBodyStatusDeleted AdminGetProject200JSONResponseBodyStatus = "deleted"
-)
-
-// Valid indicates whether the value is a known member of the AdminGetProject200JSONResponseBodyStatus enum.
-func (e AdminGetProject200JSONResponseBodyStatus) Valid() bool {
-	switch e {
-	case AdminGetProject200JSONResponseBodyStatusActive:
-		return true
-	case AdminGetProject200JSONResponseBodyStatusDeleted:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminProjectActionJSONBodyAction.
-const (
-	AdminProjectActionJSONBodyActionDelete  AdminProjectActionJSONBodyAction = "delete"
-	AdminProjectActionJSONBodyActionRename  AdminProjectActionJSONBodyAction = "rename"
-	AdminProjectActionJSONBodyActionRestore AdminProjectActionJSONBodyAction = "restore"
-)
-
-// Valid indicates whether the value is a known member of the AdminProjectActionJSONBodyAction enum.
-func (e AdminProjectActionJSONBodyAction) Valid() bool {
-	switch e {
-	case AdminProjectActionJSONBodyActionDelete:
-		return true
-	case AdminProjectActionJSONBodyActionRename:
-		return true
-	case AdminProjectActionJSONBodyActionRestore:
+	case AdminSaveModelCapabilityJSONBodyRoleVideo:
 		return true
 	default:
 		return false
@@ -5657,117 +4348,6 @@ func (e AdminStatsSeriesParamsMetric) Valid() bool {
 	}
 }
 
-// Defines values for AdminListTasksParamsKind.
-const (
-	AdminListTasksParamsKindExport     AdminListTasksParamsKind = "export"
-	AdminListTasksParamsKindGeneration AdminListTasksParamsKind = "generation"
-	AdminListTasksParamsKindRender     AdminListTasksParamsKind = "render"
-	AdminListTasksParamsKindWorkflow   AdminListTasksParamsKind = "workflow"
-)
-
-// Valid indicates whether the value is a known member of the AdminListTasksParamsKind enum.
-func (e AdminListTasksParamsKind) Valid() bool {
-	switch e {
-	case AdminListTasksParamsKindExport:
-		return true
-	case AdminListTasksParamsKindGeneration:
-		return true
-	case AdminListTasksParamsKindRender:
-		return true
-	case AdminListTasksParamsKindWorkflow:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminListWorksParamsStatus.
-const (
-	AdminListWorksParamsStatusApproved AdminListWorksParamsStatus = "approved"
-	AdminListWorksParamsStatusPending  AdminListWorksParamsStatus = "pending"
-	AdminListWorksParamsStatusRejected AdminListWorksParamsStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the AdminListWorksParamsStatus enum.
-func (e AdminListWorksParamsStatus) Valid() bool {
-	switch e {
-	case AdminListWorksParamsStatusApproved:
-		return true
-	case AdminListWorksParamsStatusPending:
-		return true
-	case AdminListWorksParamsStatusRejected:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminGetWork200JSONResponseBodyReviewStatus.
-const (
-	AdminGetWork200JSONResponseBodyReviewStatusApproved AdminGetWork200JSONResponseBodyReviewStatus = "approved"
-	AdminGetWork200JSONResponseBodyReviewStatusPending  AdminGetWork200JSONResponseBodyReviewStatus = "pending"
-	AdminGetWork200JSONResponseBodyReviewStatusRejected AdminGetWork200JSONResponseBodyReviewStatus = "rejected"
-)
-
-// Valid indicates whether the value is a known member of the AdminGetWork200JSONResponseBodyReviewStatus enum.
-func (e AdminGetWork200JSONResponseBodyReviewStatus) Valid() bool {
-	switch e {
-	case AdminGetWork200JSONResponseBodyReviewStatusApproved:
-		return true
-	case AdminGetWork200JSONResponseBodyReviewStatusPending:
-		return true
-	case AdminGetWork200JSONResponseBodyReviewStatusRejected:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminGetWork200JSONResponseBodySourceType.
-const (
-	AdminGetWork200JSONResponseBodySourceTypeGeneration AdminGetWork200JSONResponseBodySourceType = "generation"
-	AdminGetWork200JSONResponseBodySourceTypeRender     AdminGetWork200JSONResponseBodySourceType = "render"
-)
-
-// Valid indicates whether the value is a known member of the AdminGetWork200JSONResponseBodySourceType enum.
-func (e AdminGetWork200JSONResponseBodySourceType) Valid() bool {
-	switch e {
-	case AdminGetWork200JSONResponseBodySourceTypeGeneration:
-		return true
-	case AdminGetWork200JSONResponseBodySourceTypeRender:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for AdminReviewWorkJSONBodyAction.
-const (
-	AdminReviewWorkJSONBodyActionApproved   AdminReviewWorkJSONBodyAction = "approved"
-	AdminReviewWorkJSONBodyActionFeatured   AdminReviewWorkJSONBodyAction = "featured"
-	AdminReviewWorkJSONBodyActionOffline    AdminReviewWorkJSONBodyAction = "offline"
-	AdminReviewWorkJSONBodyActionRejected   AdminReviewWorkJSONBodyAction = "rejected"
-	AdminReviewWorkJSONBodyActionUnfeatured AdminReviewWorkJSONBodyAction = "unfeatured"
-)
-
-// Valid indicates whether the value is a known member of the AdminReviewWorkJSONBodyAction enum.
-func (e AdminReviewWorkJSONBodyAction) Valid() bool {
-	switch e {
-	case AdminReviewWorkJSONBodyActionApproved:
-		return true
-	case AdminReviewWorkJSONBodyActionFeatured:
-		return true
-	case AdminReviewWorkJSONBodyActionOffline:
-		return true
-	case AdminReviewWorkJSONBodyActionRejected:
-		return true
-	case AdminReviewWorkJSONBodyActionUnfeatured:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for ListAgentSkillsParamsScene.
 const (
 	ListAgentSkillsParamsSceneGeneral   ListAgentSkillsParamsScene = "general"
@@ -5801,27 +4381,6 @@ func (e AgentSkillCoverParamsW) Valid() bool {
 	case AgentSkillCoverParamsWN320:
 		return true
 	case AgentSkillCoverParamsWN640:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SendVerificationCodeJSONBodyPurpose.
-const (
-	Login         SendVerificationCodeJSONBodyPurpose = "login"
-	Register      SendVerificationCodeJSONBodyPurpose = "register"
-	ResetPassword SendVerificationCodeJSONBodyPurpose = "reset_password"
-)
-
-// Valid indicates whether the value is a known member of the SendVerificationCodeJSONBodyPurpose enum.
-func (e SendVerificationCodeJSONBodyPurpose) Valid() bool {
-	switch e {
-	case Login:
-		return true
-	case Register:
-		return true
-	case ResetPassword:
 		return true
 	default:
 		return false
@@ -5864,33 +4423,6 @@ func (e ListCreationsParamsResultType) Valid() bool {
 	case ListCreationsParamsResultTypeImage:
 		return true
 	case ListCreationsParamsResultTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListCreditTransactions200JSONResponseBodyItemsType.
-const (
-	ListCreditTransactions200JSONResponseBodyItemsTypeAdjust  ListCreditTransactions200JSONResponseBodyItemsType = "adjust"
-	ListCreditTransactions200JSONResponseBodyItemsTypeConsume ListCreditTransactions200JSONResponseBodyItemsType = "consume"
-	ListCreditTransactions200JSONResponseBodyItemsTypeExpire  ListCreditTransactions200JSONResponseBodyItemsType = "expire"
-	ListCreditTransactions200JSONResponseBodyItemsTypeGrant   ListCreditTransactions200JSONResponseBodyItemsType = "grant"
-	ListCreditTransactions200JSONResponseBodyItemsTypeRefund  ListCreditTransactions200JSONResponseBodyItemsType = "refund"
-)
-
-// Valid indicates whether the value is a known member of the ListCreditTransactions200JSONResponseBodyItemsType enum.
-func (e ListCreditTransactions200JSONResponseBodyItemsType) Valid() bool {
-	switch e {
-	case ListCreditTransactions200JSONResponseBodyItemsTypeAdjust:
-		return true
-	case ListCreditTransactions200JSONResponseBodyItemsTypeConsume:
-		return true
-	case ListCreditTransactions200JSONResponseBodyItemsTypeExpire:
-		return true
-	case ListCreditTransactions200JSONResponseBodyItemsTypeGrant:
-		return true
-	case ListCreditTransactions200JSONResponseBodyItemsTypeRefund:
 		return true
 	default:
 		return false
@@ -6152,42 +4684,6 @@ func (e MarkMessageReadJSONBodySource) Valid() bool {
 	case MarkMessageReadJSONBodySourceAnnouncement:
 		return true
 	case MarkMessageReadJSONBodySourceNotification:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateOrderJSONBodyKind.
-const (
-	CreateOrderJSONBodyKindCreditPackage CreateOrderJSONBodyKind = "credit_package"
-	CreateOrderJSONBodyKindMembership    CreateOrderJSONBodyKind = "membership"
-)
-
-// Valid indicates whether the value is a known member of the CreateOrderJSONBodyKind enum.
-func (e CreateOrderJSONBodyKind) Valid() bool {
-	switch e {
-	case CreateOrderJSONBodyKindCreditPackage:
-		return true
-	case CreateOrderJSONBodyKindMembership:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreatePaymentJSONBodyChannel.
-const (
-	CreatePaymentJSONBodyChannelAlipay CreatePaymentJSONBodyChannel = "alipay"
-	CreatePaymentJSONBodyChannelWechat CreatePaymentJSONBodyChannel = "wechat"
-)
-
-// Valid indicates whether the value is a known member of the CreatePaymentJSONBodyChannel enum.
-func (e CreatePaymentJSONBodyChannel) Valid() bool {
-	switch e {
-	case CreatePaymentJSONBodyChannelAlipay:
-		return true
-	case CreatePaymentJSONBodyChannelWechat:
 		return true
 	default:
 		return false
@@ -6533,90 +5029,6 @@ func (e ComposeScriptPromptsJSONBodySource) Valid() bool {
 	}
 }
 
-// Defines values for OpenSharedResourceParamsResourceType.
-const (
-	OpenSharedResourceParamsResourceTypeProject     OpenSharedResourceParamsResourceType = "project"
-	OpenSharedResourceParamsResourceTypeScriptAsset OpenSharedResourceParamsResourceType = "script_asset"
-	OpenSharedResourceParamsResourceTypeTimeline    OpenSharedResourceParamsResourceType = "timeline"
-)
-
-// Valid indicates whether the value is a known member of the OpenSharedResourceParamsResourceType enum.
-func (e OpenSharedResourceParamsResourceType) Valid() bool {
-	switch e {
-	case OpenSharedResourceParamsResourceTypeProject:
-		return true
-	case OpenSharedResourceParamsResourceTypeScriptAsset:
-		return true
-	case OpenSharedResourceParamsResourceTypeTimeline:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListShowcaseParamsType.
-const (
-	ListShowcaseParamsTypeAudio ListShowcaseParamsType = "audio"
-	ListShowcaseParamsTypeImage ListShowcaseParamsType = "image"
-	ListShowcaseParamsTypeVideo ListShowcaseParamsType = "video"
-)
-
-// Valid indicates whether the value is a known member of the ListShowcaseParamsType enum.
-func (e ListShowcaseParamsType) Valid() bool {
-	switch e {
-	case ListShowcaseParamsTypeAudio:
-		return true
-	case ListShowcaseParamsTypeImage:
-		return true
-	case ListShowcaseParamsTypeVideo:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ShowcaseCoverParamsW.
-const (
-	ShowcaseCoverParamsWN160 ShowcaseCoverParamsW = 160
-	ShowcaseCoverParamsWN320 ShowcaseCoverParamsW = 320
-	ShowcaseCoverParamsWN640 ShowcaseCoverParamsW = 640
-)
-
-// Valid indicates whether the value is a known member of the ShowcaseCoverParamsW enum.
-func (e ShowcaseCoverParamsW) Valid() bool {
-	switch e {
-	case ShowcaseCoverParamsWN160:
-		return true
-	case ShowcaseCoverParamsWN320:
-		return true
-	case ShowcaseCoverParamsWN640:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ShowcaseMediaParamsW.
-const (
-	ShowcaseMediaParamsWN160 ShowcaseMediaParamsW = 160
-	ShowcaseMediaParamsWN320 ShowcaseMediaParamsW = 320
-	ShowcaseMediaParamsWN640 ShowcaseMediaParamsW = 640
-)
-
-// Valid indicates whether the value is a known member of the ShowcaseMediaParamsW enum.
-func (e ShowcaseMediaParamsW) Valid() bool {
-	switch e {
-	case ShowcaseMediaParamsWN160:
-		return true
-	case ShowcaseMediaParamsWN320:
-		return true
-	case ShowcaseMediaParamsWN640:
-		return true
-	default:
-		return false
-	}
-}
-
 // Defines values for ListTasksParamsKind.
 const (
 	ListTasksParamsKindExport     ListTasksParamsKind = "export"
@@ -6869,198 +5281,6 @@ func (e MyWorkMediaParamsW) Valid() bool {
 	}
 }
 
-// Defines values for CreateWorkspaceInvitationJSONBodyRole.
-const (
-	CreateWorkspaceInvitationJSONBodyRoleAdmin  CreateWorkspaceInvitationJSONBodyRole = "admin"
-	CreateWorkspaceInvitationJSONBodyRoleEditor CreateWorkspaceInvitationJSONBodyRole = "editor"
-	CreateWorkspaceInvitationJSONBodyRoleViewer CreateWorkspaceInvitationJSONBodyRole = "viewer"
-)
-
-// Valid indicates whether the value is a known member of the CreateWorkspaceInvitationJSONBodyRole enum.
-func (e CreateWorkspaceInvitationJSONBodyRole) Valid() bool {
-	switch e {
-	case CreateWorkspaceInvitationJSONBodyRoleAdmin:
-		return true
-	case CreateWorkspaceInvitationJSONBodyRoleEditor:
-		return true
-	case CreateWorkspaceInvitationJSONBodyRoleViewer:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateWorkspaceInvitationJSONBodyTargetKind.
-const (
-	CreateWorkspaceInvitationJSONBodyTargetKindEmail CreateWorkspaceInvitationJSONBodyTargetKind = "email"
-	CreateWorkspaceInvitationJSONBodyTargetKindPhone CreateWorkspaceInvitationJSONBodyTargetKind = "phone"
-)
-
-// Valid indicates whether the value is a known member of the CreateWorkspaceInvitationJSONBodyTargetKind enum.
-func (e CreateWorkspaceInvitationJSONBodyTargetKind) Valid() bool {
-	switch e {
-	case CreateWorkspaceInvitationJSONBodyTargetKindEmail:
-		return true
-	case CreateWorkspaceInvitationJSONBodyTargetKindPhone:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListWorkspaceMcpGrantsParamsSource.
-const (
-	ListWorkspaceMcpGrantsParamsSourceAccessKey ListWorkspaceMcpGrantsParamsSource = "access_key"
-	ListWorkspaceMcpGrantsParamsSourceOauth     ListWorkspaceMcpGrantsParamsSource = "oauth"
-)
-
-// Valid indicates whether the value is a known member of the ListWorkspaceMcpGrantsParamsSource enum.
-func (e ListWorkspaceMcpGrantsParamsSource) Valid() bool {
-	switch e {
-	case ListWorkspaceMcpGrantsParamsSourceAccessKey:
-		return true
-	case ListWorkspaceMcpGrantsParamsSourceOauth:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListWorkspaceMcpGrantsParamsStatus.
-const (
-	ListWorkspaceMcpGrantsParamsStatusActive  ListWorkspaceMcpGrantsParamsStatus = "active"
-	ListWorkspaceMcpGrantsParamsStatusRevoked ListWorkspaceMcpGrantsParamsStatus = "revoked"
-)
-
-// Valid indicates whether the value is a known member of the ListWorkspaceMcpGrantsParamsStatus enum.
-func (e ListWorkspaceMcpGrantsParamsStatus) Valid() bool {
-	switch e {
-	case ListWorkspaceMcpGrantsParamsStatusActive:
-		return true
-	case ListWorkspaceMcpGrantsParamsStatusRevoked:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListWorkspaceMcpGrantsParamsRegistration.
-const (
-	ListWorkspaceMcpGrantsParamsRegistrationCimd ListWorkspaceMcpGrantsParamsRegistration = "cimd"
-	ListWorkspaceMcpGrantsParamsRegistrationDcr  ListWorkspaceMcpGrantsParamsRegistration = "dcr"
-)
-
-// Valid indicates whether the value is a known member of the ListWorkspaceMcpGrantsParamsRegistration enum.
-func (e ListWorkspaceMcpGrantsParamsRegistration) Valid() bool {
-	switch e {
-	case ListWorkspaceMcpGrantsParamsRegistrationCimd:
-		return true
-	case ListWorkspaceMcpGrantsParamsRegistrationDcr:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for SetWorkspaceMemberRoleJSONBodyRole.
-const (
-	SetWorkspaceMemberRoleJSONBodyRoleAdmin  SetWorkspaceMemberRoleJSONBodyRole = "admin"
-	SetWorkspaceMemberRoleJSONBodyRoleEditor SetWorkspaceMemberRoleJSONBodyRole = "editor"
-	SetWorkspaceMemberRoleJSONBodyRoleViewer SetWorkspaceMemberRoleJSONBodyRole = "viewer"
-)
-
-// Valid indicates whether the value is a known member of the SetWorkspaceMemberRoleJSONBodyRole enum.
-func (e SetWorkspaceMemberRoleJSONBodyRole) Valid() bool {
-	switch e {
-	case SetWorkspaceMemberRoleJSONBodyRoleAdmin:
-		return true
-	case SetWorkspaceMemberRoleJSONBodyRoleEditor:
-		return true
-	case SetWorkspaceMemberRoleJSONBodyRoleViewer:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GrantShareJSONBodyGranteeType.
-const (
-	GrantShareJSONBodyGranteeTypeUser      GrantShareJSONBodyGranteeType = "user"
-	GrantShareJSONBodyGranteeTypeWorkspace GrantShareJSONBodyGranteeType = "workspace"
-)
-
-// Valid indicates whether the value is a known member of the GrantShareJSONBodyGranteeType enum.
-func (e GrantShareJSONBodyGranteeType) Valid() bool {
-	switch e {
-	case GrantShareJSONBodyGranteeTypeUser:
-		return true
-	case GrantShareJSONBodyGranteeTypeWorkspace:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GrantShareJSONBodyPermissions.
-const (
-	GrantShareJSONBodyPermissionsEdit     GrantShareJSONBodyPermissions = "edit"
-	GrantShareJSONBodyPermissionsExport   GrantShareJSONBodyPermissions = "export"
-	GrantShareJSONBodyPermissionsGenerate GrantShareJSONBodyPermissions = "generate"
-	GrantShareJSONBodyPermissionsView     GrantShareJSONBodyPermissions = "view"
-)
-
-// Valid indicates whether the value is a known member of the GrantShareJSONBodyPermissions enum.
-func (e GrantShareJSONBodyPermissions) Valid() bool {
-	switch e {
-	case GrantShareJSONBodyPermissionsEdit:
-		return true
-	case GrantShareJSONBodyPermissionsExport:
-		return true
-	case GrantShareJSONBodyPermissionsGenerate:
-		return true
-	case GrantShareJSONBodyPermissionsView:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GrantShareJSONBodyResourceType.
-const (
-	GrantShareJSONBodyResourceTypeProject     GrantShareJSONBodyResourceType = "project"
-	GrantShareJSONBodyResourceTypeScriptAsset GrantShareJSONBodyResourceType = "script_asset"
-	GrantShareJSONBodyResourceTypeTimeline    GrantShareJSONBodyResourceType = "timeline"
-)
-
-// Valid indicates whether the value is a known member of the GrantShareJSONBodyResourceType enum.
-func (e GrantShareJSONBodyResourceType) Valid() bool {
-	switch e {
-	case GrantShareJSONBodyResourceTypeProject:
-		return true
-	case GrantShareJSONBodyResourceTypeScriptAsset:
-		return true
-	case GrantShareJSONBodyResourceTypeTimeline:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ImportSharedResourceJSONBodyResourceType.
-const (
-	ImportSharedResourceJSONBodyResourceTypeScriptAsset ImportSharedResourceJSONBodyResourceType = "script_asset"
-)
-
-// Valid indicates whether the value is a known member of the ImportSharedResourceJSONBodyResourceType enum.
-func (e ImportSharedResourceJSONBodyResourceType) Valid() bool {
-	switch e {
-	case ImportSharedResourceJSONBodyResourceTypeScriptAsset:
-		return true
-	default:
-		return false
-	}
-}
-
 // APIRequestLog defines model for APIRequestLog.
 type APIRequestLog struct {
 	AdminId *string `json:"adminId,omitempty"`
@@ -7146,10 +5366,16 @@ type AdminAgentSkill struct {
 	InputSlots []MarketingSlotDecl `json:"inputSlots"`
 
 	// IsBatch 批量标识（MKT-T-32）；只用于展示，不是计费依据
-	IsBatch       bool `json:"isBatch"`
-	IsEnabled     bool `json:"isEnabled"`
-	IsQuickEntry  bool `json:"isQuickEntry"`
-	ModelBindings struct {
+	IsBatch bool `json:"isBatch"`
+
+	// IsBuiltin 随应用附带的内置技能（可「恢复内置版本」，TT-T-19）
+	IsBuiltin    *bool `json:"isBuiltin,omitempty"`
+	IsEnabled    bool  `json:"isEnabled"`
+	IsQuickEntry bool  `json:"isQuickEntry"`
+
+	// IsUserModified 内置技能被用户改过；改过之后启动时不再被内置内容覆盖
+	IsUserModified *bool `json:"isUserModified,omitempty"`
+	ModelBindings  struct {
 		Image     string `json:"image"`
 		Reasoning string `json:"reasoning"`
 		Video     string `json:"video"`
@@ -7307,6 +5533,34 @@ type AdminAgentTool struct {
 	// Planning 规划态会下发
 	Planning bool `json:"planning"`
 }
+
+// AdminImagePreset defines model for AdminImagePreset.
+type AdminImagePreset struct {
+	Code           string                      `json:"code"`
+	Description    *string                     `json:"description,omitempty"`
+	Dimensions     *[]map[string]interface{}   `json:"dimensions,omitempty"`
+	Icon           *string                     `json:"icon,omitempty"`
+	InputMode      AdminImagePresetInputMode   `json:"inputMode"`
+	IsBuiltin      *bool                       `json:"isBuiltin,omitempty"`
+	IsEnabled      bool                        `json:"isEnabled"`
+	IsNew          *bool                       `json:"isNew,omitempty"`
+	IsUserModified *bool                       `json:"isUserModified,omitempty"`
+	Name           string                      `json:"name"`
+	Operation      string                      `json:"operation"`
+	Params         map[string]interface{}      `json:"params"`
+	PresetGroup    AdminImagePresetPresetGroup `json:"presetGroup"`
+
+	// Prompt 配方追加词（只在服务端拼进生成请求）
+	Prompt string `json:"prompt"`
+	Sort   int    `json:"sort"`
+	Spec   string `json:"spec"`
+}
+
+// AdminImagePresetInputMode defines model for AdminImagePreset.InputMode.
+type AdminImagePresetInputMode string
+
+// AdminImagePresetPresetGroup defines model for AdminImagePreset.PresetGroup.
+type AdminImagePresetPresetGroup string
 
 // AdminMarketingOption defines model for AdminMarketingOption.
 type AdminMarketingOption struct {
@@ -7570,96 +5824,216 @@ type AdminMarketingPresetCharacterUpdate struct {
 	VoiceText    *string `json:"voiceText,omitempty"`
 }
 
-// AdminOrder 后台视角的订单（带付费主体与对账结论）。
-type AdminOrder struct {
-	AmountCents  int       `json:"amountCents"`
-	Channel      *string   `json:"channel,omitempty"`
-	ChannelTxnId *string   `json:"channelTxnId,omitempty"`
-	CreatedAt    time.Time `json:"createdAt"`
-	Credits      *int      `json:"credits,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id        Id         `json:"id"`
-	PaidAt    *time.Time `json:"paidAt,omitempty"`
-	PayStatus string     `json:"payStatus"`
-
-	// PayerId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	PayerId         Id                         `json:"payerId"`
-	ReconcileDetail *string                    `json:"reconcileDetail,omitempty"`
-	ReconcileStatus *AdminOrderReconcileStatus `json:"reconcileStatus,omitempty"`
-	Type            string                     `json:"type"`
+// AdminMaterialInput defines model for AdminMaterialInput.
+type AdminMaterialInput struct {
+	Author       *string                `json:"author,omitempty"`
+	Category     *string                `json:"category,omitempty"`
+	Code         string                 `json:"code"`
+	CoverMediaId *string                `json:"coverMediaId,omitempty"`
+	IsCommercial *bool                  `json:"isCommercial,omitempty"`
+	IsEnabled    *bool                  `json:"isEnabled,omitempty"`
+	Name         string                 `json:"name"`
+	Prompt       *string                `json:"prompt,omitempty"`
+	Sort         *int                   `json:"sort,omitempty"`
+	Type         AdminMaterialInputType `json:"type"`
 }
 
-// AdminOrderReconcileStatus defines model for AdminOrder.ReconcileStatus.
-type AdminOrderReconcileStatus string
+// AdminMaterialInputType defines model for AdminMaterialInput.Type.
+type AdminMaterialInputType string
 
-// AdminOrderDetail defines model for AdminOrderDetail.
-type AdminOrderDetail struct {
-	// CallbackCount 收到过几条回调。
-	//
-	// ⚠️ **0 条 + 订单待支付**就是「回调丢了」那一类 ——
-	// 这是最直接的证据，详情里不给的话客服得再去翻回调留痕页。
-	CallbackCount int `json:"callbackCount"`
+// AdminMaterialItem defines model for AdminMaterialItem.
+type AdminMaterialItem struct {
+	Author   *string `json:"author,omitempty"`
+	Category *string `json:"category,omitempty"`
 
-	// Grants 这一单发出的积分批次，**含已回收的**（`status=revoked`）。
-	//
-	// ⚠️ 只列 active 的话，一张退过款的订单在详情页上看起来
-	// "从来没发过积分"，而客服正是来查这个的。
-	Grants []struct {
-		Amount   *int       `json:"amount,omitempty"`
-		ExpireAt *time.Time `json:"expireAt,omitempty"`
+	// Code 素材码：节点里存它（运镜存在 `params.camera.code`）
+	Code         string  `json:"code"`
+	CoverMediaId *string `json:"coverMediaId,omitempty"`
 
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        *Id                           `json:"id,omitempty"`
-		Remaining *int                          `json:"remaining,omitempty"`
-		Source    *string                       `json:"source,omitempty"`
-		Status    *AdminOrderDetailGrantsStatus `json:"status,omitempty"`
-	} `json:"grants"`
-	Membership *struct {
-		ExpireAt *time.Time `json:"expireAt,omitempty"`
+	// CoverUrl 封面（受保护媒体，取图要带鉴权与工作区头）；没配封面时没有这个字段。
+	CoverUrl     *string `json:"coverUrl,omitempty"`
+	IsCommercial bool    `json:"isCommercial"`
 
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        *Id     `json:"id,omitempty"`
-		LevelCode *string `json:"levelCode,omitempty"`
-		Status    *string `json:"status,omitempty"`
-	} `json:"membership,omitempty"`
-
-	// Order 后台视角的订单（带付费主体与对账结论）。
-	Order   AdminOrder `json:"order"`
-	Refunds []Refund   `json:"refunds"`
+	// IsEnabled 为 false 时字段省略
+	IsEnabled   *bool   `json:"isEnabled,omitempty"`
+	IsFavorited bool    `json:"isFavorited"`
+	Name        string  `json:"name"`
+	Prompt      *string `json:"prompt,omitempty"`
+	Sort        *int    `json:"sort,omitempty"`
 }
 
-// AdminOrderDetailGrantsStatus defines model for AdminOrderDetail.Grants.Status.
-type AdminOrderDetailGrantsStatus string
+// AdminModel defines model for AdminModel.
+type AdminModel struct {
+	AgentCapable   bool   `json:"agentCapable"`
+	ApiProtocol    string `json:"apiProtocol"`
+	Code           string `json:"code"`
+	Domain         string `json:"domain"`
+	EstSeconds     int    `json:"estSeconds"`
+	HasNativeAudio bool   `json:"hasNativeAudio"`
+	IsMultiShot    bool   `json:"isMultiShot"`
+	MaxDurationSec *int   `json:"maxDurationSec"`
+	MaxInputChars  *int   `json:"maxInputChars"`
 
-// AdminProject defines model for AdminProject.
-type AdminProject struct {
-	CreatedAt       time.Time `json:"createdAt"`
-	DeletedAt       string    `json:"deletedAt"`
-	EdgeCount       int       `json:"edgeCount"`
-	GenerationCount int       `json:"generationCount"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id   Id     `json:"id"`
-	Name string `json:"name"`
-
-	// NodeCount 从 canvasData 当场算，不另存计数列。
-	NodeCount   int                `json:"nodeCount"`
-	OwnerName   string             `json:"ownerName"`
-	OwnerUserId string             `json:"ownerUserId"`
-	Status      AdminProjectStatus `json:"status"`
-	UpdatedAt   time.Time          `json:"updatedAt"`
-
-	// Version 画布的**服务端乐观锁**（与 `canvasData.schemaVersion` 是两件事）。
-	// ⚠️ 后台的恢复/删除都**不动它** —— 动了的话用户那个还开着的标签页
-	// 下一次保存会撞冲突，而他什么都没做错。
-	Version       int    `json:"version"`
-	WorkspaceId   string `json:"workspaceId"`
-	WorkspaceName string `json:"workspaceName"`
+	// MinMemberLevelId 桌面版恒为空串
+	MinMemberLevelId  string                       `json:"minMemberLevelId"`
+	Name              string                       `json:"name"`
+	Operations        []AdminModelOperationBinding `json:"operations"`
+	ProviderCode      string                       `json:"providerCode"`
+	QueryPath         string                       `json:"queryPath"`
+	Sort              int                          `json:"sort"`
+	Status            string                       `json:"status"`
+	SubType           string                       `json:"subType"`
+	SubmitPath        string                       `json:"submitPath"`
+	UpstreamModelCode string                       `json:"upstreamModelCode"`
 }
 
-// AdminProjectStatus defines model for AdminProject.Status.
-type AdminProjectStatus string
+// AdminModelInput defines model for AdminModelInput.
+type AdminModelInput struct {
+	AgentCapable   *bool  `json:"agentCapable,omitempty"`
+	ApiProtocol    string `json:"apiProtocol"`
+	Code           string `json:"code"`
+	Domain         string `json:"domain"`
+	EstSeconds     *int   `json:"estSeconds,omitempty"`
+	HasNativeAudio *bool  `json:"hasNativeAudio,omitempty"`
+	IsMultiShot    *bool  `json:"isMultiShot,omitempty"`
+
+	// MaxDurationSec 显式 null = 清除；不传 = 不改
+	MaxDurationSec *int `json:"maxDurationSec,omitempty"`
+	MaxInputChars  *int `json:"maxInputChars,omitempty"`
+
+	// MinMemberLevelId 桌面版不用
+	MinMemberLevelId  *string `json:"minMemberLevelId,omitempty"`
+	Name              string  `json:"name"`
+	ProviderCode      string  `json:"providerCode"`
+	QueryPath         *string `json:"queryPath,omitempty"`
+	Sort              *int    `json:"sort,omitempty"`
+	Status            *string `json:"status,omitempty"`
+	SubType           *string `json:"subType,omitempty"`
+	SubmitPath        *string `json:"submitPath,omitempty"`
+	UpstreamModelCode string  `json:"upstreamModelCode"`
+}
+
+// AdminModelOperationBinding defines model for AdminModelOperationBinding.
+type AdminModelOperationBinding struct {
+	Enabled    bool   `json:"enabled"`
+	EstSeconds *int   `json:"estSeconds,omitempty"`
+	Operation  string `json:"operation"`
+}
+
+// AdminModelProtocol defines model for AdminModelProtocol.
+type AdminModelProtocol struct {
+	// ChatCapable 能否作 Agent 推理模型
+	ChatCapable       bool   `json:"chatCapable"`
+	Code              string `json:"code"`
+	IsAsync           bool   `json:"isAsync"`
+	Name              string `json:"name"`
+	RequiresQueryPath bool   `json:"requiresQueryPath"`
+}
+
+// AdminOperation defines model for AdminOperation.
+type AdminOperation struct {
+	Code   string `json:"code"`
+	Domain string `json:"domain"`
+
+	// InNodeTypes 逗号分隔的节点类型
+	InNodeTypes string `json:"inNodeTypes"`
+
+	// Modelless 不绑模型（时间线渲染）
+	Modelless   bool   `json:"modelless"`
+	Name        string `json:"name"`
+	OutNodeType string `json:"outNodeType"`
+	Status      string `json:"status"`
+}
+
+// AdminParamDefinition defines model for AdminParamDefinition.
+type AdminParamDefinition struct {
+	Code      string                 `json:"code"`
+	Config    map[string]interface{} `json:"config"`
+	Control   string                 `json:"control"`
+	IsEnabled bool                   `json:"isEnabled"`
+	Name      string                 `json:"name"`
+}
+
+// AdminParamDefinitionInput defines model for AdminParamDefinitionInput.
+type AdminParamDefinitionInput struct {
+	Code    string                  `json:"code"`
+	Config  *map[string]interface{} `json:"config,omitempty"`
+	Control string                  `json:"control"`
+
+	// IsEnabled 不传 = 不改
+	IsEnabled *bool  `json:"isEnabled,omitempty"`
+	Name      string `json:"name"`
+}
+
+// AdminPromptTemplate defines model for AdminPromptTemplate.
+type AdminPromptTemplate struct {
+	Code string `json:"code"`
+
+	// Content 生效内容
+	Content             string  `json:"content"`
+	DraftContent        *string `json:"draftContent,omitempty"`
+	HasUnpublishedDraft bool    `json:"hasUnpublishedDraft"`
+
+	// ModelCode 空 = 通用版
+	ModelCode *string                   `json:"modelCode,omitempty"`
+	Note      *string                   `json:"note,omitempty"`
+	Status    AdminPromptTemplateStatus `json:"status"`
+	Version   int                       `json:"version"`
+}
+
+// AdminPromptTemplateStatus defines model for AdminPromptTemplate.Status.
+type AdminPromptTemplateStatus string
+
+// AdminProvider defines model for AdminProvider.
+type AdminProvider struct {
+	AdapterType      string `json:"adapterType"`
+	AuthType         string `json:"authType"`
+	BaseUrl          string `json:"baseUrl"`
+	Code             string `json:"code"`
+	ConnectTimeoutMs int    `json:"connectTimeoutMs"`
+
+	// HasApiKey 只说有没有，不回显密钥
+	HasApiKey bool `json:"hasApiKey"`
+
+	// Headers 自定义请求头（JSON）
+	Headers       interface{} `json:"headers"`
+	IdleTimeoutMs int         `json:"idleTimeoutMs"`
+	IsReady       bool        `json:"isReady"`
+
+	// MaxConcurrent 0 = 不限
+	MaxConcurrent    int     `json:"maxConcurrent"`
+	MaxRetries       int     `json:"maxRetries"`
+	Name             string  `json:"name"`
+	RequestTimeoutMs int     `json:"requestTimeoutMs"`
+	Status           string  `json:"status"`
+	TestPath         *string `json:"testPath,omitempty"`
+	Version          int     `json:"version"`
+}
+
+// AdminProviderInput defines model for AdminProviderInput.
+type AdminProviderInput struct {
+	AdapterType *string `json:"adapterType,omitempty"`
+
+	// ApiKey 密钥三态。`keep` 保留 / `replace` 替换（带 value）/ `clear` 清除；未知 action 按保留。
+	ApiKey           *SecretFieldInput `json:"apiKey,omitempty"`
+	AuthType         string            `json:"authType"`
+	BaseUrl          string            `json:"baseUrl"`
+	Code             string            `json:"code"`
+	ConnectTimeoutMs *int              `json:"connectTimeoutMs,omitempty"`
+
+	// Headers 自定义请求头（JSON）
+	Headers          interface{} `json:"headers,omitempty"`
+	IdleTimeoutMs    *int        `json:"idleTimeoutMs,omitempty"`
+	MaxConcurrent    *int        `json:"maxConcurrent,omitempty"`
+	MaxRetries       *int        `json:"maxRetries,omitempty"`
+	Name             string      `json:"name"`
+	RequestTimeoutMs *int        `json:"requestTimeoutMs,omitempty"`
+	Status           *string     `json:"status,omitempty"`
+	TestPath         *string     `json:"testPath,omitempty"`
+
+	// Version 乐观锁；新建传 0
+	Version *int `json:"version,omitempty"`
+}
 
 // AdminRole defines model for AdminRole.
 type AdminRole struct {
@@ -7691,6 +6065,41 @@ type AdminUser struct {
 
 // AdminUserStatus defines model for AdminUser.Status.
 type AdminUserStatus string
+
+// AdminVoiceInput defines model for AdminVoiceInput.
+type AdminVoiceInput struct {
+	Code            string  `json:"code"`
+	Gender          *string `json:"gender,omitempty"`
+	IconMediaId     *string `json:"iconMediaId,omitempty"`
+	IsEnabled       *bool   `json:"isEnabled,omitempty"`
+	Language        *string `json:"language,omitempty"`
+	Name            string  `json:"name"`
+	PreviewMediaId  *string `json:"previewMediaId,omitempty"`
+	Sort            *int    `json:"sort,omitempty"`
+	UpstreamVoiceId *string `json:"upstreamVoiceId,omitempty"`
+}
+
+// AdminVoiceItem defines model for AdminVoiceItem.
+type AdminVoiceItem struct {
+	Code        string  `json:"code"`
+	Gender      *string `json:"gender,omitempty"`
+	IconMediaId *string `json:"iconMediaId,omitempty"`
+
+	// IconUrl 受保护媒体端点
+	IconUrl *string `json:"iconUrl,omitempty"`
+
+	// IsEnabled 为 false 时字段省略
+	IsEnabled      *bool   `json:"isEnabled,omitempty"`
+	IsFavorited    bool    `json:"isFavorited"`
+	Language       *string `json:"language,omitempty"`
+	Name           string  `json:"name"`
+	PreviewMediaId *string `json:"previewMediaId,omitempty"`
+
+	// PreviewUrl 受保护媒体端点
+	PreviewUrl      *string `json:"previewUrl,omitempty"`
+	Sort            *int    `json:"sort,omitempty"`
+	UpstreamVoiceId *string `json:"upstreamVoiceId,omitempty"`
+}
 
 // AgentCancelResult defines model for AgentCancelResult.
 type AgentCancelResult struct {
@@ -7818,22 +6227,6 @@ type AgentMessagePage struct {
 	NextCursor *string     `json:"nextCursor"`
 	Steps      []AgentStep `json:"steps"`
 	Turns      []AgentTurn `json:"turns"`
-}
-
-// AgentPlanConfirmPayload 规划确认卡（`AgentCard.kind = plan_confirm`）的 payload。金额一律由服务端逐项报价。
-// 营销会话（MKT-T-20）多出 `notices` 与计划项上的条目键 / 选图字段；通用会话的卡片形状不变（这些字段不出现）。
-type AgentPlanConfirmPayload struct {
-	Balance    int             `json:"balance"`
-	CanApprove bool            `json:"canApprove"`
-	DocPath    *string         `json:"docPath,omitempty"`
-	Items      []AgentPlanItem `json:"items"`
-
-	// Notices 服务端追加的如实提示（如口播类选项的「画面为人物对镜讲解，不保证口型与语音逐字同步」）；不靠 Agent 写。
-	Notices        *[]string `json:"notices,omitempty"`
-	PlanDocVersion *int      `json:"planDocVersion,omitempty"`
-	Shortfall      int       `json:"shortfall"`
-	Title          string    `json:"title"`
-	Total          int       `json:"total"`
 }
 
 // AgentPlanItem 规划确认卡的一个计划项。`blockedCode` 非空时这一项此刻不可用（`credits = 0`），按 `userFixable` 定语气、不匹配文案；
@@ -8297,34 +6690,44 @@ type AgentWriteResult struct {
 	TurnId    *string           `json:"turnId"`
 }
 
-// Announcement defines model for Announcement.
-type Announcement struct {
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"createdAt"`
+// AppSettingItem defines model for AppSettingItem.
+type AppSettingItem struct {
+	// Default 缺省值
+	Default interface{}        `json:"default"`
+	Key     string             `json:"key"`
+	Kind    AppSettingItemKind `json:"kind"`
 
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id          Id     `json:"id"`
-	LinkUrl     string `json:"linkUrl"`
-	PublishedAt string `json:"publishedAt"`
+	// Max 仅 int
+	Max *int `json:"max,omitempty"`
 
-	// Status ⚠️ **新建一律落草稿，发布是单独一次显式操作**（`POST .../publish`），
-	// 不混进 update —— 混进去的话运营改个错字保存一下就等于给全站重新
-	// 发了一次公告，**而这个动作不可撤销**。
-	Status    AnnouncementStatus `json:"status"`
-	Title     string             `json:"title"`
-	UpdatedAt time.Time          `json:"updatedAt"`
+	// Min 仅 int
+	Min *int `json:"min,omitempty"`
+
+	// Restart 改了要重启应用才生效
+	Restart bool `json:"restart"`
+
+	// Set 用户设过（false = 用缺省值）
+	Set bool `json:"set"`
+
+	// Value 当前值；`secret` 只给掩码（末 4 位）
+	Value interface{} `json:"value"`
 }
 
-// AnnouncementStatus ⚠️ **新建一律落草稿，发布是单独一次显式操作**（`POST .../publish`），
-// 不混进 update —— 混进去的话运营改个错字保存一下就等于给全站重新
-// 发了一次公告，**而这个动作不可撤销**。
-type AnnouncementStatus string
+// AppSettingItemKind defines model for AppSettingItem.Kind.
+type AppSettingItemKind string
 
-// AnnouncementInput defines model for AnnouncementInput.
-type AnnouncementInput struct {
-	Content string  `json:"content"`
-	LinkUrl *string `json:"linkUrl,omitempty"`
-	Title   string  `json:"title"`
+// AppSettings defines model for AppSettings.
+type AppSettings struct {
+	DataDir string           `json:"dataDir"`
+	Items   []AppSettingItem `json:"items"`
+}
+
+// AppSettingsUpdated defines model for AppSettingsUpdated.
+type AppSettingsUpdated struct {
+	Items []AppSettingItem `json:"items"`
+
+	// RestartRequired 本次改动里要重启才生效的键
+	RestartRequired *[]string `json:"restartRequired,omitempty"`
 }
 
 // AssemblePlan 一次自动装配的结果。
@@ -8387,109 +6790,6 @@ type AuditRecord struct {
 
 // AuditRecordActorType defines model for AuditRecord.ActorType.
 type AuditRecordActorType string
-
-// Banner defines model for Banner.
-type Banner struct {
-	CoverMediaId *string   `json:"coverMediaId,omitempty"`
-	CreatedAt    time.Time `json:"createdAt"`
-	EndAt        *string   `json:"endAt,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id        Id   `json:"id"`
-	IsEnabled bool `json:"isEnabled"`
-
-	// Lifecycle 此刻的投放状态（展示中 / 待开始 / 已结束 / 已停用），**服务端现算**，
-	// `active` 当且仅当用户首页此刻会投放它（同一个 `domain.ActiveAt` 判定）。
-	// ⚠️ 不让管理端拿本地时钟再算一遍：边界各写一份迟早不一致，
-	// 而运营看到的「展示中」与首页实际投放的就不是同一批了。
-	Lifecycle     *BannerLifecycle `json:"lifecycle,omitempty"`
-	LinkUrl       *string          `json:"linkUrl,omitempty"`
-	MediaObjectId *string          `json:"mediaObjectId,omitempty"`
-
-	// Position ⚠️ **只有 home 与 video**。旧系统还有 writing / avatar，
-	// 而那两个产品在本项目明确排除 —— 保留一个选不生效的位置比没有更糟。
-	Position BannerPosition `json:"position"`
-	Sort     int            `json:"sort"`
-
-	// StartAt RFC3339；空表示不限。投放窗口是 [start, end)。
-	StartAt   *string   `json:"startAt,omitempty"`
-	Title     string    `json:"title"`
-	UpdatedAt time.Time `json:"updatedAt"`
-}
-
-// BannerLifecycle 此刻的投放状态（展示中 / 待开始 / 已结束 / 已停用），**服务端现算**，
-// `active` 当且仅当用户首页此刻会投放它（同一个 `domain.ActiveAt` 判定）。
-// ⚠️ 不让管理端拿本地时钟再算一遍：边界各写一份迟早不一致，
-// 而运营看到的「展示中」与首页实际投放的就不是同一批了。
-type BannerLifecycle string
-
-// BannerPosition ⚠️ **只有 home 与 video**。旧系统还有 writing / avatar，
-// 而那两个产品在本项目明确排除 —— 保留一个选不生效的位置比没有更糟。
-type BannerPosition string
-
-// BannerInput defines model for BannerInput.
-type BannerInput struct {
-	CoverMediaId  *string             `json:"coverMediaId,omitempty"`
-	EndAt         *string             `json:"endAt,omitempty"`
-	IsEnabled     *bool               `json:"isEnabled,omitempty"`
-	LinkUrl       *string             `json:"linkUrl,omitempty"`
-	MediaObjectId *string             `json:"mediaObjectId,omitempty"`
-	Position      BannerInputPosition `json:"position"`
-	Sort          *int                `json:"sort,omitempty"`
-
-	// StartAt RFC3339；空/缺省表示不限。
-	StartAt *string `json:"startAt,omitempty"`
-	Title   string  `json:"title"`
-}
-
-// BannerInputPosition defines model for BannerInput.Position.
-type BannerInputPosition string
-
-// BillingCatalog 商品管理页的一整份数据（含停用的）。
-type BillingCatalog struct {
-	Levels []struct {
-		Code *string `json:"code,omitempty"`
-
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        *Id     `json:"id,omitempty"`
-		IsEnabled *bool   `json:"isEnabled,omitempty"`
-		Name      *string `json:"name,omitempty"`
-		Sort      *int    `json:"sort,omitempty"`
-	} `json:"levels"`
-	Packages []struct {
-		Code    string `json:"code"`
-		Credits int    `json:"credits"`
-
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id         Id     `json:"id"`
-		IsEnabled  *bool  `json:"isEnabled,omitempty"`
-		Name       string `json:"name"`
-		PriceCents int    `json:"priceCents"`
-		Sort       *int   `json:"sort,omitempty"`
-	} `json:"packages"`
-	Plans []struct {
-		// GiftCredits 赠送积分。⚠️ **随会员有效期到期**（与积分包的永久积分相反）。
-		GiftCredits int `json:"giftCredits"`
-
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        Id     `json:"id"`
-		IsEnabled *bool  `json:"isEnabled,omitempty"`
-		LevelCode string `json:"levelCode"`
-
-		// LevelId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		LevelId   Id     `json:"levelId"`
-		LevelName string `json:"levelName"`
-
-		// LevelSort 等级高低按它比，**不按 id**（id 是雪花号，先建的不一定更低）。
-		LevelSort  *int                      `json:"levelSort,omitempty"`
-		Period     BillingCatalogPlansPeriod `json:"period"`
-		PriceCents int                       `json:"priceCents"`
-		Sort       *int                      `json:"sort,omitempty"`
-	} `json:"plans"`
-}
-
-// BillingCatalogPlansPeriod defines model for BillingCatalog.Plans.Period.
-type BillingCatalogPlansPeriod string
 
 // CanvasConfig 服务端合成的画布配置快照。⚠️ 参数**嵌在各自的 nodeType 下**，不是顶层的平铺数组 ——
 // 参数属于节点类型，平铺后前端还要自己按 nodeTypeId 归组，等于把服务端已经做完的
@@ -8705,17 +7005,6 @@ type CreationPage struct {
 	Total int `json:"total"`
 }
 
-// CreditPackage 积分包。⚠️ 发放的是**永久**积分（GO-04）。
-type CreditPackage struct {
-	Code    string `json:"code"`
-	Credits int    `json:"credits"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id         Id     `json:"id"`
-	Name       string `json:"name"`
-	PriceCents int    `json:"priceCents"`
-}
-
 // CurrentUser defines model for CurrentUser.
 type CurrentUser struct {
 	AvatarUrl *string `json:"avatarUrl,omitempty"`
@@ -8744,42 +7033,23 @@ type CursorPage struct {
 	NextCursor *string `json:"nextCursor"`
 }
 
-// DeadLetter defines model for DeadLetter.
-type DeadLetter struct {
-	AggregateId string `json:"aggregateId"`
-
-	// AggregateType ⚠️ 空串是**正常结果**：解不开的消息本来就没有业务引用，而那恰恰是运维要看到的信号。
-	AggregateType    string    `json:"aggregateType"`
-	CreatedAt        time.Time `json:"createdAt"`
-	HandledAt        string    `json:"handledAt"`
-	HandledByAdminId *string   `json:"handledByAdminId,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id   Id     `json:"id"`
-	Note string `json:"note"`
-
-	// PayloadLength 消息体的完整长度。⚠️ 只截不说的话运维会以为消息就这么长。
-	PayloadLength int `json:"payloadLength"`
-
-	// PayloadPreview 消息体（截断）。⚠️ 不整条下发：一条死信的消息体可能是几 MB 的
-	// 内联 base64，整个列表带上它会把管理端卡死。
-	PayloadPreview string `json:"payloadPreview"`
-
-	// Queue 产生它的主队列（generation.jobs / render.jobs / export.jobs）。
-	Queue string `json:"queue"`
-
-	// Reason broker 给的死信原因（rejected / expired / maxlen）。
-	Reason      string `json:"reason"`
-	ReplayCount int    `json:"replayCount"`
-
-	// RoutingKey 原始 routing key。重投时**原样用它** —— 按队列名猜一个的话消息会
-	// 落到别的消费者手上、解不开、再进一次死信，看起来像"重投没生效"。
-	RoutingKey string           `json:"routingKey"`
-	Status     DeadLetterStatus `json:"status"`
+// DiagnosticsCheck defines model for DiagnosticsCheck.
+type DiagnosticsCheck struct {
+	Advice *string                `json:"advice,omitempty"`
+	Key    string                 `json:"key"`
+	Label  string                 `json:"label"`
+	Status DiagnosticsCheckStatus `json:"status"`
+	Value  string                 `json:"value"`
 }
 
-// DeadLetterStatus defines model for DeadLetter.Status.
-type DeadLetterStatus string
+// DiagnosticsCheckStatus defines model for DiagnosticsCheck.Status.
+type DiagnosticsCheckStatus string
+
+// DiagnosticsReport defines model for DiagnosticsReport.
+type DiagnosticsReport struct {
+	Checks  []DiagnosticsCheck `json:"checks"`
+	Version string             `json:"version"`
+}
 
 // DirectorBuildConfig defines model for DirectorBuildConfig.
 type DirectorBuildConfig struct {
@@ -9688,21 +7958,6 @@ type ImageToolsConfig struct {
 	} `json:"zoomBands,omitempty"`
 }
 
-// InvitationCreated defines model for InvitationCreated.
-type InvitationCreated struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-
-	// InvitationId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	InvitationId Id `json:"invitationId"`
-
-	// ReplacedPending 本次顶掉的旧邀请条数。必须在界面上说出来 —— 不说的话用户以为
-	// 之前发出去的码还能用，而同事点开收到的是"邀请码无效"。
-	ReplacedPending int `json:"replacedPending"`
-
-	// Token 明文邀请码，**只在创建时返回一次**；库里只存哈希。
-	Token string `json:"token"`
-}
-
 // LibraryFolder defines model for LibraryFolder.
 type LibraryFolder struct {
 	CreatedAt time.Time `json:"createdAt"`
@@ -10076,14 +8331,6 @@ type MarketingOptionInputRequirements string
 // MarketingOptionOutputTypes defines model for MarketingOption.OutputTypes.
 type MarketingOptionOutputTypes string
 
-// MarketingPick 用户提交的一次选择（建会话时用，MKT-T-17）：只有 kind + code，版本由服务端在受理那一刻取当前版钉住。
-// 不在投 / 不适用当前产出 → 422 `MARKETING_OPTION_UNAVAILABLE`（42215），
-// `details:{kind, code, reason, userFixable}`，reason ∈ disabled / not_started / ended / output_mismatch / not_found。
-type MarketingPick struct {
-	Code string        `json:"code"`
-	Kind MarketingKind `json:"kind"`
-}
-
 // MarketingPresetCharacter 营销角色（平台预置）的用户端视图。⚠️ **不含任何媒体 ID**（与管理端 `AdminMarketingPresetCharacter` 分开定义）：
 // 图片按 `/marketing/preset-characters/{id}/images/{index}` 取，音频按 `/voice` 取。
 type MarketingPresetCharacter struct {
@@ -10205,541 +8452,6 @@ type MaterialItem struct {
 	Name         string  `json:"name"`
 }
 
-// McpAccessKey 访问密钥。**没有明文、没有哈希**，只有用来认出它的前缀。
-type McpAccessKey struct {
-	ClientName string    `json:"clientName"`
-	CreatedAt  time.Time `json:"createdAt"`
-
-	// ExpiresAt 空 = 永久
-	ExpiresAt *time.Time `json:"expiresAt"`
-
-	// GrantId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GrantId Id `json:"grantId"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// LastUsedAt 最近一次成功通过凭据校验的时间（同一授权一分钟内最多更新一次）。
-	LastUsedAt *time.Time `json:"lastUsedAt"`
-
-	// Prefix sk_mcp_ 之后的前 8 位明文，显示为 sk_mcp_xxxxxxxx…
-	Prefix             string     `json:"prefix"`
-	RequirePageConfirm bool       `json:"requirePageConfirm"`
-	RevokedAt          *time.Time `json:"revokedAt"`
-	Scopes             []McpScope `json:"scopes"`
-
-	// Status 过期是**算出来的**（now ≥ expiresAt），不靠作业标记。
-	Status   McpAccessKeyStatus `json:"status"`
-	Toolsets []McpToolset       `json:"toolsets"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-}
-
-// McpAccessKeyStatus 过期是**算出来的**（now ≥ expiresAt），不靠作业标记。
-type McpAccessKeyStatus string
-
-// McpAccessKeyCreate defines model for McpAccessKeyCreate.
-type McpAccessKeyCreate struct {
-	// ClientName 用来认出是哪个客户端（显示在已连接的客户端与画布节点来源角标上）。
-	ClientName string `json:"clientName"`
-
-	// ExpiresInDays 有效天数，缺省 90（MCP-PARAM-05，设计建议值）。与 neverExpires 二选一。
-	ExpiresInDays *int `json:"expiresInDays,omitempty"`
-
-	// NeverExpires 永久有效
-	NeverExpires *bool `json:"neverExpires,omitempty"`
-
-	// RequirePageConfirm 花钱操作一律走页面确认（MCPT-10 起生效）。
-	RequirePageConfirm *bool `json:"requirePageConfirm,omitempty"`
-
-	// Scopes 至少一个；服务端会**自动补上 seeaitv:view**、去重并按固定顺序存。
-	Scopes []McpScope `json:"scopes"`
-
-	// Toolsets 为空时取默认开启集（context / projects / canvas / catalog / generation）。
-	Toolsets *[]McpToolset `json:"toolsets,omitempty"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-}
-
-// McpAccessKeyCreated defines model for McpAccessKeyCreated.
-type McpAccessKeyCreated struct {
-	ClientName string    `json:"clientName"`
-	CreatedAt  time.Time `json:"createdAt"`
-
-	// ExpiresAt 空 = 永久
-	ExpiresAt *time.Time `json:"expiresAt"`
-
-	// GrantId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GrantId Id `json:"grantId"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// LastUsedAt 最近一次成功通过凭据校验的时间（同一授权一分钟内最多更新一次）。
-	LastUsedAt *time.Time `json:"lastUsedAt"`
-
-	// Plaintext 完整密钥（`sk_mcp_` + 43 位 base62），**只在创建时返回一次**，之后任何接口都取不回。
-	Plaintext string `json:"plaintext"`
-
-	// Prefix sk_mcp_ 之后的前 8 位明文，显示为 sk_mcp_xxxxxxxx…
-	Prefix             string     `json:"prefix"`
-	RequirePageConfirm bool       `json:"requirePageConfirm"`
-	RevokedAt          *time.Time `json:"revokedAt"`
-	Scopes             []McpScope `json:"scopes"`
-
-	// Status 过期是**算出来的**（now ≥ expiresAt），不靠作业标记。
-	Status   McpAccessKeyCreatedStatus `json:"status"`
-	Toolsets []McpToolset              `json:"toolsets"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-}
-
-// McpAccessKeyCreatedStatus 过期是**算出来的**（now ≥ expiresAt），不靠作业标记。
-type McpAccessKeyCreatedStatus string
-
-// McpApproval 页面审批数据（MCPT-13）。只给 quote 所属授权的用户本人。
-type McpApproval struct {
-	// After 确认后剩余（可能为负 = 余额不足）
-	After      int        `json:"after"`
-	ApprovedAt *time.Time `json:"approvedAt"`
-
-	// Balance 付费账户当前可用积分
-	Balance    int    `json:"balance"`
-	ClientName string `json:"clientName"`
-
-	// Credits 合计积分
-	Credits   int               `json:"credits"`
-	ExpiresAt time.Time         `json:"expiresAt"`
-	Items     []McpApprovalItem `json:"items"`
-
-	// PayerAccountId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	PayerAccountId Id `json:"payerAccountId"`
-
-	// QuoteId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	QuoteId    Id         `json:"quoteId"`
-	RejectedAt *time.Time `json:"rejectedAt"`
-
-	// Shortfall 差额 = max(0
-	Shortfall int `json:"shortfall"`
-
-	// State 由事实算出（不存状态列）；过期按服务端时钟判
-	State McpApprovalState `json:"state"`
-
-	// Summary 要做什么（一句话）
-	Summary string `json:"summary"`
-
-	// Tool generate | plan（报价来源）
-	Tool   string     `json:"tool"`
-	UsedAt *time.Time `json:"usedAt"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-
-	// WorkspaceKind 消耗的是个人还是团队的积分
-	WorkspaceKind McpApprovalWorkspaceKind `json:"workspaceKind"`
-	WorkspaceName string                   `json:"workspaceName"`
-}
-
-// McpApprovalState 由事实算出（不存状态列）；过期按服务端时钟判
-type McpApprovalState string
-
-// McpApprovalWorkspaceKind 消耗的是个人还是团队的积分
-type McpApprovalWorkspaceKind string
-
-// McpApprovalItem defines model for McpApprovalItem.
-type McpApprovalItem struct {
-	Credits int `json:"credits"`
-
-	// Label 要做的一件事（模型 · 操作 · 数量）；不含提示词原文
-	Label string `json:"label"`
-}
-
-// McpClientMode 一个客户端在某种接入方式下的片段与话术。oauth 方式不含任何密钥位置；key 方式密钥位置是占位符。
-type McpClientMode struct {
-	// AgentPrompt 可直接粘给 Agent 的中文话术（含安装命令 / 配置），只含占位符、不含任何密钥
-	AgentPrompt string `json:"agentPrompt"`
-
-	// Content 安装命令或配置片段
-	Content string `json:"content"`
-
-	// Format 片段格式；不支持时缺省
-	Format *McpClientModeFormat `json:"format,omitempty"`
-
-	// Location 放到哪里（配置文件路径或「在终端执行」）；不支持时为空
-	Location string `json:"location"`
-
-	// Mode oauth 一键接入（浏览器授权，不需要密钥）/ key 访问密钥
-	Mode McpClientModeMode `json:"mode"`
-
-	// Note 说明与限制；客户端侧未实测的写「待实测」
-	Note string `json:"note"`
-
-	// Supported false 时 content / agentPrompt 为空，note 说明原因（例如建议改用密钥）
-	Supported bool `json:"supported"`
-}
-
-// McpClientModeFormat 片段格式；不支持时缺省
-type McpClientModeFormat string
-
-// McpClientModeMode oauth 一键接入（浏览器授权，不需要密钥）/ key 访问密钥
-type McpClientModeMode string
-
-// McpClientShare defines model for McpClientShare.
-type McpClientShare struct {
-	Calls int64 `json:"calls"`
-
-	// ClientName kind=other / unknown 时为空串
-	ClientName string             `json:"clientName"`
-	Errors     int64              `json:"errors"`
-	Kind       McpClientShareKind `json:"kind"`
-}
-
-// McpClientShareKind defines model for McpClientShare.Kind.
-type McpClientShareKind string
-
-// McpClientSnippet 一个客户端的配置片段。`content` 里密钥位置是占位符，不含任何密钥。
-type McpClientSnippet struct {
-	// Client 稳定的客户端码，当前为 claude_code / codex / cursor / opencode / workbuddy / gemini_cli / stdio_bridge。
-	// **不设枚举**：片段放服务端就是为了加客户端不必发前端版本，前端把不认识的排在最后照常显示。
-	Client  string                 `json:"client"`
-	Content string                 `json:"content"`
-	Format  McpClientSnippetFormat `json:"format"`
-	Label   string                 `json:"label"`
-
-	// Location 放到哪里（配置文件路径或「在终端执行」）
-	Location string `json:"location"`
-
-	// Modes 这个客户端支持的接入方式（`/mcp` 接入指南页）。顺序为 oauth 在前、key 在后。
-	// 某种方式**根本不适用**的客户端不出现那一项（stdio 桥接没有 oauth）；适用但未核实 / 不支持的给
-	// `supported=false`，只有 `note` 说明原因。
-	Modes []McpClientMode `json:"modes"`
-
-	// Note 已知限制与「待实测」说明（format / location / content / note 是密钥方式的片段，与 modes 里 key 那一项相同）
-	Note string `json:"note"`
-}
-
-// McpClientSnippetFormat defines model for McpClientSnippet.Format.
-type McpClientSnippetFormat string
-
-// McpClientSnippets defines model for McpClientSnippets.
-type McpClientSnippets struct {
-	Items []McpClientSnippet `json:"items"`
-
-	// KeyPlaceholder 片段里密钥的占位符（当前为 <YOUR_MCP_KEY>）
-	KeyPlaceholder string `json:"keyPlaceholder"`
-
-	// McpUrl 渲染进片段的 MCP 地址；未配置时为地址占位符
-	McpUrl string `json:"mcpUrl"`
-
-	// McpUrlConfigured 平台是否配置了 SEEAITV_MCP_PUBLIC_URL
-	McpUrlConfigured bool             `json:"mcpUrlConfigured"`
-	Toolsets         []McpToolsetInfo `json:"toolsets"`
-}
-
-// McpConnection 管理视角的一条连接（McpGrant + 是谁连的 + 近 30 天调用次数），MCPT-14。
-type McpConnection struct {
-	// Calls 调用审计里的次数（审计保留 30 天）
-	Calls int64 `json:"calls"`
-
-	// ClientHost CIMD 客户端元数据文档所在域名；其余为空串
-	ClientHost string `json:"clientHost"`
-	ClientName string `json:"clientName"`
-
-	// ClientRegistration OAuth 客户端的登记方式（CIMD 由域名担保 / DCR 自报，MCPT-14）；访问密钥为 null
-	ClientRegistration *McpConnectionClientRegistration `json:"clientRegistration"`
-	CreatedAt          time.Time                        `json:"createdAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// KeyPrefix 访问密钥来源时为其前缀
-	KeyPrefix          *string             `json:"keyPrefix"`
-	LastUsedAt         *time.Time          `json:"lastUsedAt"`
-	RequirePageConfirm bool                `json:"requirePageConfirm"`
-	RevokedAt          *time.Time          `json:"revokedAt"`
-	Scopes             []McpScope          `json:"scopes"`
-	Source             McpConnectionSource `json:"source"`
-	Status             McpConnectionStatus `json:"status"`
-	Toolsets           []McpToolset        `json:"toolsets"`
-
-	// UserId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	UserId Id `json:"userId"`
-
-	// UserName 工作区视角为成员昵称（已离开为 null）；平台视角恒为 null
-	UserName *string `json:"userName"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-}
-
-// McpConnectionClientRegistration OAuth 客户端的登记方式（CIMD 由域名担保 / DCR 自报，MCPT-14）；访问密钥为 null
-type McpConnectionClientRegistration string
-
-// McpConnectionSource defines model for McpConnection.Source.
-type McpConnectionSource string
-
-// McpConnectionStatus defines model for McpConnection.Status.
-type McpConnectionStatus string
-
-// McpConnectionPage defines model for McpConnectionPage.
-type McpConnectionPage struct {
-	Items []McpConnection `json:"items"`
-
-	// NextCursor 为 null 表示没有下一页
-	NextCursor *string `json:"nextCursor"`
-}
-
-// McpConsentInfo OAuth 同意页展示数据（MCPT-12）。
-type McpConsentInfo struct {
-	Client struct {
-		// ClientId CIMD 元数据文档 URL 或 DCR 注册得到的 ID
-		ClientId string `json:"clientId"`
-
-		// ClientUri 客户端自报的主页（可能为空，DCR 下未经验证）
-		ClientUri string `json:"clientUri"`
-
-		// Host CIMD 文档所在域名；DCR 为空串
-		Host         string                           `json:"host"`
-		Name         string                           `json:"name"`
-		Registration McpConsentInfoClientRegistration `json:"registration"`
-
-		// Verified CIMD 为 true（身份由域名担保）；DCR 为 false
-		Verified bool `json:"verified"`
-	} `json:"client"`
-
-	// ExpiresAt 授权请求句柄的过期时间
-	ExpiresAt time.Time `json:"expiresAt"`
-
-	// ReadOnly 申请的是 /mcp/readonly
-	ReadOnly bool `json:"readOnly"`
-
-	// RedirectHost 回调地址的主机（含端口）
-	RedirectHost    string     `json:"redirectHost"`
-	RedirectUri     string     `json:"redirectUri"`
-	RequestedScopes []McpScope `json:"requestedScopes"`
-
-	// Resource 令牌受众（本服务的某个 MCP 端点 URI）
-	Resource string `json:"resource"`
-
-	// Toolset 申请的是 /mcp/x/{toolset} 时为该工具集，否则空串
-	Toolset string `json:"toolset"`
-}
-
-// McpConsentInfoClientRegistration defines model for McpConsentInfo.Client.Registration.
-type McpConsentInfoClientRegistration string
-
-// McpConsentResult defines model for McpConsentResult.
-type McpConsentResult struct {
-	// RedirectTo 客户端回调地址（含 code / state / iss，或 error=access_denied）
-	RedirectTo string `json:"redirectTo"`
-}
-
-// McpConsentSubmit defines model for McpConsentSubmit.
-type McpConsentSubmit struct {
-	Decision           McpConsentSubmitDecision `json:"decision"`
-	Req                string                   `json:"req"`
-	RequirePageConfirm *bool                    `json:"requirePageConfirm,omitempty"`
-	Scopes             *[]McpScope              `json:"scopes,omitempty"`
-	Toolsets           *[]McpToolset            `json:"toolsets,omitempty"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId *Id `json:"workspaceId,omitempty"`
-}
-
-// McpConsentSubmitDecision defines model for McpConsentSubmit.Decision.
-type McpConsentSubmitDecision string
-
-// McpGrant 已连接的客户端（用户 × 工作区 × 客户端）。有效权限 = scopes ∩ 调用当时的成员角色。
-type McpGrant struct {
-	// ClientHost CIMD 客户端元数据文档所在域名；其余为空串
-	ClientHost string `json:"clientHost"`
-	ClientName string `json:"clientName"`
-
-	// ClientRegistration OAuth 客户端的登记方式（CIMD 由域名担保 / DCR 自报，MCPT-14）；访问密钥为 null
-	ClientRegistration *McpGrantClientRegistration `json:"clientRegistration"`
-	CreatedAt          time.Time                   `json:"createdAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// KeyPrefix 访问密钥来源时为其前缀
-	KeyPrefix          *string        `json:"keyPrefix"`
-	LastUsedAt         *time.Time     `json:"lastUsedAt"`
-	RequirePageConfirm bool           `json:"requirePageConfirm"`
-	RevokedAt          *time.Time     `json:"revokedAt"`
-	Scopes             []McpScope     `json:"scopes"`
-	Source             McpGrantSource `json:"source"`
-	Status             McpGrantStatus `json:"status"`
-	Toolsets           []McpToolset   `json:"toolsets"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId Id `json:"workspaceId"`
-}
-
-// McpGrantClientRegistration OAuth 客户端的登记方式（CIMD 由域名担保 / DCR 自报，MCPT-14）；访问密钥为 null
-type McpGrantClientRegistration string
-
-// McpGrantSource defines model for McpGrant.Source.
-type McpGrantSource string
-
-// McpGrantStatus defines model for McpGrant.Status.
-type McpGrantStatus string
-
-// McpGrantUpdate defines model for McpGrantUpdate.
-type McpGrantUpdate struct {
-	// RequirePageConfirm 花钱需在 seeAitv 页面确认（MCPT-13）
-	RequirePageConfirm bool `json:"requirePageConfirm"`
-}
-
-// McpPlatformSettings defines model for McpPlatformSettings.
-type McpPlatformSettings struct {
-	Enabled bool `json:"enabled"`
-
-	// EnvEnabled SEEAITV_MCP_ENABLED；为 false 时 /mcp 根本没挂
-	EnvEnabled       bool       `json:"envEnabled"`
-	UpdatedAt        *time.Time `json:"updatedAt"`
-	UpdatedByAdminId *string    `json:"updatedByAdminId"`
-
-	// Version 0 表示从没改过（按开启）
-	Version int `json:"version"`
-}
-
-// McpRevokeReason defines model for McpRevokeReason.
-type McpRevokeReason struct {
-	// Reason 撤销理由（进审计）。平台管理员必填，工作区管理员可选
-	Reason *string `json:"reason,omitempty"`
-}
-
-// McpScope 与工作区动作 view / edit / generate / export 一一对应（MCP-F-10）。
-type McpScope string
-
-// McpStats defines model for McpStats.
-type McpStats struct {
-	ByClient []McpClientShare `json:"byClient"`
-	Calls    int64            `json:"calls"`
-
-	// ConfirmRate -1 = 暂无数据
-	ConfirmRate float32 `json:"confirmRate"`
-	Denied      int64   `json:"denied"`
-
-	// ErrorRate -1 = 暂无数据
-	ErrorRate    float32   `json:"errorRate"`
-	Errors       int64     `json:"errors"`
-	From         time.Time `json:"from"`
-	MaxSpanDays  int       `json:"maxSpanDays"`
-	NeedsConfirm int64     `json:"needsConfirm"`
-	QuotesIssued int64     `json:"quotesIssued"`
-	QuotesUsed   int64     `json:"quotesUsed"`
-	RateLimited  int64     `json:"rateLimited"`
-
-	// SpanAdjusted 范围被校正过（倒置或超过 30 天）
-	SpanAdjusted bool      `json:"spanAdjusted"`
-	To           time.Time `json:"to"`
-}
-
-// McpSwitchUpdate defines model for McpSwitchUpdate.
-type McpSwitchUpdate struct {
-	Enabled bool `json:"enabled"`
-
-	// Reason 仅平台开关使用（进审计），可选
-	Reason *string `json:"reason,omitempty"`
-}
-
-// McpToolset defines model for McpToolset.
-type McpToolset string
-
-// McpToolsetInfo defines model for McpToolsetInfo.
-type McpToolsetInfo struct {
-	// Available 注册表里此刻真有该工具集的工具（没有的授予了也用不了）
-	Available bool `json:"available"`
-
-	// DefaultOn 建密钥时不传工具集取的默认开启集
-	DefaultOn bool       `json:"defaultOn"`
-	Name      McpToolset `json:"name"`
-}
-
-// McpWorkspaceSettings defines model for McpWorkspaceSettings.
-type McpWorkspaceSettings struct {
-	// Enabled 本工作区 MCP 是否开启（¬workspace.mcp_disabled）
-	Enabled bool `json:"enabled"`
-
-	// PlatformEnabled 平台总开关；为 false 时工作区开着也不可用
-	PlatformEnabled bool `json:"platformEnabled"`
-}
-
-// MemberPlan 某等级的一个周期套餐。金额一律**整数分**，只在展示层换算成元。
-type MemberPlan struct {
-	// GiftCredits 赠送积分。⚠️ **随会员有效期到期**（与积分包的永久积分相反）。
-	GiftCredits int `json:"giftCredits"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id        Id     `json:"id"`
-	LevelCode string `json:"levelCode"`
-
-	// LevelId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	LevelId   Id     `json:"levelId"`
-	LevelName string `json:"levelName"`
-
-	// LevelSort 等级高低按它比，**不按 id**（id 是雪花号，先建的不一定更低）。
-	LevelSort  *int             `json:"levelSort,omitempty"`
-	Period     MemberPlanPeriod `json:"period"`
-	PriceCents int              `json:"priceCents"`
-}
-
-// MemberPlanPeriod defines model for MemberPlan.Period.
-type MemberPlanPeriod string
-
-// MemberUsage defines model for MemberUsage.
-type MemberUsage struct {
-	// Consumed 扣掉的总额（正数）。
-	Consumed int       `json:"consumed"`
-	LastAt   time.Time `json:"lastAt"`
-	Nickname string    `json:"nickname"`
-
-	// Refunded 退回的总额（正数）。**不从 consumed 里减掉**。
-	Refunded int `json:"refunded"`
-
-	// Tasks 产生过扣费的业务条数（按 refId 去重）。⚠️ 不是流水条数 ——
-	// 退款会再加一条流水，数流水的话"任务数"会随失败率上涨。
-	Tasks int `json:"tasks"`
-
-	// UserId `"0"` 表示没有操作者的流水（过期扣减、系统调账）。这一行不能丢。
-	UserId Id `json:"userId"`
-}
-
-// Membership 一次会员资格。挂在**付费主体**上而不是 user —— 团队工作区的成员
-// 应当继承工作区的等级权益。
-type Membership struct {
-	ExpireAt time.Time `json:"expireAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id        Id     `json:"id"`
-	LevelCode string `json:"levelCode"`
-
-	// LevelId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	LevelId   Id        `json:"levelId"`
-	LevelName string    `json:"levelName"`
-	LevelSort *int      `json:"levelSort,omitempty"`
-	StartAt   time.Time `json:"startAt"`
-
-	// Status ⚠️ **只用于展示，不用于权益判定**（判定按 `expireAt > now`）。
-	//
-	// `superseded` 是被后续升级顶替 —— 与 `expired` 必须分开：
-	// 升级保持原到期时间，那条旧行的 expireAt 仍在**未来**，
-	// 合并的话"当前有效会员"会同时命中两行。
-	Status MembershipStatus `json:"status"`
-}
-
-// MembershipStatus ⚠️ **只用于展示，不用于权益判定**（判定按 `expireAt > now`）。
-//
-// `superseded` 是被后续升级顶替 —— 与 `expired` 必须分开：
-// 升级保持原到期时间，那条旧行的 expireAt 仍在**未来**，
-// 合并的话"当前有效会员"会同时命中两行。
-type MembershipStatus string
-
 // Message defines model for Message.
 type Message struct {
 	Content   string    `json:"content"`
@@ -10765,6 +8477,38 @@ type Message struct {
 // 两张表的 id 在同一个空间里无从区分。
 type MessageSource string
 
+// ModelCapability defines model for ModelCapability.
+type ModelCapability struct {
+	AllowedMime *[]string           `json:"allowedMime,omitempty"`
+	MaxCount    int                 `json:"maxCount"`
+	MinCount    int                 `json:"minCount"`
+	Role        ModelCapabilityRole `json:"role"`
+}
+
+// ModelCapabilityRole defines model for ModelCapability.Role.
+type ModelCapabilityRole string
+
+// ModelParamSupport defines model for ModelParamSupport.
+type ModelParamSupport struct {
+	// AllowedValues 可选值（字符串或数字，照参数定义）；null = 不收窄
+	AllowedValues *[]interface{} `json:"allowedValues"`
+	DefaultValue  string         `json:"defaultValue"`
+
+	// Override 覆盖参数定义的配置
+	Override     *map[string]interface{} `json:"override"`
+	ParamCode    string                  `json:"paramCode"`
+	ParamEnabled bool                    `json:"paramEnabled"`
+	ParamName    string                  `json:"paramName"`
+}
+
+// ModelParamSupportInput defines model for ModelParamSupportInput.
+type ModelParamSupportInput struct {
+	AllowedValues *[]interface{}          `json:"allowedValues,omitempty"`
+	DefaultValue  *string                 `json:"defaultValue,omitempty"`
+	Override      *map[string]interface{} `json:"override,omitempty"`
+	ParamCode     string                  `json:"paramCode"`
+}
+
 // ModelParams 一个模型的型号级参数覆盖（参数合并的第三层，见 `GET /models/{code}/params`）。
 type ModelParams struct {
 	ModelCode string `json:"modelCode"`
@@ -10777,6 +8521,57 @@ type ModelParams struct {
 	// 意思是「清晰度为 1080p 时画幅只能选这三种」。前端据此禁用选不了的项，
 	// 并在另一项改动后把失效的值校正回可选范围。
 	Override map[string]map[string]interface{} `json:"override"`
+}
+
+// ModelPublishBlocker defines model for ModelPublishBlocker.
+type ModelPublishBlocker struct {
+	Code   string `json:"code"`
+	Detail string `json:"detail"`
+}
+
+// ModelPublishCheck defines model for ModelPublishCheck.
+type ModelPublishCheck struct {
+	Blockers    *[]ModelPublishBlocker `json:"blockers"`
+	Publishable bool                   `json:"publishable"`
+}
+
+// ModelTemplate defines model for ModelTemplate.
+type ModelTemplate struct {
+	AuthType   string  `json:"authType"`
+	BaseUrl    string  `json:"baseUrl"`
+	Code       string  `json:"code"`
+	HasApiKey  bool    `json:"hasApiKey"`
+	HeaderName *string `json:"headerName,omitempty"`
+
+	// Installed 库里有这个厂商（被用户删掉后为 false）
+	Installed bool `json:"installed"`
+	IsReady   bool `json:"isReady"`
+	Models    []struct {
+		Code      string `json:"code"`
+		Domain    string `json:"domain"`
+		Installed bool   `json:"installed"`
+		Name      string `json:"name"`
+		Status    string `json:"status"`
+	} `json:"models"`
+	Name    string `json:"name"`
+	Status  string `json:"status"`
+	Version int    `json:"version"`
+}
+
+// ModelTemplateEnableResult defines model for ModelTemplateEnableResult.
+type ModelTemplateEnableResult struct {
+	EnabledCount int `json:"enabledCount"`
+	Models       []struct {
+		Blockers *[]ModelPublishBlocker `json:"blockers,omitempty"`
+		Code     string                 `json:"code"`
+		Enabled  bool                   `json:"enabled"`
+		Name     string                 `json:"name"`
+		Reason   *string                `json:"reason,omitempty"`
+
+		// Skipped 之前已启用，本次跳过
+		Skipped *bool `json:"skipped,omitempty"`
+	} `json:"models"`
+	Provider string `json:"provider"`
 }
 
 // MultiAngleOptions 多角度（`params.tool = multi_angle`）。数值原样交给上游（horizontal_angle / vertical_angle / zoom）。
@@ -10797,25 +8592,6 @@ type MultiAngleOptions struct {
 
 // MultiAngleOptionsPreset defines model for MultiAngleOptions.Preset.
 type MultiAngleOptionsPreset string
-
-// MyInvitation defines model for MyInvitation.
-type MyInvitation struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// InvitedBy 邀请人昵称
-	InvitedBy string           `json:"invitedBy"`
-	Role      MyInvitationRole `json:"role"`
-
-	// WorkspaceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	WorkspaceId   Id     `json:"workspaceId"`
-	WorkspaceName string `json:"workspaceName"`
-}
-
-// MyInvitationRole defines model for MyInvitation.Role.
-type MyInvitationRole string
 
 // NodeParamConfig 一个控件的最终形态。前端按 `control` 查表渲染，**不写死表单**；
 // 遇未知 control/code 一律忽略并告警 —— 配置可以比前端新，前端不能因此崩。
@@ -10853,203 +8629,6 @@ type NodeTypeConfig struct {
 
 // NodeTypeConfigKind defines model for NodeTypeConfig.Kind.
 type NodeTypeConfigKind string
-
-// OnlineUser defines model for OnlineUser.
-type OnlineUser struct {
-	// Clients 这个人开着几个端。⚠️ 必须给出来：用户撞上版本冲突时的第一反应是去找
-	// 同事，而真相往往是他自己另开了一个标签页 —— 这个数字直接回答那个问题。
-	// 同一个人的多个端在服务端就已经合并成一条，前端不必再去重
-	// （不合并的话成员条上会出现三个同名的人）。
-	Clients int `json:"clients"`
-
-	// IsSelf 这条是不是请求者自己；自己排在列表最前。
-	IsSelf   bool   `json:"isSelf"`
-	Nickname string `json:"nickname"`
-
-	// SeenAt 该用户所有端里**最近**的一次心跳。
-	SeenAt time.Time `json:"seenAt"`
-
-	// UserId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	UserId Id `json:"userId"`
-}
-
-// OpsTask defines model for OpsTask.
-type OpsTask struct {
-	Attempt         int       `json:"attempt"`
-	CreatedAt       time.Time `json:"createdAt"`
-	CreatedByUserId string    `json:"createdByUserId"`
-	Credits         int       `json:"credits"`
-
-	// DeadlineAt 排队中还没派发的任务**没有死线**，那时为空串。
-	DeadlineAt string `json:"deadlineAt"`
-	Error      string `json:"error"`
-
-	// ErrorCode ⚠️ 人工补偿落的是专用码 `ops_compensated` —— 统计与排障都要能把
-	// "平台补偿"与真实的上游失败分开。
-	ErrorCode string `json:"errorCode"`
-
-	// ErrorDetail 上游返回的原始错误（只有生成任务有，其余为空串）。⚠️ 只在运维台下发：
-	// 用户侧的 `error` 是归类后的中文说法，上游原话可能含内部地址、模型名、
-	// 供应商报文，不能给最终用户看。
-	ErrorDetail *string `json:"errorDetail,omitempty"`
-	FinishedAt  string  `json:"finishedAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id    Id          `json:"id"`
-	Kind  OpsTaskKind `json:"kind"`
-	Model string      `json:"model"`
-
-	// PayerAccountId ⚠️ 打包导出**没有**这一项（导出不扣费），那时字段缺席。
-	PayerAccountId *string `json:"payerAccountId,omitempty"`
-
-	// Provider 仅生成任务有；用于按供应商筛一批故障。
-	Provider string `json:"provider"`
-
-	// RawStatus ⚠️ **各表自己的原始状态**。统一状态回答"给用户怎么显示"，
-	// 原始状态回答"库里到底是什么" —— 排障问的是后者。
-	// 只给统一状态的话，整图运行的 `pending` 与生成的 `queued`
-	// 在运维台上长得一模一样，而它们的处置完全不同。
-	RawStatus string `json:"rawStatus"`
-	RefId     string `json:"refId"`
-
-	// State **统一**任务状态（P13-02）。四类任务的原始状态词表并不一致
-	// （export 用 `pending`、workflow 多一个 `partial_success`），
-	// 映射**只在服务端做一处**（`content/domain.NormalizeState`）。
-	//
-	// ⚠️ `partial_success` 不能摊平成 success 或 failed（AV-24）：
-	// 说成成功用户不会去翻那条失败的，说成失败他会把已经成功的也重跑一遍。
-	//
-	// ⚠️ 未知原始值一律归 `failed` 而不是静默丢掉那一行：
-	// 丢掉的话用户的任务**从列表里消失了**，而他明明扣了积分。
-	State TaskState `json:"state"`
-
-	// Stuck 本该结束却没结束（未终结 ∧ 死线已过）。⚠️ **服务端算** ——
-	// 让前端拿 `deadlineAt` 去跟本地时钟比的话，用户机器的时钟偏几分钟，
-	// 这一列就会整片显示错。
-	Stuck       bool   `json:"stuck"`
-	Title       string `json:"title"`
-	WorkspaceId string `json:"workspaceId"`
-}
-
-// OpsTaskKind defines model for OpsTask.Kind.
-type OpsTaskKind string
-
-// OrderSummary 与列表**同一套过滤条件**算出来的汇总。
-//
-// ⚠️ `paidCents` 只算已支付的 —— 把待支付的也算进收入会让报表
-// 凭空多出一截，而那些钱根本没收到。
-type OrderSummary struct {
-	Count       int `json:"count"`
-	DiffCount   int `json:"diffCount"`
-	PaidCents   int `json:"paidCents"`
-	PaidCount   int `json:"paidCount"`
-	RefundCents int `json:"refundCents"`
-	RefundCount int `json:"refundCount"`
-}
-
-// PayParams 拉起支付所需的参数。形状**逐渠道不同**，所以 values 是开放的。
-type PayParams struct {
-	Channel  string     `json:"channel"`
-	ExpireAt *time.Time `json:"expireAt,omitempty"`
-
-	// Kind 告诉前端怎么用这些参数。
-	Kind PayParamsKind `json:"kind"`
-
-	// Note ⚠️ **必须显示给用户**：「拉起支付不代表已付款」。
-	// 不说的话前端会在用户从渠道页面回来时直接显示"支付成功"
-	// （GAP-14 的同类：浏览器那边发生了什么证明不了服务端的事实）。
-	Note   string            `json:"note"`
-	Values map[string]string `json:"values"`
-}
-
-// PayParamsKind 告诉前端怎么用这些参数。
-type PayParamsKind string
-
-// PayerOverview 付费主体全貌。
-type PayerOverview struct {
-	Balance    int               `json:"balance"`
-	Kind       PayerOverviewKind `json:"kind"`
-	Membership *struct {
-		ExpireAt  *time.Time `json:"expireAt,omitempty"`
-		LevelCode *string    `json:"levelCode,omitempty"`
-	} `json:"membership,omitempty"`
-
-	// OwnerId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	OwnerId Id `json:"ownerId"`
-
-	// PayerId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	PayerId Id `json:"payerId"`
-
-	// WorkspaceIds 挂在这个付费主体下的工作区。
-	//
-	// ⚠️ **可能不止一个**：个人与团队各有自己的 payer，
-	// 但误配会让两个工作区指向同一个 —— 那意味着一个团队的消费
-	// 会记到个人账上。后台要能一眼看出来。
-	WorkspaceIds []Id `json:"workspaceIds"`
-}
-
-// PayerOverviewKind defines model for PayerOverview.Kind.
-type PayerOverviewKind string
-
-// PaymentCallback 一条回调留痕。
-type PaymentCallback struct {
-	AmountCents  *int    `json:"amountCents,omitempty"`
-	Channel      string  `json:"channel"`
-	ErrorMessage *string `json:"errorMessage,omitempty"`
-	EventId      string  `json:"eventId"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// OrderId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	OrderId     *Id     `json:"orderId,omitempty"`
-	OutTradeNo  *string `json:"outTradeNo,omitempty"`
-	SignatureOk bool    `json:"signatureOk"`
-
-	// Stage 处理到哪一步。⚠️ 这几个值**不能合并成一个"失败"**：
-	// 验签没过（配置错或有人在打我们）· 订单找不到（串了环境）·
-	// 金额不对（被改过）· 履约炸了（我们的 bug）——
-	// 四种的处置完全不同。
-	Stage PaymentCallbackStage `json:"stage"`
-}
-
-// PaymentCallbackStage 处理到哪一步。⚠️ 这几个值**不能合并成一个"失败"**：
-// 验签没过（配置错或有人在打我们）· 订单找不到（串了环境）·
-// 金额不对（被改过）· 履约炸了（我们的 bug）——
-// 四种的处置完全不同。
-type PaymentCallbackStage string
-
-// PaymentChannel 支付渠道配置（**不含任何密钥内容**）。
-type PaymentChannel struct {
-	AppId   *string `json:"appId,omitempty"`
-	BaseUrl *string `json:"baseUrl,omitempty"`
-
-	// Blocked 不能用时说清**缺什么**。
-	//
-	// ⚠️ 只回一句"未就绪"的话，运维得逐个字段猜 —— 而支付渠道的字段
-	// 有七八个，其中三个还是看不见的密钥。
-	Blocked        *string            `json:"blocked,omitempty"`
-	Code           PaymentChannelCode `json:"code"`
-	HasApiV3Key    *bool              `json:"hasApiV3Key,omitempty"`
-	HasPlatformKey *bool              `json:"hasPlatformKey,omitempty"`
-	HasPrivateKey  *bool              `json:"hasPrivateKey,omitempty"`
-
-	// IsSandbox ⚠️ 要**显式记**：沙箱与生产的凭据长得一模一样，配错了的
-	// 唯一表现是"付款成功但钱没到账"（或反过来，真的扣了用户的钱）。
-	IsSandbox  bool                 `json:"isSandbox"`
-	KeyVersion *int                 `json:"keyVersion,omitempty"`
-	MerchantId *string              `json:"merchantId,omitempty"`
-	Name       *string              `json:"name,omitempty"`
-	NotifyUrl  *string              `json:"notifyUrl,omitempty"`
-	Ready      bool                 `json:"ready"`
-	Status     PaymentChannelStatus `json:"status"`
-}
-
-// PaymentChannelCode defines model for PaymentChannel.Code.
-type PaymentChannelCode string
-
-// PaymentChannelStatus defines model for PaymentChannel.Status.
-type PaymentChannelStatus string
 
 // PixelBox defines model for PixelBox.
 type PixelBox struct {
@@ -11283,6 +8862,42 @@ type ProjectTemplate struct {
 	Sort        *int    `json:"sort,omitempty"`
 }
 
+// PromptSpec defines model for PromptSpec.
+type PromptSpec struct {
+	// Builtin 代码内置原文
+	Builtin    string   `json:"builtin"`
+	Code       string   `json:"code"`
+	HasBuiltin bool     `json:"hasBuiltin"`
+	MaxChars   int      `json:"maxChars"`
+	Name       string   `json:"name"`
+	Optional   []string `json:"optional"`
+
+	// Required 必填变量
+	Required []string `json:"required"`
+}
+
+// PromptVersion defines model for PromptVersion.
+type PromptVersion struct {
+	Content            string  `json:"content"`
+	Note               *string `json:"note,omitempty"`
+	PublishedAt        string  `json:"publishedAt"`
+	PublishedByAdminId *string `json:"publishedByAdminId,omitempty"`
+	RollbackOfVersion  *int    `json:"rollbackOfVersion,omitempty"`
+	Version            int     `json:"version"`
+}
+
+// ProviderProbeResult defines model for ProviderProbeResult.
+type ProviderProbeResult struct {
+	ErrorKind  ProviderProbeResultErrorKind `json:"errorKind"`
+	LatencyMs  int64                        `json:"latencyMs"`
+	Message    string                       `json:"message"`
+	Ok         bool                         `json:"ok"`
+	StatusCode *int                         `json:"statusCode,omitempty"`
+}
+
+// ProviderProbeResultErrorKind defines model for ProviderProbeResult.ErrorKind.
+type ProviderProbeResultErrorKind string
+
 // ProviderRequestLog defines model for ProviderRequestLog.
 type ProviderRequestLog struct {
 	CreatedAt  time.Time `json:"createdAt"`
@@ -11314,61 +8929,6 @@ type ProviderRequestLog struct {
 // `error.message`），而超时/断连根本没有状态码。
 // 它同时驱动重试决策（408/429/5xx 可重试，401/403/4xx 不可）。
 type ProviderRequestLogErrorType string
-
-// PurchaseOrder defines model for PurchaseOrder.
-type PurchaseOrder struct {
-	AmountCents int       `json:"amountCents"`
-	Channel     *string   `json:"channel,omitempty"`
-	CreatedAt   time.Time `json:"createdAt"`
-	Credits     int       `json:"credits"`
-	Currency    string    `json:"currency"`
-
-	// ExpireAt 待支付的作废时间。
-	//
-	// ⚠️ 订单超时**必须被清理**：它占着幂等键，不清掉的话
-	// 用户再下同一单会命中那张僵尸订单，看到的是一张早就付不了的单。
-	ExpireAt *time.Time `json:"expireAt,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id        Id                     `json:"id"`
-	PaidAt    *time.Time             `json:"paidAt,omitempty"`
-	PayStatus PurchaseOrderPayStatus `json:"payStatus"`
-
-	// RefId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	RefId *Id               `json:"refId,omitempty"`
-	Type  PurchaseOrderType `json:"type"`
-}
-
-// PurchaseOrderPayStatus defines model for PurchaseOrder.PayStatus.
-type PurchaseOrderPayStatus string
-
-// PurchaseOrderType defines model for PurchaseOrder.Type.
-type PurchaseOrderType string
-
-// PurchaseQuote 下单报价（`dryRun` 时只有这些，没有 order）。
-type PurchaseQuote struct {
-	AmountCents int `json:"amountCents"`
-
-	// Credits 这一单到账多少积分（会员是赠分、积分包是包内积分）。
-	Credits int `json:"credits"`
-
-	// Intent 由服务端按当前会员判定，**不由客户端报**。
-	Intent PurchaseQuoteIntent `json:"intent"`
-
-	// MembershipExpireAt 买完之后会员到期到哪天（积分包单没有）。
-	MembershipExpireAt *time.Time     `json:"membershipExpireAt,omitempty"`
-	Order              *PurchaseOrder `json:"order,omitempty"`
-
-	// RemainingDays 升级折算用到的剩余天数。
-	//
-	// ⚠️ 要**说出来**：只给一个差价数字的话，用户没法判断这个价
-	// 是怎么来的，也就没法信它。
-	RemainingDays *int   `json:"remainingDays,omitempty"`
-	Title         string `json:"title"`
-}
-
-// PurchaseQuoteIntent 由服务端按当前会员判定，**不由客户端报**。
-type PurchaseQuoteIntent string
 
 // QuickGenerationInput defines model for QuickGenerationInput.
 type QuickGenerationInput struct {
@@ -11430,33 +8990,6 @@ type QuickGenerationResult struct {
 	Replayed  bool `json:"replayed"`
 }
 
-// ReceivedShare defines model for ReceivedShare.
-type ReceivedShare struct {
-	CreatedAt time.Time `json:"createdAt"`
-
-	// Gone 源资源已不存在。与"被撤销"是两件事：撤销后这一行根本不会出现，
-	// gone 表示对方把东西删了。合成一个的话用户会怪错人。
-	Gone bool `json:"gone"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// Importable 能否导入到我的工作区（资源类别 ∧ export 权限）。
-	Importable bool `json:"importable"`
-
-	// OwnerWorkspaceName 资源所属工作区 —— 受让方要知道东西是谁给的。
-	OwnerWorkspaceName string            `json:"ownerWorkspaceName"`
-	Permissions        []SharePermission `json:"permissions"`
-
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId   Id                        `json:"resourceId"`
-	ResourceName *string                   `json:"resourceName,omitempty"`
-	ResourceType ReceivedShareResourceType `json:"resourceType"`
-}
-
-// ReceivedShareResourceType defines model for ReceivedShare.ResourceType.
-type ReceivedShareResourceType string
-
 // RecentProject defines model for RecentProject.
 type RecentProject struct {
 	// Agent 最近活跃的 Agent 会话，没有会话时为 null（AGT-45）。与 `ProjectListItem.agent` 是画布域**同一条**查询规则
@@ -11499,71 +9032,6 @@ type ReconcileResult struct {
 	// ⚠️ 不是错误，是该让用户知道的事实：他需要自己补一句外观。
 	Unmatched *[]string `json:"unmatched,omitempty"`
 }
-
-// Refund 一笔订单退款。
-type Refund struct {
-	AmountCents     int       `json:"amountCents"`
-	ChannelRefundId *string   `json:"channelRefundId,omitempty"`
-	CreatedAt       time.Time `json:"createdAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// OrderId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	OrderId Id      `json:"orderId"`
-	Reason  *string `json:"reason,omitempty"`
-
-	// RestoredPreviousMembership 退掉升级单后**恢复了上一段会员**。
-	//
-	// ⚠️ 要说：不说的话用户以为会员整个没了，会再来问一次。
-	RestoredPreviousMembership *bool `json:"restoredPreviousMembership,omitempty"`
-
-	// RevokedCredits 这次收回了多少积分。
-	//
-	// ⚠️ **要显示出来**：用户看到"退款成功"而积分没了，
-	// 不说的话他会以为系统出错了。
-	RevokedCredits    int   `json:"revokedCredits"`
-	RevokedMembership *bool `json:"revokedMembership,omitempty"`
-
-	// Status ⚠️ `pending` 有两种来源：刚建出来还没调渠道，
-	// 以及**调渠道时网络出错**（结果不确定，留给人工核对）。
-	// 后者绝不能自动标成 failed —— 那会让用户再申请一次，
-	// 而渠道那边可能已经在退了。
-	Status RefundStatus `json:"status"`
-}
-
-// RefundStatus ⚠️ `pending` 有两种来源：刚建出来还没调渠道，
-// 以及**调渠道时网络出错**（结果不确定，留给人工核对）。
-// 后者绝不能自动标成 failed —— 那会让用户再申请一次，
-// 而渠道那边可能已经在退了。
-type RefundStatus string
-
-// RefundEligibility 能不能退、退多少、会收回什么。
-//
-// ⚠️ `revokeCredits` **必须在确认之前告诉用户** —— 不说的话他以为
-// "退钱就是退钱"，点完发现积分也没了，而那笔积分他可能正准备用。
-type RefundEligibility struct {
-	AmountCents int `json:"amountCents"`
-
-	// Code 不可退的原因码。⚠️ **给码不只给文案**：前端按分类决定语气，
-	// 按文案匹配的话改一个字分类就失效。
-	Code             *RefundEligibilityCode `json:"code,omitempty"`
-	Reason           *string                `json:"reason,omitempty"`
-	Refundable       bool                   `json:"refundable"`
-	RevokeCredits    int                    `json:"revokeCredits"`
-	RevokeMembership bool                   `json:"revokeMembership"`
-
-	// UserFixable 这个原因用户自己能不能解决。
-	//
-	// ⚠️ 退款的拒绝理由**没有一条**是"再试一次"能绕过的，
-	// 所以恒为 false —— 显式给出来是为了让前端的语气判断有依据，
-	// 而不是靠"这里大概都不能吧"的默认假设（加新原因码时会悄悄失效）。
-	UserFixable *bool `json:"userFixable,omitempty"`
-}
-
-// RefundEligibilityCode 不可退的原因码。⚠️ **给码不只给文案**：前端按分类决定语气，
-// 按文案匹配的话改一个字分类就失效。
-type RefundEligibilityCode string
 
 // RelightOptions 打光（`params.tool = relight`）。`smart=true` 时其余字段忽略。
 type RelightOptions struct {
@@ -11729,19 +9197,29 @@ type RenderSpecFps int
 // RenderSpecResolution defines model for RenderSpec.Resolution.
 type RenderSpecResolution string
 
-// ReviewRecord defines model for ReviewRecord.
-type ReviewRecord struct {
-	Action    ReviewRecordAction `json:"action"`
-	AdminId   string             `json:"adminId"`
-	CreatedAt time.Time          `json:"createdAt"`
+// S3TestRequest defines model for S3TestRequest.
+type S3TestRequest struct {
+	AccessKey *string `json:"accessKey,omitempty"`
+	Bucket    *string `json:"bucket,omitempty"`
+	Endpoint  *string `json:"endpoint,omitempty"`
 
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id     Id     `json:"id"`
-	Reason string `json:"reason"`
+	// KeepSecret true = 沿用已保存的 SecretKey
+	KeepSecret *bool   `json:"keepSecret,omitempty"`
+	PathStyle  *bool   `json:"pathStyle,omitempty"`
+	Prefix     *string `json:"prefix,omitempty"`
+	Region     *string `json:"region,omitempty"`
+	SecretKey  *string `json:"secretKey,omitempty"`
 }
 
-// ReviewRecordAction defines model for ReviewRecord.Action.
-type ReviewRecordAction string
+// S3TestResult defines model for S3TestResult.
+type S3TestResult struct {
+	Ok    bool `json:"ok"`
+	Steps []struct {
+		Message *string `json:"message,omitempty"`
+		Ok      bool    `json:"ok"`
+		Step    string  `json:"step"`
+	} `json:"steps"`
+}
 
 // SaveLibraryItemRequest defines model for SaveLibraryItemRequest.
 type SaveLibraryItemRequest struct {
@@ -11979,66 +9457,14 @@ type ScriptPatchRequest struct {
 	Version     int     `json:"version"`
 }
 
-// SecretField 密钥字段的三态表达。
-//
-// ⚠️ 没有这个三态的话，管理端回显的值会被当成新密钥提交回去。
-type SecretField struct {
-	Action SecretFieldAction `json:"action"`
-
-	// Value 仅 `replace` 时有意义。**永远不会在响应里出现**。
-	Value *string `json:"value,omitempty"`
+// SecretFieldInput 密钥三态。`keep` 保留 / `replace` 替换（带 value）/ `clear` 清除；未知 action 按保留。
+type SecretFieldInput struct {
+	Action SecretFieldInputAction `json:"action"`
+	Value  *string                `json:"value,omitempty"`
 }
 
-// SecretFieldAction defines model for SecretField.Action.
-type SecretFieldAction string
-
-// Share defines model for Share.
-type Share struct {
-	CreatedAt time.Time `json:"createdAt"`
-
-	// GranteeId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GranteeId   Id               `json:"granteeId"`
-	GranteeName *string          `json:"granteeName,omitempty"`
-	GranteeType ShareGranteeType `json:"granteeType"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id          Id                `json:"id"`
-	Permissions []SharePermission `json:"permissions"`
-
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId Id `json:"resourceId"`
-
-	// ResourceName 资源已被删除时是空串。前端仍要给撤销入口 —— 留着一条指向空气的授权比看不到它更糟。
-	ResourceName *string           `json:"resourceName,omitempty"`
-	ResourceType ShareResourceType `json:"resourceType"`
-}
-
-// ShareGranteeType defines model for Share.GranteeType.
-type ShareGranteeType string
-
-// ShareResourceType defines model for Share.ResourceType.
-type ShareResourceType string
-
-// SharePermission 可共享的操作。manage/transfer **不在其中**：共享是把一份资源给外人看或用，
-// 不是把工作区的管理权交出去。
-type SharePermission string
-
-// SharedResource defines model for SharedResource.
-type SharedResource struct {
-	// Detail 资源内容，按 kind 分流。项目给 canvasData；资产给档案与描述。
-	// ⚠️ 资产**不给 mediaObjectId**：那是源工作区的媒体，受让方拿着它
-	// 调下载端点一律 401，界面上看到的是一张裂图。要用那张图只有导入一条路。
-	Detail interface{} `json:"detail,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// Kind 项目为 project；资产为 character/scene/prop。
-	Kind        string            `json:"kind"`
-	Name        string            `json:"name"`
-	Permissions []SharePermission `json:"permissions"`
-	UpdatedAt   time.Time         `json:"updatedAt"`
-}
+// SecretFieldInputAction defines model for SecretFieldInput.Action.
+type SecretFieldInputAction string
 
 // Shot defines model for Shot.
 type Shot struct {
@@ -12591,6 +10017,17 @@ type StatsOverview struct {
 		// RevenueCents ⚠️ **只算已支付的**，按 `paid_at` 归属；退款额单列不减掉。
 		RevenueCents int64 `json:"revenueCents"`
 	} `json:"totals"`
+}
+
+// StorageUsage defines model for StorageUsage.
+type StorageUsage struct {
+	Backups  int64  `json:"backups"`
+	DataDir  string `json:"dataDir"`
+	Database int64  `json:"database"`
+	Logs     int64  `json:"logs"`
+
+	// Media 字节
+	Media int64 `json:"media"`
 }
 
 // StoryboardRequest defines model for StoryboardRequest.
@@ -13148,27 +10585,6 @@ type UpscaleOptions struct {
 // UpscaleOptionsLevel defines model for UpscaleOptions.Level.
 type UpscaleOptionsLevel string
 
-// UsageEntry defines model for UsageEntry.
-type UsageEntry struct {
-	// Change 消费为负、退款为正，与账本流水一致。
-	Change    int       `json:"change"`
-	CreatedAt time.Time `json:"createdAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id       Id             `json:"id"`
-	Nickname string         `json:"nickname"`
-	Reason   string         `json:"reason"`
-	RefId    string         `json:"refId"`
-	RefType  string         `json:"refType"`
-	Type     UsageEntryType `json:"type"`
-
-	// UserId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	UserId Id `json:"userId"`
-}
-
-// UsageEntryType defines model for UsageEntry.Type.
-type UsageEntryType string
-
 // VersionConflictError 版本冲突。附加信息放在**统一的 `details` 袋子**里，而不是往顶层加字段 ——
 // 一套 Error 解析就够了，将来再加一个字段也不必新建一个 schema。
 type VersionConflictError struct {
@@ -13233,6 +10649,21 @@ type VersionConflictErrorDetailsCurrentSource string
 // agent / mcp 时前端可以 `GET /projects/{id}/canvas/ops` 补取批次、重放后自动重存（用户无感）；
 // user 时必须走冲突处理。⚠️ 只说明**最后一次**写入；补取返回 needsReload 说明中间还夹着真人保存。
 type VersionConflictErrorDetailsEditorKind string
+
+// VoiceItem defines model for VoiceItem.
+type VoiceItem struct {
+	Code   string  `json:"code"`
+	Gender *string `json:"gender,omitempty"`
+
+	// IconUrl 受保护媒体端点
+	IconUrl     *string `json:"iconUrl,omitempty"`
+	IsFavorited bool    `json:"isFavorited"`
+	Language    *string `json:"language,omitempty"`
+	Name        string  `json:"name"`
+
+	// PreviewUrl 受保护媒体端点
+	PreviewUrl *string `json:"previewUrl,omitempty"`
+}
 
 // Work defines model for Work.
 type Work struct {
@@ -13426,36 +10857,6 @@ type WorkspaceKind string
 // WorkspaceRole defines model for Workspace.Role.
 type WorkspaceRole string
 
-// WorkspaceInvitation defines model for WorkspaceInvitation.
-type WorkspaceInvitation struct {
-	ExpiresAt time.Time `json:"expiresAt"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id          Id                            `json:"id"`
-	Role        WorkspaceInvitationRole       `json:"role"`
-	TargetKind  WorkspaceInvitationTargetKind `json:"targetKind"`
-	TargetValue string                        `json:"targetValue"`
-}
-
-// WorkspaceInvitationRole defines model for WorkspaceInvitation.Role.
-type WorkspaceInvitationRole string
-
-// WorkspaceInvitationTargetKind defines model for WorkspaceInvitation.TargetKind.
-type WorkspaceInvitationTargetKind string
-
-// WorkspaceMember defines model for WorkspaceMember.
-type WorkspaceMember struct {
-	JoinedAt time.Time           `json:"joinedAt"`
-	Nickname string              `json:"nickname"`
-	Role     WorkspaceMemberRole `json:"role"`
-
-	// UserId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	UserId Id `json:"userId"`
-}
-
-// WorkspaceMemberRole defines model for WorkspaceMember.Role.
-type WorkspaceMemberRole string
-
 // AgentSessionId defines model for AgentSessionId.
 type AgentSessionId = string
 
@@ -13489,8 +10890,11 @@ type MaterialFavorited = bool
 // MaterialKeyword defines model for MaterialKeyword.
 type MaterialKeyword = string
 
-// Page defines model for Page.
-type Page = int
+// ModelCode defines model for ModelCode.
+type ModelCode = string
+
+// PresetCode defines model for PresetCode.
+type PresetCode = string
 
 // ProjectId defines model for ProjectId.
 type ProjectId = string
@@ -13501,9 +10905,6 @@ type ScriptId = string
 // ShotId defines model for ShotId.
 type ShotId = string
 
-// Size defines model for Size.
-type Size = int
-
 // SmartcutClipId defines model for SmartcutClipId.
 type SmartcutClipId = string
 
@@ -13512,9 +10913,6 @@ type SmartcutIdempotencyKey = string
 
 // SmartcutTimelineId defines model for SmartcutTimelineId.
 type SmartcutTimelineId = string
-
-// ThumbWidth defines model for ThumbWidth.
-type ThumbWidth int
 
 // WorkspaceId defines model for WorkspaceId.
 type WorkspaceId = string
@@ -13580,14 +10978,6 @@ type AdminDeleteAgentSkillReferenceParams struct {
 	SkillVersion int `form:"skillVersion" json:"skillVersion"`
 }
 
-// AdminListAnnouncementsParams defines parameters for AdminListAnnouncements.
-type AdminListAnnouncementsParams struct {
-	Status *AdminListAnnouncementsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-}
-
-// AdminListAnnouncementsParamsStatus defines parameters for AdminListAnnouncements.
-type AdminListAnnouncementsParamsStatus string
-
 // AdminListAuditLogsParams defines parameters for AdminListAuditLogs.
 type AdminListAuditLogsParams struct {
 	ObjectType *string                            `form:"objectType,omitempty" json:"objectType,omitempty"`
@@ -13620,117 +11010,22 @@ type AdminRefreshTokenJSONBody struct {
 	RefreshToken string `json:"refreshToken"`
 }
 
-// AdminListBannersParams defines parameters for AdminListBanners.
-type AdminListBannersParams struct {
-	Position *AdminListBannersParamsPosition `form:"position,omitempty" json:"position,omitempty"`
+// AdminSaveConnectionRuleJSONBody defines parameters for AdminSaveConnectionRule.
+type AdminSaveConnectionRuleJSONBody struct {
+	// DefaultOperation 默认建议的操作码；空 = 无
+	DefaultOperation *string `json:"defaultOperation,omitempty"`
+	IsAllowed        bool    `json:"isAllowed"`
+	SourceType       string  `json:"sourceType"`
+	TargetType       string  `json:"targetType"`
 }
 
-// AdminListBannersParamsPosition defines parameters for AdminListBanners.
-type AdminListBannersParamsPosition string
+// AdminPreviewImagePresetJSONBody defines parameters for AdminPreviewImagePreset.
+type AdminPreviewImagePresetJSONBody struct {
+	Dimensions *[]map[string]interface{} `json:"dimensions,omitempty"`
+	Prompt     *string                   `json:"prompt,omitempty"`
 
-// SearchOrdersParams defines parameters for SearchOrders.
-type SearchOrdersParams struct {
-	Keyword   *string                      `form:"keyword,omitempty" json:"keyword,omitempty"`
-	Type      *SearchOrdersParamsType      `form:"type,omitempty" json:"type,omitempty"`
-	Status    *SearchOrdersParamsStatus    `form:"status,omitempty" json:"status,omitempty"`
-	Channel   *string                      `form:"channel,omitempty" json:"channel,omitempty"`
-	Reconcile *SearchOrdersParamsReconcile `form:"reconcile,omitempty" json:"reconcile,omitempty"`
-	From      *time.Time                   `form:"from,omitempty" json:"from,omitempty"`
-	To        *time.Time                   `form:"to,omitempty" json:"to,omitempty"`
-	Limit     *int                         `form:"limit,omitempty" json:"limit,omitempty"`
-	Cursor    *string                      `form:"cursor,omitempty" json:"cursor,omitempty"`
-}
-
-// SearchOrdersParamsType defines parameters for SearchOrders.
-type SearchOrdersParamsType string
-
-// SearchOrdersParamsStatus defines parameters for SearchOrders.
-type SearchOrdersParamsStatus string
-
-// SearchOrdersParamsReconcile defines parameters for SearchOrders.
-type SearchOrdersParamsReconcile string
-
-// MarkReconcileJSONBody defines parameters for MarkReconcile.
-type MarkReconcileJSONBody struct {
-	Note   *string                     `json:"note,omitempty"`
-	Status MarkReconcileJSONBodyStatus `json:"status"`
-}
-
-// MarkReconcileJSONBodyStatus defines parameters for MarkReconcile.
-type MarkReconcileJSONBodyStatus string
-
-// AdjustCreditsJSONBody defines parameters for AdjustCredits.
-type AdjustCreditsJSONBody struct {
-	// Amount 正数＝加、负数＝减。**不能为 0**。
-	Amount int `json:"amount"`
-
-	// ExpireAt 加积分时的有效期（不传＝永久）。
-	ExpireAt *time.Time `json:"expireAt,omitempty"`
-	Reason   string     `json:"reason"`
-}
-
-// AdjustCreditsParams defines parameters for AdjustCredits.
-type AdjustCreditsParams struct {
-	IdempotencyKey string `json:"Idempotency-Key"`
-}
-
-// SaveMemberLevelJSONBody defines parameters for SaveMemberLevel.
-type SaveMemberLevelJSONBody struct {
-	Code      string `json:"code"`
-	IsEnabled *bool  `json:"isEnabled,omitempty"`
-
-	// Name 去掉首尾空白后非空，按字符数计
-	Name string `json:"name"`
-
-	// Sort 与其他等级不得相同
-	Sort *int `json:"sort,omitempty"`
-}
-
-// SaveCreditPackageJSONBody defines parameters for SaveCreditPackage.
-type SaveCreditPackageJSONBody struct {
-	Code       string `json:"code"`
-	Credits    int    `json:"credits"`
-	IsEnabled  *bool  `json:"isEnabled,omitempty"`
-	Name       string `json:"name"`
-	PriceCents int    `json:"priceCents"`
-	Sort       *int   `json:"sort,omitempty"`
-}
-
-// SaveMemberPlanJSONBody defines parameters for SaveMemberPlan.
-type SaveMemberPlanJSONBody struct {
-	GiftCredits *int                         `json:"giftCredits,omitempty"`
-	IsEnabled   *bool                        `json:"isEnabled,omitempty"`
-	LevelId     string                       `json:"levelId"`
-	Period      SaveMemberPlanJSONBodyPeriod `json:"period"`
-	PriceCents  int                          `json:"priceCents"`
-	Sort        *int                         `json:"sort,omitempty"`
-}
-
-// SaveMemberPlanJSONBodyPeriod defines parameters for SaveMemberPlan.
-type SaveMemberPlanJSONBodyPeriod string
-
-// AdminListDeadLettersParams defines parameters for AdminListDeadLetters.
-type AdminListDeadLettersParams struct {
-	Status *AdminListDeadLettersParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-	Queue  *string                           `form:"queue,omitempty" json:"queue,omitempty"`
-
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
-}
-
-// AdminListDeadLettersParamsStatus defines parameters for AdminListDeadLetters.
-type AdminListDeadLettersParamsStatus string
-
-// AdminDiscardDeadLetterJSONBody defines parameters for AdminDiscardDeadLetter.
-type AdminDiscardDeadLetterJSONBody struct {
-	Note string `json:"note"`
-}
-
-// AdminReplayDeadLetterJSONBody defines parameters for AdminReplayDeadLetter.
-type AdminReplayDeadLetterJSONBody struct {
-	// Note 备注（可选，会记进审计）。
-	Note *string `json:"note,omitempty"`
+	// Selected 维度 key → 选中的选项 value
+	Selected *map[string]string `json:"selected,omitempty"`
 }
 
 // AdminListMarketingCategoriesParams defines parameters for AdminListMarketingCategories.
@@ -13805,49 +11100,14 @@ type AdminSortMarketingPresetCharactersJSONBody struct {
 	Ids []Id `json:"ids"`
 }
 
-// AdminListMcpGrantsParams defines parameters for AdminListMcpGrants.
-type AdminListMcpGrantsParams struct {
-	UserId      *Id `form:"userId,omitempty" json:"userId,omitempty"`
-	WorkspaceId *Id `form:"workspaceId,omitempty" json:"workspaceId,omitempty"`
-
-	// Client 客户端名关键词（包含匹配，不区分大小写）
-	Client       *string                               `form:"client,omitempty" json:"client,omitempty"`
-	Source       *AdminListMcpGrantsParamsSource       `form:"source,omitempty" json:"source,omitempty"`
-	Status       *AdminListMcpGrantsParamsStatus       `form:"status,omitempty" json:"status,omitempty"`
-	Registration *AdminListMcpGrantsParamsRegistration `form:"registration,omitempty" json:"registration,omitempty"`
-	Cursor       *string                               `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit        *int                                  `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminListMaterialsParams defines parameters for AdminListMaterials.
+type AdminListMaterialsParams struct {
+	// Keyword 按名称或 code 模糊搜索。
+	Keyword *MaterialKeyword `form:"keyword,omitempty" json:"keyword,omitempty"`
 }
 
-// AdminListMcpGrantsParamsSource defines parameters for AdminListMcpGrants.
-type AdminListMcpGrantsParamsSource string
-
-// AdminListMcpGrantsParamsStatus defines parameters for AdminListMcpGrants.
-type AdminListMcpGrantsParamsStatus string
-
-// AdminListMcpGrantsParamsRegistration defines parameters for AdminListMcpGrants.
-type AdminListMcpGrantsParamsRegistration string
-
-// AdminMcpStatsParams defines parameters for AdminMcpStats.
-type AdminMcpStatsParams struct {
-	From         *time.Time                       `form:"from,omitempty" json:"from,omitempty"`
-	To           *time.Time                       `form:"to,omitempty" json:"to,omitempty"`
-	UserId       *Id                              `form:"userId,omitempty" json:"userId,omitempty"`
-	WorkspaceId  *Id                              `form:"workspaceId,omitempty" json:"workspaceId,omitempty"`
-	Client       *string                          `form:"client,omitempty" json:"client,omitempty"`
-	Source       *AdminMcpStatsParamsSource       `form:"source,omitempty" json:"source,omitempty"`
-	Status       *AdminMcpStatsParamsStatus       `form:"status,omitempty" json:"status,omitempty"`
-	Registration *AdminMcpStatsParamsRegistration `form:"registration,omitempty" json:"registration,omitempty"`
-}
-
-// AdminMcpStatsParamsSource defines parameters for AdminMcpStats.
-type AdminMcpStatsParamsSource string
-
-// AdminMcpStatsParamsStatus defines parameters for AdminMcpStats.
-type AdminMcpStatsParamsStatus string
-
-// AdminMcpStatsParamsRegistration defines parameters for AdminMcpStats.
-type AdminMcpStatsParamsRegistration string
+// AdminListMaterialsParamsType defines parameters for AdminListMaterials.
+type AdminListMaterialsParamsType string
 
 // AdminUploadMediaMultipartBody defines parameters for AdminUploadMedia.
 type AdminUploadMediaMultipartBody struct {
@@ -13871,116 +11131,78 @@ type AdminDownloadMediaParams struct {
 // AdminDownloadMediaParamsW defines parameters for AdminDownloadMedia.
 type AdminDownloadMediaParamsW int
 
-// AdminRetryGenerationJSONBody defines parameters for AdminRetryGeneration.
-type AdminRetryGenerationJSONBody struct {
-	Reason string `json:"reason"`
+// AdminEnableModelTemplateJSONBody defines parameters for AdminEnableModelTemplate.
+type AdminEnableModelTemplateJSONBody struct {
+	// ApiKey 密钥三态。`keep` 保留 / `replace` 替换（带 value）/ `clear` 清除；未知 action 按保留。
+	ApiKey *SecretFieldInput `json:"apiKey,omitempty"`
 }
 
-// AdminCompensateTaskJSONBody defines parameters for AdminCompensateTask.
-type AdminCompensateTaskJSONBody struct {
-	// Force 明确表示「我知道它还没超时，但上游确实挂了」。
-	Force *bool `json:"force,omitempty"`
-
-	// Reason 必填且不补默认值：这里是管理员自己在操作，没有用户在等着。
-	Reason string `json:"reason"`
+// AdminSaveModelCapabilityJSONBody defines parameters for AdminSaveModelCapability.
+type AdminSaveModelCapabilityJSONBody struct {
+	AllowedMime *[]string                            `json:"allowedMime,omitempty"`
+	MaxCount    int                                  `json:"maxCount"`
+	MinCount    int                                  `json:"minCount"`
+	Operation   string                               `json:"operation"`
+	Role        AdminSaveModelCapabilityJSONBodyRole `json:"role"`
 }
 
-// AdminCompensateTaskParamsKind defines parameters for AdminCompensateTask.
-type AdminCompensateTaskParamsKind string
+// AdminSaveModelCapabilityJSONBodyRole defines parameters for AdminSaveModelCapability.
+type AdminSaveModelCapabilityJSONBodyRole string
 
-// ReconcileOrdersParams defines parameters for ReconcileOrders.
-type ReconcileOrdersParams struct {
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminSaveModelOperationJSONBody defines parameters for AdminSaveModelOperation.
+type AdminSaveModelOperationJSONBody struct {
+	EstSeconds *int   `json:"estSeconds,omitempty"`
+	IsEnabled  bool   `json:"isEnabled"`
+	Operation  string `json:"operation"`
 }
 
-// ListReconcileDiffsParams defines parameters for ListReconcileDiffs.
-type ListReconcileDiffsParams struct {
-	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminArchivePromptJSONBody defines parameters for AdminArchivePrompt.
+type AdminArchivePromptJSONBody struct {
+	Code      string  `json:"code"`
+	ModelCode *string `json:"modelCode,omitempty"`
 }
 
-// ListReconcileDiffs200JSONResponseBodyPayStatus defines parameters for ListReconcileDiffs.
-type ListReconcileDiffs200JSONResponseBodyPayStatus string
+// AdminSavePromptDraftJSONBody defines parameters for AdminSavePromptDraft.
+type AdminSavePromptDraftJSONBody struct {
+	Code    string `json:"code"`
+	Content string `json:"content"`
 
-// ListReconcileDiffs200JSONResponseBodyReconcileStatus defines parameters for ListReconcileDiffs.
-type ListReconcileDiffs200JSONResponseBodyReconcileStatus string
-
-// ListReconcileDiffs200JSONResponseBodyType defines parameters for ListReconcileDiffs.
-type ListReconcileDiffs200JSONResponseBodyType string
-
-// AdminRefundOrderJSONBody defines parameters for AdminRefundOrder.
-type AdminRefundOrderJSONBody struct {
-	Reason *string `json:"reason,omitempty"`
+	// ModelCode 空 = 通用版
+	ModelCode *string `json:"modelCode,omitempty"`
+	Note      *string `json:"note,omitempty"`
 }
 
-// ListPaymentCallbacksParams defines parameters for ListPaymentCallbacks.
-type ListPaymentCallbacksParams struct {
-	OutTradeNo *string `form:"outTradeNo,omitempty" json:"outTradeNo,omitempty"`
-	Limit      *int    `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminPreviewPromptJSONBody defines parameters for AdminPreviewPrompt.
+type AdminPreviewPromptJSONBody struct {
+	Code      string             `json:"code"`
+	Content   *string            `json:"content,omitempty"`
+	ModelCode *string            `json:"modelCode,omitempty"`
+	Vars      *map[string]string `json:"vars,omitempty"`
 }
 
-// SavePaymentChannelJSONBody defines parameters for SavePaymentChannel.
-type SavePaymentChannelJSONBody struct {
-	// ApiV3Key 密钥字段的三态表达。
-	//
-	// ⚠️ 没有这个三态的话，管理端回显的值会被当成新密钥提交回去。
-	ApiV3Key   *SecretField                   `json:"apiV3Key,omitempty"`
-	AppId      *string                        `json:"appId,omitempty"`
-	BaseUrl    *string                        `json:"baseUrl,omitempty"`
-	Code       SavePaymentChannelJSONBodyCode `json:"code"`
-	IsSandbox  *bool                          `json:"isSandbox,omitempty"`
-	MerchantId *string                        `json:"merchantId,omitempty"`
-	Name       *string                        `json:"name,omitempty"`
-	NotifyUrl  *string                        `json:"notifyUrl,omitempty"`
-
-	// PlatformKey 密钥字段的三态表达。
-	//
-	// ⚠️ 没有这个三态的话，管理端回显的值会被当成新密钥提交回去。
-	PlatformKey *SecretField `json:"platformKey,omitempty"`
-
-	// PrivateKey 密钥字段的三态表达。
-	//
-	// ⚠️ 没有这个三态的话，管理端回显的值会被当成新密钥提交回去。
-	PrivateKey *SecretField                      `json:"privateKey,omitempty"`
-	Status     *SavePaymentChannelJSONBodyStatus `json:"status,omitempty"`
+// AdminPublishPromptJSONBody defines parameters for AdminPublishPrompt.
+type AdminPublishPromptJSONBody struct {
+	Code      string  `json:"code"`
+	ModelCode *string `json:"modelCode,omitempty"`
+	Note      *string `json:"note,omitempty"`
 }
 
-// SavePaymentChannelJSONBodyCode defines parameters for SavePaymentChannel.
-type SavePaymentChannelJSONBodyCode string
-
-// SavePaymentChannelJSONBodyStatus defines parameters for SavePaymentChannel.
-type SavePaymentChannelJSONBodyStatus string
-
-// AdminListProjectsParams defines parameters for AdminListProjects.
-type AdminListProjectsParams struct {
-	// Keyword 项目 ID / 工作区 ID，精确匹配；非数字当成没填。
-	Keyword *string `form:"keyword,omitempty" json:"keyword,omitempty"`
-
-	// Name 按名字模糊查（用户报障时往往只说得出项目叫什么）。⚠️ `%` `_` 按字面量处理。
-	Name   *string                        `form:"name,omitempty" json:"name,omitempty"`
-	Status *AdminListProjectsParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminRollbackPromptJSONBody defines parameters for AdminRollbackPrompt.
+type AdminRollbackPromptJSONBody struct {
+	Code          string  `json:"code"`
+	ModelCode     *string `json:"modelCode,omitempty"`
+	Note          *string `json:"note,omitempty"`
+	TargetVersion int     `json:"targetVersion"`
 }
 
-// AdminListProjectsParamsStatus defines parameters for AdminListProjects.
-type AdminListProjectsParamsStatus string
+// AdminListPromptVersionsParams defines parameters for AdminListPromptVersions.
+type AdminListPromptVersionsParams struct {
+	Code string `form:"code" json:"code"`
 
-// AdminGetProject200JSONResponseBodyStatus defines parameters for AdminGetProject.
-type AdminGetProject200JSONResponseBodyStatus string
-
-// AdminProjectActionJSONBody defines parameters for AdminProjectAction.
-type AdminProjectActionJSONBody struct {
-	Action AdminProjectActionJSONBodyAction `json:"action"`
-
-	// Name 仅 rename 用，最多 100 字。
-	Name   *string `json:"name,omitempty"`
-	Reason string  `json:"reason"`
+	// ModelCode 空 = 通用版
+	ModelCode *string `form:"modelCode,omitempty" json:"modelCode,omitempty"`
+	Limit     *int    `form:"limit,omitempty" json:"limit,omitempty"`
 }
-
-// AdminProjectActionJSONBodyAction defines parameters for AdminProjectAction.
-type AdminProjectActionJSONBodyAction string
 
 // SaveRenderSettingJSONBody defines parameters for SaveRenderSetting.
 type SaveRenderSettingJSONBody struct {
@@ -14064,29 +11286,6 @@ type AdminStatsSeriesParams struct {
 // AdminStatsSeriesParamsMetric defines parameters for AdminStatsSeries.
 type AdminStatsSeriesParamsMetric string
 
-// AdminListTasksParams defines parameters for AdminListTasks.
-type AdminListTasksParams struct {
-	Kind  *AdminListTasksParamsKind `form:"kind,omitempty" json:"kind,omitempty"`
-	State *TaskState                `form:"state,omitempty" json:"state,omitempty"`
-
-	// Keyword 一个框查三样：任务 ID / 工作区 ID / 付费主体 ID，**精确匹配**。
-	// 运维手上拿到的可能是任意一个，分成三个框的话他得先判断
-	// "这串数字是什么" —— 而那正是他来查的原因。
-	// ⚠️ 非数字一律**当成没填**而不是报错（为一个格式问题把整个列表
-	// 挡掉不值）。
-	Keyword  *string `form:"keyword,omitempty" json:"keyword,omitempty"`
-	Provider *string `form:"provider,omitempty" json:"provider,omitempty"`
-
-	// Stuck 只看「还没结束且死线已过」的。只看"还没结束"的话筛出来的是整个待办队列。
-	Stuck    *bool      `form:"stuck,omitempty" json:"stuck,omitempty"`
-	CursorAt *time.Time `form:"cursorAt,omitempty" json:"cursorAt,omitempty"`
-	CursorId *string    `form:"cursorId,omitempty" json:"cursorId,omitempty"`
-	Limit    *Limit     `form:"limit,omitempty" json:"limit,omitempty"`
-}
-
-// AdminListTasksParamsKind defines parameters for AdminListTasks.
-type AdminListTasksParamsKind string
-
 // AdminSearchUsersParams defines parameters for AdminSearchUsers.
 type AdminSearchUsersParams struct {
 	// Keyword 手机号 / 邮箱 / 昵称 / ID。
@@ -14097,41 +11296,11 @@ type AdminSearchUsersParams struct {
 	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
-// AdminListWorksParams defines parameters for AdminListWorks.
-type AdminListWorksParams struct {
-	Status   *AdminListWorksParamsStatus `form:"status,omitempty" json:"status,omitempty"`
-	Featured *bool                       `form:"featured,omitempty" json:"featured,omitempty"`
-	Offline  *bool                       `form:"offline,omitempty" json:"offline,omitempty"`
-
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
+// AdminListVoicesParams defines parameters for AdminListVoices.
+type AdminListVoicesParams struct {
+	// Keyword 按名称或 code 模糊搜索。
+	Keyword *MaterialKeyword `form:"keyword,omitempty" json:"keyword,omitempty"`
 }
-
-// AdminListWorksParamsStatus defines parameters for AdminListWorks.
-type AdminListWorksParamsStatus string
-
-// AdminGetWork200JSONResponseBodyReviewStatus defines parameters for AdminGetWork.
-type AdminGetWork200JSONResponseBodyReviewStatus string
-
-// AdminGetWork200JSONResponseBodySourceType defines parameters for AdminGetWork.
-type AdminGetWork200JSONResponseBodySourceType string
-
-// AdminReviewWorkJSONBody defines parameters for AdminReviewWork.
-type AdminReviewWorkJSONBody struct {
-	// Action ⚠️ 取值是**过去式**，与 `content_review.action` 的库约束
-	// `ck_review_action` 及通知的 `refId`（`作品ID:动作`）
-	// **逐字一致**。改成 `approve`/`reject` 这类祈使式的话
-	// 三处就有了两套词，而不一致的表现是留痕写不进去（约束冲突）
-	// 或通知的幂等键对不上 —— 都不是"参数写错了"那种一眼可见的错。
-	Action AdminReviewWorkJSONBodyAction `json:"action"`
-
-	// Reason 驳回与下架**必填**；会原样发给作者。
-	Reason *string `json:"reason,omitempty"`
-}
-
-// AdminReviewWorkJSONBodyAction defines parameters for AdminReviewWork.
-type AdminReviewWorkJSONBodyAction string
 
 // OptimizeAgentPromptParams defines parameters for OptimizeAgentPrompt.
 type OptimizeAgentPromptParams struct {
@@ -14255,36 +11424,9 @@ type AgentSkillCoverParams struct {
 // AgentSkillCoverParamsW defines parameters for AgentSkillCover.
 type AgentSkillCoverParamsW int
 
-// SendVerificationCodeJSONBody defines parameters for SendVerificationCode.
-type SendVerificationCodeJSONBody struct {
-	Email   *openapi_types.Email                `json:"email,omitempty"`
-	Phone   *string                             `json:"phone,omitempty"`
-	Purpose SendVerificationCodeJSONBodyPurpose `json:"purpose"`
-}
-
-// SendVerificationCodeJSONBodyPurpose defines parameters for SendVerificationCode.
-type SendVerificationCodeJSONBodyPurpose string
-
-// ResetPasswordJSONBody defines parameters for ResetPassword.
-type ResetPasswordJSONBody struct {
-	Code     string               `json:"code"`
-	Email    *openapi_types.Email `json:"email,omitempty"`
-	Password string               `json:"password"`
-	Phone    *string              `json:"phone,omitempty"`
-}
-
-// RefreshTokenJSONBody defines parameters for RefreshToken.
-type RefreshTokenJSONBody struct {
-	RefreshToken string `json:"refreshToken"`
-}
-
-// RegisterJSONBody defines parameters for Register.
-type RegisterJSONBody struct {
-	Code     string               `json:"code"`
-	Email    *openapi_types.Email `json:"email,omitempty"`
-	Nickname *string              `json:"nickname,omitempty"`
-	Password *string              `json:"password,omitempty"`
-	Phone    *string              `json:"phone,omitempty"`
+// UpdateProfileJSONBody defines parameters for UpdateProfile.
+type UpdateProfileJSONBody struct {
+	IsAiWatermarkOff bool `json:"isAiWatermarkOff"`
 }
 
 // ListCameraMaterialsParams defines parameters for ListCameraMaterials.
@@ -14371,27 +11513,6 @@ type ListCreationsParams struct {
 
 // ListCreationsParamsResultType defines parameters for ListCreations.
 type ListCreationsParamsResultType string
-
-// GetCreditsParams defines parameters for GetCredits.
-type GetCreditsParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListCreditTransactionsParams defines parameters for ListCreditTransactions.
-type ListCreditTransactionsParams struct {
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListCreditTransactions200JSONResponseBodyItemsType defines parameters for ListCreditTransactions.
-type ListCreditTransactions200JSONResponseBodyItemsType string
 
 // GetDirectorBuildConfigParams defines parameters for GetDirectorBuildConfig.
 type GetDirectorBuildConfigParams struct {
@@ -14514,6 +11635,13 @@ type GetGenerationParams struct {
 
 // CancelGenerationParams defines parameters for CancelGeneration.
 type CancelGenerationParams struct {
+	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
+	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
+	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
+}
+
+// ListGenerationOutputsParams defines parameters for ListGenerationOutputs.
+type ListGenerationOutputsParams struct {
 	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
 	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
@@ -14994,11 +12122,6 @@ type UpdateMarketingProductParams struct {
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
 }
 
-// GetMcpConsentParams defines parameters for GetMcpConsent.
-type GetMcpConsentParams struct {
-	Req string `form:"req" json:"req"`
-}
-
 // ListMyMediaParams defines parameters for ListMyMedia.
 type ListMyMediaParams struct {
 	// Cursor 上一页返回的 nextCursor；首页不传
@@ -15111,13 +12234,6 @@ type ListMediaUsagesParams struct {
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
 }
 
-// GetMembershipParams defines parameters for GetMembership.
-type GetMembershipParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
 // ListUsableModelsParams defines parameters for ListUsableModels.
 type ListUsableModelsParams struct {
 	// ResultType 只要产出某种类型的模型（image / video / audio / text）。
@@ -15147,110 +12263,6 @@ type MarkMessageReadJSONBody struct {
 
 // MarkMessageReadJSONBodySource defines parameters for MarkMessageRead.
 type MarkMessageReadJSONBodySource string
-
-// ListOrdersParams defines parameters for ListOrders.
-type ListOrdersParams struct {
-	Limit  *int    `form:"limit,omitempty" json:"limit,omitempty"`
-	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
-
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreateOrderJSONBody defines parameters for CreateOrder.
-type CreateOrderJSONBody struct {
-	DryRun    *bool                   `json:"dryRun,omitempty"`
-	Kind      CreateOrderJSONBodyKind `json:"kind"`
-	PackageId *string                 `json:"packageId,omitempty"`
-	PlanId    *string                 `json:"planId,omitempty"`
-}
-
-// CreateOrderParams defines parameters for CreateOrder.
-type CreateOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreateOrderJSONBodyKind defines parameters for CreateOrder.
-type CreateOrderJSONBodyKind string
-
-// GetOrderParams defines parameters for GetOrder.
-type GetOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CancelOrderParams defines parameters for CancelOrder.
-type CancelOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// DevPayOrderParams defines parameters for DevPayOrder.
-type DevPayOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreatePaymentJSONBody defines parameters for CreatePayment.
-type CreatePaymentJSONBody struct {
-	Channel CreatePaymentJSONBodyChannel `json:"channel"`
-}
-
-// CreatePaymentParams defines parameters for CreatePayment.
-type CreatePaymentParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreatePaymentJSONBodyChannel defines parameters for CreatePayment.
-type CreatePaymentJSONBodyChannel string
-
-// RefundOrderJSONBody defines parameters for RefundOrder.
-type RefundOrderJSONBody struct {
-	Reason *string `json:"reason,omitempty"`
-}
-
-// RefundOrderParams defines parameters for RefundOrder.
-type RefundOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CheckRefundParams defines parameters for CheckRefund.
-type CheckRefundParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListRefundsParams defines parameters for ListRefunds.
-type ListRefundsParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// SyncOrderParams defines parameters for SyncOrder.
-type SyncOrderParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// PaymentCallbackJSONBody defines parameters for PaymentCallback.
-type PaymentCallbackJSONBody map[string]interface{}
-
-// PaymentCallbackFormdataBody defines parameters for PaymentCallback.
-type PaymentCallbackFormdataBody struct {
-}
 
 // ListProjectsParams defines parameters for ListProjects.
 type ListProjectsParams struct {
@@ -16256,41 +13268,8 @@ type GenerateStoryboardParams struct {
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
 }
 
-// OpenSharedResourceParamsResourceType defines parameters for OpenSharedResource.
-type OpenSharedResourceParamsResourceType string
-
-// ListShowcaseParams defines parameters for ListShowcase.
-type ListShowcaseParams struct {
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// Type 按媒体类型筛选，缺省 = 全部。⚠️ 非法值回 400 `InvalidArgument`，
-	// **不回落成全部**（回落的话筛音频却出来一堆视频）。类型筛选只收窄、
-	// 不放宽公开边界。
-	Type *ListShowcaseParamsType `form:"type,omitempty" json:"type,omitempty"`
-}
-
-// ListShowcaseParamsType defines parameters for ListShowcase.
-type ListShowcaseParamsType string
-
-// ShowcaseCoverParams defines parameters for ShowcaseCover.
-type ShowcaseCoverParams struct {
-	// W 封面宽度，只接受 160/320/640，默认 320。
-	W *ShowcaseCoverParamsW `form:"w,omitempty" json:"w,omitempty"`
-}
-
-// ShowcaseCoverParamsW defines parameters for ShowcaseCover.
-type ShowcaseCoverParamsW int
-
-// ShowcaseMediaParams defines parameters for ShowcaseMedia.
-type ShowcaseMediaParams struct {
-	// W 缩略图宽度，只接受 160/320/640。
-	W *ShowcaseMediaParamsW `form:"w,omitempty" json:"w,omitempty"`
-}
-
-// ShowcaseMediaParamsW defines parameters for ShowcaseMedia.
-type ShowcaseMediaParamsW int
+// UpdateAppSettingsJSONBody defines parameters for UpdateAppSettings.
+type UpdateAppSettingsJSONBody map[string]interface{}
 
 // GetSmartcutConfigParams defines parameters for GetSmartcutConfig.
 type GetSmartcutConfigParams struct {
@@ -16301,13 +13280,6 @@ type GetSmartcutConfigParams struct {
 
 // TypesetSmartcutTextParams defines parameters for TypesetSmartcutText.
 type TypesetSmartcutTextParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// GetStorefrontParams defines parameters for GetStorefront.
-type GetStorefrontParams struct {
 	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
 	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
@@ -16604,6 +13576,22 @@ type TrimClipParams struct {
 	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
 }
 
+// ListVoicesParams defines parameters for ListVoices.
+type ListVoicesParams struct {
+	// Keyword 按名称或 code 模糊搜索。
+	Keyword  *MaterialKeyword `form:"keyword,omitempty" json:"keyword,omitempty"`
+	Language *string          `form:"language,omitempty" json:"language,omitempty"`
+	Gender   *string          `form:"gender,omitempty" json:"gender,omitempty"`
+
+	// Favorited `true` 只看我收藏的（「我的收藏」）。
+	Favorited *MaterialFavorited `form:"favorited,omitempty" json:"favorited,omitempty"`
+}
+
+// ToggleVoiceFavoriteJSONBody defines parameters for ToggleVoiceFavorite.
+type ToggleVoiceFavoriteJSONBody struct {
+	Favorite bool `json:"favorite"`
+}
+
 // GetWorkflowRunParams defines parameters for GetWorkflowRun.
 type GetWorkflowRunParams struct {
 	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
@@ -16665,281 +13653,6 @@ type MyWorkMediaParams struct {
 // MyWorkMediaParamsW defines parameters for MyWorkMedia.
 type MyWorkMediaParamsW int
 
-// CreateTeamWorkspaceJSONBody defines parameters for CreateTeamWorkspace.
-type CreateTeamWorkspaceJSONBody struct {
-	Name string `json:"name"`
-}
-
-// ArchiveWorkspaceParams defines parameters for ArchiveWorkspace.
-type ArchiveWorkspaceParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// RenameWorkspaceJSONBody defines parameters for RenameWorkspace.
-type RenameWorkspaceJSONBody struct {
-	Name string `json:"name"`
-}
-
-// RenameWorkspaceParams defines parameters for RenameWorkspace.
-type RenameWorkspaceParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListWorkspaceInvitationsParams defines parameters for ListWorkspaceInvitations.
-type ListWorkspaceInvitationsParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreateWorkspaceInvitationJSONBody defines parameters for CreateWorkspaceInvitation.
-type CreateWorkspaceInvitationJSONBody struct {
-	Role        CreateWorkspaceInvitationJSONBodyRole       `json:"role"`
-	TargetKind  CreateWorkspaceInvitationJSONBodyTargetKind `json:"targetKind"`
-	TargetValue string                                      `json:"targetValue"`
-}
-
-// CreateWorkspaceInvitationParams defines parameters for CreateWorkspaceInvitation.
-type CreateWorkspaceInvitationParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// CreateWorkspaceInvitationJSONBodyRole defines parameters for CreateWorkspaceInvitation.
-type CreateWorkspaceInvitationJSONBodyRole string
-
-// CreateWorkspaceInvitationJSONBodyTargetKind defines parameters for CreateWorkspaceInvitation.
-type CreateWorkspaceInvitationJSONBodyTargetKind string
-
-// RevokeWorkspaceInvitationParams defines parameters for RevokeWorkspaceInvitation.
-type RevokeWorkspaceInvitationParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListWorkspaceMcpGrantsParams defines parameters for ListWorkspaceMcpGrants.
-type ListWorkspaceMcpGrantsParams struct {
-	// Client 客户端名关键词（包含匹配，不区分大小写）
-	Client       *string                                   `form:"client,omitempty" json:"client,omitempty"`
-	Source       *ListWorkspaceMcpGrantsParamsSource       `form:"source,omitempty" json:"source,omitempty"`
-	Status       *ListWorkspaceMcpGrantsParamsStatus       `form:"status,omitempty" json:"status,omitempty"`
-	Registration *ListWorkspaceMcpGrantsParamsRegistration `form:"registration,omitempty" json:"registration,omitempty"`
-
-	// Cursor 上一页的 nextCursor
-	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *int    `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListWorkspaceMcpGrantsParamsSource defines parameters for ListWorkspaceMcpGrants.
-type ListWorkspaceMcpGrantsParamsSource string
-
-// ListWorkspaceMcpGrantsParamsStatus defines parameters for ListWorkspaceMcpGrants.
-type ListWorkspaceMcpGrantsParamsStatus string
-
-// ListWorkspaceMcpGrantsParamsRegistration defines parameters for ListWorkspaceMcpGrants.
-type ListWorkspaceMcpGrantsParamsRegistration string
-
-// RevokeWorkspaceMcpGrantParams defines parameters for RevokeWorkspaceMcpGrant.
-type RevokeWorkspaceMcpGrantParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// GetWorkspaceMcpSettingsParams defines parameters for GetWorkspaceMcpSettings.
-type GetWorkspaceMcpSettingsParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// UpdateWorkspaceMcpSettingsParams defines parameters for UpdateWorkspaceMcpSettings.
-type UpdateWorkspaceMcpSettingsParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListWorkspaceMembersParams defines parameters for ListWorkspaceMembers.
-type ListWorkspaceMembersParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// RemoveWorkspaceMemberParams defines parameters for RemoveWorkspaceMember.
-type RemoveWorkspaceMemberParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// SetWorkspaceMemberRoleJSONBody defines parameters for SetWorkspaceMemberRole.
-type SetWorkspaceMemberRoleJSONBody struct {
-	Role SetWorkspaceMemberRoleJSONBodyRole `json:"role"`
-}
-
-// SetWorkspaceMemberRoleParams defines parameters for SetWorkspaceMemberRole.
-type SetWorkspaceMemberRoleParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// SetWorkspaceMemberRoleJSONBodyRole defines parameters for SetWorkspaceMemberRole.
-type SetWorkspaceMemberRoleJSONBodyRole string
-
-// PresenceHeartbeatJSONBody defines parameters for PresenceHeartbeat.
-type PresenceHeartbeatJSONBody struct {
-	ClientId string `json:"clientId"`
-
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId   Id     `json:"resourceId"`
-	ResourceType string `json:"resourceType"`
-}
-
-// PresenceHeartbeatParams defines parameters for PresenceHeartbeat.
-type PresenceHeartbeatParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// PresenceLeaveJSONBody defines parameters for PresenceLeave.
-type PresenceLeaveJSONBody struct {
-	ClientId string `json:"clientId"`
-
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId   Id     `json:"resourceId"`
-	ResourceType string `json:"resourceType"`
-}
-
-// PresenceLeaveParams defines parameters for PresenceLeave.
-type PresenceLeaveParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListOnlineParams defines parameters for ListOnline.
-type ListOnlineParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ListGrantedSharesParams defines parameters for ListGrantedShares.
-type ListGrantedSharesParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// GrantShareJSONBody defines parameters for GrantShare.
-type GrantShareJSONBody struct {
-	// GranteeId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GranteeId   Id                              `json:"granteeId"`
-	GranteeType GrantShareJSONBodyGranteeType   `json:"granteeType"`
-	Permissions []GrantShareJSONBodyPermissions `json:"permissions"`
-
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId   Id                             `json:"resourceId"`
-	ResourceType GrantShareJSONBodyResourceType `json:"resourceType"`
-}
-
-// GrantShareParams defines parameters for GrantShare.
-type GrantShareParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// GrantShareJSONBodyGranteeType defines parameters for GrantShare.
-type GrantShareJSONBodyGranteeType string
-
-// GrantShareJSONBodyPermissions defines parameters for GrantShare.
-type GrantShareJSONBodyPermissions string
-
-// GrantShareJSONBodyResourceType defines parameters for GrantShare.
-type GrantShareJSONBodyResourceType string
-
-// ImportSharedResourceJSONBody defines parameters for ImportSharedResource.
-type ImportSharedResourceJSONBody struct {
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId   Id                                       `json:"resourceId"`
-	ResourceType ImportSharedResourceJSONBodyResourceType `json:"resourceType"`
-}
-
-// ImportSharedResourceParams defines parameters for ImportSharedResource.
-type ImportSharedResourceParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// ImportSharedResourceJSONBodyResourceType defines parameters for ImportSharedResource.
-type ImportSharedResourceJSONBodyResourceType string
-
-// RevokeShareParams defines parameters for RevokeShare.
-type RevokeShareParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// TransferWorkspaceJSONBody defines parameters for TransferWorkspace.
-type TransferWorkspaceJSONBody struct {
-	// ToUserId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ToUserId Id `json:"toUserId"`
-}
-
-// TransferWorkspaceParams defines parameters for TransferWorkspace.
-type TransferWorkspaceParams struct {
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// WorkspaceUsageParams defines parameters for WorkspaceUsage.
-type WorkspaceUsageParams struct {
-	From *time.Time `form:"from,omitempty" json:"from,omitempty"`
-	To   *time.Time `form:"to,omitempty" json:"to,omitempty"`
-
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// WorkspaceUsageEntriesParams defines parameters for WorkspaceUsageEntries.
-type WorkspaceUsageEntriesParams struct {
-	UserId *string    `form:"userId,omitempty" json:"userId,omitempty"`
-	From   *time.Time `form:"from,omitempty" json:"from,omitempty"`
-	To     *time.Time `form:"to,omitempty" json:"to,omitempty"`
-
-	// Cursor 上一页返回的 nextCursor；首页不传
-	Cursor *Cursor `form:"cursor,omitempty" json:"cursor,omitempty"`
-	Limit  *Limit  `form:"limit,omitempty" json:"limit,omitempty"`
-
-	// XWorkspaceId 当前工作区。服务端必须校验：① 调用者是该工作区 active 成员；
-	// ② 被访问资源的 workspace_id 与之一致。两条都过才算通过（AC-02）。
-	XWorkspaceId WorkspaceId `json:"X-Workspace-Id"`
-}
-
-// AcceptWorkspaceInvitationJSONBody defines parameters for AcceptWorkspaceInvitation.
-type AcceptWorkspaceInvitationJSONBody struct {
-	Token string `json:"token"`
-}
-
 // AdminCreateAdminJSONRequestBody defines body for AdminCreateAdmin for application/json ContentType.
 type AdminCreateAdminJSONRequestBody AdminCreateAdminJSONBody
 
@@ -16961,12 +13674,6 @@ type AdminCreateAgentSkillReferenceJSONRequestBody = AdminAgentSkillReferenceInp
 // AdminUpdateAgentSkillReferenceJSONRequestBody defines body for AdminUpdateAgentSkillReference for application/json ContentType.
 type AdminUpdateAgentSkillReferenceJSONRequestBody = AdminAgentSkillReferenceInput
 
-// AdminCreateAnnouncementJSONRequestBody defines body for AdminCreateAnnouncement for application/json ContentType.
-type AdminCreateAnnouncementJSONRequestBody = AnnouncementInput
-
-// AdminUpdateAnnouncementJSONRequestBody defines body for AdminUpdateAnnouncement for application/json ContentType.
-type AdminUpdateAnnouncementJSONRequestBody = AnnouncementInput
-
 // AdminUpdateAuthSettingJSONRequestBody defines body for AdminUpdateAuthSetting for application/json ContentType.
 type AdminUpdateAuthSettingJSONRequestBody AdminUpdateAuthSettingJSONBody
 
@@ -16976,32 +13683,20 @@ type AdminLoginJSONRequestBody AdminLoginJSONBody
 // AdminRefreshTokenJSONRequestBody defines body for AdminRefreshToken for application/json ContentType.
 type AdminRefreshTokenJSONRequestBody AdminRefreshTokenJSONBody
 
-// AdminCreateBannerJSONRequestBody defines body for AdminCreateBanner for application/json ContentType.
-type AdminCreateBannerJSONRequestBody = BannerInput
+// AdminSaveConnectionRuleJSONRequestBody defines body for AdminSaveConnectionRule for application/json ContentType.
+type AdminSaveConnectionRuleJSONRequestBody AdminSaveConnectionRuleJSONBody
 
-// AdminUpdateBannerJSONRequestBody defines body for AdminUpdateBanner for application/json ContentType.
-type AdminUpdateBannerJSONRequestBody = BannerInput
+// AdminSaveParamDefinitionJSONRequestBody defines body for AdminSaveParamDefinition for application/json ContentType.
+type AdminSaveParamDefinitionJSONRequestBody = AdminParamDefinitionInput
 
-// MarkReconcileJSONRequestBody defines body for MarkReconcile for application/json ContentType.
-type MarkReconcileJSONRequestBody MarkReconcileJSONBody
+// AdminCreateImagePresetJSONRequestBody defines body for AdminCreateImagePreset for application/json ContentType.
+type AdminCreateImagePresetJSONRequestBody = AdminImagePreset
 
-// AdjustCreditsJSONRequestBody defines body for AdjustCredits for application/json ContentType.
-type AdjustCreditsJSONRequestBody AdjustCreditsJSONBody
+// AdminPreviewImagePresetJSONRequestBody defines body for AdminPreviewImagePreset for application/json ContentType.
+type AdminPreviewImagePresetJSONRequestBody AdminPreviewImagePresetJSONBody
 
-// SaveMemberLevelJSONRequestBody defines body for SaveMemberLevel for application/json ContentType.
-type SaveMemberLevelJSONRequestBody SaveMemberLevelJSONBody
-
-// SaveCreditPackageJSONRequestBody defines body for SaveCreditPackage for application/json ContentType.
-type SaveCreditPackageJSONRequestBody SaveCreditPackageJSONBody
-
-// SaveMemberPlanJSONRequestBody defines body for SaveMemberPlan for application/json ContentType.
-type SaveMemberPlanJSONRequestBody SaveMemberPlanJSONBody
-
-// AdminDiscardDeadLetterJSONRequestBody defines body for AdminDiscardDeadLetter for application/json ContentType.
-type AdminDiscardDeadLetterJSONRequestBody AdminDiscardDeadLetterJSONBody
-
-// AdminReplayDeadLetterJSONRequestBody defines body for AdminReplayDeadLetter for application/json ContentType.
-type AdminReplayDeadLetterJSONRequestBody AdminReplayDeadLetterJSONBody
+// AdminUpdateImagePresetJSONRequestBody defines body for AdminUpdateImagePreset for application/json ContentType.
+type AdminUpdateImagePresetJSONRequestBody = AdminImagePreset
 
 // AdminCreateMarketingCategoryJSONRequestBody defines body for AdminCreateMarketingCategory for application/json ContentType.
 type AdminCreateMarketingCategoryJSONRequestBody AdminCreateMarketingCategoryJSONBody
@@ -17030,29 +13725,44 @@ type AdminSortMarketingPresetCharactersJSONRequestBody AdminSortMarketingPresetC
 // AdminUpdateMarketingPresetCharacterJSONRequestBody defines body for AdminUpdateMarketingPresetCharacter for application/json ContentType.
 type AdminUpdateMarketingPresetCharacterJSONRequestBody = AdminMarketingPresetCharacterUpdate
 
-// AdminRevokeMcpGrantJSONRequestBody defines body for AdminRevokeMcpGrant for application/json ContentType.
-type AdminRevokeMcpGrantJSONRequestBody = McpRevokeReason
-
-// AdminUpdateMcpSettingsJSONRequestBody defines body for AdminUpdateMcpSettings for application/json ContentType.
-type AdminUpdateMcpSettingsJSONRequestBody = McpSwitchUpdate
+// AdminSaveMaterialJSONRequestBody defines body for AdminSaveMaterial for application/json ContentType.
+type AdminSaveMaterialJSONRequestBody = AdminMaterialInput
 
 // AdminUploadMediaMultipartRequestBody defines body for AdminUploadMedia for multipart/form-data ContentType.
 type AdminUploadMediaMultipartRequestBody AdminUploadMediaMultipartBody
 
-// AdminRetryGenerationJSONRequestBody defines body for AdminRetryGeneration for application/json ContentType.
-type AdminRetryGenerationJSONRequestBody AdminRetryGenerationJSONBody
+// AdminEnableModelTemplateJSONRequestBody defines body for AdminEnableModelTemplate for application/json ContentType.
+type AdminEnableModelTemplateJSONRequestBody AdminEnableModelTemplateJSONBody
 
-// AdminCompensateTaskJSONRequestBody defines body for AdminCompensateTask for application/json ContentType.
-type AdminCompensateTaskJSONRequestBody AdminCompensateTaskJSONBody
+// AdminSaveModelJSONRequestBody defines body for AdminSaveModel for application/json ContentType.
+type AdminSaveModelJSONRequestBody = AdminModelInput
 
-// AdminRefundOrderJSONRequestBody defines body for AdminRefundOrder for application/json ContentType.
-type AdminRefundOrderJSONRequestBody AdminRefundOrderJSONBody
+// AdminSaveProviderJSONRequestBody defines body for AdminSaveProvider for application/json ContentType.
+type AdminSaveProviderJSONRequestBody = AdminProviderInput
 
-// SavePaymentChannelJSONRequestBody defines body for SavePaymentChannel for application/json ContentType.
-type SavePaymentChannelJSONRequestBody SavePaymentChannelJSONBody
+// AdminSaveModelCapabilityJSONRequestBody defines body for AdminSaveModelCapability for application/json ContentType.
+type AdminSaveModelCapabilityJSONRequestBody AdminSaveModelCapabilityJSONBody
 
-// AdminProjectActionJSONRequestBody defines body for AdminProjectAction for application/json ContentType.
-type AdminProjectActionJSONRequestBody AdminProjectActionJSONBody
+// AdminSaveModelOperationJSONRequestBody defines body for AdminSaveModelOperation for application/json ContentType.
+type AdminSaveModelOperationJSONRequestBody AdminSaveModelOperationJSONBody
+
+// AdminSaveModelParamSupportJSONRequestBody defines body for AdminSaveModelParamSupport for application/json ContentType.
+type AdminSaveModelParamSupportJSONRequestBody = ModelParamSupportInput
+
+// AdminArchivePromptJSONRequestBody defines body for AdminArchivePrompt for application/json ContentType.
+type AdminArchivePromptJSONRequestBody AdminArchivePromptJSONBody
+
+// AdminSavePromptDraftJSONRequestBody defines body for AdminSavePromptDraft for application/json ContentType.
+type AdminSavePromptDraftJSONRequestBody AdminSavePromptDraftJSONBody
+
+// AdminPreviewPromptJSONRequestBody defines body for AdminPreviewPrompt for application/json ContentType.
+type AdminPreviewPromptJSONRequestBody AdminPreviewPromptJSONBody
+
+// AdminPublishPromptJSONRequestBody defines body for AdminPublishPrompt for application/json ContentType.
+type AdminPublishPromptJSONRequestBody AdminPublishPromptJSONBody
+
+// AdminRollbackPromptJSONRequestBody defines body for AdminRollbackPrompt for application/json ContentType.
+type AdminRollbackPromptJSONRequestBody AdminRollbackPromptJSONBody
 
 // SaveRenderSettingJSONRequestBody defines body for SaveRenderSetting for application/json ContentType.
 type SaveRenderSettingJSONRequestBody SaveRenderSettingJSONBody
@@ -17060,8 +13770,8 @@ type SaveRenderSettingJSONRequestBody SaveRenderSettingJSONBody
 // AdminSetRolePermissionsJSONRequestBody defines body for AdminSetRolePermissions for application/json ContentType.
 type AdminSetRolePermissionsJSONRequestBody AdminSetRolePermissionsJSONBody
 
-// AdminReviewWorkJSONRequestBody defines body for AdminReviewWork for application/json ContentType.
-type AdminReviewWorkJSONRequestBody AdminReviewWorkJSONBody
+// AdminSaveVoiceJSONRequestBody defines body for AdminSaveVoice for application/json ContentType.
+type AdminSaveVoiceJSONRequestBody = AdminVoiceInput
 
 // PutAgentPreferencesJSONRequestBody defines body for PutAgentPreferences for application/json ContentType.
 type PutAgentPreferencesJSONRequestBody = AgentPreferences
@@ -17084,20 +13794,8 @@ type SubmitAgentCardJSONRequestBody SubmitAgentCardJSONBody
 // PostAgentMessageJSONRequestBody defines body for PostAgentMessage for application/json ContentType.
 type PostAgentMessageJSONRequestBody = AgentPostMessageRequest
 
-// SendVerificationCodeJSONRequestBody defines body for SendVerificationCode for application/json ContentType.
-type SendVerificationCodeJSONRequestBody SendVerificationCodeJSONBody
-
-// LoginJSONRequestBody defines body for Login for application/json ContentType.
-type LoginJSONRequestBody = LoginReq
-
-// ResetPasswordJSONRequestBody defines body for ResetPassword for application/json ContentType.
-type ResetPasswordJSONRequestBody ResetPasswordJSONBody
-
-// RefreshTokenJSONRequestBody defines body for RefreshToken for application/json ContentType.
-type RefreshTokenJSONRequestBody RefreshTokenJSONBody
-
-// RegisterJSONRequestBody defines body for Register for application/json ContentType.
-type RegisterJSONRequestBody RegisterJSONBody
+// UpdateProfileJSONRequestBody defines body for UpdateProfile for application/json ContentType.
+type UpdateProfileJSONRequestBody UpdateProfileJSONBody
 
 // ValidateCanvasConnectionJSONRequestBody defines body for ValidateCanvasConnection for application/json ContentType.
 type ValidateCanvasConnectionJSONRequestBody = CanvasConnectionValidateRequest
@@ -17171,15 +13869,6 @@ type CreateMarketingProductJSONRequestBody = MarketingProductInput
 // UpdateMarketingProductJSONRequestBody defines body for UpdateMarketingProduct for application/json ContentType.
 type UpdateMarketingProductJSONRequestBody UpdateMarketingProductJSONBody
 
-// SubmitMcpConsentJSONRequestBody defines body for SubmitMcpConsent for application/json ContentType.
-type SubmitMcpConsentJSONRequestBody = McpConsentSubmit
-
-// UpdateMcpGrantJSONRequestBody defines body for UpdateMcpGrant for application/json ContentType.
-type UpdateMcpGrantJSONRequestBody = McpGrantUpdate
-
-// CreateMcpAccessKeyJSONRequestBody defines body for CreateMcpAccessKey for application/json ContentType.
-type CreateMcpAccessKeyJSONRequestBody = McpAccessKeyCreate
-
 // UploadReferenceMultipartRequestBody defines body for UploadReference for multipart/form-data ContentType.
 type UploadReferenceMultipartRequestBody UploadReferenceMultipartBody
 
@@ -17188,21 +13877,6 @@ type SplitMediaGridJSONRequestBody SplitMediaGridJSONBody
 
 // MarkMessageReadJSONRequestBody defines body for MarkMessageRead for application/json ContentType.
 type MarkMessageReadJSONRequestBody MarkMessageReadJSONBody
-
-// CreateOrderJSONRequestBody defines body for CreateOrder for application/json ContentType.
-type CreateOrderJSONRequestBody CreateOrderJSONBody
-
-// CreatePaymentJSONRequestBody defines body for CreatePayment for application/json ContentType.
-type CreatePaymentJSONRequestBody CreatePaymentJSONBody
-
-// RefundOrderJSONRequestBody defines body for RefundOrder for application/json ContentType.
-type RefundOrderJSONRequestBody RefundOrderJSONBody
-
-// PaymentCallbackJSONRequestBody defines body for PaymentCallback for application/json ContentType.
-type PaymentCallbackJSONRequestBody PaymentCallbackJSONBody
-
-// PaymentCallbackFormdataRequestBody defines body for PaymentCallback for application/x-www-form-urlencoded ContentType.
-type PaymentCallbackFormdataRequestBody PaymentCallbackFormdataBody
 
 // CreateProjectJSONRequestBody defines body for CreateProject for application/json ContentType.
 type CreateProjectJSONRequestBody CreateProjectJSONBody
@@ -17330,6 +14004,12 @@ type SaveShotPromptJSONRequestBody SaveShotPromptJSONBody
 // GenerateStoryboardJSONRequestBody defines body for GenerateStoryboard for application/json ContentType.
 type GenerateStoryboardJSONRequestBody = StoryboardRequest
 
+// UpdateAppSettingsJSONRequestBody defines body for UpdateAppSettings for application/json ContentType.
+type UpdateAppSettingsJSONRequestBody UpdateAppSettingsJSONBody
+
+// TestS3StorageJSONRequestBody defines body for TestS3Storage for application/json ContentType.
+type TestS3StorageJSONRequestBody = S3TestRequest
+
 // TypesetSmartcutTextJSONRequestBody defines body for TypesetSmartcutText for application/json ContentType.
 type TypesetSmartcutTextJSONRequestBody = TypesetRequest
 
@@ -17372,47 +14052,14 @@ type SplitClipJSONRequestBody SplitClipJSONBody
 // TrimClipJSONRequestBody defines body for TrimClip for application/json ContentType.
 type TrimClipJSONRequestBody TrimClipJSONBody
 
+// ToggleVoiceFavoriteJSONRequestBody defines body for ToggleVoiceFavorite for application/json ContentType.
+type ToggleVoiceFavoriteJSONRequestBody ToggleVoiceFavoriteJSONBody
+
 // CancelWorkflowRunJSONRequestBody defines body for CancelWorkflowRun for application/json ContentType.
 type CancelWorkflowRunJSONRequestBody CancelWorkflowRunJSONBody
 
 // SubmitWorkJSONRequestBody defines body for SubmitWork for application/json ContentType.
 type SubmitWorkJSONRequestBody SubmitWorkJSONBody
-
-// CreateTeamWorkspaceJSONRequestBody defines body for CreateTeamWorkspace for application/json ContentType.
-type CreateTeamWorkspaceJSONRequestBody CreateTeamWorkspaceJSONBody
-
-// RenameWorkspaceJSONRequestBody defines body for RenameWorkspace for application/json ContentType.
-type RenameWorkspaceJSONRequestBody RenameWorkspaceJSONBody
-
-// CreateWorkspaceInvitationJSONRequestBody defines body for CreateWorkspaceInvitation for application/json ContentType.
-type CreateWorkspaceInvitationJSONRequestBody CreateWorkspaceInvitationJSONBody
-
-// RevokeWorkspaceMcpGrantJSONRequestBody defines body for RevokeWorkspaceMcpGrant for application/json ContentType.
-type RevokeWorkspaceMcpGrantJSONRequestBody = McpRevokeReason
-
-// UpdateWorkspaceMcpSettingsJSONRequestBody defines body for UpdateWorkspaceMcpSettings for application/json ContentType.
-type UpdateWorkspaceMcpSettingsJSONRequestBody = McpSwitchUpdate
-
-// SetWorkspaceMemberRoleJSONRequestBody defines body for SetWorkspaceMemberRole for application/json ContentType.
-type SetWorkspaceMemberRoleJSONRequestBody SetWorkspaceMemberRoleJSONBody
-
-// PresenceHeartbeatJSONRequestBody defines body for PresenceHeartbeat for application/json ContentType.
-type PresenceHeartbeatJSONRequestBody PresenceHeartbeatJSONBody
-
-// PresenceLeaveJSONRequestBody defines body for PresenceLeave for application/json ContentType.
-type PresenceLeaveJSONRequestBody PresenceLeaveJSONBody
-
-// GrantShareJSONRequestBody defines body for GrantShare for application/json ContentType.
-type GrantShareJSONRequestBody GrantShareJSONBody
-
-// ImportSharedResourceJSONRequestBody defines body for ImportSharedResource for application/json ContentType.
-type ImportSharedResourceJSONRequestBody ImportSharedResourceJSONBody
-
-// TransferWorkspaceJSONRequestBody defines body for TransferWorkspace for application/json ContentType.
-type TransferWorkspaceJSONRequestBody TransferWorkspaceJSONBody
-
-// AcceptWorkspaceInvitationJSONRequestBody defines body for AcceptWorkspaceInvitation for application/json ContentType.
-type AcceptWorkspaceInvitationJSONRequestBody AcceptWorkspaceInvitationJSONBody
 
 // Getter for additional properties for DirectorLight. Returns the specified
 // element and whether it was found
@@ -20353,26 +17000,11 @@ type ServerInterface interface {
 	// (PUT /admin/agent/skills/{skillId}/references/{refId})
 	AdminUpdateAgentSkillReference(w http.ResponseWriter, r *http.Request, skillId Id, refId Id)
 
+	// (POST /admin/agent/skills/{skillId}/restore-builtin)
+	AdminRestoreAgentSkillBuiltin(w http.ResponseWriter, r *http.Request, skillId Id)
+
 	// (GET /admin/agent/tools)
 	AdminListAgentTools(w http.ResponseWriter, r *http.Request)
-
-	// (GET /admin/announcements)
-	AdminListAnnouncements(w http.ResponseWriter, r *http.Request, params AdminListAnnouncementsParams)
-
-	// (POST /admin/announcements)
-	AdminCreateAnnouncement(w http.ResponseWriter, r *http.Request)
-
-	// (DELETE /admin/announcements/{id})
-	AdminDeleteAnnouncement(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (PUT /admin/announcements/{id})
-	AdminUpdateAnnouncement(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (POST /admin/announcements/{id}/offline)
-	AdminOfflineAnnouncement(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (POST /admin/announcements/{id}/publish)
-	AdminPublishAnnouncement(w http.ResponseWriter, r *http.Request, id Id)
 
 	// (GET /admin/audit-logs)
 	AdminListAuditLogs(w http.ResponseWriter, r *http.Request, params AdminListAuditLogsParams)
@@ -20395,56 +17027,44 @@ type ServerInterface interface {
 	// (POST /admin/auth/refresh)
 	AdminRefreshToken(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/banners)
-	AdminListBanners(w http.ResponseWriter, r *http.Request, params AdminListBannersParams)
-
-	// (POST /admin/banners)
-	AdminCreateBanner(w http.ResponseWriter, r *http.Request)
-
-	// (DELETE /admin/banners/{id})
-	AdminDeleteBanner(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (PUT /admin/banners/{id})
-	AdminUpdateBanner(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (GET /admin/billing-ops/orders)
-	SearchOrders(w http.ResponseWriter, r *http.Request, params SearchOrdersParams)
-
-	// (GET /admin/billing-ops/orders/{orderId})
-	AdminOrderDetail(w http.ResponseWriter, r *http.Request, orderId string)
-
-	// (POST /admin/billing-ops/orders/{orderId}/reconcile)
-	MarkReconcile(w http.ResponseWriter, r *http.Request, orderId string)
-
-	// (GET /admin/billing-ops/payers/{payerId})
-	PayerOverview(w http.ResponseWriter, r *http.Request, payerId string)
-
-	// (POST /admin/billing-ops/payers/{payerId}/adjust)
-	AdjustCredits(w http.ResponseWriter, r *http.Request, payerId string, params AdjustCreditsParams)
-
-	// (GET /admin/billing/catalog)
-	GetBillingCatalog(w http.ResponseWriter, r *http.Request)
-
-	// (PUT /admin/billing/levels)
-	SaveMemberLevel(w http.ResponseWriter, r *http.Request)
-
-	// (PUT /admin/billing/packages)
-	SaveCreditPackage(w http.ResponseWriter, r *http.Request)
-
-	// (PUT /admin/billing/plans)
-	SaveMemberPlan(w http.ResponseWriter, r *http.Request)
-
 	// (GET /admin/canvas/config)
 	AdminGetCanvasConfig(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/dead-letters)
-	AdminListDeadLetters(w http.ResponseWriter, r *http.Request, params AdminListDeadLettersParams)
+	// (PUT /admin/canvas/connection-rules)
+	AdminSaveConnectionRule(w http.ResponseWriter, r *http.Request)
 
-	// (POST /admin/dead-letters/{id}/discard)
-	AdminDiscardDeadLetter(w http.ResponseWriter, r *http.Request, id Id)
+	// (GET /admin/canvas/param-definitions)
+	AdminListParamDefinitions(w http.ResponseWriter, r *http.Request)
 
-	// (POST /admin/dead-letters/{id}/replay)
-	AdminReplayDeadLetter(w http.ResponseWriter, r *http.Request, id Id)
+	// (PUT /admin/canvas/param-definitions)
+	AdminSaveParamDefinition(w http.ResponseWriter, r *http.Request)
+
+	// (DELETE /admin/canvas/param-definitions/{code})
+	AdminDisableParamDefinition(w http.ResponseWriter, r *http.Request, code string)
+
+	// (GET /admin/canvas/revision)
+	AdminGetCanvasRevision(w http.ResponseWriter, r *http.Request)
+
+	// (GET /admin/image-presets)
+	AdminListImagePresets(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/image-presets)
+	AdminCreateImagePreset(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/image-presets/preview)
+	AdminPreviewImagePreset(w http.ResponseWriter, r *http.Request)
+
+	// (PUT /admin/image-presets/{code})
+	AdminUpdateImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode)
+
+	// (POST /admin/image-presets/{code}/disable)
+	AdminDisableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode)
+
+	// (POST /admin/image-presets/{code}/enable)
+	AdminEnableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode)
+
+	// (POST /admin/image-presets/{code}/restore-builtin)
+	AdminRestoreImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode)
 
 	// (GET /admin/marketing/categories)
 	AdminListMarketingCategories(w http.ResponseWriter, r *http.Request, params AdminListMarketingCategoriesParams)
@@ -20503,20 +17123,11 @@ type ServerInterface interface {
 	// (POST /admin/marketing/preset-characters/{presetId}/enable)
 	AdminEnableMarketingPresetCharacter(w http.ResponseWriter, r *http.Request, presetId Id)
 
-	// (GET /admin/mcp/grants)
-	AdminListMcpGrants(w http.ResponseWriter, r *http.Request, params AdminListMcpGrantsParams)
+	// (PUT /admin/materials)
+	AdminSaveMaterial(w http.ResponseWriter, r *http.Request)
 
-	// (DELETE /admin/mcp/grants/{grantId})
-	AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id)
-
-	// (GET /admin/mcp/settings)
-	AdminGetMcpSettings(w http.ResponseWriter, r *http.Request)
-
-	// (PUT /admin/mcp/settings)
-	AdminUpdateMcpSettings(w http.ResponseWriter, r *http.Request)
-
-	// (GET /admin/mcp/stats)
-	AdminMcpStats(w http.ResponseWriter, r *http.Request, params AdminMcpStatsParams)
+	// (GET /admin/materials/{type})
+	AdminListMaterials(w http.ResponseWriter, r *http.Request, pType AdminListMaterialsParamsType, params AdminListMaterialsParams)
 
 	// (POST /admin/media)
 	AdminUploadMedia(w http.ResponseWriter, r *http.Request)
@@ -20524,44 +17135,83 @@ type ServerInterface interface {
 	// (GET /admin/media/{mediaId})
 	AdminDownloadMedia(w http.ResponseWriter, r *http.Request, mediaId string, params AdminDownloadMediaParams)
 
-	// (POST /admin/ops/tasks/generation/{id}/retry)
-	AdminRetryGeneration(w http.ResponseWriter, r *http.Request, id Id)
+	// (GET /admin/model-templates)
+	AdminListModelTemplates(w http.ResponseWriter, r *http.Request)
 
-	// (POST /admin/ops/tasks/{kind}/{id}/compensate)
-	AdminCompensateTask(w http.ResponseWriter, r *http.Request, kind AdminCompensateTaskParamsKind, id Id)
+	// (POST /admin/model-templates/{code}/enable)
+	AdminEnableModelTemplate(w http.ResponseWriter, r *http.Request, code string)
 
-	// (POST /admin/orders/reconcile)
-	ReconcileOrders(w http.ResponseWriter, r *http.Request, params ReconcileOrdersParams)
+	// (GET /admin/models)
+	AdminListModels(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/orders/reconcile/diffs)
-	ListReconcileDiffs(w http.ResponseWriter, r *http.Request, params ListReconcileDiffsParams)
+	// (PUT /admin/models)
+	AdminSaveModel(w http.ResponseWriter, r *http.Request)
 
-	// (POST /admin/orders/{orderId}/refund)
-	AdminRefundOrder(w http.ResponseWriter, r *http.Request, orderId string)
+	// (GET /admin/models/protocols)
+	AdminListModelProtocols(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/orders/{orderId}/refund-check)
-	AdminCheckRefund(w http.ResponseWriter, r *http.Request, orderId string)
+	// (GET /admin/models/providers)
+	AdminListProviders(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/payments/callbacks)
-	ListPaymentCallbacks(w http.ResponseWriter, r *http.Request, params ListPaymentCallbacksParams)
+	// (PUT /admin/models/providers)
+	AdminSaveProvider(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/payments/channels)
-	ListPaymentChannels(w http.ResponseWriter, r *http.Request)
+	// (POST /admin/models/providers/{code}/probe)
+	AdminProbeProvider(w http.ResponseWriter, r *http.Request, code string)
 
-	// (PUT /admin/payments/channels)
-	SavePaymentChannel(w http.ResponseWriter, r *http.Request)
+	// (GET /admin/models/{code}/capabilities)
+	AdminListModelCapabilities(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (PUT /admin/models/{code}/capabilities)
+	AdminSaveModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (DELETE /admin/models/{code}/capabilities/{operation}/{role})
+	AdminDeleteModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode, operation string, role string)
+
+	// (PUT /admin/models/{code}/operations)
+	AdminSaveModelOperation(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (GET /admin/models/{code}/param-supports)
+	AdminListModelParamSupports(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (PUT /admin/models/{code}/param-supports)
+	AdminSaveModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (DELETE /admin/models/{code}/param-supports/{paramCode})
+	AdminDeleteModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode, paramCode string)
+
+	// (GET /admin/models/{code}/publishable)
+	AdminCheckModelPublishable(w http.ResponseWriter, r *http.Request, code ModelCode)
+
+	// (GET /admin/operations)
+	AdminListOperations(w http.ResponseWriter, r *http.Request)
 
 	// (GET /admin/permissions)
 	AdminListPermissions(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/projects)
-	AdminListProjects(w http.ResponseWriter, r *http.Request, params AdminListProjectsParams)
+	// (GET /admin/prompts)
+	AdminListPrompts(w http.ResponseWriter, r *http.Request)
 
-	// (GET /admin/projects/{id})
-	AdminGetProject(w http.ResponseWriter, r *http.Request, id Id)
+	// (POST /admin/prompts/archive)
+	AdminArchivePrompt(w http.ResponseWriter, r *http.Request)
 
-	// (POST /admin/projects/{id}/actions)
-	AdminProjectAction(w http.ResponseWriter, r *http.Request, id Id)
+	// (PUT /admin/prompts/draft)
+	AdminSavePromptDraft(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/prompts/preview)
+	AdminPreviewPrompt(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/prompts/publish)
+	AdminPublishPrompt(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/prompts/rollback)
+	AdminRollbackPrompt(w http.ResponseWriter, r *http.Request)
+
+	// (GET /admin/prompts/specs)
+	AdminListPromptSpecs(w http.ResponseWriter, r *http.Request)
+
+	// (GET /admin/prompts/versions)
+	AdminListPromptVersions(w http.ResponseWriter, r *http.Request, params AdminListPromptVersionsParams)
 
 	// (GET /admin/render/renders/{renderId})
 	TraceRender(w http.ResponseWriter, r *http.Request, renderId string)
@@ -20590,9 +17240,6 @@ type ServerInterface interface {
 	// (GET /admin/stats/series)
 	AdminStatsSeries(w http.ResponseWriter, r *http.Request, params AdminStatsSeriesParams)
 
-	// (GET /admin/tasks)
-	AdminListTasks(w http.ResponseWriter, r *http.Request, params AdminListTasksParams)
-
 	// (GET /admin/users)
 	AdminSearchUsers(w http.ResponseWriter, r *http.Request, params AdminSearchUsersParams)
 
@@ -20602,14 +17249,11 @@ type ServerInterface interface {
 	// (POST /admin/users/{userID}/ban)
 	AdminBanUser(w http.ResponseWriter, r *http.Request, userID Id)
 
-	// (GET /admin/works)
-	AdminListWorks(w http.ResponseWriter, r *http.Request, params AdminListWorksParams)
+	// (GET /admin/voices)
+	AdminListVoices(w http.ResponseWriter, r *http.Request, params AdminListVoicesParams)
 
-	// (GET /admin/works/{id})
-	AdminGetWork(w http.ResponseWriter, r *http.Request, id Id)
-
-	// (POST /admin/works/{id}/review)
-	AdminReviewWork(w http.ResponseWriter, r *http.Request, id Id)
+	// (PUT /admin/voices)
+	AdminSaveVoice(w http.ResponseWriter, r *http.Request)
 
 	// (GET /agent/preferences)
 	GetAgentPreferences(w http.ResponseWriter, r *http.Request)
@@ -20653,26 +17297,11 @@ type ServerInterface interface {
 	// (GET /agent/skills/{code}/cover)
 	AgentSkillCover(w http.ResponseWriter, r *http.Request, code string, params AgentSkillCoverParams)
 
-	// (POST /auth/code)
-	SendVerificationCode(w http.ResponseWriter, r *http.Request)
-
-	// (POST /auth/login)
-	Login(w http.ResponseWriter, r *http.Request)
-
-	// (POST /auth/logout)
-	Logout(w http.ResponseWriter, r *http.Request)
-
 	// (GET /auth/me)
 	GetCurrentUser(w http.ResponseWriter, r *http.Request)
 
-	// (POST /auth/password/reset)
-	ResetPassword(w http.ResponseWriter, r *http.Request)
-
-	// (POST /auth/refresh)
-	RefreshToken(w http.ResponseWriter, r *http.Request)
-
-	// (POST /auth/register)
-	Register(w http.ResponseWriter, r *http.Request)
+	// (PUT /auth/profile)
+	UpdateProfile(w http.ResponseWriter, r *http.Request)
 
 	// (GET /canvas/cameras)
 	ListCameraMaterials(w http.ResponseWriter, r *http.Request, params ListCameraMaterialsParams)
@@ -20694,12 +17323,6 @@ type ServerInterface interface {
 
 	// (GET /creations)
 	ListCreations(w http.ResponseWriter, r *http.Request, params ListCreationsParams)
-
-	// (GET /credits)
-	GetCredits(w http.ResponseWriter, r *http.Request, params GetCreditsParams)
-
-	// (GET /credits/transactions)
-	ListCreditTransactions(w http.ResponseWriter, r *http.Request, params ListCreditTransactionsParams)
 
 	// (GET /director/build-config)
 	GetDirectorBuildConfig(w http.ResponseWriter, r *http.Request, params GetDirectorBuildConfigParams)
@@ -20739,6 +17362,9 @@ type ServerInterface interface {
 
 	// (POST /generations/{generationId}/cancel)
 	CancelGeneration(w http.ResponseWriter, r *http.Request, generationId GenerationId, params CancelGenerationParams)
+
+	// (GET /generations/{generationId}/outputs)
+	ListGenerationOutputs(w http.ResponseWriter, r *http.Request, generationId GenerationId, params ListGenerationOutputsParams)
 
 	// (GET /generations/{generationId}/outputs/{index})
 	GetGenerationOutput(w http.ResponseWriter, r *http.Request, generationId GenerationId, index int, params GetGenerationOutputParams)
@@ -20872,42 +17498,6 @@ type ServerInterface interface {
 	// (PUT /marketing/products/{productId})
 	UpdateMarketingProduct(w http.ResponseWriter, r *http.Request, productId Id, params UpdateMarketingProductParams)
 
-	// (GET /mcp/approvals/{quoteId})
-	GetMcpApproval(w http.ResponseWriter, r *http.Request, quoteId Id)
-
-	// (POST /mcp/approvals/{quoteId}/approve)
-	ApproveMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id)
-
-	// (POST /mcp/approvals/{quoteId}/reject)
-	RejectMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id)
-
-	// (GET /mcp/consent)
-	GetMcpConsent(w http.ResponseWriter, r *http.Request, params GetMcpConsentParams)
-
-	// (POST /mcp/consent)
-	SubmitMcpConsent(w http.ResponseWriter, r *http.Request)
-
-	// (GET /me/mcp/client-snippets)
-	GetMcpClientSnippets(w http.ResponseWriter, r *http.Request)
-
-	// (GET /me/mcp/grants)
-	ListMcpGrants(w http.ResponseWriter, r *http.Request)
-
-	// (DELETE /me/mcp/grants/{grantId})
-	RevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id)
-
-	// (PATCH /me/mcp/grants/{grantId})
-	UpdateMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id)
-
-	// (GET /me/mcp/keys)
-	ListMcpAccessKeys(w http.ResponseWriter, r *http.Request)
-
-	// (POST /me/mcp/keys)
-	CreateMcpAccessKey(w http.ResponseWriter, r *http.Request)
-
-	// (DELETE /me/mcp/keys/{keyId})
-	RevokeMcpAccessKey(w http.ResponseWriter, r *http.Request, keyId Id)
-
 	// (GET /media)
 	ListMyMedia(w http.ResponseWriter, r *http.Request, params ListMyMediaParams)
 
@@ -20935,9 +17525,6 @@ type ServerInterface interface {
 	// (GET /media/{mediaId}/usages)
 	ListMediaUsages(w http.ResponseWriter, r *http.Request, mediaId string, params ListMediaUsagesParams)
 
-	// (GET /membership)
-	GetMembership(w http.ResponseWriter, r *http.Request, params GetMembershipParams)
-
 	// (GET /models)
 	ListUsableModels(w http.ResponseWriter, r *http.Request, params ListUsableModelsParams)
 
@@ -20955,39 +17542,6 @@ type ServerInterface interface {
 
 	// (GET /notifications/unread-count)
 	UnreadCount(w http.ResponseWriter, r *http.Request)
-
-	// (GET /orders)
-	ListOrders(w http.ResponseWriter, r *http.Request, params ListOrdersParams)
-
-	// (POST /orders)
-	CreateOrder(w http.ResponseWriter, r *http.Request, params CreateOrderParams)
-
-	// (GET /orders/{orderId})
-	GetOrder(w http.ResponseWriter, r *http.Request, orderId string, params GetOrderParams)
-
-	// (POST /orders/{orderId}/cancel)
-	CancelOrder(w http.ResponseWriter, r *http.Request, orderId string, params CancelOrderParams)
-
-	// (POST /orders/{orderId}/dev-pay)
-	DevPayOrder(w http.ResponseWriter, r *http.Request, orderId string, params DevPayOrderParams)
-
-	// (POST /orders/{orderId}/pay)
-	CreatePayment(w http.ResponseWriter, r *http.Request, orderId string, params CreatePaymentParams)
-
-	// (POST /orders/{orderId}/refund)
-	RefundOrder(w http.ResponseWriter, r *http.Request, orderId string, params RefundOrderParams)
-
-	// (GET /orders/{orderId}/refund-check)
-	CheckRefund(w http.ResponseWriter, r *http.Request, orderId string, params CheckRefundParams)
-
-	// (GET /orders/{orderId}/refunds)
-	ListRefunds(w http.ResponseWriter, r *http.Request, orderId string, params ListRefundsParams)
-
-	// (POST /orders/{orderId}/sync)
-	SyncOrder(w http.ResponseWriter, r *http.Request, orderId string, params SyncOrderParams)
-
-	// (POST /payments/callback/{channel})
-	PaymentCallback(w http.ResponseWriter, r *http.Request, channel string)
 
 	// (GET /project-templates)
 	ListProjectTemplates(w http.ResponseWriter, r *http.Request)
@@ -21223,29 +17777,26 @@ type ServerInterface interface {
 	// (POST /scripts/{scriptId}/storyboard)
 	GenerateStoryboard(w http.ResponseWriter, r *http.Request, scriptId ScriptId, params GenerateStoryboardParams)
 
-	// (GET /shares/received)
-	ListReceivedShares(w http.ResponseWriter, r *http.Request)
+	// (GET /settings)
+	GetAppSettings(w http.ResponseWriter, r *http.Request)
 
-	// (GET /shares/received/{resourceType}/{resourceId})
-	OpenSharedResource(w http.ResponseWriter, r *http.Request, resourceType OpenSharedResourceParamsResourceType, resourceId Id)
+	// (PUT /settings)
+	UpdateAppSettings(w http.ResponseWriter, r *http.Request)
 
-	// (GET /showcase)
-	ListShowcase(w http.ResponseWriter, r *http.Request, params ListShowcaseParams)
+	// (GET /settings/diagnostics)
+	GetDiagnostics(w http.ResponseWriter, r *http.Request)
 
-	// (GET /showcase/{workId}/cover)
-	ShowcaseCover(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseCoverParams)
+	// (POST /settings/storage/test)
+	TestS3Storage(w http.ResponseWriter, r *http.Request)
 
-	// (GET /showcase/{workId}/media)
-	ShowcaseMedia(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseMediaParams)
+	// (GET /settings/storage/usage)
+	GetStorageUsage(w http.ResponseWriter, r *http.Request)
 
 	// (GET /smartcut/config)
 	GetSmartcutConfig(w http.ResponseWriter, r *http.Request, params GetSmartcutConfigParams)
 
 	// (POST /smartcut/typeset)
 	TypesetSmartcutText(w http.ResponseWriter, r *http.Request, params TypesetSmartcutTextParams)
-
-	// (GET /storefront)
-	GetStorefront(w http.ResponseWriter, r *http.Request, params GetStorefrontParams)
 
 	// (GET /tasks)
 	ListTasks(w http.ResponseWriter, r *http.Request, params ListTasksParams)
@@ -21304,6 +17855,12 @@ type ServerInterface interface {
 	// (PATCH /timelines/{timelineId}/tracks/{trackId}/clips/{clipId}/trim)
 	TrimClip(w http.ResponseWriter, r *http.Request, timelineId string, trackId string, clipId string, params TrimClipParams)
 
+	// (GET /voices)
+	ListVoices(w http.ResponseWriter, r *http.Request, params ListVoicesParams)
+
+	// (POST /voices/{code}/favorite)
+	ToggleVoiceFavorite(w http.ResponseWriter, r *http.Request, code string)
+
 	// (GET /workflow/runs/{runId})
 	GetWorkflowRun(w http.ResponseWriter, r *http.Request, runId string, params GetWorkflowRunParams)
 
@@ -21327,81 +17884,6 @@ type ServerInterface interface {
 
 	// (GET /workspaces)
 	ListWorkspaces(w http.ResponseWriter, r *http.Request)
-
-	// (POST /workspaces)
-	CreateTeamWorkspace(w http.ResponseWriter, r *http.Request)
-
-	// (DELETE /workspaces/current)
-	ArchiveWorkspace(w http.ResponseWriter, r *http.Request, params ArchiveWorkspaceParams)
-
-	// (PATCH /workspaces/current)
-	RenameWorkspace(w http.ResponseWriter, r *http.Request, params RenameWorkspaceParams)
-
-	// (GET /workspaces/current/invitations)
-	ListWorkspaceInvitations(w http.ResponseWriter, r *http.Request, params ListWorkspaceInvitationsParams)
-
-	// (POST /workspaces/current/invitations)
-	CreateWorkspaceInvitation(w http.ResponseWriter, r *http.Request, params CreateWorkspaceInvitationParams)
-
-	// (DELETE /workspaces/current/invitations/{invitationId})
-	RevokeWorkspaceInvitation(w http.ResponseWriter, r *http.Request, invitationId Id, params RevokeWorkspaceInvitationParams)
-
-	// (GET /workspaces/current/mcp/grants)
-	ListWorkspaceMcpGrants(w http.ResponseWriter, r *http.Request, params ListWorkspaceMcpGrantsParams)
-
-	// (DELETE /workspaces/current/mcp/grants/{grantId})
-	RevokeWorkspaceMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id, params RevokeWorkspaceMcpGrantParams)
-
-	// (GET /workspaces/current/mcp/settings)
-	GetWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params GetWorkspaceMcpSettingsParams)
-
-	// (PUT /workspaces/current/mcp/settings)
-	UpdateWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params UpdateWorkspaceMcpSettingsParams)
-
-	// (GET /workspaces/current/members)
-	ListWorkspaceMembers(w http.ResponseWriter, r *http.Request, params ListWorkspaceMembersParams)
-
-	// (DELETE /workspaces/current/members/{userId})
-	RemoveWorkspaceMember(w http.ResponseWriter, r *http.Request, userId Id, params RemoveWorkspaceMemberParams)
-
-	// (PUT /workspaces/current/members/{userId}/role)
-	SetWorkspaceMemberRole(w http.ResponseWriter, r *http.Request, userId Id, params SetWorkspaceMemberRoleParams)
-
-	// (POST /workspaces/current/presence)
-	PresenceHeartbeat(w http.ResponseWriter, r *http.Request, params PresenceHeartbeatParams)
-
-	// (POST /workspaces/current/presence/leave)
-	PresenceLeave(w http.ResponseWriter, r *http.Request, params PresenceLeaveParams)
-
-	// (GET /workspaces/current/presence/{resourceType}/{resourceId})
-	ListOnline(w http.ResponseWriter, r *http.Request, resourceType string, resourceId Id, params ListOnlineParams)
-
-	// (GET /workspaces/current/shares)
-	ListGrantedShares(w http.ResponseWriter, r *http.Request, params ListGrantedSharesParams)
-
-	// (POST /workspaces/current/shares)
-	GrantShare(w http.ResponseWriter, r *http.Request, params GrantShareParams)
-
-	// (POST /workspaces/current/shares/import)
-	ImportSharedResource(w http.ResponseWriter, r *http.Request, params ImportSharedResourceParams)
-
-	// (DELETE /workspaces/current/shares/{shareId})
-	RevokeShare(w http.ResponseWriter, r *http.Request, shareId Id, params RevokeShareParams)
-
-	// (POST /workspaces/current/transfer)
-	TransferWorkspace(w http.ResponseWriter, r *http.Request, params TransferWorkspaceParams)
-
-	// (GET /workspaces/current/usage)
-	WorkspaceUsage(w http.ResponseWriter, r *http.Request, params WorkspaceUsageParams)
-
-	// (GET /workspaces/current/usage/entries)
-	WorkspaceUsageEntries(w http.ResponseWriter, r *http.Request, params WorkspaceUsageEntriesParams)
-
-	// (POST /workspaces/invitations/accept)
-	AcceptWorkspaceInvitation(w http.ResponseWriter, r *http.Request)
-
-	// (GET /workspaces/invitations/mine)
-	ListMyInvitations(w http.ResponseWriter, r *http.Request)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -21483,38 +17965,13 @@ func (_ Unimplemented) AdminUpdateAgentSkillReference(w http.ResponseWriter, r *
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// (POST /admin/agent/skills/{skillId}/restore-builtin)
+func (_ Unimplemented) AdminRestoreAgentSkillBuiltin(w http.ResponseWriter, r *http.Request, skillId Id) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // (GET /admin/agent/tools)
 func (_ Unimplemented) AdminListAgentTools(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/announcements)
-func (_ Unimplemented) AdminListAnnouncements(w http.ResponseWriter, r *http.Request, params AdminListAnnouncementsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/announcements)
-func (_ Unimplemented) AdminCreateAnnouncement(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /admin/announcements/{id})
-func (_ Unimplemented) AdminDeleteAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/announcements/{id})
-func (_ Unimplemented) AdminUpdateAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/announcements/{id}/offline)
-func (_ Unimplemented) AdminOfflineAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/announcements/{id}/publish)
-func (_ Unimplemented) AdminPublishAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21553,88 +18010,68 @@ func (_ Unimplemented) AdminRefreshToken(w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/banners)
-func (_ Unimplemented) AdminListBanners(w http.ResponseWriter, r *http.Request, params AdminListBannersParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/banners)
-func (_ Unimplemented) AdminCreateBanner(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /admin/banners/{id})
-func (_ Unimplemented) AdminDeleteBanner(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/banners/{id})
-func (_ Unimplemented) AdminUpdateBanner(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/billing-ops/orders)
-func (_ Unimplemented) SearchOrders(w http.ResponseWriter, r *http.Request, params SearchOrdersParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/billing-ops/orders/{orderId})
-func (_ Unimplemented) AdminOrderDetail(w http.ResponseWriter, r *http.Request, orderId string) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/billing-ops/orders/{orderId}/reconcile)
-func (_ Unimplemented) MarkReconcile(w http.ResponseWriter, r *http.Request, orderId string) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/billing-ops/payers/{payerId})
-func (_ Unimplemented) PayerOverview(w http.ResponseWriter, r *http.Request, payerId string) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/billing-ops/payers/{payerId}/adjust)
-func (_ Unimplemented) AdjustCredits(w http.ResponseWriter, r *http.Request, payerId string, params AdjustCreditsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/billing/catalog)
-func (_ Unimplemented) GetBillingCatalog(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/billing/levels)
-func (_ Unimplemented) SaveMemberLevel(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/billing/packages)
-func (_ Unimplemented) SaveCreditPackage(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/billing/plans)
-func (_ Unimplemented) SaveMemberPlan(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 // (GET /admin/canvas/config)
 func (_ Unimplemented) AdminGetCanvasConfig(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/dead-letters)
-func (_ Unimplemented) AdminListDeadLetters(w http.ResponseWriter, r *http.Request, params AdminListDeadLettersParams) {
+// (PUT /admin/canvas/connection-rules)
+func (_ Unimplemented) AdminSaveConnectionRule(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/dead-letters/{id}/discard)
-func (_ Unimplemented) AdminDiscardDeadLetter(w http.ResponseWriter, r *http.Request, id Id) {
+// (GET /admin/canvas/param-definitions)
+func (_ Unimplemented) AdminListParamDefinitions(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/dead-letters/{id}/replay)
-func (_ Unimplemented) AdminReplayDeadLetter(w http.ResponseWriter, r *http.Request, id Id) {
+// (PUT /admin/canvas/param-definitions)
+func (_ Unimplemented) AdminSaveParamDefinition(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (DELETE /admin/canvas/param-definitions/{code})
+func (_ Unimplemented) AdminDisableParamDefinition(w http.ResponseWriter, r *http.Request, code string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/canvas/revision)
+func (_ Unimplemented) AdminGetCanvasRevision(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/image-presets)
+func (_ Unimplemented) AdminListImagePresets(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/image-presets)
+func (_ Unimplemented) AdminCreateImagePreset(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/image-presets/preview)
+func (_ Unimplemented) AdminPreviewImagePreset(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /admin/image-presets/{code})
+func (_ Unimplemented) AdminUpdateImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/image-presets/{code}/disable)
+func (_ Unimplemented) AdminDisableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/image-presets/{code}/enable)
+func (_ Unimplemented) AdminEnableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/image-presets/{code}/restore-builtin)
+func (_ Unimplemented) AdminRestoreImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21733,28 +18170,13 @@ func (_ Unimplemented) AdminEnableMarketingPresetCharacter(w http.ResponseWriter
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/mcp/grants)
-func (_ Unimplemented) AdminListMcpGrants(w http.ResponseWriter, r *http.Request, params AdminListMcpGrantsParams) {
+// (PUT /admin/materials)
+func (_ Unimplemented) AdminSaveMaterial(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (DELETE /admin/mcp/grants/{grantId})
-func (_ Unimplemented) AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/mcp/settings)
-func (_ Unimplemented) AdminGetMcpSettings(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /admin/mcp/settings)
-func (_ Unimplemented) AdminUpdateMcpSettings(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /admin/mcp/stats)
-func (_ Unimplemented) AdminMcpStats(w http.ResponseWriter, r *http.Request, params AdminMcpStatsParams) {
+// (GET /admin/materials/{type})
+func (_ Unimplemented) AdminListMaterials(w http.ResponseWriter, r *http.Request, pType AdminListMaterialsParamsType, params AdminListMaterialsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21768,48 +18190,88 @@ func (_ Unimplemented) AdminDownloadMedia(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/ops/tasks/generation/{id}/retry)
-func (_ Unimplemented) AdminRetryGeneration(w http.ResponseWriter, r *http.Request, id Id) {
+// (GET /admin/model-templates)
+func (_ Unimplemented) AdminListModelTemplates(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/ops/tasks/{kind}/{id}/compensate)
-func (_ Unimplemented) AdminCompensateTask(w http.ResponseWriter, r *http.Request, kind AdminCompensateTaskParamsKind, id Id) {
+// (POST /admin/model-templates/{code}/enable)
+func (_ Unimplemented) AdminEnableModelTemplate(w http.ResponseWriter, r *http.Request, code string) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/orders/reconcile)
-func (_ Unimplemented) ReconcileOrders(w http.ResponseWriter, r *http.Request, params ReconcileOrdersParams) {
+// (GET /admin/models)
+func (_ Unimplemented) AdminListModels(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/orders/reconcile/diffs)
-func (_ Unimplemented) ListReconcileDiffs(w http.ResponseWriter, r *http.Request, params ListReconcileDiffsParams) {
+// (PUT /admin/models)
+func (_ Unimplemented) AdminSaveModel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/orders/{orderId}/refund)
-func (_ Unimplemented) AdminRefundOrder(w http.ResponseWriter, r *http.Request, orderId string) {
+// (GET /admin/models/protocols)
+func (_ Unimplemented) AdminListModelProtocols(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/orders/{orderId}/refund-check)
-func (_ Unimplemented) AdminCheckRefund(w http.ResponseWriter, r *http.Request, orderId string) {
+// (GET /admin/models/providers)
+func (_ Unimplemented) AdminListProviders(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/payments/callbacks)
-func (_ Unimplemented) ListPaymentCallbacks(w http.ResponseWriter, r *http.Request, params ListPaymentCallbacksParams) {
+// (PUT /admin/models/providers)
+func (_ Unimplemented) AdminSaveProvider(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/payments/channels)
-func (_ Unimplemented) ListPaymentChannels(w http.ResponseWriter, r *http.Request) {
+// (POST /admin/models/providers/{code}/probe)
+func (_ Unimplemented) AdminProbeProvider(w http.ResponseWriter, r *http.Request, code string) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (PUT /admin/payments/channels)
-func (_ Unimplemented) SavePaymentChannel(w http.ResponseWriter, r *http.Request) {
+// (GET /admin/models/{code}/capabilities)
+func (_ Unimplemented) AdminListModelCapabilities(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /admin/models/{code}/capabilities)
+func (_ Unimplemented) AdminSaveModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (DELETE /admin/models/{code}/capabilities/{operation}/{role})
+func (_ Unimplemented) AdminDeleteModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode, operation string, role string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /admin/models/{code}/operations)
+func (_ Unimplemented) AdminSaveModelOperation(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/models/{code}/param-supports)
+func (_ Unimplemented) AdminListModelParamSupports(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /admin/models/{code}/param-supports)
+func (_ Unimplemented) AdminSaveModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (DELETE /admin/models/{code}/param-supports/{paramCode})
+func (_ Unimplemented) AdminDeleteModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode, paramCode string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/models/{code}/publishable)
+func (_ Unimplemented) AdminCheckModelPublishable(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/operations)
+func (_ Unimplemented) AdminListOperations(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21818,18 +18280,43 @@ func (_ Unimplemented) AdminListPermissions(w http.ResponseWriter, r *http.Reque
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/projects)
-func (_ Unimplemented) AdminListProjects(w http.ResponseWriter, r *http.Request, params AdminListProjectsParams) {
+// (GET /admin/prompts)
+func (_ Unimplemented) AdminListPrompts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/projects/{id})
-func (_ Unimplemented) AdminGetProject(w http.ResponseWriter, r *http.Request, id Id) {
+// (POST /admin/prompts/archive)
+func (_ Unimplemented) AdminArchivePrompt(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /admin/projects/{id}/actions)
-func (_ Unimplemented) AdminProjectAction(w http.ResponseWriter, r *http.Request, id Id) {
+// (PUT /admin/prompts/draft)
+func (_ Unimplemented) AdminSavePromptDraft(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/prompts/preview)
+func (_ Unimplemented) AdminPreviewPrompt(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/prompts/publish)
+func (_ Unimplemented) AdminPublishPrompt(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/prompts/rollback)
+func (_ Unimplemented) AdminRollbackPrompt(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/prompts/specs)
+func (_ Unimplemented) AdminListPromptSpecs(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/prompts/versions)
+func (_ Unimplemented) AdminListPromptVersions(w http.ResponseWriter, r *http.Request, params AdminListPromptVersionsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21878,11 +18365,6 @@ func (_ Unimplemented) AdminStatsSeries(w http.ResponseWriter, r *http.Request, 
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/tasks)
-func (_ Unimplemented) AdminListTasks(w http.ResponseWriter, r *http.Request, params AdminListTasksParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 // (GET /admin/users)
 func (_ Unimplemented) AdminSearchUsers(w http.ResponseWriter, r *http.Request, params AdminSearchUsersParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -21898,18 +18380,13 @@ func (_ Unimplemented) AdminBanUser(w http.ResponseWriter, r *http.Request, user
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/works)
-func (_ Unimplemented) AdminListWorks(w http.ResponseWriter, r *http.Request, params AdminListWorksParams) {
+// (GET /admin/voices)
+func (_ Unimplemented) AdminListVoices(w http.ResponseWriter, r *http.Request, params AdminListVoicesParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /admin/works/{id})
-func (_ Unimplemented) AdminGetWork(w http.ResponseWriter, r *http.Request, id Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /admin/works/{id}/review)
-func (_ Unimplemented) AdminReviewWork(w http.ResponseWriter, r *http.Request, id Id) {
+// (PUT /admin/voices)
+func (_ Unimplemented) AdminSaveVoice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21983,38 +18460,13 @@ func (_ Unimplemented) AgentSkillCover(w http.ResponseWriter, r *http.Request, c
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /auth/code)
-func (_ Unimplemented) SendVerificationCode(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /auth/login)
-func (_ Unimplemented) Login(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /auth/logout)
-func (_ Unimplemented) Logout(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 // (GET /auth/me)
 func (_ Unimplemented) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (POST /auth/password/reset)
-func (_ Unimplemented) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /auth/refresh)
-func (_ Unimplemented) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /auth/register)
-func (_ Unimplemented) Register(w http.ResponseWriter, r *http.Request) {
+// (PUT /auth/profile)
+func (_ Unimplemented) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22050,16 +18502,6 @@ func (_ Unimplemented) ListStyleMaterials(w http.ResponseWriter, r *http.Request
 
 // (GET /creations)
 func (_ Unimplemented) ListCreations(w http.ResponseWriter, r *http.Request, params ListCreationsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /credits)
-func (_ Unimplemented) GetCredits(w http.ResponseWriter, r *http.Request, params GetCreditsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /credits/transactions)
-func (_ Unimplemented) ListCreditTransactions(w http.ResponseWriter, r *http.Request, params ListCreditTransactionsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22125,6 +18567,11 @@ func (_ Unimplemented) GetGeneration(w http.ResponseWriter, r *http.Request, gen
 
 // (POST /generations/{generationId}/cancel)
 func (_ Unimplemented) CancelGeneration(w http.ResponseWriter, r *http.Request, generationId GenerationId, params CancelGenerationParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /generations/{generationId}/outputs)
+func (_ Unimplemented) ListGenerationOutputs(w http.ResponseWriter, r *http.Request, generationId GenerationId, params ListGenerationOutputsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22348,66 +18795,6 @@ func (_ Unimplemented) UpdateMarketingProduct(w http.ResponseWriter, r *http.Req
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /mcp/approvals/{quoteId})
-func (_ Unimplemented) GetMcpApproval(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /mcp/approvals/{quoteId}/approve)
-func (_ Unimplemented) ApproveMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /mcp/approvals/{quoteId}/reject)
-func (_ Unimplemented) RejectMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /mcp/consent)
-func (_ Unimplemented) GetMcpConsent(w http.ResponseWriter, r *http.Request, params GetMcpConsentParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /mcp/consent)
-func (_ Unimplemented) SubmitMcpConsent(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /me/mcp/client-snippets)
-func (_ Unimplemented) GetMcpClientSnippets(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /me/mcp/grants)
-func (_ Unimplemented) ListMcpGrants(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /me/mcp/grants/{grantId})
-func (_ Unimplemented) RevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PATCH /me/mcp/grants/{grantId})
-func (_ Unimplemented) UpdateMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /me/mcp/keys)
-func (_ Unimplemented) ListMcpAccessKeys(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /me/mcp/keys)
-func (_ Unimplemented) CreateMcpAccessKey(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /me/mcp/keys/{keyId})
-func (_ Unimplemented) RevokeMcpAccessKey(w http.ResponseWriter, r *http.Request, keyId Id) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 // (GET /media)
 func (_ Unimplemented) ListMyMedia(w http.ResponseWriter, r *http.Request, params ListMyMediaParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -22453,11 +18840,6 @@ func (_ Unimplemented) ListMediaUsages(w http.ResponseWriter, r *http.Request, m
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /membership)
-func (_ Unimplemented) GetMembership(w http.ResponseWriter, r *http.Request, params GetMembershipParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
 // (GET /models)
 func (_ Unimplemented) ListUsableModels(w http.ResponseWriter, r *http.Request, params ListUsableModelsParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -22485,61 +18867,6 @@ func (_ Unimplemented) MarkAllMessagesRead(w http.ResponseWriter, r *http.Reques
 
 // (GET /notifications/unread-count)
 func (_ Unimplemented) UnreadCount(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /orders)
-func (_ Unimplemented) ListOrders(w http.ResponseWriter, r *http.Request, params ListOrdersParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders)
-func (_ Unimplemented) CreateOrder(w http.ResponseWriter, r *http.Request, params CreateOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /orders/{orderId})
-func (_ Unimplemented) GetOrder(w http.ResponseWriter, r *http.Request, orderId string, params GetOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders/{orderId}/cancel)
-func (_ Unimplemented) CancelOrder(w http.ResponseWriter, r *http.Request, orderId string, params CancelOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders/{orderId}/dev-pay)
-func (_ Unimplemented) DevPayOrder(w http.ResponseWriter, r *http.Request, orderId string, params DevPayOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders/{orderId}/pay)
-func (_ Unimplemented) CreatePayment(w http.ResponseWriter, r *http.Request, orderId string, params CreatePaymentParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders/{orderId}/refund)
-func (_ Unimplemented) RefundOrder(w http.ResponseWriter, r *http.Request, orderId string, params RefundOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /orders/{orderId}/refund-check)
-func (_ Unimplemented) CheckRefund(w http.ResponseWriter, r *http.Request, orderId string, params CheckRefundParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /orders/{orderId}/refunds)
-func (_ Unimplemented) ListRefunds(w http.ResponseWriter, r *http.Request, orderId string, params ListRefundsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /orders/{orderId}/sync)
-func (_ Unimplemented) SyncOrder(w http.ResponseWriter, r *http.Request, orderId string, params SyncOrderParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /payments/callback/{channel})
-func (_ Unimplemented) PaymentCallback(w http.ResponseWriter, r *http.Request, channel string) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22933,28 +19260,28 @@ func (_ Unimplemented) GenerateStoryboard(w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /shares/received)
-func (_ Unimplemented) ListReceivedShares(w http.ResponseWriter, r *http.Request) {
+// (GET /settings)
+func (_ Unimplemented) GetAppSettings(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /shares/received/{resourceType}/{resourceId})
-func (_ Unimplemented) OpenSharedResource(w http.ResponseWriter, r *http.Request, resourceType OpenSharedResourceParamsResourceType, resourceId Id) {
+// (PUT /settings)
+func (_ Unimplemented) UpdateAppSettings(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /showcase)
-func (_ Unimplemented) ListShowcase(w http.ResponseWriter, r *http.Request, params ListShowcaseParams) {
+// (GET /settings/diagnostics)
+func (_ Unimplemented) GetDiagnostics(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /showcase/{workId}/cover)
-func (_ Unimplemented) ShowcaseCover(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseCoverParams) {
+// (POST /settings/storage/test)
+func (_ Unimplemented) TestS3Storage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /showcase/{workId}/media)
-func (_ Unimplemented) ShowcaseMedia(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseMediaParams) {
+// (GET /settings/storage/usage)
+func (_ Unimplemented) GetStorageUsage(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -22965,11 +19292,6 @@ func (_ Unimplemented) GetSmartcutConfig(w http.ResponseWriter, r *http.Request,
 
 // (POST /smartcut/typeset)
 func (_ Unimplemented) TypesetSmartcutText(w http.ResponseWriter, r *http.Request, params TypesetSmartcutTextParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /storefront)
-func (_ Unimplemented) GetStorefront(w http.ResponseWriter, r *http.Request, params GetStorefrontParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -23068,6 +19390,16 @@ func (_ Unimplemented) TrimClip(w http.ResponseWriter, r *http.Request, timeline
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
+// (GET /voices)
+func (_ Unimplemented) ListVoices(w http.ResponseWriter, r *http.Request, params ListVoicesParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /voices/{code}/favorite)
+func (_ Unimplemented) ToggleVoiceFavorite(w http.ResponseWriter, r *http.Request, code string) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 // (GET /workflow/runs/{runId})
 func (_ Unimplemented) GetWorkflowRun(w http.ResponseWriter, r *http.Request, runId string, params GetWorkflowRunParams) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -23105,131 +19437,6 @@ func (_ Unimplemented) MyWorkMedia(w http.ResponseWriter, r *http.Request, workI
 
 // (GET /workspaces)
 func (_ Unimplemented) ListWorkspaces(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces)
-func (_ Unimplemented) CreateTeamWorkspace(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /workspaces/current)
-func (_ Unimplemented) ArchiveWorkspace(w http.ResponseWriter, r *http.Request, params ArchiveWorkspaceParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PATCH /workspaces/current)
-func (_ Unimplemented) RenameWorkspace(w http.ResponseWriter, r *http.Request, params RenameWorkspaceParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/invitations)
-func (_ Unimplemented) ListWorkspaceInvitations(w http.ResponseWriter, r *http.Request, params ListWorkspaceInvitationsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/invitations)
-func (_ Unimplemented) CreateWorkspaceInvitation(w http.ResponseWriter, r *http.Request, params CreateWorkspaceInvitationParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /workspaces/current/invitations/{invitationId})
-func (_ Unimplemented) RevokeWorkspaceInvitation(w http.ResponseWriter, r *http.Request, invitationId Id, params RevokeWorkspaceInvitationParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/mcp/grants)
-func (_ Unimplemented) ListWorkspaceMcpGrants(w http.ResponseWriter, r *http.Request, params ListWorkspaceMcpGrantsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /workspaces/current/mcp/grants/{grantId})
-func (_ Unimplemented) RevokeWorkspaceMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id, params RevokeWorkspaceMcpGrantParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/mcp/settings)
-func (_ Unimplemented) GetWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params GetWorkspaceMcpSettingsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /workspaces/current/mcp/settings)
-func (_ Unimplemented) UpdateWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params UpdateWorkspaceMcpSettingsParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/members)
-func (_ Unimplemented) ListWorkspaceMembers(w http.ResponseWriter, r *http.Request, params ListWorkspaceMembersParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /workspaces/current/members/{userId})
-func (_ Unimplemented) RemoveWorkspaceMember(w http.ResponseWriter, r *http.Request, userId Id, params RemoveWorkspaceMemberParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (PUT /workspaces/current/members/{userId}/role)
-func (_ Unimplemented) SetWorkspaceMemberRole(w http.ResponseWriter, r *http.Request, userId Id, params SetWorkspaceMemberRoleParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/presence)
-func (_ Unimplemented) PresenceHeartbeat(w http.ResponseWriter, r *http.Request, params PresenceHeartbeatParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/presence/leave)
-func (_ Unimplemented) PresenceLeave(w http.ResponseWriter, r *http.Request, params PresenceLeaveParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/presence/{resourceType}/{resourceId})
-func (_ Unimplemented) ListOnline(w http.ResponseWriter, r *http.Request, resourceType string, resourceId Id, params ListOnlineParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/shares)
-func (_ Unimplemented) ListGrantedShares(w http.ResponseWriter, r *http.Request, params ListGrantedSharesParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/shares)
-func (_ Unimplemented) GrantShare(w http.ResponseWriter, r *http.Request, params GrantShareParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/shares/import)
-func (_ Unimplemented) ImportSharedResource(w http.ResponseWriter, r *http.Request, params ImportSharedResourceParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (DELETE /workspaces/current/shares/{shareId})
-func (_ Unimplemented) RevokeShare(w http.ResponseWriter, r *http.Request, shareId Id, params RevokeShareParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/current/transfer)
-func (_ Unimplemented) TransferWorkspace(w http.ResponseWriter, r *http.Request, params TransferWorkspaceParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/usage)
-func (_ Unimplemented) WorkspaceUsage(w http.ResponseWriter, r *http.Request, params WorkspaceUsageParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/current/usage/entries)
-func (_ Unimplemented) WorkspaceUsageEntries(w http.ResponseWriter, r *http.Request, params WorkspaceUsageEntriesParams) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (POST /workspaces/invitations/accept)
-func (_ Unimplemented) AcceptWorkspaceInvitation(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// (GET /workspaces/invitations/mine)
-func (_ Unimplemented) ListMyInvitations(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -23606,162 +19813,37 @@ func (siw *ServerInterfaceWrapper) AdminUpdateAgentSkillReference(w http.Respons
 	handler.ServeHTTP(w, r)
 }
 
+// AdminRestoreAgentSkillBuiltin operation middleware
+func (siw *ServerInterfaceWrapper) AdminRestoreAgentSkillBuiltin(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "skillId" -------------
+	var skillId Id
+
+	err = runtime.BindStyledParameterWithOptions("simple", "skillId", chi.URLParam(r, "skillId"), &skillId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "skillId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminRestoreAgentSkillBuiltin(w, r, skillId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // AdminListAgentTools operation middleware
 func (siw *ServerInterfaceWrapper) AdminListAgentTools(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AdminListAgentTools(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminListAnnouncements operation middleware
-func (siw *ServerInterfaceWrapper) AdminListAnnouncements(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListAnnouncementsParams
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListAnnouncements(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminCreateAnnouncement operation middleware
-func (siw *ServerInterfaceWrapper) AdminCreateAnnouncement(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminCreateAnnouncement(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminDeleteAnnouncement operation middleware
-func (siw *ServerInterfaceWrapper) AdminDeleteAnnouncement(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminDeleteAnnouncement(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminUpdateAnnouncement operation middleware
-func (siw *ServerInterfaceWrapper) AdminUpdateAnnouncement(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminUpdateAnnouncement(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminOfflineAnnouncement operation middleware
-func (siw *ServerInterfaceWrapper) AdminOfflineAnnouncement(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminOfflineAnnouncement(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminPublishAnnouncement operation middleware
-func (siw *ServerInterfaceWrapper) AdminPublishAnnouncement(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminPublishAnnouncement(w, r, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -23992,430 +20074,6 @@ func (siw *ServerInterfaceWrapper) AdminRefreshToken(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListBanners operation middleware
-func (siw *ServerInterfaceWrapper) AdminListBanners(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListBannersParams
-
-	// ------------- Optional query parameter "position" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "position", r.URL.Query(), &params.Position, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "position"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "position", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListBanners(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminCreateBanner operation middleware
-func (siw *ServerInterfaceWrapper) AdminCreateBanner(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminCreateBanner(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminDeleteBanner operation middleware
-func (siw *ServerInterfaceWrapper) AdminDeleteBanner(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminDeleteBanner(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminUpdateBanner operation middleware
-func (siw *ServerInterfaceWrapper) AdminUpdateBanner(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminUpdateBanner(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SearchOrders operation middleware
-func (siw *ServerInterfaceWrapper) SearchOrders(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params SearchOrdersParams
-
-	// ------------- Optional query parameter "keyword" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "type" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "channel" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "channel", r.URL.Query(), &params.Channel, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "channel"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "reconcile" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "reconcile", r.URL.Query(), &params.Reconcile, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "reconcile"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "reconcile", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "from" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "to" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SearchOrders(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminOrderDetail operation middleware
-func (siw *ServerInterfaceWrapper) AdminOrderDetail(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminOrderDetail(w, r, orderId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// MarkReconcile operation middleware
-func (siw *ServerInterfaceWrapper) MarkReconcile(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.MarkReconcile(w, r, orderId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// PayerOverview operation middleware
-func (siw *ServerInterfaceWrapper) PayerOverview(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "payerId" -------------
-	var payerId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "payerId", chi.URLParam(r, "payerId"), &payerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payerId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PayerOverview(w, r, payerId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdjustCredits operation middleware
-func (siw *ServerInterfaceWrapper) AdjustCredits(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "payerId" -------------
-	var payerId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "payerId", chi.URLParam(r, "payerId"), &payerId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "payerId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdjustCreditsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "Idempotency-Key" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("Idempotency-Key")]; found {
-		var IdempotencyKey string
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Idempotency-Key", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "Idempotency-Key", valueList[0], &IdempotencyKey, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Idempotency-Key", Err: err})
-			return
-		}
-
-		params.IdempotencyKey = IdempotencyKey
-
-	} else {
-		err := fmt.Errorf("Header parameter Idempotency-Key is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "Idempotency-Key", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdjustCredits(w, r, payerId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetBillingCatalog operation middleware
-func (siw *ServerInterfaceWrapper) GetBillingCatalog(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetBillingCatalog(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SaveMemberLevel operation middleware
-func (siw *ServerInterfaceWrapper) SaveMemberLevel(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SaveMemberLevel(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SaveCreditPackage operation middleware
-func (siw *ServerInterfaceWrapper) SaveCreditPackage(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SaveCreditPackage(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SaveMemberPlan operation middleware
-func (siw *ServerInterfaceWrapper) SaveMemberPlan(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SaveMemberPlan(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 // AdminGetCanvasConfig operation middleware
 func (siw *ServerInterfaceWrapper) AdminGetCanvasConfig(w http.ResponseWriter, r *http.Request) {
 
@@ -24430,69 +20088,11 @@ func (siw *ServerInterfaceWrapper) AdminGetCanvasConfig(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListDeadLetters operation middleware
-func (siw *ServerInterfaceWrapper) AdminListDeadLetters(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListDeadLettersParams
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "queue" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "queue", r.URL.Query(), &params.Queue, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "queue"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "queue", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
+// AdminSaveConnectionRule operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveConnectionRule(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListDeadLetters(w, r, params)
+		siw.Handler.AdminSaveConnectionRule(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -24502,23 +20102,11 @@ func (siw *ServerInterfaceWrapper) AdminListDeadLetters(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
-// AdminDiscardDeadLetter operation middleware
-func (siw *ServerInterfaceWrapper) AdminDiscardDeadLetter(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
+// AdminListParamDefinitions operation middleware
+func (siw *ServerInterfaceWrapper) AdminListParamDefinitions(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminDiscardDeadLetter(w, r, id)
+		siw.Handler.AdminListParamDefinitions(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -24528,23 +20116,197 @@ func (siw *ServerInterfaceWrapper) AdminDiscardDeadLetter(w http.ResponseWriter,
 	handler.ServeHTTP(w, r)
 }
 
-// AdminReplayDeadLetter operation middleware
-func (siw *ServerInterfaceWrapper) AdminReplayDeadLetter(w http.ResponseWriter, r *http.Request) {
+// AdminSaveParamDefinition operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveParamDefinition(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminSaveParamDefinition(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminDisableParamDefinition operation middleware
+func (siw *ServerInterfaceWrapper) AdminDisableParamDefinition(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// ------------- Path parameter "id" -------------
-	var id Id
+	// ------------- Path parameter "code" -------------
+	var code string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminReplayDeadLetter(w, r, id)
+		siw.Handler.AdminDisableParamDefinition(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminGetCanvasRevision operation middleware
+func (siw *ServerInterfaceWrapper) AdminGetCanvasRevision(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminGetCanvasRevision(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListImagePresets operation middleware
+func (siw *ServerInterfaceWrapper) AdminListImagePresets(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListImagePresets(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminCreateImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminCreateImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminCreateImagePreset(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminPreviewImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminPreviewImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminPreviewImagePreset(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminUpdateImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminUpdateImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code PresetCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminUpdateImagePreset(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminDisableImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminDisableImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code PresetCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminDisableImagePreset(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminEnableImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminEnableImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code PresetCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminEnableImagePreset(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminRestoreImagePreset operation middleware
+func (siw *ServerInterfaceWrapper) AdminRestoreImagePreset(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code PresetCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminRestoreImagePreset(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25114,299 +20876,53 @@ func (siw *ServerInterfaceWrapper) AdminEnableMarketingPresetCharacter(w http.Re
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListMcpGrants operation middleware
-func (siw *ServerInterfaceWrapper) AdminListMcpGrants(w http.ResponseWriter, r *http.Request) {
+// AdminSaveMaterial operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveMaterial(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminSaveMaterial(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListMaterials operation middleware
+func (siw *ServerInterfaceWrapper) AdminListMaterials(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
+
+	// ------------- Path parameter "type" -------------
+	var pType AdminListMaterialsParamsType
+
+	err = runtime.BindStyledParameterWithOptions("simple", "type", chi.URLParam(r, "type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
+		return
+	}
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListMcpGrantsParams
+	var params AdminListMaterialsParams
 
-	// ------------- Optional query parameter "userId" -------------
+	// ------------- Optional query parameter "keyword" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "userId", r.URL.Query(), &params.UserId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
 		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "workspaceId" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "workspaceId", r.URL.Query(), &params.WorkspaceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "workspaceId"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "workspaceId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "client" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "client", r.URL.Query(), &params.Client, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "client"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "client", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "source" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "source", r.URL.Query(), &params.Source, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "source"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "source", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "registration" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "registration", r.URL.Query(), &params.Registration, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "registration"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "registration", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
 		}
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListMcpGrants(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminRevokeMcpGrant operation middleware
-func (siw *ServerInterfaceWrapper) AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "grantId" -------------
-	var grantId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "grantId", chi.URLParam(r, "grantId"), &grantId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "grantId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminRevokeMcpGrant(w, r, grantId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminGetMcpSettings operation middleware
-func (siw *ServerInterfaceWrapper) AdminGetMcpSettings(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminGetMcpSettings(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminUpdateMcpSettings operation middleware
-func (siw *ServerInterfaceWrapper) AdminUpdateMcpSettings(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminUpdateMcpSettings(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminMcpStats operation middleware
-func (siw *ServerInterfaceWrapper) AdminMcpStats(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminMcpStatsParams
-
-	// ------------- Optional query parameter "from" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "to" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "userId" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "userId", r.URL.Query(), &params.UserId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "workspaceId" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "workspaceId", r.URL.Query(), &params.WorkspaceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "workspaceId"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "workspaceId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "client" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "client", r.URL.Query(), &params.Client, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "client"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "client", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "source" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "source", r.URL.Query(), &params.Source, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "source"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "source", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "registration" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "registration", r.URL.Query(), &params.Registration, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "registration"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "registration", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminMcpStats(w, r, params)
+		siw.Handler.AdminListMaterials(w, r, pType, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25472,23 +20988,37 @@ func (siw *ServerInterfaceWrapper) AdminDownloadMedia(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
-// AdminRetryGeneration operation middleware
-func (siw *ServerInterfaceWrapper) AdminRetryGeneration(w http.ResponseWriter, r *http.Request) {
+// AdminListModelTemplates operation middleware
+func (siw *ServerInterfaceWrapper) AdminListModelTemplates(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListModelTemplates(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminEnableModelTemplate operation middleware
+func (siw *ServerInterfaceWrapper) AdminEnableModelTemplate(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// ------------- Path parameter "id" -------------
-	var id Id
+	// ------------- Path parameter "code" -------------
+	var code string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminRetryGeneration(w, r, id)
+		siw.Handler.AdminEnableModelTemplate(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25498,32 +21028,93 @@ func (siw *ServerInterfaceWrapper) AdminRetryGeneration(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
-// AdminCompensateTask operation middleware
-func (siw *ServerInterfaceWrapper) AdminCompensateTask(w http.ResponseWriter, r *http.Request) {
+// AdminListModels operation middleware
+func (siw *ServerInterfaceWrapper) AdminListModels(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListModels(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminSaveModel operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveModel(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminSaveModel(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListModelProtocols operation middleware
+func (siw *ServerInterfaceWrapper) AdminListModelProtocols(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListModelProtocols(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListProviders operation middleware
+func (siw *ServerInterfaceWrapper) AdminListProviders(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListProviders(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminSaveProvider operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveProvider(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminSaveProvider(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminProbeProvider operation middleware
+func (siw *ServerInterfaceWrapper) AdminProbeProvider(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// ------------- Path parameter "kind" -------------
-	var kind AdminCompensateTaskParamsKind
+	// ------------- Path parameter "code" -------------
+	var code string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "kind", chi.URLParam(r, "kind"), &kind, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
-		return
-	}
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminCompensateTask(w, r, kind, id)
+		siw.Handler.AdminProbeProvider(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25533,30 +21124,23 @@ func (siw *ServerInterfaceWrapper) AdminCompensateTask(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
-// ReconcileOrders operation middleware
-func (siw *ServerInterfaceWrapper) ReconcileOrders(w http.ResponseWriter, r *http.Request) {
+// AdminListModelCapabilities operation middleware
+func (siw *ServerInterfaceWrapper) AdminListModelCapabilities(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ReconcileOrdersParams
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
 
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ReconcileOrders(w, r, params)
+		siw.Handler.AdminListModelCapabilities(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25566,30 +21150,23 @@ func (siw *ServerInterfaceWrapper) ReconcileOrders(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
-// ListReconcileDiffs operation middleware
-func (siw *ServerInterfaceWrapper) ListReconcileDiffs(w http.ResponseWriter, r *http.Request) {
+// AdminSaveModelCapability operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveModelCapability(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListReconcileDiffsParams
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
 
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListReconcileDiffs(w, r, params)
+		siw.Handler.AdminSaveModelCapability(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25599,23 +21176,41 @@ func (siw *ServerInterfaceWrapper) ListReconcileDiffs(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
-// AdminRefundOrder operation middleware
-func (siw *ServerInterfaceWrapper) AdminRefundOrder(w http.ResponseWriter, r *http.Request) {
+// AdminDeleteModelCapability operation middleware
+func (siw *ServerInterfaceWrapper) AdminDeleteModelCapability(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
 
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "operation" -------------
+	var operation string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "operation", chi.URLParam(r, "operation"), &operation, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "operation", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "role" -------------
+	var role string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "role", chi.URLParam(r, "role"), &role, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "role", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminRefundOrder(w, r, orderId)
+		siw.Handler.AdminDeleteModelCapability(w, r, code, operation, role)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25625,23 +21220,23 @@ func (siw *ServerInterfaceWrapper) AdminRefundOrder(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
-// AdminCheckRefund operation middleware
-func (siw *ServerInterfaceWrapper) AdminCheckRefund(w http.ResponseWriter, r *http.Request) {
+// AdminSaveModelOperation operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveModelOperation(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
 
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminCheckRefund(w, r, orderId)
+		siw.Handler.AdminSaveModelOperation(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25651,43 +21246,23 @@ func (siw *ServerInterfaceWrapper) AdminCheckRefund(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
-// ListPaymentCallbacks operation middleware
-func (siw *ServerInterfaceWrapper) ListPaymentCallbacks(w http.ResponseWriter, r *http.Request) {
+// AdminListModelParamSupports operation middleware
+func (siw *ServerInterfaceWrapper) AdminListModelParamSupports(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListPaymentCallbacksParams
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
 
-	// ------------- Optional query parameter "outTradeNo" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "outTradeNo", r.URL.Query(), &params.OutTradeNo, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
 	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "outTradeNo"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "outTradeNo", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListPaymentCallbacks(w, r, params)
+		siw.Handler.AdminListModelParamSupports(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25697,11 +21272,23 @@ func (siw *ServerInterfaceWrapper) ListPaymentCallbacks(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
-// ListPaymentChannels operation middleware
-func (siw *ServerInterfaceWrapper) ListPaymentChannels(w http.ResponseWriter, r *http.Request) {
+// AdminSaveModelParamSupport operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveModelParamSupport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListPaymentChannels(w, r)
+		siw.Handler.AdminSaveModelParamSupport(w, r, code)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25711,11 +21298,72 @@ func (siw *ServerInterfaceWrapper) ListPaymentChannels(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
-// SavePaymentChannel operation middleware
-func (siw *ServerInterfaceWrapper) SavePaymentChannel(w http.ResponseWriter, r *http.Request) {
+// AdminDeleteModelParamSupport operation middleware
+func (siw *ServerInterfaceWrapper) AdminDeleteModelParamSupport(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "paramCode" -------------
+	var paramCode string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "paramCode", chi.URLParam(r, "paramCode"), &paramCode, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "paramCode", Err: err})
+		return
+	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SavePaymentChannel(w, r)
+		siw.Handler.AdminDeleteModelParamSupport(w, r, code, paramCode)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminCheckModelPublishable operation middleware
+func (siw *ServerInterfaceWrapper) AdminCheckModelPublishable(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code ModelCode
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminCheckModelPublishable(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListOperations operation middleware
+func (siw *ServerInterfaceWrapper) AdminListOperations(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListOperations(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -25739,63 +21387,135 @@ func (siw *ServerInterfaceWrapper) AdminListPermissions(w http.ResponseWriter, r
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListProjects operation middleware
-func (siw *ServerInterfaceWrapper) AdminListProjects(w http.ResponseWriter, r *http.Request) {
+// AdminListPrompts operation middleware
+func (siw *ServerInterfaceWrapper) AdminListPrompts(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListPrompts(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminArchivePrompt operation middleware
+func (siw *ServerInterfaceWrapper) AdminArchivePrompt(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminArchivePrompt(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminSavePromptDraft operation middleware
+func (siw *ServerInterfaceWrapper) AdminSavePromptDraft(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminSavePromptDraft(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminPreviewPrompt operation middleware
+func (siw *ServerInterfaceWrapper) AdminPreviewPrompt(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminPreviewPrompt(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminPublishPrompt operation middleware
+func (siw *ServerInterfaceWrapper) AdminPublishPrompt(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminPublishPrompt(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminRollbackPrompt operation middleware
+func (siw *ServerInterfaceWrapper) AdminRollbackPrompt(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminRollbackPrompt(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListPromptSpecs operation middleware
+func (siw *ServerInterfaceWrapper) AdminListPromptSpecs(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminListPromptSpecs(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminListPromptVersions operation middleware
+func (siw *ServerInterfaceWrapper) AdminListPromptVersions(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListProjectsParams
+	var params AdminListPromptVersionsParams
 
-	// ------------- Optional query parameter "keyword" -------------
+	// ------------- Required query parameter "code" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", true, true, "code", r.URL.Query(), &params.Code, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "code"})
 		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
 		}
 		return
 	}
 
-	// ------------- Optional query parameter "name" -------------
+	// ------------- Optional query parameter "modelCode" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "name", r.URL.Query(), &params.Name, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "modelCode", r.URL.Query(), &params.ModelCode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "name"})
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "modelCode"})
 		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "modelCode", Err: err})
 		}
 		return
 	}
@@ -25814,59 +21534,7 @@ func (siw *ServerInterfaceWrapper) AdminListProjects(w http.ResponseWriter, r *h
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListProjects(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminGetProject operation middleware
-func (siw *ServerInterfaceWrapper) AdminGetProject(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminGetProject(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminProjectAction operation middleware
-func (siw *ServerInterfaceWrapper) AdminProjectAction(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminProjectAction(w, r, id)
+		siw.Handler.AdminListPromptVersions(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -26349,130 +22017,6 @@ func (siw *ServerInterfaceWrapper) AdminStatsSeries(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListTasks operation middleware
-func (siw *ServerInterfaceWrapper) AdminListTasks(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListTasksParams
-
-	// ------------- Optional query parameter "kind" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "kind", r.URL.Query(), &params.Kind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "kind"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "kind", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "state" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "state", r.URL.Query(), &params.State, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "state"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "state", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "keyword" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "provider" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "provider", r.URL.Query(), &params.Provider, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "provider"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "stuck" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "stuck", r.URL.Query(), &params.Stuck, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "stuck"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "stuck", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursorAt" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursorAt", r.URL.Query(), &params.CursorAt, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursorAt"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursorAt", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursorId" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursorId", r.URL.Query(), &params.CursorId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursorId"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursorId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListTasks(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 // AdminSearchUsers operation middleware
 func (siw *ServerInterfaceWrapper) AdminSearchUsers(w http.ResponseWriter, r *http.Request) {
 
@@ -26584,82 +22128,30 @@ func (siw *ServerInterfaceWrapper) AdminBanUser(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
-// AdminListWorks operation middleware
-func (siw *ServerInterfaceWrapper) AdminListWorks(w http.ResponseWriter, r *http.Request) {
+// AdminListVoices operation middleware
+func (siw *ServerInterfaceWrapper) AdminListVoices(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
 
 	// Parameter object where we will unmarshal all parameters from the context
-	var params AdminListWorksParams
+	var params AdminListVoicesParams
 
-	// ------------- Optional query parameter "status" -------------
+	// ------------- Optional query parameter "keyword" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
 		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "featured" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "featured", r.URL.Query(), &params.Featured, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "featured"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "featured", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "offline" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "offline", r.URL.Query(), &params.Offline, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "offline"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "offline", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
 		}
 		return
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminListWorks(w, r, params)
+		siw.Handler.AdminListVoices(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -26669,49 +22161,11 @@ func (siw *ServerInterfaceWrapper) AdminListWorks(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
-// AdminGetWork operation middleware
-func (siw *ServerInterfaceWrapper) AdminGetWork(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
+// AdminSaveVoice operation middleware
+func (siw *ServerInterfaceWrapper) AdminSaveVoice(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminGetWork(w, r, id)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AdminReviewWork operation middleware
-func (siw *ServerInterfaceWrapper) AdminReviewWork(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "id" -------------
-	var id Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", chi.URLParam(r, "id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AdminReviewWork(w, r, id)
+		siw.Handler.AdminSaveVoice(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -27484,48 +22938,6 @@ func (siw *ServerInterfaceWrapper) AgentSkillCover(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
-// SendVerificationCode operation middleware
-func (siw *ServerInterfaceWrapper) SendVerificationCode(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SendVerificationCode(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// Login operation middleware
-func (siw *ServerInterfaceWrapper) Login(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.Login(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// Logout operation middleware
-func (siw *ServerInterfaceWrapper) Logout(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.Logout(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 // GetCurrentUser operation middleware
 func (siw *ServerInterfaceWrapper) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 
@@ -27540,39 +22952,11 @@ func (siw *ServerInterfaceWrapper) GetCurrentUser(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
-// ResetPassword operation middleware
-func (siw *ServerInterfaceWrapper) ResetPassword(w http.ResponseWriter, r *http.Request) {
+// UpdateProfile operation middleware
+func (siw *ServerInterfaceWrapper) UpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ResetPassword(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RefreshToken operation middleware
-func (siw *ServerInterfaceWrapper) RefreshToken(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RefreshToken(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// Register operation middleware
-func (siw *ServerInterfaceWrapper) Register(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.Register(w, r)
+		siw.Handler.UpdateProfile(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -27993,122 +23377,6 @@ func (siw *ServerInterfaceWrapper) ListCreations(w http.ResponseWriter, r *http.
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListCreations(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetCredits operation middleware
-func (siw *ServerInterfaceWrapper) GetCredits(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetCreditsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetCredits(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListCreditTransactions operation middleware
-func (siw *ServerInterfaceWrapper) ListCreditTransactions(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListCreditTransactionsParams
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListCreditTransactions(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28840,6 +24108,60 @@ func (siw *ServerInterfaceWrapper) CancelGeneration(w http.ResponseWriter, r *ht
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.CancelGeneration(w, r, generationId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListGenerationOutputs operation middleware
+func (siw *ServerInterfaceWrapper) ListGenerationOutputs(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "generationId" -------------
+	var generationId GenerationId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "generationId", chi.URLParam(r, "generationId"), &generationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "generationId", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListGenerationOutputsParams
+
+	headers := r.Header
+
+	// ------------- Required header parameter "X-Workspace-Id" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
+		var XWorkspaceId WorkspaceId
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
+			return
+		}
+
+		params.XWorkspaceId = XWorkspaceId
+
+	} else {
+		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
+		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListGenerationOutputs(w, r, generationId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -31351,265 +26673,6 @@ func (siw *ServerInterfaceWrapper) UpdateMarketingProduct(w http.ResponseWriter,
 	handler.ServeHTTP(w, r)
 }
 
-// GetMcpApproval operation middleware
-func (siw *ServerInterfaceWrapper) GetMcpApproval(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "quoteId" -------------
-	var quoteId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "quoteId", chi.URLParam(r, "quoteId"), &quoteId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "quoteId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetMcpApproval(w, r, quoteId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ApproveMcpQuote operation middleware
-func (siw *ServerInterfaceWrapper) ApproveMcpQuote(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "quoteId" -------------
-	var quoteId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "quoteId", chi.URLParam(r, "quoteId"), &quoteId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "quoteId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ApproveMcpQuote(w, r, quoteId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RejectMcpQuote operation middleware
-func (siw *ServerInterfaceWrapper) RejectMcpQuote(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "quoteId" -------------
-	var quoteId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "quoteId", chi.URLParam(r, "quoteId"), &quoteId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "quoteId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RejectMcpQuote(w, r, quoteId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetMcpConsent operation middleware
-func (siw *ServerInterfaceWrapper) GetMcpConsent(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetMcpConsentParams
-
-	// ------------- Required query parameter "req" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, true, "req", r.URL.Query(), &params.Req, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "req"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "req", Err: err})
-		}
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetMcpConsent(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SubmitMcpConsent operation middleware
-func (siw *ServerInterfaceWrapper) SubmitMcpConsent(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SubmitMcpConsent(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetMcpClientSnippets operation middleware
-func (siw *ServerInterfaceWrapper) GetMcpClientSnippets(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetMcpClientSnippets(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListMcpGrants operation middleware
-func (siw *ServerInterfaceWrapper) ListMcpGrants(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListMcpGrants(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RevokeMcpGrant operation middleware
-func (siw *ServerInterfaceWrapper) RevokeMcpGrant(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "grantId" -------------
-	var grantId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "grantId", chi.URLParam(r, "grantId"), &grantId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "grantId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RevokeMcpGrant(w, r, grantId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// UpdateMcpGrant operation middleware
-func (siw *ServerInterfaceWrapper) UpdateMcpGrant(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "grantId" -------------
-	var grantId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "grantId", chi.URLParam(r, "grantId"), &grantId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "grantId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.UpdateMcpGrant(w, r, grantId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListMcpAccessKeys operation middleware
-func (siw *ServerInterfaceWrapper) ListMcpAccessKeys(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListMcpAccessKeys(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CreateMcpAccessKey operation middleware
-func (siw *ServerInterfaceWrapper) CreateMcpAccessKey(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateMcpAccessKey(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RevokeMcpAccessKey operation middleware
-func (siw *ServerInterfaceWrapper) RevokeMcpAccessKey(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "keyId" -------------
-	var keyId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "keyId", chi.URLParam(r, "keyId"), &keyId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyId", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RevokeMcpAccessKey(w, r, keyId)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 // ListMyMedia operation middleware
 func (siw *ServerInterfaceWrapper) ListMyMedia(w http.ResponseWriter, r *http.Request) {
 
@@ -32156,51 +27219,6 @@ func (siw *ServerInterfaceWrapper) ListMediaUsages(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
-// GetMembership operation middleware
-func (siw *ServerInterfaceWrapper) GetMembership(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetMembershipParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetMembership(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 // ListUsableModels operation middleware
 func (siw *ServerInterfaceWrapper) ListUsableModels(w http.ResponseWriter, r *http.Request) {
 
@@ -32365,580 +27383,6 @@ func (siw *ServerInterfaceWrapper) UnreadCount(w http.ResponseWriter, r *http.Re
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UnreadCount(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListOrders operation middleware
-func (siw *ServerInterfaceWrapper) ListOrders(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListOrdersParams
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListOrders(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CreateOrder operation middleware
-func (siw *ServerInterfaceWrapper) CreateOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CreateOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateOrder(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetOrder operation middleware
-func (siw *ServerInterfaceWrapper) GetOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetOrder(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CancelOrder operation middleware
-func (siw *ServerInterfaceWrapper) CancelOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CancelOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CancelOrder(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// DevPayOrder operation middleware
-func (siw *ServerInterfaceWrapper) DevPayOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params DevPayOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.DevPayOrder(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CreatePayment operation middleware
-func (siw *ServerInterfaceWrapper) CreatePayment(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CreatePaymentParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreatePayment(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RefundOrder operation middleware
-func (siw *ServerInterfaceWrapper) RefundOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RefundOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RefundOrder(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CheckRefund operation middleware
-func (siw *ServerInterfaceWrapper) CheckRefund(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CheckRefundParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CheckRefund(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListRefunds operation middleware
-func (siw *ServerInterfaceWrapper) ListRefunds(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListRefundsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListRefunds(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SyncOrder operation middleware
-func (siw *ServerInterfaceWrapper) SyncOrder(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "orderId" -------------
-	var orderId string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "orderId", chi.URLParam(r, "orderId"), &orderId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "orderId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params SyncOrderParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SyncOrder(w, r, orderId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// PaymentCallback operation middleware
-func (siw *ServerInterfaceWrapper) PaymentCallback(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "channel" -------------
-	var channel string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "channel", chi.URLParam(r, "channel"), &channel, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "channel", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PaymentCallback(w, r, channel)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37794,11 +32238,11 @@ func (siw *ServerInterfaceWrapper) GenerateStoryboard(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
-// ListReceivedShares operation middleware
-func (siw *ServerInterfaceWrapper) ListReceivedShares(w http.ResponseWriter, r *http.Request) {
+// GetAppSettings operation middleware
+func (siw *ServerInterfaceWrapper) GetAppSettings(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListReceivedShares(w, r)
+		siw.Handler.GetAppSettings(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37808,32 +32252,11 @@ func (siw *ServerInterfaceWrapper) ListReceivedShares(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
-// OpenSharedResource operation middleware
-func (siw *ServerInterfaceWrapper) OpenSharedResource(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "resourceType" -------------
-	var resourceType OpenSharedResourceParamsResourceType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "resourceType", chi.URLParam(r, "resourceType"), &resourceType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceType", Err: err})
-		return
-	}
-
-	// ------------- Path parameter "resourceId" -------------
-	var resourceId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "resourceId", chi.URLParam(r, "resourceId"), &resourceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceId", Err: err})
-		return
-	}
+// UpdateAppSettings operation middleware
+func (siw *ServerInterfaceWrapper) UpdateAppSettings(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.OpenSharedResource(w, r, resourceType, resourceId)
+		siw.Handler.UpdateAppSettings(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37843,56 +32266,11 @@ func (siw *ServerInterfaceWrapper) OpenSharedResource(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
-// ListShowcase operation middleware
-func (siw *ServerInterfaceWrapper) ListShowcase(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListShowcaseParams
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "type" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "type", r.URL.Query(), &params.Type, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "type"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "type", Err: err})
-		}
-		return
-	}
+// GetDiagnostics operation middleware
+func (siw *ServerInterfaceWrapper) GetDiagnostics(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListShowcase(w, r, params)
+		siw.Handler.GetDiagnostics(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37902,39 +32280,11 @@ func (siw *ServerInterfaceWrapper) ListShowcase(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
-// ShowcaseCover operation middleware
-func (siw *ServerInterfaceWrapper) ShowcaseCover(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "workId" -------------
-	var workId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "workId", chi.URLParam(r, "workId"), &workId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "workId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ShowcaseCoverParams
-
-	// ------------- Optional query parameter "w" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "w", r.URL.Query(), &params.W, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "w"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "w", Err: err})
-		}
-		return
-	}
+// TestS3Storage operation middleware
+func (siw *ServerInterfaceWrapper) TestS3Storage(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ShowcaseCover(w, r, workId, params)
+		siw.Handler.TestS3Storage(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -37944,39 +32294,11 @@ func (siw *ServerInterfaceWrapper) ShowcaseCover(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
-// ShowcaseMedia operation middleware
-func (siw *ServerInterfaceWrapper) ShowcaseMedia(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "workId" -------------
-	var workId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "workId", chi.URLParam(r, "workId"), &workId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "workId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ShowcaseMediaParams
-
-	// ------------- Optional query parameter "w" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "w", r.URL.Query(), &params.W, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "w"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "w", Err: err})
-		}
-		return
-	}
+// GetStorageUsage operation middleware
+func (siw *ServerInterfaceWrapper) GetStorageUsage(w http.ResponseWriter, r *http.Request) {
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ShowcaseMedia(w, r, workId, params)
+		siw.Handler.GetStorageUsage(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -38067,51 +32389,6 @@ func (siw *ServerInterfaceWrapper) TypesetSmartcutText(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.TypesetSmartcutText(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetStorefront operation middleware
-func (siw *ServerInterfaceWrapper) GetStorefront(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetStorefrontParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetStorefront(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -39335,6 +33612,104 @@ func (siw *ServerInterfaceWrapper) TrimClip(w http.ResponseWriter, r *http.Reque
 	handler.ServeHTTP(w, r)
 }
 
+// ListVoices operation middleware
+func (siw *ServerInterfaceWrapper) ListVoices(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListVoicesParams
+
+	// ------------- Optional query parameter "keyword" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "keyword", r.URL.Query(), &params.Keyword, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "keyword"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "keyword", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "language" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "language", r.URL.Query(), &params.Language, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "language"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "language", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "gender" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "gender", r.URL.Query(), &params.Gender, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "gender"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "gender", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "favorited" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "favorited", r.URL.Query(), &params.Favorited, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "favorited"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "favorited", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListVoices(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ToggleVoiceFavorite operation middleware
+func (siw *ServerInterfaceWrapper) ToggleVoiceFavorite(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "code" -------------
+	var code string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "code", chi.URLParam(r, "code"), &code, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ToggleVoiceFavorite(w, r, code)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetWorkflowRun operation middleware
 func (siw *ServerInterfaceWrapper) GetWorkflowRun(w http.ResponseWriter, r *http.Request) {
 
@@ -39685,1270 +34060,6 @@ func (siw *ServerInterfaceWrapper) ListWorkspaces(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
-// CreateTeamWorkspace operation middleware
-func (siw *ServerInterfaceWrapper) CreateTeamWorkspace(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateTeamWorkspace(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ArchiveWorkspace operation middleware
-func (siw *ServerInterfaceWrapper) ArchiveWorkspace(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ArchiveWorkspaceParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ArchiveWorkspace(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RenameWorkspace operation middleware
-func (siw *ServerInterfaceWrapper) RenameWorkspace(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RenameWorkspaceParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RenameWorkspace(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListWorkspaceInvitations operation middleware
-func (siw *ServerInterfaceWrapper) ListWorkspaceInvitations(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListWorkspaceInvitationsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListWorkspaceInvitations(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// CreateWorkspaceInvitation operation middleware
-func (siw *ServerInterfaceWrapper) CreateWorkspaceInvitation(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params CreateWorkspaceInvitationParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.CreateWorkspaceInvitation(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RevokeWorkspaceInvitation operation middleware
-func (siw *ServerInterfaceWrapper) RevokeWorkspaceInvitation(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "invitationId" -------------
-	var invitationId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "invitationId", chi.URLParam(r, "invitationId"), &invitationId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "invitationId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RevokeWorkspaceInvitationParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RevokeWorkspaceInvitation(w, r, invitationId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListWorkspaceMcpGrants operation middleware
-func (siw *ServerInterfaceWrapper) ListWorkspaceMcpGrants(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListWorkspaceMcpGrantsParams
-
-	// ------------- Optional query parameter "client" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "client", r.URL.Query(), &params.Client, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "client"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "client", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "source" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "source", r.URL.Query(), &params.Source, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "source"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "source", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "status" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "status", r.URL.Query(), &params.Status, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "status"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "status", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "registration" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "registration", r.URL.Query(), &params.Registration, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "registration"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "registration", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListWorkspaceMcpGrants(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RevokeWorkspaceMcpGrant operation middleware
-func (siw *ServerInterfaceWrapper) RevokeWorkspaceMcpGrant(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "grantId" -------------
-	var grantId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "grantId", chi.URLParam(r, "grantId"), &grantId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "grantId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RevokeWorkspaceMcpGrantParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RevokeWorkspaceMcpGrant(w, r, grantId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GetWorkspaceMcpSettings operation middleware
-func (siw *ServerInterfaceWrapper) GetWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetWorkspaceMcpSettingsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetWorkspaceMcpSettings(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// UpdateWorkspaceMcpSettings operation middleware
-func (siw *ServerInterfaceWrapper) UpdateWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params UpdateWorkspaceMcpSettingsParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.UpdateWorkspaceMcpSettings(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListWorkspaceMembers operation middleware
-func (siw *ServerInterfaceWrapper) ListWorkspaceMembers(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListWorkspaceMembersParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListWorkspaceMembers(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RemoveWorkspaceMember operation middleware
-func (siw *ServerInterfaceWrapper) RemoveWorkspaceMember(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "userId" -------------
-	var userId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "userId", chi.URLParam(r, "userId"), &userId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RemoveWorkspaceMemberParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RemoveWorkspaceMember(w, r, userId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// SetWorkspaceMemberRole operation middleware
-func (siw *ServerInterfaceWrapper) SetWorkspaceMemberRole(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "userId" -------------
-	var userId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "userId", chi.URLParam(r, "userId"), &userId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params SetWorkspaceMemberRoleParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.SetWorkspaceMemberRole(w, r, userId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// PresenceHeartbeat operation middleware
-func (siw *ServerInterfaceWrapper) PresenceHeartbeat(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params PresenceHeartbeatParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PresenceHeartbeat(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// PresenceLeave operation middleware
-func (siw *ServerInterfaceWrapper) PresenceLeave(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params PresenceLeaveParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PresenceLeave(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListOnline operation middleware
-func (siw *ServerInterfaceWrapper) ListOnline(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "resourceType" -------------
-	var resourceType string
-
-	err = runtime.BindStyledParameterWithOptions("simple", "resourceType", chi.URLParam(r, "resourceType"), &resourceType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceType", Err: err})
-		return
-	}
-
-	// ------------- Path parameter "resourceId" -------------
-	var resourceId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "resourceId", chi.URLParam(r, "resourceId"), &resourceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListOnlineParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListOnline(w, r, resourceType, resourceId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListGrantedShares operation middleware
-func (siw *ServerInterfaceWrapper) ListGrantedShares(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListGrantedSharesParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListGrantedShares(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// GrantShare operation middleware
-func (siw *ServerInterfaceWrapper) GrantShare(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GrantShareParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GrantShare(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ImportSharedResource operation middleware
-func (siw *ServerInterfaceWrapper) ImportSharedResource(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ImportSharedResourceParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ImportSharedResource(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// RevokeShare operation middleware
-func (siw *ServerInterfaceWrapper) RevokeShare(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// ------------- Path parameter "shareId" -------------
-	var shareId Id
-
-	err = runtime.BindStyledParameterWithOptions("simple", "shareId", chi.URLParam(r, "shareId"), &shareId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "shareId", Err: err})
-		return
-	}
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params RevokeShareParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RevokeShare(w, r, shareId, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// TransferWorkspace operation middleware
-func (siw *ServerInterfaceWrapper) TransferWorkspace(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params TransferWorkspaceParams
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.TransferWorkspace(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// WorkspaceUsage operation middleware
-func (siw *ServerInterfaceWrapper) WorkspaceUsage(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params WorkspaceUsageParams
-
-	// ------------- Optional query parameter "from" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "to" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
-		}
-		return
-	}
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.WorkspaceUsage(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// WorkspaceUsageEntries operation middleware
-func (siw *ServerInterfaceWrapper) WorkspaceUsageEntries(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-	_ = err
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params WorkspaceUsageEntriesParams
-
-	// ------------- Optional query parameter "userId" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "userId", r.URL.Query(), &params.UserId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "userId"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "userId", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "from" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "to" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: "date-time"})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "cursor" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "cursor", r.URL.Query(), &params.Cursor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cursor"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cursor", Err: err})
-		}
-		return
-	}
-
-	// ------------- Optional query parameter "limit" -------------
-
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: ""})
-	if err != nil {
-		var requiredError *runtime.RequiredParameterError
-		if errors.As(err, &requiredError) {
-			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
-		} else {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
-		}
-		return
-	}
-
-	headers := r.Header
-
-	// ------------- Required header parameter "X-Workspace-Id" -------------
-	if valueList, found := headers[http.CanonicalHeaderKey("X-Workspace-Id")]; found {
-		var XWorkspaceId WorkspaceId
-		n := len(valueList)
-		if n != 1 {
-			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Workspace-Id", Count: n})
-			return
-		}
-
-		err = runtime.BindStyledParameterWithOptions("simple", "X-Workspace-Id", valueList[0], &XWorkspaceId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true, Type: "string", Format: ""})
-		if err != nil {
-			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Workspace-Id", Err: err})
-			return
-		}
-
-		params.XWorkspaceId = XWorkspaceId
-
-	} else {
-		err := fmt.Errorf("Header parameter X-Workspace-Id is required, but not found")
-		siw.ErrorHandlerFunc(w, r, &RequiredHeaderError{ParamName: "X-Workspace-Id", Err: err})
-		return
-	}
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.WorkspaceUsageEntries(w, r, params)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// AcceptWorkspaceInvitation operation middleware
-func (siw *ServerInterfaceWrapper) AcceptWorkspaceInvitation(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AcceptWorkspaceInvitation(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
-// ListMyInvitations operation middleware
-func (siw *ServerInterfaceWrapper) ListMyInvitations(w http.ResponseWriter, r *http.Request) {
-
-	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListMyInvitations(w, r)
-	}))
-
-	for _, middleware := range siw.HandlerMiddlewares {
-		handler = middleware(handler)
-	}
-
-	handler.ServeHTTP(w, r)
-}
-
 type UnescapedCookieParamError struct {
 	ParamName string
 	Err       error
@@ -41063,76 +34174,13 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/code", wrapper.SendVerificationCode)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/register", wrapper.Register)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/password/reset", wrapper.ResetPassword)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/login", wrapper.Login)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/refresh", wrapper.RefreshToken)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/auth/logout", wrapper.Logout)
-	})
-	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/auth/me", wrapper.GetCurrentUser)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/workspaces", wrapper.ListWorkspaces)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces", wrapper.CreateTeamWorkspace)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/workspaces/current", wrapper.ArchiveWorkspace)
-	})
-	r.Group(func(r chi.Router) {
-		r.Patch(options.BaseURL+"/workspaces/current", wrapper.RenameWorkspace)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/transfer", wrapper.TransferWorkspace)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/members", wrapper.ListWorkspaceMembers)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/workspaces/current/members/{userId}", wrapper.RemoveWorkspaceMember)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/workspaces/current/members/{userId}/role", wrapper.SetWorkspaceMemberRole)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/invitations", wrapper.ListWorkspaceInvitations)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/invitations", wrapper.CreateWorkspaceInvitation)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/workspaces/current/invitations/{invitationId}", wrapper.RevokeWorkspaceInvitation)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/invitations/accept", wrapper.AcceptWorkspaceInvitation)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/invitations/mine", wrapper.ListMyInvitations)
-	})
-	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/home", wrapper.Home)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/showcase", wrapper.ListShowcase)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/showcase/{workId}/media", wrapper.ShowcaseMedia)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/showcase/{workId}/cover", wrapper.ShowcaseCover)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/notifications", wrapper.ListMessages)
@@ -41145,36 +34193,6 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/notifications/read-all", wrapper.MarkAllMessagesRead)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/banners", wrapper.AdminListBanners)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/banners", wrapper.AdminCreateBanner)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/admin/banners/{id}", wrapper.AdminDeleteBanner)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/banners/{id}", wrapper.AdminUpdateBanner)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/announcements", wrapper.AdminListAnnouncements)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/announcements", wrapper.AdminCreateAnnouncement)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/admin/announcements/{id}", wrapper.AdminDeleteAnnouncement)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/announcements/{id}", wrapper.AdminUpdateAnnouncement)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/announcements/{id}/publish", wrapper.AdminPublishAnnouncement)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/announcements/{id}/offline", wrapper.AdminOfflineAnnouncement)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/tasks", wrapper.ListTasks)
@@ -41295,75 +34313,6 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/admin/stats/series", wrapper.AdminStatsSeries)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/tasks", wrapper.AdminListTasks)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/dead-letters", wrapper.AdminListDeadLetters)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/dead-letters/{id}/replay", wrapper.AdminReplayDeadLetter)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/dead-letters/{id}/discard", wrapper.AdminDiscardDeadLetter)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/ops/tasks/{kind}/{id}/compensate", wrapper.AdminCompensateTask)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/ops/tasks/generation/{id}/retry", wrapper.AdminRetryGeneration)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/projects", wrapper.AdminListProjects)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/projects/{id}", wrapper.AdminGetProject)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/projects/{id}/actions", wrapper.AdminProjectAction)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/works", wrapper.AdminListWorks)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/works/{id}", wrapper.AdminGetWork)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/works/{id}/review", wrapper.AdminReviewWork)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/usage", wrapper.WorkspaceUsage)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/usage/entries", wrapper.WorkspaceUsageEntries)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/presence", wrapper.PresenceHeartbeat)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/presence/leave", wrapper.PresenceLeave)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/presence/{resourceType}/{resourceId}", wrapper.ListOnline)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/shares", wrapper.ListGrantedShares)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/shares", wrapper.GrantShare)
-	})
-	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/workspaces/current/shares/{shareId}", wrapper.RevokeShare)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/workspaces/current/shares/import", wrapper.ImportSharedResource)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shares/received", wrapper.ListReceivedShares)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/shares/received/{resourceType}/{resourceId}", wrapper.OpenSharedResource)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/projects", wrapper.ListProjects)
@@ -41765,99 +34714,6 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/projects/{projectId}/nodes/{nodeId}/resolve-inputs", wrapper.ResolveNodeInputs)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/payments/callback/{channel}", wrapper.PaymentCallback)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders/{orderId}/pay", wrapper.CreatePayment)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders/{orderId}/sync", wrapper.SyncOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/payments/channels", wrapper.ListPaymentChannels)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/payments/channels", wrapper.SavePaymentChannel)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/payments/callbacks", wrapper.ListPaymentCallbacks)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/storefront", wrapper.GetStorefront)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/membership", wrapper.GetMembership)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/orders", wrapper.ListOrders)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders", wrapper.CreateOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/orders/{orderId}", wrapper.GetOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders/{orderId}/cancel", wrapper.CancelOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders/{orderId}/dev-pay", wrapper.DevPayOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/orders/{orderId}/refund-check", wrapper.CheckRefund)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/orders/{orderId}/refund", wrapper.RefundOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/orders/{orderId}/refunds", wrapper.ListRefunds)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/orders/{orderId}/refund-check", wrapper.AdminCheckRefund)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/orders/{orderId}/refund", wrapper.AdminRefundOrder)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/orders/reconcile", wrapper.ReconcileOrders)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/orders/reconcile/diffs", wrapper.ListReconcileDiffs)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/billing-ops/orders", wrapper.SearchOrders)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/billing-ops/orders/{orderId}", wrapper.AdminOrderDetail)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/billing-ops/orders/{orderId}/reconcile", wrapper.MarkReconcile)
-	})
-	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/admin/billing-ops/payers/{payerId}/adjust", wrapper.AdjustCredits)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/billing-ops/payers/{payerId}", wrapper.PayerOverview)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/billing/catalog", wrapper.GetBillingCatalog)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/billing/levels", wrapper.SaveMemberLevel)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/billing/plans", wrapper.SaveMemberPlan)
-	})
-	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/billing/packages", wrapper.SaveCreditPackage)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/credits", wrapper.GetCredits)
-	})
-	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/credits/transactions", wrapper.ListCreditTransactions)
-	})
-	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/admin/media", wrapper.AdminUploadMedia)
 	})
 	r.Group(func(r chi.Router) {
@@ -42095,67 +34951,157 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/admin/marketing/preset-characters/{presetId}/disable", wrapper.AdminDisableMarketingPresetCharacter)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/me/mcp/keys", wrapper.ListMcpAccessKeys)
+		r.Get(options.BaseURL+"/settings", wrapper.GetAppSettings)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/me/mcp/keys", wrapper.CreateMcpAccessKey)
+		r.Put(options.BaseURL+"/settings", wrapper.UpdateAppSettings)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/me/mcp/keys/{keyId}", wrapper.RevokeMcpAccessKey)
+		r.Get(options.BaseURL+"/settings/diagnostics", wrapper.GetDiagnostics)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/me/mcp/grants", wrapper.ListMcpGrants)
+		r.Get(options.BaseURL+"/settings/storage/usage", wrapper.GetStorageUsage)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/me/mcp/grants/{grantId}", wrapper.RevokeMcpGrant)
+		r.Post(options.BaseURL+"/settings/storage/test", wrapper.TestS3Storage)
 	})
 	r.Group(func(r chi.Router) {
-		r.Patch(options.BaseURL+"/me/mcp/grants/{grantId}", wrapper.UpdateMcpGrant)
+		r.Put(options.BaseURL+"/auth/profile", wrapper.UpdateProfile)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/me/mcp/client-snippets", wrapper.GetMcpClientSnippets)
+		r.Get(options.BaseURL+"/generations/{generationId}/outputs", wrapper.ListGenerationOutputs)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/mcp/grants", wrapper.ListWorkspaceMcpGrants)
+		r.Get(options.BaseURL+"/voices", wrapper.ListVoices)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/workspaces/current/mcp/grants/{grantId}", wrapper.RevokeWorkspaceMcpGrant)
+		r.Post(options.BaseURL+"/voices/{code}/favorite", wrapper.ToggleVoiceFavorite)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/workspaces/current/mcp/settings", wrapper.GetWorkspaceMcpSettings)
+		r.Get(options.BaseURL+"/admin/canvas/param-definitions", wrapper.AdminListParamDefinitions)
 	})
 	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/workspaces/current/mcp/settings", wrapper.UpdateWorkspaceMcpSettings)
+		r.Put(options.BaseURL+"/admin/canvas/param-definitions", wrapper.AdminSaveParamDefinition)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/mcp/grants", wrapper.AdminListMcpGrants)
+		r.Delete(options.BaseURL+"/admin/canvas/param-definitions/{code}", wrapper.AdminDisableParamDefinition)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/admin/mcp/grants/{grantId}", wrapper.AdminRevokeMcpGrant)
+		r.Put(options.BaseURL+"/admin/canvas/connection-rules", wrapper.AdminSaveConnectionRule)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/mcp/settings", wrapper.AdminGetMcpSettings)
+		r.Get(options.BaseURL+"/admin/canvas/revision", wrapper.AdminGetCanvasRevision)
 	})
 	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/admin/mcp/settings", wrapper.AdminUpdateMcpSettings)
+		r.Get(options.BaseURL+"/admin/image-presets", wrapper.AdminListImagePresets)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/admin/mcp/stats", wrapper.AdminMcpStats)
+		r.Post(options.BaseURL+"/admin/image-presets", wrapper.AdminCreateImagePreset)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/mcp/consent", wrapper.GetMcpConsent)
+		r.Post(options.BaseURL+"/admin/image-presets/preview", wrapper.AdminPreviewImagePreset)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/mcp/consent", wrapper.SubmitMcpConsent)
+		r.Put(options.BaseURL+"/admin/image-presets/{code}", wrapper.AdminUpdateImagePreset)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/mcp/approvals/{quoteId}", wrapper.GetMcpApproval)
+		r.Post(options.BaseURL+"/admin/image-presets/{code}/enable", wrapper.AdminEnableImagePreset)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/mcp/approvals/{quoteId}/approve", wrapper.ApproveMcpQuote)
+		r.Post(options.BaseURL+"/admin/image-presets/{code}/disable", wrapper.AdminDisableImagePreset)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/mcp/approvals/{quoteId}/reject", wrapper.RejectMcpQuote)
+		r.Post(options.BaseURL+"/admin/image-presets/{code}/restore-builtin", wrapper.AdminRestoreImagePreset)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/materials/{type}", wrapper.AdminListMaterials)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/materials", wrapper.AdminSaveMaterial)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/voices", wrapper.AdminListVoices)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/voices", wrapper.AdminSaveVoice)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/operations", wrapper.AdminListOperations)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models/protocols", wrapper.AdminListModelProtocols)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models/providers", wrapper.AdminListProviders)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/models/providers", wrapper.AdminSaveProvider)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/models/providers/{code}/probe", wrapper.AdminProbeProvider)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models", wrapper.AdminListModels)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/models", wrapper.AdminSaveModel)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models/{code}/publishable", wrapper.AdminCheckModelPublishable)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/models/{code}/operations", wrapper.AdminSaveModelOperation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models/{code}/capabilities", wrapper.AdminListModelCapabilities)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/models/{code}/capabilities", wrapper.AdminSaveModelCapability)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/admin/models/{code}/capabilities/{operation}/{role}", wrapper.AdminDeleteModelCapability)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/models/{code}/param-supports", wrapper.AdminListModelParamSupports)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/models/{code}/param-supports", wrapper.AdminSaveModelParamSupport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Delete(options.BaseURL+"/admin/models/{code}/param-supports/{paramCode}", wrapper.AdminDeleteModelParamSupport)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/model-templates", wrapper.AdminListModelTemplates)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/model-templates/{code}/enable", wrapper.AdminEnableModelTemplate)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/prompts/specs", wrapper.AdminListPromptSpecs)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/prompts", wrapper.AdminListPrompts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/prompts/versions", wrapper.AdminListPromptVersions)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/admin/prompts/draft", wrapper.AdminSavePromptDraft)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/prompts/publish", wrapper.AdminPublishPrompt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/prompts/rollback", wrapper.AdminRollbackPrompt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/prompts/archive", wrapper.AdminArchivePrompt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/prompts/preview", wrapper.AdminPreviewPrompt)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/agent/skills/{skillId}/restore-builtin", wrapper.AdminRestoreAgentSkillBuiltin)
 	})
 
 	return r
@@ -43034,6 +35980,56 @@ func (response AdminUpdateAgentSkillReference409JSONResponse) VisitAdminUpdateAg
 	return err
 }
 
+type AdminRestoreAgentSkillBuiltinRequestObject struct {
+	SkillId Id `json:"skillId"`
+}
+
+type AdminRestoreAgentSkillBuiltinResponseObject interface {
+	VisitAdminRestoreAgentSkillBuiltinResponse(w http.ResponseWriter) error
+}
+
+type AdminRestoreAgentSkillBuiltin200JSONResponse AdminAgentSkill
+
+func (response AdminRestoreAgentSkillBuiltin200JSONResponse) VisitAdminRestoreAgentSkillBuiltinResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRestoreAgentSkillBuiltin403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminRestoreAgentSkillBuiltin403JSONResponse) VisitAdminRestoreAgentSkillBuiltinResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRestoreAgentSkillBuiltin404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminRestoreAgentSkillBuiltin404JSONResponse) VisitAdminRestoreAgentSkillBuiltinResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type AdminListAgentToolsRequestObject struct {
 }
 
@@ -43068,259 +36064,6 @@ func (response AdminListAgentTools403JSONResponse) VisitAdminListAgentToolsRespo
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListAnnouncementsRequestObject struct {
-	Params AdminListAnnouncementsParams
-}
-
-type AdminListAnnouncementsResponseObject interface {
-	VisitAdminListAnnouncementsResponse(w http.ResponseWriter) error
-}
-
-type AdminListAnnouncements200JSONResponse []Announcement
-
-func (response AdminListAnnouncements200JSONResponse) VisitAdminListAnnouncementsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListAnnouncements400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminListAnnouncements400JSONResponse) VisitAdminListAnnouncementsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListAnnouncements403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminListAnnouncements403JSONResponse) VisitAdminListAnnouncementsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCreateAnnouncementRequestObject struct {
-	Body *AdminCreateAnnouncementJSONRequestBody
-}
-
-type AdminCreateAnnouncementResponseObject interface {
-	VisitAdminCreateAnnouncementResponse(w http.ResponseWriter) error
-}
-
-type AdminCreateAnnouncement201JSONResponse Announcement
-
-func (response AdminCreateAnnouncement201JSONResponse) VisitAdminCreateAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCreateAnnouncement400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminCreateAnnouncement400JSONResponse) VisitAdminCreateAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminDeleteAnnouncementRequestObject struct {
-	Id Id `json:"id"`
-}
-
-type AdminDeleteAnnouncementResponseObject interface {
-	VisitAdminDeleteAnnouncementResponse(w http.ResponseWriter) error
-}
-
-type AdminDeleteAnnouncement204Response struct {
-}
-
-func (response AdminDeleteAnnouncement204Response) VisitAdminDeleteAnnouncementResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type AdminDeleteAnnouncement404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminDeleteAnnouncement404JSONResponse) VisitAdminDeleteAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateAnnouncementRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminUpdateAnnouncementJSONRequestBody
-}
-
-type AdminUpdateAnnouncementResponseObject interface {
-	VisitAdminUpdateAnnouncementResponse(w http.ResponseWriter) error
-}
-
-type AdminUpdateAnnouncement200JSONResponse Announcement
-
-func (response AdminUpdateAnnouncement200JSONResponse) VisitAdminUpdateAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateAnnouncement404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminUpdateAnnouncement404JSONResponse) VisitAdminUpdateAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminOfflineAnnouncementRequestObject struct {
-	Id Id `json:"id"`
-}
-
-type AdminOfflineAnnouncementResponseObject interface {
-	VisitAdminOfflineAnnouncementResponse(w http.ResponseWriter) error
-}
-
-type AdminOfflineAnnouncement200JSONResponse Announcement
-
-func (response AdminOfflineAnnouncement200JSONResponse) VisitAdminOfflineAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminOfflineAnnouncement404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminOfflineAnnouncement404JSONResponse) VisitAdminOfflineAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminOfflineAnnouncement409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminOfflineAnnouncement409JSONResponse) VisitAdminOfflineAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminPublishAnnouncementRequestObject struct {
-	Id Id `json:"id"`
-}
-
-type AdminPublishAnnouncementResponseObject interface {
-	VisitAdminPublishAnnouncementResponse(w http.ResponseWriter) error
-}
-
-type AdminPublishAnnouncement200JSONResponse Announcement
-
-func (response AdminPublishAnnouncement200JSONResponse) VisitAdminPublishAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminPublishAnnouncement404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminPublishAnnouncement404JSONResponse) VisitAdminPublishAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminPublishAnnouncement409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminPublishAnnouncement409JSONResponse) VisitAdminPublishAnnouncementResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -43599,491 +36342,6 @@ func (response AdminRefreshToken401JSONResponse) VisitAdminRefreshTokenResponse(
 	return err
 }
 
-type AdminListBannersRequestObject struct {
-	Params AdminListBannersParams
-}
-
-type AdminListBannersResponseObject interface {
-	VisitAdminListBannersResponse(w http.ResponseWriter) error
-}
-
-type AdminListBanners200JSONResponse []Banner
-
-func (response AdminListBanners200JSONResponse) VisitAdminListBannersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListBanners403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminListBanners403JSONResponse) VisitAdminListBannersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCreateBannerRequestObject struct {
-	Body *AdminCreateBannerJSONRequestBody
-}
-
-type AdminCreateBannerResponseObject interface {
-	VisitAdminCreateBannerResponse(w http.ResponseWriter) error
-}
-
-type AdminCreateBanner201JSONResponse Banner
-
-func (response AdminCreateBanner201JSONResponse) VisitAdminCreateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCreateBanner400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminCreateBanner400JSONResponse) VisitAdminCreateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCreateBanner403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminCreateBanner403JSONResponse) VisitAdminCreateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminDeleteBannerRequestObject struct {
-	Id Id `json:"id"`
-}
-
-type AdminDeleteBannerResponseObject interface {
-	VisitAdminDeleteBannerResponse(w http.ResponseWriter) error
-}
-
-type AdminDeleteBanner204Response struct {
-}
-
-func (response AdminDeleteBanner204Response) VisitAdminDeleteBannerResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type AdminDeleteBanner404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminDeleteBanner404JSONResponse) VisitAdminDeleteBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateBannerRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminUpdateBannerJSONRequestBody
-}
-
-type AdminUpdateBannerResponseObject interface {
-	VisitAdminUpdateBannerResponse(w http.ResponseWriter) error
-}
-
-type AdminUpdateBanner200JSONResponse Banner
-
-func (response AdminUpdateBanner200JSONResponse) VisitAdminUpdateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateBanner400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminUpdateBanner400JSONResponse) VisitAdminUpdateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateBanner404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminUpdateBanner404JSONResponse) VisitAdminUpdateBannerResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SearchOrdersRequestObject struct {
-	Params SearchOrdersParams
-}
-
-type SearchOrdersResponseObject interface {
-	VisitSearchOrdersResponse(w http.ResponseWriter) error
-}
-
-type SearchOrders200JSONResponse struct {
-	Items []AdminOrder `json:"items"`
-
-	// NextCursor 下一页游标（按 id 倒序），空串表示没有下一页。⚠️ 此前收 `cursor` 却从不回它 ——
-	// 更早的订单在后台根本翻不到。
-	NextCursor string `json:"nextCursor"`
-
-	// Summary 与列表**同一套过滤条件**算出来的汇总。
-	//
-	// ⚠️ `paidCents` 只算已支付的 —— 把待支付的也算进收入会让报表
-	// 凭空多出一截，而那些钱根本没收到。
-	Summary OrderSummary `json:"summary"`
-}
-
-func (response SearchOrders200JSONResponse) VisitSearchOrdersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminOrderDetailRequestObject struct {
-	OrderId string `json:"orderId"`
-}
-
-type AdminOrderDetailResponseObject interface {
-	VisitAdminOrderDetailResponse(w http.ResponseWriter) error
-}
-
-type AdminOrderDetail200JSONResponse AdminOrderDetail
-
-func (response AdminOrderDetail200JSONResponse) VisitAdminOrderDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminOrderDetail404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminOrderDetail404JSONResponse) VisitAdminOrderDetailResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type MarkReconcileRequestObject struct {
-	OrderId string `json:"orderId"`
-	Body    *MarkReconcileJSONRequestBody
-}
-
-type MarkReconcileResponseObject interface {
-	VisitMarkReconcileResponse(w http.ResponseWriter) error
-}
-
-type MarkReconcile200JSONResponse AdminOrderDetail
-
-func (response MarkReconcile200JSONResponse) VisitMarkReconcileResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PayerOverviewRequestObject struct {
-	PayerId string `json:"payerId"`
-}
-
-type PayerOverviewResponseObject interface {
-	VisitPayerOverviewResponse(w http.ResponseWriter) error
-}
-
-type PayerOverview200JSONResponse PayerOverview
-
-func (response PayerOverview200JSONResponse) VisitPayerOverviewResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PayerOverview404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response PayerOverview404JSONResponse) VisitPayerOverviewResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdjustCreditsRequestObject struct {
-	PayerId string `json:"payerId"`
-	Params  AdjustCreditsParams
-	Body    *AdjustCreditsJSONRequestBody
-}
-
-type AdjustCreditsResponseObject interface {
-	VisitAdjustCreditsResponse(w http.ResponseWriter) error
-}
-
-type AdjustCredits200JSONResponse struct {
-	BalanceAfter int `json:"balanceAfter"`
-
-	// GrantId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GrantId *Id `json:"grantId,omitempty"`
-
-	// TransactionId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	TransactionId Id `json:"transactionId"`
-}
-
-func (response AdjustCredits200JSONResponse) VisitAdjustCreditsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdjustCredits400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdjustCredits400JSONResponse) VisitAdjustCreditsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdjustCredits409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdjustCredits409JSONResponse) VisitAdjustCreditsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetBillingCatalogRequestObject struct {
-}
-
-type GetBillingCatalogResponseObject interface {
-	VisitGetBillingCatalogResponse(w http.ResponseWriter) error
-}
-
-type GetBillingCatalog200JSONResponse BillingCatalog
-
-func (response GetBillingCatalog200JSONResponse) VisitGetBillingCatalogResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveMemberLevelRequestObject struct {
-	Body *SaveMemberLevelJSONRequestBody
-}
-
-type SaveMemberLevelResponseObject interface {
-	VisitSaveMemberLevelResponse(w http.ResponseWriter) error
-}
-
-type SaveMemberLevel200JSONResponse BillingCatalog
-
-func (response SaveMemberLevel200JSONResponse) VisitSaveMemberLevelResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveMemberLevel400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SaveMemberLevel400JSONResponse) VisitSaveMemberLevelResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveCreditPackageRequestObject struct {
-	Body *SaveCreditPackageJSONRequestBody
-}
-
-type SaveCreditPackageResponseObject interface {
-	VisitSaveCreditPackageResponse(w http.ResponseWriter) error
-}
-
-type SaveCreditPackage200JSONResponse BillingCatalog
-
-func (response SaveCreditPackage200JSONResponse) VisitSaveCreditPackageResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveCreditPackage400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SaveCreditPackage400JSONResponse) VisitSaveCreditPackageResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveMemberPlanRequestObject struct {
-	Body *SaveMemberPlanJSONRequestBody
-}
-
-type SaveMemberPlanResponseObject interface {
-	VisitSaveMemberPlanResponse(w http.ResponseWriter) error
-}
-
-type SaveMemberPlan200JSONResponse BillingCatalog
-
-func (response SaveMemberPlan200JSONResponse) VisitSaveMemberPlanResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SaveMemberPlan400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SaveMemberPlan400JSONResponse) VisitSaveMemberPlanResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type AdminGetCanvasConfigRequestObject struct {
 }
 
@@ -44119,74 +36377,25 @@ func (response AdminGetCanvasConfig403JSONResponse) VisitAdminGetCanvasConfigRes
 	return err
 }
 
-type AdminListDeadLettersRequestObject struct {
-	Params AdminListDeadLettersParams
+type AdminSaveConnectionRuleRequestObject struct {
+	Body *AdminSaveConnectionRuleJSONRequestBody
 }
 
-type AdminListDeadLettersResponseObject interface {
-	VisitAdminListDeadLettersResponse(w http.ResponseWriter) error
+type AdminSaveConnectionRuleResponseObject interface {
+	VisitAdminSaveConnectionRuleResponse(w http.ResponseWriter) error
 }
 
-type AdminListDeadLetters200JSONResponse struct {
-	Items      []DeadLetter `json:"items"`
-	NextCursor string       `json:"nextCursor"`
-
-	// Pending 待处理总数（**与筛选无关**），供运维台顶上那个"还有几条要管"。
-	Pending int `json:"pending"`
+type AdminSaveConnectionRule204Response struct {
 }
 
-func (response AdminListDeadLetters200JSONResponse) VisitAdminListDeadLettersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
+func (response AdminSaveConnectionRule204Response) VisitAdminSaveConnectionRuleResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
-type AdminListDeadLetters403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminSaveConnectionRule400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminListDeadLetters403JSONResponse) VisitAdminListDeadLettersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminDiscardDeadLetterRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminDiscardDeadLetterJSONRequestBody
-}
-
-type AdminDiscardDeadLetterResponseObject interface {
-	VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error
-}
-
-type AdminDiscardDeadLetter200JSONResponse DeadLetter
-
-func (response AdminDiscardDeadLetter200JSONResponse) VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminDiscardDeadLetter400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminDiscardDeadLetter400JSONResponse) VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error {
+func (response AdminSaveConnectionRule400JSONResponse) VisitAdminSaveConnectionRuleResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44198,9 +36407,9 @@ func (response AdminDiscardDeadLetter400JSONResponse) VisitAdminDiscardDeadLette
 	return err
 }
 
-type AdminDiscardDeadLetter403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminSaveConnectionRule403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminDiscardDeadLetter403JSONResponse) VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error {
+func (response AdminSaveConnectionRule403JSONResponse) VisitAdminSaveConnectionRuleResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44212,46 +36421,16 @@ func (response AdminDiscardDeadLetter403JSONResponse) VisitAdminDiscardDeadLette
 	return err
 }
 
-type AdminDiscardDeadLetter404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminDiscardDeadLetter404JSONResponse) VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
+type AdminListParamDefinitionsRequestObject struct {
 }
 
-type AdminDiscardDeadLetter409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminDiscardDeadLetter409JSONResponse) VisitAdminDiscardDeadLetterResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
+type AdminListParamDefinitionsResponseObject interface {
+	VisitAdminListParamDefinitionsResponse(w http.ResponseWriter) error
 }
 
-type AdminReplayDeadLetterRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminReplayDeadLetterJSONRequestBody
-}
+type AdminListParamDefinitions200JSONResponse []AdminParamDefinition
 
-type AdminReplayDeadLetterResponseObject interface {
-	VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error
-}
-
-type AdminReplayDeadLetter200JSONResponse DeadLetter
-
-func (response AdminReplayDeadLetter200JSONResponse) VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error {
+func (response AdminListParamDefinitions200JSONResponse) VisitAdminListParamDefinitionsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44263,9 +36442,9 @@ func (response AdminReplayDeadLetter200JSONResponse) VisitAdminReplayDeadLetterR
 	return err
 }
 
-type AdminReplayDeadLetter403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminListParamDefinitions403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminReplayDeadLetter403JSONResponse) VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error {
+func (response AdminListParamDefinitions403JSONResponse) VisitAdminListParamDefinitionsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44277,9 +36456,83 @@ func (response AdminReplayDeadLetter403JSONResponse) VisitAdminReplayDeadLetterR
 	return err
 }
 
-type AdminReplayDeadLetter404JSONResponse struct{ NotFoundJSONResponse }
+type AdminSaveParamDefinitionRequestObject struct {
+	Body *AdminSaveParamDefinitionJSONRequestBody
+}
 
-func (response AdminReplayDeadLetter404JSONResponse) VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error {
+type AdminSaveParamDefinitionResponseObject interface {
+	VisitAdminSaveParamDefinitionResponse(w http.ResponseWriter) error
+}
+
+type AdminSaveParamDefinition204Response struct {
+}
+
+func (response AdminSaveParamDefinition204Response) VisitAdminSaveParamDefinitionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminSaveParamDefinition400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminSaveParamDefinition400JSONResponse) VisitAdminSaveParamDefinitionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveParamDefinition403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSaveParamDefinition403JSONResponse) VisitAdminSaveParamDefinitionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDisableParamDefinitionRequestObject struct {
+	Code string `json:"code"`
+}
+
+type AdminDisableParamDefinitionResponseObject interface {
+	VisitAdminDisableParamDefinitionResponse(w http.ResponseWriter) error
+}
+
+type AdminDisableParamDefinition204Response struct {
+}
+
+func (response AdminDisableParamDefinition204Response) VisitAdminDisableParamDefinitionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminDisableParamDefinition403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminDisableParamDefinition403JSONResponse) VisitAdminDisableParamDefinitionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDisableParamDefinition404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminDisableParamDefinition404JSONResponse) VisitAdminDisableParamDefinitionResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44291,9 +36544,133 @@ func (response AdminReplayDeadLetter404JSONResponse) VisitAdminReplayDeadLetterR
 	return err
 }
 
-type AdminReplayDeadLetter409JSONResponse Error
+type AdminGetCanvasRevisionRequestObject struct {
+}
 
-func (response AdminReplayDeadLetter409JSONResponse) VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error {
+type AdminGetCanvasRevisionResponseObject interface {
+	VisitAdminGetCanvasRevisionResponse(w http.ResponseWriter) error
+}
+
+type AdminGetCanvasRevision200JSONResponse struct {
+	Revision int64 `json:"revision"`
+}
+
+func (response AdminGetCanvasRevision200JSONResponse) VisitAdminGetCanvasRevisionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminGetCanvasRevision403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminGetCanvasRevision403JSONResponse) VisitAdminGetCanvasRevisionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListImagePresetsRequestObject struct {
+}
+
+type AdminListImagePresetsResponseObject interface {
+	VisitAdminListImagePresetsResponse(w http.ResponseWriter) error
+}
+
+type AdminListImagePresets200JSONResponse struct {
+	Items []AdminImagePreset `json:"items"`
+}
+
+func (response AdminListImagePresets200JSONResponse) VisitAdminListImagePresetsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListImagePresets403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListImagePresets403JSONResponse) VisitAdminListImagePresetsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCreateImagePresetRequestObject struct {
+	Body *AdminCreateImagePresetJSONRequestBody
+}
+
+type AdminCreateImagePresetResponseObject interface {
+	VisitAdminCreateImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminCreateImagePreset201JSONResponse AdminImagePreset
+
+func (response AdminCreateImagePreset201JSONResponse) VisitAdminCreateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCreateImagePreset400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminCreateImagePreset400JSONResponse) VisitAdminCreateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCreateImagePreset403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminCreateImagePreset403JSONResponse) VisitAdminCreateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCreateImagePreset409JSONResponse struct{ ConflictJSONResponse }
+
+func (response AdminCreateImagePreset409JSONResponse) VisitAdminCreateImagePresetResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -44305,16 +36682,255 @@ func (response AdminReplayDeadLetter409JSONResponse) VisitAdminReplayDeadLetterR
 	return err
 }
 
-type AdminReplayDeadLetter503JSONResponse Error
+type AdminPreviewImagePresetRequestObject struct {
+	Body *AdminPreviewImagePresetJSONRequestBody
+}
 
-func (response AdminReplayDeadLetter503JSONResponse) VisitAdminReplayDeadLetterResponse(w http.ResponseWriter) error {
+type AdminPreviewImagePresetResponseObject interface {
+	VisitAdminPreviewImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminPreviewImagePreset200JSONResponse struct {
+	Rendered string `json:"rendered"`
+}
+
+func (response AdminPreviewImagePreset200JSONResponse) VisitAdminPreviewImagePresetResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(503)
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPreviewImagePreset400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminPreviewImagePreset400JSONResponse) VisitAdminPreviewImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminUpdateImagePresetRequestObject struct {
+	Code PresetCode `json:"code"`
+	Body *AdminUpdateImagePresetJSONRequestBody
+}
+
+type AdminUpdateImagePresetResponseObject interface {
+	VisitAdminUpdateImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminUpdateImagePreset200JSONResponse AdminImagePreset
+
+func (response AdminUpdateImagePreset200JSONResponse) VisitAdminUpdateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminUpdateImagePreset400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminUpdateImagePreset400JSONResponse) VisitAdminUpdateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminUpdateImagePreset403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminUpdateImagePreset403JSONResponse) VisitAdminUpdateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminUpdateImagePreset404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminUpdateImagePreset404JSONResponse) VisitAdminUpdateImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDisableImagePresetRequestObject struct {
+	Code PresetCode `json:"code"`
+}
+
+type AdminDisableImagePresetResponseObject interface {
+	VisitAdminDisableImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminDisableImagePreset200JSONResponse AdminImagePreset
+
+func (response AdminDisableImagePreset200JSONResponse) VisitAdminDisableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDisableImagePreset403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminDisableImagePreset403JSONResponse) VisitAdminDisableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDisableImagePreset404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminDisableImagePreset404JSONResponse) VisitAdminDisableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableImagePresetRequestObject struct {
+	Code PresetCode `json:"code"`
+}
+
+type AdminEnableImagePresetResponseObject interface {
+	VisitAdminEnableImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminEnableImagePreset200JSONResponse AdminImagePreset
+
+func (response AdminEnableImagePreset200JSONResponse) VisitAdminEnableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableImagePreset403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminEnableImagePreset403JSONResponse) VisitAdminEnableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableImagePreset404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminEnableImagePreset404JSONResponse) VisitAdminEnableImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRestoreImagePresetRequestObject struct {
+	Code PresetCode `json:"code"`
+}
+
+type AdminRestoreImagePresetResponseObject interface {
+	VisitAdminRestoreImagePresetResponse(w http.ResponseWriter) error
+}
+
+type AdminRestoreImagePreset200JSONResponse AdminImagePreset
+
+func (response AdminRestoreImagePreset200JSONResponse) VisitAdminRestoreImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRestoreImagePreset403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminRestoreImagePreset403JSONResponse) VisitAdminRestoreImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRestoreImagePreset404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminRestoreImagePreset404JSONResponse) VisitAdminRestoreImagePresetResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -45404,240 +38020,25 @@ func (response AdminEnableMarketingPresetCharacter409JSONResponse) VisitAdminEna
 	return err
 }
 
-type AdminListMcpGrantsRequestObject struct {
-	Params AdminListMcpGrantsParams
+type AdminSaveMaterialRequestObject struct {
+	Body *AdminSaveMaterialJSONRequestBody
 }
 
-type AdminListMcpGrantsResponseObject interface {
-	VisitAdminListMcpGrantsResponse(w http.ResponseWriter) error
+type AdminSaveMaterialResponseObject interface {
+	VisitAdminSaveMaterialResponse(w http.ResponseWriter) error
 }
 
-type AdminListMcpGrants200JSONResponse McpConnectionPage
-
-func (response AdminListMcpGrants200JSONResponse) VisitAdminListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
+type AdminSaveMaterial204Response struct {
 }
 
-type AdminListMcpGrants400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminListMcpGrants400JSONResponse) VisitAdminListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListMcpGrants401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response AdminListMcpGrants401JSONResponse) VisitAdminListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListMcpGrants403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminListMcpGrants403JSONResponse) VisitAdminListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRevokeMcpGrantRequestObject struct {
-	GrantId Id `json:"grantId"`
-	Body    *AdminRevokeMcpGrantJSONRequestBody
-}
-
-type AdminRevokeMcpGrantResponseObject interface {
-	VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error
-}
-
-type AdminRevokeMcpGrant204Response struct {
-}
-
-func (response AdminRevokeMcpGrant204Response) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
+func (response AdminSaveMaterial204Response) VisitAdminSaveMaterialResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type AdminRevokeMcpGrant400JSONResponse struct{ BadRequestJSONResponse }
+type AdminSaveMaterial400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminRevokeMcpGrant400JSONResponse) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRevokeMcpGrant401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response AdminRevokeMcpGrant401JSONResponse) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRevokeMcpGrant403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminRevokeMcpGrant403JSONResponse) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRevokeMcpGrant404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminRevokeMcpGrant404JSONResponse) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRevokeMcpGrant409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminRevokeMcpGrant409JSONResponse) VisitAdminRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminGetMcpSettingsRequestObject struct {
-}
-
-type AdminGetMcpSettingsResponseObject interface {
-	VisitAdminGetMcpSettingsResponse(w http.ResponseWriter) error
-}
-
-type AdminGetMcpSettings200JSONResponse McpPlatformSettings
-
-func (response AdminGetMcpSettings200JSONResponse) VisitAdminGetMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminGetMcpSettings401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response AdminGetMcpSettings401JSONResponse) VisitAdminGetMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminGetMcpSettings403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminGetMcpSettings403JSONResponse) VisitAdminGetMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateMcpSettingsRequestObject struct {
-	Body *AdminUpdateMcpSettingsJSONRequestBody
-}
-
-type AdminUpdateMcpSettingsResponseObject interface {
-	VisitAdminUpdateMcpSettingsResponse(w http.ResponseWriter) error
-}
-
-type AdminUpdateMcpSettings200JSONResponse McpPlatformSettings
-
-func (response AdminUpdateMcpSettings200JSONResponse) VisitAdminUpdateMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateMcpSettings400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminUpdateMcpSettings400JSONResponse) VisitAdminUpdateMcpSettingsResponse(w http.ResponseWriter) error {
+func (response AdminSaveMaterial400JSONResponse) VisitAdminSaveMaterialResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45649,26 +38050,9 @@ func (response AdminUpdateMcpSettings400JSONResponse) VisitAdminUpdateMcpSetting
 	return err
 }
 
-type AdminUpdateMcpSettings401JSONResponse struct{ UnauthenticatedJSONResponse }
+type AdminSaveMaterial403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminUpdateMcpSettings401JSONResponse) VisitAdminUpdateMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminUpdateMcpSettings403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminUpdateMcpSettings403JSONResponse) VisitAdminUpdateMcpSettingsResponse(w http.ResponseWriter) error {
+func (response AdminSaveMaterial403JSONResponse) VisitAdminSaveMaterialResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45680,17 +38064,18 @@ func (response AdminUpdateMcpSettings403JSONResponse) VisitAdminUpdateMcpSetting
 	return err
 }
 
-type AdminMcpStatsRequestObject struct {
-	Params AdminMcpStatsParams
+type AdminListMaterialsRequestObject struct {
+	Type   AdminListMaterialsParamsType `json:"type"`
+	Params AdminListMaterialsParams
 }
 
-type AdminMcpStatsResponseObject interface {
-	VisitAdminMcpStatsResponse(w http.ResponseWriter) error
+type AdminListMaterialsResponseObject interface {
+	VisitAdminListMaterialsResponse(w http.ResponseWriter) error
 }
 
-type AdminMcpStats200JSONResponse McpStats
+type AdminListMaterials200JSONResponse []AdminMaterialItem
 
-func (response AdminMcpStats200JSONResponse) VisitAdminMcpStatsResponse(w http.ResponseWriter) error {
+func (response AdminListMaterials200JSONResponse) VisitAdminListMaterialsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45702,9 +38087,9 @@ func (response AdminMcpStats200JSONResponse) VisitAdminMcpStatsResponse(w http.R
 	return err
 }
 
-type AdminMcpStats400JSONResponse struct{ BadRequestJSONResponse }
+type AdminListMaterials400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminMcpStats400JSONResponse) VisitAdminMcpStatsResponse(w http.ResponseWriter) error {
+func (response AdminListMaterials400JSONResponse) VisitAdminListMaterialsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45716,26 +38101,9 @@ func (response AdminMcpStats400JSONResponse) VisitAdminMcpStatsResponse(w http.R
 	return err
 }
 
-type AdminMcpStats401JSONResponse struct{ UnauthenticatedJSONResponse }
+type AdminListMaterials403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminMcpStats401JSONResponse) VisitAdminMcpStatsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminMcpStats403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminMcpStats403JSONResponse) VisitAdminMcpStatsResponse(w http.ResponseWriter) error {
+func (response AdminListMaterials403JSONResponse) VisitAdminListMaterialsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45880,50 +38248,32 @@ func (response AdminDownloadMedia404JSONResponse) VisitAdminDownloadMediaRespons
 	return err
 }
 
-type AdminRetryGenerationRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminRetryGenerationJSONRequestBody
+type AdminListModelTemplatesRequestObject struct {
 }
 
-type AdminRetryGenerationResponseObject interface {
-	VisitAdminRetryGenerationResponse(w http.ResponseWriter) error
+type AdminListModelTemplatesResponseObject interface {
+	VisitAdminListModelTemplatesResponse(w http.ResponseWriter) error
 }
 
-type AdminRetryGeneration201JSONResponse struct {
-	// Credits 本次重试扣掉的积分（记在原任务的付费主体上）。
-	Credits   int    `json:"credits"`
-	NewTaskId string `json:"newTaskId"`
+type AdminListModelTemplates200JSONResponse struct {
+	Items []ModelTemplate `json:"items"`
 }
 
-func (response AdminRetryGeneration201JSONResponse) VisitAdminRetryGenerationResponse(w http.ResponseWriter) error {
+func (response AdminListModelTemplates200JSONResponse) VisitAdminListModelTemplatesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
+	w.WriteHeader(200)
 	_, err := buf.WriteTo(w)
 	return err
 }
 
-type AdminRetryGeneration400JSONResponse struct{ BadRequestJSONResponse }
+type AdminListModelTemplates403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminRetryGeneration400JSONResponse) VisitAdminRetryGenerationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminRetryGeneration403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminRetryGeneration403JSONResponse) VisitAdminRetryGenerationResponse(w http.ResponseWriter) error {
+func (response AdminListModelTemplates403JSONResponse) VisitAdminListModelTemplatesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45935,9 +38285,60 @@ func (response AdminRetryGeneration403JSONResponse) VisitAdminRetryGenerationRes
 	return err
 }
 
-type AdminRetryGeneration404JSONResponse struct{ NotFoundJSONResponse }
+type AdminEnableModelTemplateRequestObject struct {
+	Code string `json:"code"`
+	Body *AdminEnableModelTemplateJSONRequestBody
+}
 
-func (response AdminRetryGeneration404JSONResponse) VisitAdminRetryGenerationResponse(w http.ResponseWriter) error {
+type AdminEnableModelTemplateResponseObject interface {
+	VisitAdminEnableModelTemplateResponse(w http.ResponseWriter) error
+}
+
+type AdminEnableModelTemplate200JSONResponse ModelTemplateEnableResult
+
+func (response AdminEnableModelTemplate200JSONResponse) VisitAdminEnableModelTemplateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableModelTemplate400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminEnableModelTemplate400JSONResponse) VisitAdminEnableModelTemplateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableModelTemplate403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminEnableModelTemplate403JSONResponse) VisitAdminEnableModelTemplateResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminEnableModelTemplate404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminEnableModelTemplate404JSONResponse) VisitAdminEnableModelTemplateResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45949,41 +38350,60 @@ func (response AdminRetryGeneration404JSONResponse) VisitAdminRetryGenerationRes
 	return err
 }
 
-type AdminRetryGeneration409JSONResponse struct{ ConflictJSONResponse }
+type AdminListModelsRequestObject struct {
+}
 
-func (response AdminRetryGeneration409JSONResponse) VisitAdminRetryGenerationResponse(w http.ResponseWriter) error {
+type AdminListModelsResponseObject interface {
+	VisitAdminListModelsResponse(w http.ResponseWriter) error
+}
+
+type AdminListModels200JSONResponse []AdminModel
+
+func (response AdminListModels200JSONResponse) VisitAdminListModelsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
+	w.WriteHeader(200)
 	_, err := buf.WriteTo(w)
 	return err
 }
 
-type AdminCompensateTaskRequestObject struct {
-	Kind AdminCompensateTaskParamsKind `json:"kind"`
-	Id   Id                            `json:"id"`
-	Body *AdminCompensateTaskJSONRequestBody
+type AdminListModels403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListModels403JSONResponse) VisitAdminListModelsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
 }
 
-type AdminCompensateTaskResponseObject interface {
-	VisitAdminCompensateTaskResponse(w http.ResponseWriter) error
+type AdminSaveModelRequestObject struct {
+	Body *AdminSaveModelJSONRequestBody
 }
 
-type AdminCompensateTask204Response struct {
+type AdminSaveModelResponseObject interface {
+	VisitAdminSaveModelResponse(w http.ResponseWriter) error
 }
 
-func (response AdminCompensateTask204Response) VisitAdminCompensateTaskResponse(w http.ResponseWriter) error {
+type AdminSaveModel204Response struct {
+}
+
+func (response AdminSaveModel204Response) VisitAdminSaveModelResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type AdminCompensateTask400JSONResponse struct{ BadRequestJSONResponse }
+type AdminSaveModel400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminCompensateTask400JSONResponse) VisitAdminCompensateTaskResponse(w http.ResponseWriter) error {
+func (response AdminSaveModel400JSONResponse) VisitAdminSaveModelResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -45995,9 +38415,9 @@ func (response AdminCompensateTask400JSONResponse) VisitAdminCompensateTaskRespo
 	return err
 }
 
-type AdminCompensateTask403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminSaveModel403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminCompensateTask403JSONResponse) VisitAdminCompensateTaskResponse(w http.ResponseWriter) error {
+func (response AdminSaveModel403JSONResponse) VisitAdminSaveModelResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46009,9 +38429,203 @@ func (response AdminCompensateTask403JSONResponse) VisitAdminCompensateTaskRespo
 	return err
 }
 
-type AdminCompensateTask404JSONResponse struct{ NotFoundJSONResponse }
+type AdminSaveModel409JSONResponse struct{ ConflictJSONResponse }
 
-func (response AdminCompensateTask404JSONResponse) VisitAdminCompensateTaskResponse(w http.ResponseWriter) error {
+func (response AdminSaveModel409JSONResponse) VisitAdminSaveModelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModel422JSONResponse struct {
+	UnprocessableEntityJSONResponse
+}
+
+func (response AdminSaveModel422JSONResponse) VisitAdminSaveModelResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListModelProtocolsRequestObject struct {
+}
+
+type AdminListModelProtocolsResponseObject interface {
+	VisitAdminListModelProtocolsResponse(w http.ResponseWriter) error
+}
+
+type AdminListModelProtocols200JSONResponse []AdminModelProtocol
+
+func (response AdminListModelProtocols200JSONResponse) VisitAdminListModelProtocolsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListModelProtocols403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListModelProtocols403JSONResponse) VisitAdminListModelProtocolsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListProvidersRequestObject struct {
+}
+
+type AdminListProvidersResponseObject interface {
+	VisitAdminListProvidersResponse(w http.ResponseWriter) error
+}
+
+type AdminListProviders200JSONResponse []AdminProvider
+
+func (response AdminListProviders200JSONResponse) VisitAdminListProvidersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListProviders403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListProviders403JSONResponse) VisitAdminListProvidersResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveProviderRequestObject struct {
+	Body *AdminSaveProviderJSONRequestBody
+}
+
+type AdminSaveProviderResponseObject interface {
+	VisitAdminSaveProviderResponse(w http.ResponseWriter) error
+}
+
+type AdminSaveProvider204Response struct {
+}
+
+func (response AdminSaveProvider204Response) VisitAdminSaveProviderResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminSaveProvider400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminSaveProvider400JSONResponse) VisitAdminSaveProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveProvider403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSaveProvider403JSONResponse) VisitAdminSaveProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveProvider409JSONResponse struct{ ConflictJSONResponse }
+
+func (response AdminSaveProvider409JSONResponse) VisitAdminSaveProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminProbeProviderRequestObject struct {
+	Code string `json:"code"`
+}
+
+type AdminProbeProviderResponseObject interface {
+	VisitAdminProbeProviderResponse(w http.ResponseWriter) error
+}
+
+type AdminProbeProvider200JSONResponse ProviderProbeResult
+
+func (response AdminProbeProvider200JSONResponse) VisitAdminProbeProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminProbeProvider403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminProbeProvider403JSONResponse) VisitAdminProbeProviderResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminProbeProvider404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminProbeProvider404JSONResponse) VisitAdminProbeProviderResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46023,36 +38637,17 @@ func (response AdminCompensateTask404JSONResponse) VisitAdminCompensateTaskRespo
 	return err
 }
 
-type AdminCompensateTask409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminCompensateTask409JSONResponse) VisitAdminCompensateTaskResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
+type AdminListModelCapabilitiesRequestObject struct {
+	Code ModelCode `json:"code"`
 }
 
-type ReconcileOrdersRequestObject struct {
-	Params ReconcileOrdersParams
+type AdminListModelCapabilitiesResponseObject interface {
+	VisitAdminListModelCapabilitiesResponse(w http.ResponseWriter) error
 }
 
-type ReconcileOrdersResponseObject interface {
-	VisitReconcileOrdersResponse(w http.ResponseWriter) error
-}
+type AdminListModelCapabilities200JSONResponse map[string][]ModelCapability
 
-type ReconcileOrders200JSONResponse struct {
-	Checked int `json:"checked"`
-	Diff    int `json:"diff"`
-	Matched int `json:"matched"`
-	Skipped int `json:"skipped"`
-}
-
-func (response ReconcileOrders200JSONResponse) VisitReconcileOrdersResponse(w http.ResponseWriter) error {
+func (response AdminListModelCapabilities200JSONResponse) VisitAdminListModelCapabilitiesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46064,180 +38659,54 @@ func (response ReconcileOrders200JSONResponse) VisitReconcileOrdersResponse(w ht
 	return err
 }
 
-type ListReconcileDiffsRequestObject struct {
-	Params ListReconcileDiffsParams
-}
+type AdminListModelCapabilities403JSONResponse struct{ ForbiddenJSONResponse }
 
-type ListReconcileDiffsResponseObject interface {
-	VisitListReconcileDiffsResponse(w http.ResponseWriter) error
-}
-
-type ListReconcileDiffs200JSONResponse []struct {
-	AmountCents int       `json:"amountCents"`
-	Channel     *string   `json:"channel,omitempty"`
-	CreatedAt   time.Time `json:"createdAt"`
-	Credits     int       `json:"credits"`
-	Currency    string    `json:"currency"`
-
-	// ExpireAt 待支付的作废时间。
-	//
-	// ⚠️ 订单超时**必须被清理**：它占着幂等键，不清掉的话
-	// 用户再下同一单会命中那张僵尸订单，看到的是一张早就付不了的单。
-	ExpireAt *time.Time `json:"expireAt,omitempty"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id              Id                                                    `json:"id"`
-	PaidAt          *time.Time                                            `json:"paidAt,omitempty"`
-	PayStatus       ListReconcileDiffs200JSONResponseBodyPayStatus        `json:"payStatus"`
-	ReconcileDetail *string                                               `json:"reconcileDetail,omitempty"`
-	ReconcileStatus *ListReconcileDiffs200JSONResponseBodyReconcileStatus `json:"reconcileStatus,omitempty"`
-
-	// RefId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	RefId *Id                                       `json:"refId,omitempty"`
-	Type  ListReconcileDiffs200JSONResponseBodyType `json:"type"`
-}
-
-func (response ListReconcileDiffs200JSONResponse) VisitListReconcileDiffsResponse(w http.ResponseWriter) error {
+func (response AdminListModelCapabilities403JSONResponse) VisitAdminListModelCapabilitiesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
 
-type AdminRefundOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Body    *AdminRefundOrderJSONRequestBody
+type AdminListModelCapabilities404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminListModelCapabilities404JSONResponse) VisitAdminListModelCapabilitiesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
 }
 
-type AdminRefundOrderResponseObject interface {
-	VisitAdminRefundOrderResponse(w http.ResponseWriter) error
+type AdminSaveModelCapabilityRequestObject struct {
+	Code ModelCode `json:"code"`
+	Body *AdminSaveModelCapabilityJSONRequestBody
 }
 
-type AdminRefundOrder200Response struct {
+type AdminSaveModelCapabilityResponseObject interface {
+	VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error
 }
 
-func (response AdminRefundOrder200Response) VisitAdminRefundOrderResponse(w http.ResponseWriter) error {
-	w.WriteHeader(200)
+type AdminSaveModelCapability204Response struct {
+}
+
+func (response AdminSaveModelCapability204Response) VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
 	return nil
 }
 
-type AdminRefundOrder202Response struct {
-}
+type AdminSaveModelCapability400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminRefundOrder202Response) VisitAdminRefundOrderResponse(w http.ResponseWriter) error {
-	w.WriteHeader(202)
-	return nil
-}
-
-type AdminRefundOrder409JSONResponse struct{ ConflictJSONResponse }
-
-func (response AdminRefundOrder409JSONResponse) VisitAdminRefundOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminCheckRefundRequestObject struct {
-	OrderId string `json:"orderId"`
-}
-
-type AdminCheckRefundResponseObject interface {
-	VisitAdminCheckRefundResponse(w http.ResponseWriter) error
-}
-
-type AdminCheckRefund200JSONResponse RefundEligibility
-
-func (response AdminCheckRefund200JSONResponse) VisitAdminCheckRefundResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListPaymentCallbacksRequestObject struct {
-	Params ListPaymentCallbacksParams
-}
-
-type ListPaymentCallbacksResponseObject interface {
-	VisitListPaymentCallbacksResponse(w http.ResponseWriter) error
-}
-
-type ListPaymentCallbacks200JSONResponse []PaymentCallback
-
-func (response ListPaymentCallbacks200JSONResponse) VisitListPaymentCallbacksResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListPaymentChannelsRequestObject struct {
-}
-
-type ListPaymentChannelsResponseObject interface {
-	VisitListPaymentChannelsResponse(w http.ResponseWriter) error
-}
-
-type ListPaymentChannels200JSONResponse []PaymentChannel
-
-func (response ListPaymentChannels200JSONResponse) VisitListPaymentChannelsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SavePaymentChannelRequestObject struct {
-	Body *SavePaymentChannelJSONRequestBody
-}
-
-type SavePaymentChannelResponseObject interface {
-	VisitSavePaymentChannelResponse(w http.ResponseWriter) error
-}
-
-type SavePaymentChannel200JSONResponse []PaymentChannel
-
-func (response SavePaymentChannel200JSONResponse) VisitSavePaymentChannelResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SavePaymentChannel400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SavePaymentChannel400JSONResponse) VisitSavePaymentChannelResponse(w http.ResponseWriter) error {
+func (response AdminSaveModelCapability400JSONResponse) VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46245,6 +38714,417 @@ func (response SavePaymentChannel400JSONResponse) VisitSavePaymentChannelRespons
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelCapability403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSaveModelCapability403JSONResponse) VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelCapability404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminSaveModelCapability404JSONResponse) VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelCapability422JSONResponse struct {
+	UnprocessableEntityJSONResponse
+}
+
+func (response AdminSaveModelCapability422JSONResponse) VisitAdminSaveModelCapabilityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDeleteModelCapabilityRequestObject struct {
+	Code      ModelCode `json:"code"`
+	Operation string    `json:"operation"`
+	Role      string    `json:"role"`
+}
+
+type AdminDeleteModelCapabilityResponseObject interface {
+	VisitAdminDeleteModelCapabilityResponse(w http.ResponseWriter) error
+}
+
+type AdminDeleteModelCapability204Response struct {
+}
+
+func (response AdminDeleteModelCapability204Response) VisitAdminDeleteModelCapabilityResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminDeleteModelCapability403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminDeleteModelCapability403JSONResponse) VisitAdminDeleteModelCapabilityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDeleteModelCapability404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminDeleteModelCapability404JSONResponse) VisitAdminDeleteModelCapabilityResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelOperationRequestObject struct {
+	Code ModelCode `json:"code"`
+	Body *AdminSaveModelOperationJSONRequestBody
+}
+
+type AdminSaveModelOperationResponseObject interface {
+	VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error
+}
+
+type AdminSaveModelOperation204Response struct {
+}
+
+func (response AdminSaveModelOperation204Response) VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminSaveModelOperation400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminSaveModelOperation400JSONResponse) VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelOperation403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSaveModelOperation403JSONResponse) VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelOperation404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminSaveModelOperation404JSONResponse) VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelOperation422JSONResponse struct {
+	UnprocessableEntityJSONResponse
+}
+
+func (response AdminSaveModelOperation422JSONResponse) VisitAdminSaveModelOperationResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(422)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListModelParamSupportsRequestObject struct {
+	Code ModelCode `json:"code"`
+}
+
+type AdminListModelParamSupportsResponseObject interface {
+	VisitAdminListModelParamSupportsResponse(w http.ResponseWriter) error
+}
+
+type AdminListModelParamSupports200JSONResponse struct {
+	Items  []ModelParamSupport `json:"items"`
+	Params []struct {
+		Code        string `json:"code"`
+		ControlType string `json:"controlType"`
+		Name        string `json:"name"`
+	} `json:"params"`
+}
+
+func (response AdminListModelParamSupports200JSONResponse) VisitAdminListModelParamSupportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListModelParamSupports403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListModelParamSupports403JSONResponse) VisitAdminListModelParamSupportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListModelParamSupports404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminListModelParamSupports404JSONResponse) VisitAdminListModelParamSupportsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelParamSupportRequestObject struct {
+	Code ModelCode `json:"code"`
+	Body *AdminSaveModelParamSupportJSONRequestBody
+}
+
+type AdminSaveModelParamSupportResponseObject interface {
+	VisitAdminSaveModelParamSupportResponse(w http.ResponseWriter) error
+}
+
+type AdminSaveModelParamSupport204Response struct {
+}
+
+func (response AdminSaveModelParamSupport204Response) VisitAdminSaveModelParamSupportResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminSaveModelParamSupport400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminSaveModelParamSupport400JSONResponse) VisitAdminSaveModelParamSupportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelParamSupport403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSaveModelParamSupport403JSONResponse) VisitAdminSaveModelParamSupportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSaveModelParamSupport404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminSaveModelParamSupport404JSONResponse) VisitAdminSaveModelParamSupportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDeleteModelParamSupportRequestObject struct {
+	Code      ModelCode `json:"code"`
+	ParamCode string    `json:"paramCode"`
+}
+
+type AdminDeleteModelParamSupportResponseObject interface {
+	VisitAdminDeleteModelParamSupportResponse(w http.ResponseWriter) error
+}
+
+type AdminDeleteModelParamSupport204Response struct {
+}
+
+func (response AdminDeleteModelParamSupport204Response) VisitAdminDeleteModelParamSupportResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminDeleteModelParamSupport403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminDeleteModelParamSupport403JSONResponse) VisitAdminDeleteModelParamSupportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminDeleteModelParamSupport404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminDeleteModelParamSupport404JSONResponse) VisitAdminDeleteModelParamSupportResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCheckModelPublishableRequestObject struct {
+	Code ModelCode `json:"code"`
+}
+
+type AdminCheckModelPublishableResponseObject interface {
+	VisitAdminCheckModelPublishableResponse(w http.ResponseWriter) error
+}
+
+type AdminCheckModelPublishable200JSONResponse ModelPublishCheck
+
+func (response AdminCheckModelPublishable200JSONResponse) VisitAdminCheckModelPublishableResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCheckModelPublishable403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminCheckModelPublishable403JSONResponse) VisitAdminCheckModelPublishableResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminCheckModelPublishable404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminCheckModelPublishable404JSONResponse) VisitAdminCheckModelPublishableResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListOperationsRequestObject struct {
+}
+
+type AdminListOperationsResponseObject interface {
+	VisitAdminListOperationsResponse(w http.ResponseWriter) error
+}
+
+type AdminListOperations200JSONResponse []AdminOperation
+
+func (response AdminListOperations200JSONResponse) VisitAdminListOperationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListOperations403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListOperations403JSONResponse) VisitAdminListOperationsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -46288,20 +39168,16 @@ func (response AdminListPermissions403JSONResponse) VisitAdminListPermissionsRes
 	return err
 }
 
-type AdminListProjectsRequestObject struct {
-	Params AdminListProjectsParams
+type AdminListPromptsRequestObject struct {
 }
 
-type AdminListProjectsResponseObject interface {
-	VisitAdminListProjectsResponse(w http.ResponseWriter) error
+type AdminListPromptsResponseObject interface {
+	VisitAdminListPromptsResponse(w http.ResponseWriter) error
 }
 
-type AdminListProjects200JSONResponse struct {
-	Items      []AdminProject `json:"items"`
-	NextCursor string         `json:"nextCursor"`
-}
+type AdminListPrompts200JSONResponse []AdminPromptTemplate
 
-func (response AdminListProjects200JSONResponse) VisitAdminListProjectsResponse(w http.ResponseWriter) error {
+func (response AdminListPrompts200JSONResponse) VisitAdminListPromptsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46313,9 +39189,9 @@ func (response AdminListProjects200JSONResponse) VisitAdminListProjectsResponse(
 	return err
 }
 
-type AdminListProjects403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminListPrompts403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminListProjects403JSONResponse) VisitAdminListProjectsResponse(w http.ResponseWriter) error {
+func (response AdminListPrompts403JSONResponse) VisitAdminListPromptsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46327,106 +39203,25 @@ func (response AdminListProjects403JSONResponse) VisitAdminListProjectsResponse(
 	return err
 }
 
-type AdminGetProjectRequestObject struct {
-	Id Id `json:"id"`
+type AdminArchivePromptRequestObject struct {
+	Body *AdminArchivePromptJSONRequestBody
 }
 
-type AdminGetProjectResponseObject interface {
-	VisitAdminGetProjectResponse(w http.ResponseWriter) error
+type AdminArchivePromptResponseObject interface {
+	VisitAdminArchivePromptResponse(w http.ResponseWriter) error
 }
 
-type AdminGetProject200JSONResponse struct {
-	CanvasData      map[string]interface{} `json:"canvasData"`
-	CreatedAt       time.Time              `json:"createdAt"`
-	DeletedAt       string                 `json:"deletedAt"`
-	EdgeCount       int                    `json:"edgeCount"`
-	GenerationCount int                    `json:"generationCount"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id   Id     `json:"id"`
-	Name string `json:"name"`
-
-	// NodeCount 从 canvasData 当场算，不另存计数列。
-	NodeCount   int                                      `json:"nodeCount"`
-	OwnerName   string                                   `json:"ownerName"`
-	OwnerUserId string                                   `json:"ownerUserId"`
-	Status      AdminGetProject200JSONResponseBodyStatus `json:"status"`
-	UpdatedAt   time.Time                                `json:"updatedAt"`
-
-	// Version 画布的**服务端乐观锁**（与 `canvasData.schemaVersion` 是两件事）。
-	// ⚠️ 后台的恢复/删除都**不动它** —— 动了的话用户那个还开着的标签页
-	// 下一次保存会撞冲突，而他什么都没做错。
-	Version       int    `json:"version"`
-	WorkspaceId   string `json:"workspaceId"`
-	WorkspaceName string `json:"workspaceName"`
+type AdminArchivePrompt204Response struct {
 }
 
-func (response AdminGetProject200JSONResponse) VisitAdminGetProjectResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
+func (response AdminArchivePrompt204Response) VisitAdminArchivePromptResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
-type AdminGetProject403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminArchivePrompt400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminGetProject403JSONResponse) VisitAdminGetProjectResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminGetProject404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminGetProject404JSONResponse) VisitAdminGetProjectResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminProjectActionRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminProjectActionJSONRequestBody
-}
-
-type AdminProjectActionResponseObject interface {
-	VisitAdminProjectActionResponse(w http.ResponseWriter) error
-}
-
-type AdminProjectAction200JSONResponse AdminProject
-
-func (response AdminProjectAction200JSONResponse) VisitAdminProjectActionResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminProjectAction400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminProjectAction400JSONResponse) VisitAdminProjectActionResponse(w http.ResponseWriter) error {
+func (response AdminArchivePrompt400JSONResponse) VisitAdminArchivePromptResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46438,9 +39233,9 @@ func (response AdminProjectAction400JSONResponse) VisitAdminProjectActionRespons
 	return err
 }
 
-type AdminProjectAction403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminArchivePrompt403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminProjectAction403JSONResponse) VisitAdminProjectActionResponse(w http.ResponseWriter) error {
+func (response AdminArchivePrompt403JSONResponse) VisitAdminArchivePromptResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46452,9 +39247,9 @@ func (response AdminProjectAction403JSONResponse) VisitAdminProjectActionRespons
 	return err
 }
 
-type AdminProjectAction404JSONResponse struct{ NotFoundJSONResponse }
+type AdminArchivePrompt404JSONResponse struct{ NotFoundJSONResponse }
 
-func (response AdminProjectAction404JSONResponse) VisitAdminProjectActionResponse(w http.ResponseWriter) error {
+func (response AdminArchivePrompt404JSONResponse) VisitAdminArchivePromptResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -46466,16 +39261,316 @@ func (response AdminProjectAction404JSONResponse) VisitAdminProjectActionRespons
 	return err
 }
 
-type AdminProjectAction409JSONResponse struct{ ConflictJSONResponse }
+type AdminSavePromptDraftRequestObject struct {
+	Body *AdminSavePromptDraftJSONRequestBody
+}
 
-func (response AdminProjectAction409JSONResponse) VisitAdminProjectActionResponse(w http.ResponseWriter) error {
+type AdminSavePromptDraftResponseObject interface {
+	VisitAdminSavePromptDraftResponse(w http.ResponseWriter) error
+}
+
+type AdminSavePromptDraft204Response struct {
+}
+
+func (response AdminSavePromptDraft204Response) VisitAdminSavePromptDraftResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type AdminSavePromptDraft400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminSavePromptDraft400JSONResponse) VisitAdminSavePromptDraftResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminSavePromptDraft403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminSavePromptDraft403JSONResponse) VisitAdminSavePromptDraftResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPreviewPromptRequestObject struct {
+	Body *AdminPreviewPromptJSONRequestBody
+}
+
+type AdminPreviewPromptResponseObject interface {
+	VisitAdminPreviewPromptResponse(w http.ResponseWriter) error
+}
+
+type AdminPreviewPrompt200JSONResponse struct {
+	Rendered string `json:"rendered"`
+}
+
+func (response AdminPreviewPrompt200JSONResponse) VisitAdminPreviewPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPreviewPrompt400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminPreviewPrompt400JSONResponse) VisitAdminPreviewPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPreviewPrompt403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminPreviewPrompt403JSONResponse) VisitAdminPreviewPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPublishPromptRequestObject struct {
+	Body *AdminPublishPromptJSONRequestBody
+}
+
+type AdminPublishPromptResponseObject interface {
+	VisitAdminPublishPromptResponse(w http.ResponseWriter) error
+}
+
+type AdminPublishPrompt200JSONResponse struct {
+	Version int `json:"version"`
+}
+
+func (response AdminPublishPrompt200JSONResponse) VisitAdminPublishPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPublishPrompt400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminPublishPrompt400JSONResponse) VisitAdminPublishPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPublishPrompt403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminPublishPrompt403JSONResponse) VisitAdminPublishPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminPublishPrompt404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminPublishPrompt404JSONResponse) VisitAdminPublishPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRollbackPromptRequestObject struct {
+	Body *AdminRollbackPromptJSONRequestBody
+}
+
+type AdminRollbackPromptResponseObject interface {
+	VisitAdminRollbackPromptResponse(w http.ResponseWriter) error
+}
+
+type AdminRollbackPrompt200JSONResponse struct {
+	RollbackOf int `json:"rollbackOf"`
+	Version    int `json:"version"`
+}
+
+func (response AdminRollbackPrompt200JSONResponse) VisitAdminRollbackPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRollbackPrompt400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminRollbackPrompt400JSONResponse) VisitAdminRollbackPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRollbackPrompt403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminRollbackPrompt403JSONResponse) VisitAdminRollbackPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRollbackPrompt404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminRollbackPrompt404JSONResponse) VisitAdminRollbackPromptResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListPromptSpecsRequestObject struct {
+}
+
+type AdminListPromptSpecsResponseObject interface {
+	VisitAdminListPromptSpecsResponse(w http.ResponseWriter) error
+}
+
+type AdminListPromptSpecs200JSONResponse []PromptSpec
+
+func (response AdminListPromptSpecs200JSONResponse) VisitAdminListPromptSpecsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListPromptSpecs403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListPromptSpecs403JSONResponse) VisitAdminListPromptSpecsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListPromptVersionsRequestObject struct {
+	Params AdminListPromptVersionsParams
+}
+
+type AdminListPromptVersionsResponseObject interface {
+	VisitAdminListPromptVersionsResponse(w http.ResponseWriter) error
+}
+
+type AdminListPromptVersions200JSONResponse []PromptVersion
+
+func (response AdminListPromptVersions200JSONResponse) VisitAdminListPromptVersionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListPromptVersions400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminListPromptVersions400JSONResponse) VisitAdminListPromptVersionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminListPromptVersions403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminListPromptVersions403JSONResponse) VisitAdminListPromptVersionsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -46839,52 +39934,6 @@ func (response AdminStatsSeries403JSONResponse) VisitAdminStatsSeriesResponse(w 
 	return err
 }
 
-type AdminListTasksRequestObject struct {
-	Params AdminListTasksParams
-}
-
-type AdminListTasksResponseObject interface {
-	VisitAdminListTasksResponse(w http.ResponseWriter) error
-}
-
-type AdminListTasks200JSONResponse struct {
-	Counts       map[string]int `json:"counts"`
-	Items        []OpsTask      `json:"items"`
-	NextCursorAt string         `json:"nextCursorAt"`
-	NextCursorId string         `json:"nextCursorId"`
-
-	// Stuck 卡住的条数。⚠️ 与列表用**同一套过滤条件** ——
-	// 分开算的话运维看到的数与下面列出来的不是同一批，
-	// **而两个数字都"没错"**（CD-56）。
-	Stuck int `json:"stuck"`
-}
-
-func (response AdminListTasks200JSONResponse) VisitAdminListTasksResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminListTasks403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response AdminListTasks403JSONResponse) VisitAdminListTasksResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type AdminSearchUsersRequestObject struct {
 	Params AdminSearchUsersParams
 }
@@ -47018,20 +40067,17 @@ func (response AdminBanUser404JSONResponse) VisitAdminBanUserResponse(w http.Res
 	return err
 }
 
-type AdminListWorksRequestObject struct {
-	Params AdminListWorksParams
+type AdminListVoicesRequestObject struct {
+	Params AdminListVoicesParams
 }
 
-type AdminListWorksResponseObject interface {
-	VisitAdminListWorksResponse(w http.ResponseWriter) error
+type AdminListVoicesResponseObject interface {
+	VisitAdminListVoicesResponse(w http.ResponseWriter) error
 }
 
-type AdminListWorks200JSONResponse struct {
-	Items      []Work `json:"items"`
-	NextCursor string `json:"nextCursor"`
-}
+type AdminListVoices200JSONResponse []AdminVoiceItem
 
-func (response AdminListWorks200JSONResponse) VisitAdminListWorksResponse(w http.ResponseWriter) error {
+func (response AdminListVoices200JSONResponse) VisitAdminListVoicesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -47043,9 +40089,9 @@ func (response AdminListWorks200JSONResponse) VisitAdminListWorksResponse(w http
 	return err
 }
 
-type AdminListWorks403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminListVoices403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminListWorks403JSONResponse) VisitAdminListWorksResponse(w http.ResponseWriter) error {
+func (response AdminListVoices403JSONResponse) VisitAdminListVoicesResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -47057,111 +40103,25 @@ func (response AdminListWorks403JSONResponse) VisitAdminListWorksResponse(w http
 	return err
 }
 
-type AdminGetWorkRequestObject struct {
-	Id Id `json:"id"`
+type AdminSaveVoiceRequestObject struct {
+	Body *AdminSaveVoiceJSONRequestBody
 }
 
-type AdminGetWorkResponseObject interface {
-	VisitAdminGetWorkResponse(w http.ResponseWriter) error
+type AdminSaveVoiceResponseObject interface {
+	VisitAdminSaveVoiceResponse(w http.ResponseWriter) error
 }
 
-type AdminGetWork200JSONResponse struct {
-	AuthorUserId string    `json:"authorUserId"`
-	CreatedAt    time.Time `json:"createdAt"`
-
-	// HasMedia ⚠️ 与公开墙一致，**不下发 mediaObjectId**。
-	HasMedia bool           `json:"hasMedia"`
-	History  []ReviewRecord `json:"history"`
-
-	// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	Id Id `json:"id"`
-
-	// IsFeatured ⚠️ **加精才是公开发布的那一次决定**。公开可见 =
-	// `approved ∧ featured ∧ ¬offline`，三个条件缺一不可 ——
-	// 审核只回答"有没有违规"。
-	IsFeatured bool `json:"isFeatured"`
-	IsOffline  bool `json:"isOffline"`
-
-	// ReviewReason 驳回/下架的原因，**原样给作者看**；不给的话他只能来问客服。
-	ReviewReason string `json:"reviewReason"`
-
-	// ReviewStatus ⚠️ **审核结论**，与"当前是否可见"是两件事。下架用独立的
-	// `isOffline` 位 —— 把审核状态改回 `rejected` 的话两者再也分不开，
-	// 重新上架时不知道该恢复成什么。
-	ReviewStatus AdminGetWork200JSONResponseBodyReviewStatus `json:"reviewStatus"`
-	SourceId     string                                      `json:"sourceId"`
-	SourceType   AdminGetWork200JSONResponseBodySourceType   `json:"sourceType"`
-	SubmittedAt  string                                      `json:"submittedAt"`
-	Title        string                                      `json:"title"`
-	WorkspaceId  string                                      `json:"workspaceId"`
+type AdminSaveVoice204Response struct {
 }
 
-func (response AdminGetWork200JSONResponse) VisitAdminGetWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
+func (response AdminSaveVoice204Response) VisitAdminSaveVoiceResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
 }
 
-type AdminGetWork403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminSaveVoice400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response AdminGetWork403JSONResponse) VisitAdminGetWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminGetWork404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminGetWork404JSONResponse) VisitAdminGetWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminReviewWorkRequestObject struct {
-	Id   Id `json:"id"`
-	Body *AdminReviewWorkJSONRequestBody
-}
-
-type AdminReviewWorkResponseObject interface {
-	VisitAdminReviewWorkResponse(w http.ResponseWriter) error
-}
-
-type AdminReviewWork200JSONResponse Work
-
-func (response AdminReviewWork200JSONResponse) VisitAdminReviewWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminReviewWork400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AdminReviewWork400JSONResponse) VisitAdminReviewWorkResponse(w http.ResponseWriter) error {
+func (response AdminSaveVoice400JSONResponse) VisitAdminSaveVoiceResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -47173,9 +40133,9 @@ func (response AdminReviewWork400JSONResponse) VisitAdminReviewWorkResponse(w ht
 	return err
 }
 
-type AdminReviewWork403JSONResponse struct{ ForbiddenJSONResponse }
+type AdminSaveVoice403JSONResponse struct{ ForbiddenJSONResponse }
 
-func (response AdminReviewWork403JSONResponse) VisitAdminReviewWorkResponse(w http.ResponseWriter) error {
+func (response AdminSaveVoice403JSONResponse) VisitAdminSaveVoiceResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -47183,34 +40143,6 @@ func (response AdminReviewWork403JSONResponse) VisitAdminReviewWorkResponse(w ht
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminReviewWork404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AdminReviewWork404JSONResponse) VisitAdminReviewWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AdminReviewWork409JSONResponse Error
-
-func (response AdminReviewWork409JSONResponse) VisitAdminReviewWorkResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -48218,145 +41150,6 @@ func (response AgentSkillCover404JSONResponse) VisitAgentSkillCoverResponse(w ht
 	return err
 }
 
-type SendVerificationCodeRequestObject struct {
-	Body *SendVerificationCodeJSONRequestBody
-}
-
-type SendVerificationCodeResponseObject interface {
-	VisitSendVerificationCodeResponse(w http.ResponseWriter) error
-}
-
-type SendVerificationCode204Response struct {
-}
-
-func (response SendVerificationCode204Response) VisitSendVerificationCodeResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type SendVerificationCode429JSONResponse struct{ RateLimitedJSONResponse }
-
-func (response SendVerificationCode429JSONResponse) VisitSendVerificationCodeResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(429)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type LoginRequestObject struct {
-	Body *LoginJSONRequestBody
-}
-
-type LoginResponseObject interface {
-	VisitLoginResponse(w http.ResponseWriter) error
-}
-
-type Login200ResponseHeaders struct {
-	XTraceId *string
-}
-
-type Login200JSONResponse struct {
-	Body    TokenPair
-	Headers Login200ResponseHeaders
-}
-
-func (response Login200JSONResponse) VisitLoginResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type Login401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response Login401JSONResponse) VisitLoginResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type Login403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response Login403JSONResponse) VisitLoginResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type Login429JSONResponse struct{ RateLimitedJSONResponse }
-
-func (response Login429JSONResponse) VisitLoginResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(429)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type LogoutRequestObject struct {
-}
-
-type LogoutResponseObject interface {
-	VisitLogoutResponse(w http.ResponseWriter) error
-}
-
-type Logout204Response struct {
-}
-
-func (response Logout204Response) VisitLogoutResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type Logout401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response Logout401JSONResponse) VisitLogoutResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type GetCurrentUserRequestObject struct {
 }
 
@@ -48395,93 +41188,32 @@ func (response GetCurrentUser401JSONResponse) VisitGetCurrentUserResponse(w http
 	return err
 }
 
-type ResetPasswordRequestObject struct {
-	Body *ResetPasswordJSONRequestBody
+type UpdateProfileRequestObject struct {
+	Body *UpdateProfileJSONRequestBody
 }
 
-type ResetPasswordResponseObject interface {
-	VisitResetPasswordResponse(w http.ResponseWriter) error
+type UpdateProfileResponseObject interface {
+	VisitUpdateProfileResponse(w http.ResponseWriter) error
 }
 
-type ResetPassword204Response struct {
+type UpdateProfile204Response struct {
 }
 
-func (response ResetPassword204Response) VisitResetPasswordResponse(w http.ResponseWriter) error {
+func (response UpdateProfile204Response) VisitUpdateProfileResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
 
-type RefreshTokenRequestObject struct {
-	Body *RefreshTokenJSONRequestBody
-}
+type UpdateProfile400JSONResponse struct{ BadRequestJSONResponse }
 
-type RefreshTokenResponseObject interface {
-	VisitRefreshTokenResponse(w http.ResponseWriter) error
-}
-
-type RefreshToken200JSONResponse TokenPair
-
-func (response RefreshToken200JSONResponse) VisitRefreshTokenResponse(w http.ResponseWriter) error {
+func (response UpdateProfile400JSONResponse) VisitUpdateProfileResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RefreshToken401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response RefreshToken401JSONResponse) VisitRefreshTokenResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RegisterRequestObject struct {
-	Body *RegisterJSONRequestBody
-}
-
-type RegisterResponseObject interface {
-	VisitRegisterResponse(w http.ResponseWriter) error
-}
-
-type Register200JSONResponse TokenPair
-
-func (response Register200JSONResponse) VisitRegisterResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type Register409JSONResponse struct{ ConflictJSONResponse }
-
-func (response Register409JSONResponse) VisitRegisterResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
+	w.WriteHeader(400)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -48697,127 +41429,6 @@ func (response ListCreations400JSONResponse) VisitListCreationsResponse(w http.R
 type ListCreations403JSONResponse struct{ ForbiddenJSONResponse }
 
 func (response ListCreations403JSONResponse) VisitListCreationsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetCreditsRequestObject struct {
-	Params GetCreditsParams
-}
-
-type GetCreditsResponseObject interface {
-	VisitGetCreditsResponse(w http.ResponseWriter) error
-}
-
-type GetCredits200JSONResponse struct {
-	Balance int `json:"balance"`
-
-	// Grants 各批次剩余与到期时间，让用户看懂"哪些会先过期"
-	Grants []struct {
-		Amount   *int       `json:"amount,omitempty"`
-		ExpireAt *time.Time `json:"expireAt,omitempty"`
-
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        *Id     `json:"id,omitempty"`
-		Remaining *int    `json:"remaining,omitempty"`
-		Source    *string `json:"source,omitempty"`
-	} `json:"grants"`
-}
-
-func (response GetCredits200JSONResponse) VisitGetCreditsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetCredits403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response GetCredits403JSONResponse) VisitGetCreditsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListCreditTransactionsRequestObject struct {
-	Params ListCreditTransactionsParams
-}
-
-type ListCreditTransactionsResponseObject interface {
-	VisitListCreditTransactionsResponse(w http.ResponseWriter) error
-}
-
-type ListCreditTransactions200JSONResponse struct {
-	HasMore bool `json:"hasMore"`
-	Items   []struct {
-		BalanceAfter int `json:"balanceAfter"`
-
-		// Change 正数为进账，负数为消费/过期
-		Change    int       `json:"change"`
-		CreatedAt time.Time `json:"createdAt"`
-
-		// Id Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-		Id        Id      `json:"id"`
-		ModelName *string `json:"modelName,omitempty"`
-
-		// OperationCode 只有生成有（如 text2img）
-		OperationCode *string `json:"operationCode,omitempty"`
-
-		// OperationName 操作的中文名（如 文生图），取自后台的操作目录
-		OperationName *string `json:"operationName,omitempty"`
-
-		// ProjectDeleted 所属项目已删除（名字照常给出，前端不再链过去）
-		ProjectDeleted *bool `json:"projectDeleted,omitempty"`
-
-		// ProjectId 以下几项只为展示（2026-11-01）：服务端按 `refType` 关回业务表（生成 / 提示词合成 /
-		// Agent 对话 / 成片渲染），说清「哪个项目、什么生成、哪个模型」。关不上就不出现，
-		// 流水本身不依赖它们。
-		ProjectId   *Id     `json:"projectId,omitempty"`
-		ProjectName *string `json:"projectName,omitempty"`
-		Reason      *string `json:"reason,omitempty"`
-		RefId       *string `json:"refId,omitempty"`
-
-		// RefTitle 成片渲染是时间线名，Agent 对话是会话标题
-		RefTitle *string                                            `json:"refTitle,omitempty"`
-		RefType  *string                                            `json:"refType,omitempty"`
-		Type     ListCreditTransactions200JSONResponseBodyItemsType `json:"type"`
-	} `json:"items"`
-	NextCursor *string `json:"nextCursor"`
-}
-
-func (response ListCreditTransactions200JSONResponse) VisitListCreditTransactionsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListCreditTransactions403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListCreditTransactions403JSONResponse) VisitListCreditTransactionsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -49438,6 +42049,57 @@ func (response CancelGeneration409JSONResponse) VisitCancelGenerationResponse(w 
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(409)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListGenerationOutputsRequestObject struct {
+	GenerationId GenerationId `json:"generationId"`
+	Params       ListGenerationOutputsParams
+}
+
+type ListGenerationOutputsResponseObject interface {
+	VisitListGenerationOutputsResponse(w http.ResponseWriter) error
+}
+
+type ListGenerationOutputs200JSONResponse []GenerationOutput
+
+func (response ListGenerationOutputs200JSONResponse) VisitListGenerationOutputsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListGenerationOutputs403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response ListGenerationOutputs403JSONResponse) VisitListGenerationOutputsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListGenerationOutputs404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response ListGenerationOutputs404JSONResponse) VisitListGenerationOutputsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -51702,770 +44364,6 @@ func (response UpdateMarketingProduct409JSONResponse) VisitUpdateMarketingProduc
 	return err
 }
 
-type GetMcpApprovalRequestObject struct {
-	QuoteId Id `json:"quoteId"`
-}
-
-type GetMcpApprovalResponseObject interface {
-	VisitGetMcpApprovalResponse(w http.ResponseWriter) error
-}
-
-type GetMcpApproval200JSONResponse McpApproval
-
-func (response GetMcpApproval200JSONResponse) VisitGetMcpApprovalResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpApproval401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response GetMcpApproval401JSONResponse) VisitGetMcpApprovalResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpApproval403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response GetMcpApproval403JSONResponse) VisitGetMcpApprovalResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpApproval404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response GetMcpApproval404JSONResponse) VisitGetMcpApprovalResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpApproval409JSONResponse struct{ ConflictJSONResponse }
-
-func (response GetMcpApproval409JSONResponse) VisitGetMcpApprovalResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuoteRequestObject struct {
-	QuoteId Id `json:"quoteId"`
-}
-
-type ApproveMcpQuoteResponseObject interface {
-	VisitApproveMcpQuoteResponse(w http.ResponseWriter) error
-}
-
-type ApproveMcpQuote200JSONResponse McpApproval
-
-func (response ApproveMcpQuote200JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuote401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response ApproveMcpQuote401JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuote403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ApproveMcpQuote403JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuote404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response ApproveMcpQuote404JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuote409JSONResponse struct{ ConflictJSONResponse }
-
-func (response ApproveMcpQuote409JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ApproveMcpQuote422JSONResponse struct {
-	UnprocessableEntityJSONResponse
-}
-
-func (response ApproveMcpQuote422JSONResponse) VisitApproveMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(422)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RejectMcpQuoteRequestObject struct {
-	QuoteId Id `json:"quoteId"`
-}
-
-type RejectMcpQuoteResponseObject interface {
-	VisitRejectMcpQuoteResponse(w http.ResponseWriter) error
-}
-
-type RejectMcpQuote200JSONResponse McpApproval
-
-func (response RejectMcpQuote200JSONResponse) VisitRejectMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RejectMcpQuote401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response RejectMcpQuote401JSONResponse) VisitRejectMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RejectMcpQuote403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RejectMcpQuote403JSONResponse) VisitRejectMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RejectMcpQuote404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RejectMcpQuote404JSONResponse) VisitRejectMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RejectMcpQuote409JSONResponse struct{ ConflictJSONResponse }
-
-func (response RejectMcpQuote409JSONResponse) VisitRejectMcpQuoteResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpConsentRequestObject struct {
-	Params GetMcpConsentParams
-}
-
-type GetMcpConsentResponseObject interface {
-	VisitGetMcpConsentResponse(w http.ResponseWriter) error
-}
-
-type GetMcpConsent200JSONResponse McpConsentInfo
-
-func (response GetMcpConsent200JSONResponse) VisitGetMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpConsent400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response GetMcpConsent400JSONResponse) VisitGetMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpConsent401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response GetMcpConsent401JSONResponse) VisitGetMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SubmitMcpConsentRequestObject struct {
-	Body *SubmitMcpConsentJSONRequestBody
-}
-
-type SubmitMcpConsentResponseObject interface {
-	VisitSubmitMcpConsentResponse(w http.ResponseWriter) error
-}
-
-type SubmitMcpConsent200JSONResponse McpConsentResult
-
-func (response SubmitMcpConsent200JSONResponse) VisitSubmitMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SubmitMcpConsent400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SubmitMcpConsent400JSONResponse) VisitSubmitMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SubmitMcpConsent401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response SubmitMcpConsent401JSONResponse) VisitSubmitMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SubmitMcpConsent403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response SubmitMcpConsent403JSONResponse) VisitSubmitMcpConsentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpClientSnippetsRequestObject struct {
-}
-
-type GetMcpClientSnippetsResponseObject interface {
-	VisitGetMcpClientSnippetsResponse(w http.ResponseWriter) error
-}
-
-type GetMcpClientSnippets200JSONResponse McpClientSnippets
-
-func (response GetMcpClientSnippets200JSONResponse) VisitGetMcpClientSnippetsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetMcpClientSnippets401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response GetMcpClientSnippets401JSONResponse) VisitGetMcpClientSnippetsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListMcpGrantsRequestObject struct {
-}
-
-type ListMcpGrantsResponseObject interface {
-	VisitListMcpGrantsResponse(w http.ResponseWriter) error
-}
-
-type ListMcpGrants200JSONResponse []McpGrant
-
-func (response ListMcpGrants200JSONResponse) VisitListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListMcpGrants401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response ListMcpGrants401JSONResponse) VisitListMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpGrantRequestObject struct {
-	GrantId Id `json:"grantId"`
-}
-
-type RevokeMcpGrantResponseObject interface {
-	VisitRevokeMcpGrantResponse(w http.ResponseWriter) error
-}
-
-type RevokeMcpGrant204Response struct {
-}
-
-func (response RevokeMcpGrant204Response) VisitRevokeMcpGrantResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RevokeMcpGrant401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response RevokeMcpGrant401JSONResponse) VisitRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpGrant404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RevokeMcpGrant404JSONResponse) VisitRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpGrant409JSONResponse struct{ ConflictJSONResponse }
-
-func (response RevokeMcpGrant409JSONResponse) VisitRevokeMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateMcpGrantRequestObject struct {
-	GrantId Id `json:"grantId"`
-	Body    *UpdateMcpGrantJSONRequestBody
-}
-
-type UpdateMcpGrantResponseObject interface {
-	VisitUpdateMcpGrantResponse(w http.ResponseWriter) error
-}
-
-type UpdateMcpGrant200JSONResponse McpGrant
-
-func (response UpdateMcpGrant200JSONResponse) VisitUpdateMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateMcpGrant400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response UpdateMcpGrant400JSONResponse) VisitUpdateMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateMcpGrant401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response UpdateMcpGrant401JSONResponse) VisitUpdateMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateMcpGrant404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response UpdateMcpGrant404JSONResponse) VisitUpdateMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateMcpGrant409JSONResponse struct{ ConflictJSONResponse }
-
-func (response UpdateMcpGrant409JSONResponse) VisitUpdateMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListMcpAccessKeysRequestObject struct {
-}
-
-type ListMcpAccessKeysResponseObject interface {
-	VisitListMcpAccessKeysResponse(w http.ResponseWriter) error
-}
-
-type ListMcpAccessKeys200JSONResponse []McpAccessKey
-
-func (response ListMcpAccessKeys200JSONResponse) VisitListMcpAccessKeysResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListMcpAccessKeys401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response ListMcpAccessKeys401JSONResponse) VisitListMcpAccessKeysResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateMcpAccessKeyRequestObject struct {
-	Body *CreateMcpAccessKeyJSONRequestBody
-}
-
-type CreateMcpAccessKeyResponseObject interface {
-	VisitCreateMcpAccessKeyResponse(w http.ResponseWriter) error
-}
-
-type CreateMcpAccessKey201JSONResponse McpAccessKeyCreated
-
-func (response CreateMcpAccessKey201JSONResponse) VisitCreateMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateMcpAccessKey400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response CreateMcpAccessKey400JSONResponse) VisitCreateMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateMcpAccessKey401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response CreateMcpAccessKey401JSONResponse) VisitCreateMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateMcpAccessKey403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response CreateMcpAccessKey403JSONResponse) VisitCreateMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpAccessKeyRequestObject struct {
-	KeyId Id `json:"keyId"`
-}
-
-type RevokeMcpAccessKeyResponseObject interface {
-	VisitRevokeMcpAccessKeyResponse(w http.ResponseWriter) error
-}
-
-type RevokeMcpAccessKey204Response struct {
-}
-
-func (response RevokeMcpAccessKey204Response) VisitRevokeMcpAccessKeyResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RevokeMcpAccessKey401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response RevokeMcpAccessKey401JSONResponse) VisitRevokeMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpAccessKey404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RevokeMcpAccessKey404JSONResponse) VisitRevokeMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeMcpAccessKey409JSONResponse struct{ ConflictJSONResponse }
-
-func (response RevokeMcpAccessKey409JSONResponse) VisitRevokeMcpAccessKeyResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type ListMyMediaRequestObject struct {
 	Params ListMyMediaParams
 }
@@ -53001,33 +44899,6 @@ func (response ListMediaUsages403JSONResponse) VisitListMediaUsagesResponse(w ht
 	return err
 }
 
-type GetMembershipRequestObject struct {
-	Params GetMembershipParams
-}
-
-type GetMembershipResponseObject interface {
-	VisitGetMembershipResponse(w http.ResponseWriter) error
-}
-
-type GetMembership200JSONResponse struct {
-	// Current 一次会员资格。挂在**付费主体**上而不是 user —— 团队工作区的成员
-	// 应当继承工作区的等级权益。
-	Current *Membership  `json:"current,omitempty"`
-	History []Membership `json:"history"`
-}
-
-func (response GetMembership200JSONResponse) VisitGetMembershipResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 type ListUsableModelsRequestObject struct {
 	Params ListUsableModelsParams
 }
@@ -53242,439 +45113,6 @@ func (response UnreadCount200JSONResponse) VisitUnreadCountResponse(w http.Respo
 	w.WriteHeader(200)
 	_, err := buf.WriteTo(w)
 	return err
-}
-
-type ListOrdersRequestObject struct {
-	Params ListOrdersParams
-}
-
-type ListOrdersResponseObject interface {
-	VisitListOrdersResponse(w http.ResponseWriter) error
-}
-
-type ListOrders200JSONResponse []PurchaseOrder
-
-func (response ListOrders200JSONResponse) VisitListOrdersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateOrderRequestObject struct {
-	Params CreateOrderParams
-	Body   *CreateOrderJSONRequestBody
-}
-
-type CreateOrderResponseObject interface {
-	VisitCreateOrderResponse(w http.ResponseWriter) error
-}
-
-type CreateOrder200JSONResponse PurchaseQuote
-
-func (response CreateOrder200JSONResponse) VisitCreateOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateOrder201JSONResponse PurchaseQuote
-
-func (response CreateOrder201JSONResponse) VisitCreateOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateOrder400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response CreateOrder400JSONResponse) VisitCreateOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  GetOrderParams
-}
-
-type GetOrderResponseObject interface {
-	VisitGetOrderResponse(w http.ResponseWriter) error
-}
-
-type GetOrder200JSONResponse PurchaseOrder
-
-func (response GetOrder200JSONResponse) VisitGetOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetOrder404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response GetOrder404JSONResponse) VisitGetOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CancelOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  CancelOrderParams
-}
-
-type CancelOrderResponseObject interface {
-	VisitCancelOrderResponse(w http.ResponseWriter) error
-}
-
-type CancelOrder200JSONResponse PurchaseOrder
-
-func (response CancelOrder200JSONResponse) VisitCancelOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CancelOrder404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response CancelOrder404JSONResponse) VisitCancelOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DevPayOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  DevPayOrderParams
-}
-
-type DevPayOrderResponseObject interface {
-	VisitDevPayOrderResponse(w http.ResponseWriter) error
-}
-
-type DevPayOrder200JSONResponse struct {
-	AlreadyFulfilled bool `json:"alreadyFulfilled"`
-
-	// GrantId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	GrantId *Id `json:"grantId,omitempty"`
-
-	// MembershipId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	MembershipId *Id           `json:"membershipId,omitempty"`
-	Order        PurchaseOrder `json:"order"`
-}
-
-func (response DevPayOrder200JSONResponse) VisitDevPayOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DevPayOrder404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response DevPayOrder404JSONResponse) VisitDevPayOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreatePaymentRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  CreatePaymentParams
-	Body    *CreatePaymentJSONRequestBody
-}
-
-type CreatePaymentResponseObject interface {
-	VisitCreatePaymentResponse(w http.ResponseWriter) error
-}
-
-type CreatePayment200JSONResponse PayParams
-
-func (response CreatePayment200JSONResponse) VisitCreatePaymentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreatePayment404Response struct {
-}
-
-func (response CreatePayment404Response) VisitCreatePaymentResponse(w http.ResponseWriter) error {
-	w.WriteHeader(404)
-	return nil
-}
-
-type CreatePayment409JSONResponse struct{ ConflictJSONResponse }
-
-func (response CreatePayment409JSONResponse) VisitCreatePaymentResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RefundOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  RefundOrderParams
-	Body    *RefundOrderJSONRequestBody
-}
-
-type RefundOrderResponseObject interface {
-	VisitRefundOrderResponse(w http.ResponseWriter) error
-}
-
-type RefundOrder200JSONResponse struct {
-	// Refund 一笔订单退款。
-	Refund Refund `json:"refund"`
-}
-
-func (response RefundOrder200JSONResponse) VisitRefundOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RefundOrder202JSONResponse struct {
-	Error *string `json:"error,omitempty"`
-
-	// Refund 一笔订单退款。
-	Refund *Refund `json:"refund,omitempty"`
-}
-
-func (response RefundOrder202JSONResponse) VisitRefundOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(202)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RefundOrder409JSONResponse struct{ ConflictJSONResponse }
-
-func (response RefundOrder409JSONResponse) VisitRefundOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CheckRefundRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  CheckRefundParams
-}
-
-type CheckRefundResponseObject interface {
-	VisitCheckRefundResponse(w http.ResponseWriter) error
-}
-
-type CheckRefund200JSONResponse RefundEligibility
-
-func (response CheckRefund200JSONResponse) VisitCheckRefundResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CheckRefund404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response CheckRefund404JSONResponse) VisitCheckRefundResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListRefundsRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  ListRefundsParams
-}
-
-type ListRefundsResponseObject interface {
-	VisitListRefundsResponse(w http.ResponseWriter) error
-}
-
-type ListRefunds200JSONResponse []Refund
-
-func (response ListRefunds200JSONResponse) VisitListRefundsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SyncOrderRequestObject struct {
-	OrderId string `json:"orderId"`
-	Params  SyncOrderParams
-}
-
-type SyncOrderResponseObject interface {
-	VisitSyncOrderResponse(w http.ResponseWriter) error
-}
-
-type SyncOrder200JSONResponse struct {
-	Order PurchaseOrder `json:"order"`
-	Paid  bool          `json:"paid"`
-}
-
-func (response SyncOrder200JSONResponse) VisitSyncOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SyncOrder404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response SyncOrder404JSONResponse) VisitSyncOrderResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PaymentCallbackRequestObject struct {
-	Channel      string `json:"channel"`
-	JSONBody     *PaymentCallbackJSONRequestBody
-	FormdataBody *PaymentCallbackFormdataRequestBody
-}
-
-type PaymentCallbackResponseObject interface {
-	VisitPaymentCallbackResponse(w http.ResponseWriter) error
-}
-
-type PaymentCallback200Response struct {
-}
-
-func (response PaymentCallback200Response) VisitPaymentCallbackResponse(w http.ResponseWriter) error {
-	w.WriteHeader(200)
-	return nil
-}
-
-type PaymentCallback400Response struct {
-}
-
-func (response PaymentCallback400Response) VisitPaymentCallbackResponse(w http.ResponseWriter) error {
-	w.WriteHeader(400)
-	return nil
-}
-
-type PaymentCallback500Response struct {
-}
-
-func (response PaymentCallback500Response) VisitPaymentCallbackResponse(w http.ResponseWriter) error {
-	w.WriteHeader(500)
-	return nil
 }
 
 type ListProjectTemplatesRequestObject struct {
@@ -58282,16 +49720,16 @@ func (response GenerateStoryboard502JSONResponse) VisitGenerateStoryboardRespons
 	return err
 }
 
-type ListReceivedSharesRequestObject struct {
+type GetAppSettingsRequestObject struct {
 }
 
-type ListReceivedSharesResponseObject interface {
-	VisitListReceivedSharesResponse(w http.ResponseWriter) error
+type GetAppSettingsResponseObject interface {
+	VisitGetAppSettingsResponse(w http.ResponseWriter) error
 }
 
-type ListReceivedShares200JSONResponse []ReceivedShare
+type GetAppSettings200JSONResponse AppSettings
 
-func (response ListReceivedShares200JSONResponse) VisitListReceivedSharesResponse(w http.ResponseWriter) error {
+func (response GetAppSettings200JSONResponse) VisitGetAppSettingsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -58303,18 +49741,17 @@ func (response ListReceivedShares200JSONResponse) VisitListReceivedSharesRespons
 	return err
 }
 
-type OpenSharedResourceRequestObject struct {
-	ResourceType OpenSharedResourceParamsResourceType `json:"resourceType"`
-	ResourceId   Id                                   `json:"resourceId"`
+type UpdateAppSettingsRequestObject struct {
+	Body *UpdateAppSettingsJSONRequestBody
 }
 
-type OpenSharedResourceResponseObject interface {
-	VisitOpenSharedResourceResponse(w http.ResponseWriter) error
+type UpdateAppSettingsResponseObject interface {
+	VisitUpdateAppSettingsResponse(w http.ResponseWriter) error
 }
 
-type OpenSharedResource200JSONResponse SharedResource
+type UpdateAppSettings200JSONResponse AppSettingsUpdated
 
-func (response OpenSharedResource200JSONResponse) VisitOpenSharedResourceResponse(w http.ResponseWriter) error {
+func (response UpdateAppSettings200JSONResponse) VisitUpdateAppSettingsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -58326,9 +49763,9 @@ func (response OpenSharedResource200JSONResponse) VisitOpenSharedResourceRespons
 	return err
 }
 
-type OpenSharedResource400JSONResponse struct{ BadRequestJSONResponse }
+type UpdateAppSettings400JSONResponse struct{ BadRequestJSONResponse }
 
-func (response OpenSharedResource400JSONResponse) VisitOpenSharedResourceResponse(w http.ResponseWriter) error {
+func (response UpdateAppSettings400JSONResponse) VisitUpdateAppSettingsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -58340,48 +49777,16 @@ func (response OpenSharedResource400JSONResponse) VisitOpenSharedResourceRespons
 	return err
 }
 
-type OpenSharedResource403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response OpenSharedResource403JSONResponse) VisitOpenSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
+type GetDiagnosticsRequestObject struct {
 }
 
-type OpenSharedResource404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response OpenSharedResource404JSONResponse) VisitOpenSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
+type GetDiagnosticsResponseObject interface {
+	VisitGetDiagnosticsResponse(w http.ResponseWriter) error
 }
 
-type ListShowcaseRequestObject struct {
-	Params ListShowcaseParams
-}
+type GetDiagnostics200JSONResponse DiagnosticsReport
 
-type ListShowcaseResponseObject interface {
-	VisitListShowcaseResponse(w http.ResponseWriter) error
-}
-
-type ListShowcase200JSONResponse struct {
-	Items      []ShowcaseItem `json:"items"`
-	NextCursor string         `json:"nextCursor"`
-}
-
-func (response ListShowcase200JSONResponse) VisitListShowcaseResponse(w http.ResponseWriter) error {
+func (response GetDiagnostics200JSONResponse) VisitGetDiagnosticsResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -58393,9 +49798,31 @@ func (response ListShowcase200JSONResponse) VisitListShowcaseResponse(w http.Res
 	return err
 }
 
-type ListShowcase400JSONResponse struct{ BadRequestJSONResponse }
+type TestS3StorageRequestObject struct {
+	Body *TestS3StorageJSONRequestBody
+}
 
-func (response ListShowcase400JSONResponse) VisitListShowcaseResponse(w http.ResponseWriter) error {
+type TestS3StorageResponseObject interface {
+	VisitTestS3StorageResponse(w http.ResponseWriter) error
+}
+
+type TestS3Storage200JSONResponse S3TestResult
+
+func (response TestS3Storage200JSONResponse) VisitTestS3StorageResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TestS3Storage400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response TestS3Storage400JSONResponse) VisitTestS3StorageResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -58407,90 +49834,23 @@ func (response ListShowcase400JSONResponse) VisitListShowcaseResponse(w http.Res
 	return err
 }
 
-type ShowcaseCoverRequestObject struct {
-	WorkId Id `json:"workId"`
-	Params ShowcaseCoverParams
+type GetStorageUsageRequestObject struct {
 }
 
-type ShowcaseCoverResponseObject interface {
-	VisitShowcaseCoverResponse(w http.ResponseWriter) error
+type GetStorageUsageResponseObject interface {
+	VisitGetStorageUsageResponse(w http.ResponseWriter) error
 }
 
-type ShowcaseCover200ImageResponse struct {
-	Body          io.Reader
-	ContentType   string
-	ContentLength int64
-}
+type GetStorageUsage200JSONResponse StorageUsage
 
-func (response ShowcaseCover200ImageResponse) VisitShowcaseCoverResponse(w http.ResponseWriter) error {
-
-	w.Header().Set("Content-Type", response.ContentType)
-	if response.ContentLength != 0 {
-		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
-	}
-	w.WriteHeader(200)
-
-	if closer, ok := response.Body.(io.ReadCloser); ok {
-		defer closer.Close()
-	}
-	_, err := io.Copy(w, response.Body)
-	return err
-}
-
-type ShowcaseCover404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response ShowcaseCover404JSONResponse) VisitShowcaseCoverResponse(w http.ResponseWriter) error {
+func (response GetStorageUsage200JSONResponse) VisitGetStorageUsageResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
 		return err
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ShowcaseMediaRequestObject struct {
-	WorkId Id `json:"workId"`
-	Params ShowcaseMediaParams
-}
-
-type ShowcaseMediaResponseObject interface {
-	VisitShowcaseMediaResponse(w http.ResponseWriter) error
-}
-
-type ShowcaseMedia200ImageResponse struct {
-	Body          io.Reader
-	ContentType   string
-	ContentLength int64
-}
-
-func (response ShowcaseMedia200ImageResponse) VisitShowcaseMediaResponse(w http.ResponseWriter) error {
-
-	w.Header().Set("Content-Type", response.ContentType)
-	if response.ContentLength != 0 {
-		w.Header().Set("Content-Length", fmt.Sprint(response.ContentLength))
-	}
 	w.WriteHeader(200)
-
-	if closer, ok := response.Body.(io.ReadCloser); ok {
-		defer closer.Close()
-	}
-	_, err := io.Copy(w, response.Body)
-	return err
-}
-
-type ShowcaseMedia404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response ShowcaseMedia404JSONResponse) VisitShowcaseMediaResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -58596,49 +49956,6 @@ func (response TypesetSmartcutText403JSONResponse) VisitTypesetSmartcutTextRespo
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetStorefrontRequestObject struct {
-	Params GetStorefrontParams
-}
-
-type GetStorefrontResponseObject interface {
-	VisitGetStorefrontResponse(w http.ResponseWriter) error
-}
-
-type GetStorefront200JSONResponse struct {
-	Balance int `json:"balance"`
-
-	// Channels 已装配好的**真实**支付渠道。
-	//
-	// ⚠️ 由服务端说：前端硬编码一份的话，后台停用一个渠道
-	// 之后界面上它还亮着，用户点了才发现不能用。
-	Channels *[]string `json:"channels,omitempty"`
-
-	// DevPayEnabled 开发支付是否可用。
-	//
-	// ⚠️ **由服务端说**，前端不要去探那个 404 端点：
-	// 探测每次打开页面都会打一个必然失败的请求，
-	// 而且"404 就是没开"这个推断在网关挡掉请求时会得出错的结论。
-	DevPayEnabled *bool `json:"devPayEnabled,omitempty"`
-
-	// Membership 一次会员资格。挂在**付费主体**上而不是 user —— 团队工作区的成员
-	// 应当继承工作区的等级权益。
-	Membership *Membership     `json:"membership,omitempty"`
-	Packages   []CreditPackage `json:"packages"`
-	Plans      []MemberPlan    `json:"plans"`
-}
-
-func (response GetStorefront200JSONResponse) VisitGetStorefrontResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -59657,6 +50974,67 @@ func (response TrimClip409JSONResponse) VisitTrimClipResponse(w http.ResponseWri
 	return err
 }
 
+type ListVoicesRequestObject struct {
+	Params ListVoicesParams
+}
+
+type ListVoicesResponseObject interface {
+	VisitListVoicesResponse(w http.ResponseWriter) error
+}
+
+type ListVoices200JSONResponse []VoiceItem
+
+func (response ListVoices200JSONResponse) VisitListVoicesResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ToggleVoiceFavoriteRequestObject struct {
+	Code string `json:"code"`
+	Body *ToggleVoiceFavoriteJSONRequestBody
+}
+
+type ToggleVoiceFavoriteResponseObject interface {
+	VisitToggleVoiceFavoriteResponse(w http.ResponseWriter) error
+}
+
+type ToggleVoiceFavorite200JSONResponse struct {
+	IsFavorited bool `json:"isFavorited"`
+}
+
+func (response ToggleVoiceFavorite200JSONResponse) VisitToggleVoiceFavoriteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ToggleVoiceFavorite404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response ToggleVoiceFavorite404JSONResponse) VisitToggleVoiceFavoriteResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type GetWorkflowRunRequestObject struct {
 	RunId  string `json:"runId"`
 	Params GetWorkflowRunParams
@@ -59976,1197 +51354,6 @@ func (response ListWorkspaces200JSONResponse) VisitListWorkspacesResponse(w http
 	return err
 }
 
-type CreateTeamWorkspaceRequestObject struct {
-	Body *CreateTeamWorkspaceJSONRequestBody
-}
-
-type CreateTeamWorkspaceResponseObject interface {
-	VisitCreateTeamWorkspaceResponse(w http.ResponseWriter) error
-}
-
-type CreateTeamWorkspace201JSONResponse Workspace
-
-func (response CreateTeamWorkspace201JSONResponse) VisitCreateTeamWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ArchiveWorkspaceRequestObject struct {
-	Params ArchiveWorkspaceParams
-}
-
-type ArchiveWorkspaceResponseObject interface {
-	VisitArchiveWorkspaceResponse(w http.ResponseWriter) error
-}
-
-type ArchiveWorkspace200JSONResponse struct {
-	RevokedInvitations int `json:"revokedInvitations"`
-	RevokedShares      int `json:"revokedShares"`
-}
-
-func (response ArchiveWorkspace200JSONResponse) VisitArchiveWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ArchiveWorkspace400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response ArchiveWorkspace400JSONResponse) VisitArchiveWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ArchiveWorkspace403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ArchiveWorkspace403JSONResponse) VisitArchiveWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RenameWorkspaceRequestObject struct {
-	Params RenameWorkspaceParams
-	Body   *RenameWorkspaceJSONRequestBody
-}
-
-type RenameWorkspaceResponseObject interface {
-	VisitRenameWorkspaceResponse(w http.ResponseWriter) error
-}
-
-type RenameWorkspace204Response struct {
-}
-
-func (response RenameWorkspace204Response) VisitRenameWorkspaceResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RenameWorkspace403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RenameWorkspace403JSONResponse) VisitRenameWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceInvitationsRequestObject struct {
-	Params ListWorkspaceInvitationsParams
-}
-
-type ListWorkspaceInvitationsResponseObject interface {
-	VisitListWorkspaceInvitationsResponse(w http.ResponseWriter) error
-}
-
-type ListWorkspaceInvitations200JSONResponse []WorkspaceInvitation
-
-func (response ListWorkspaceInvitations200JSONResponse) VisitListWorkspaceInvitationsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceInvitations403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListWorkspaceInvitations403JSONResponse) VisitListWorkspaceInvitationsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateWorkspaceInvitationRequestObject struct {
-	Params CreateWorkspaceInvitationParams
-	Body   *CreateWorkspaceInvitationJSONRequestBody
-}
-
-type CreateWorkspaceInvitationResponseObject interface {
-	VisitCreateWorkspaceInvitationResponse(w http.ResponseWriter) error
-}
-
-type CreateWorkspaceInvitation201JSONResponse InvitationCreated
-
-func (response CreateWorkspaceInvitation201JSONResponse) VisitCreateWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateWorkspaceInvitation400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response CreateWorkspaceInvitation400JSONResponse) VisitCreateWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateWorkspaceInvitation403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response CreateWorkspaceInvitation403JSONResponse) VisitCreateWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateWorkspaceInvitation409JSONResponse struct{ ConflictJSONResponse }
-
-func (response CreateWorkspaceInvitation409JSONResponse) VisitCreateWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceInvitationRequestObject struct {
-	InvitationId Id `json:"invitationId"`
-	Params       RevokeWorkspaceInvitationParams
-}
-
-type RevokeWorkspaceInvitationResponseObject interface {
-	VisitRevokeWorkspaceInvitationResponse(w http.ResponseWriter) error
-}
-
-type RevokeWorkspaceInvitation204Response struct {
-}
-
-func (response RevokeWorkspaceInvitation204Response) VisitRevokeWorkspaceInvitationResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RevokeWorkspaceInvitation403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RevokeWorkspaceInvitation403JSONResponse) VisitRevokeWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceInvitation404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RevokeWorkspaceInvitation404JSONResponse) VisitRevokeWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMcpGrantsRequestObject struct {
-	Params ListWorkspaceMcpGrantsParams
-}
-
-type ListWorkspaceMcpGrantsResponseObject interface {
-	VisitListWorkspaceMcpGrantsResponse(w http.ResponseWriter) error
-}
-
-type ListWorkspaceMcpGrants200JSONResponse McpConnectionPage
-
-func (response ListWorkspaceMcpGrants200JSONResponse) VisitListWorkspaceMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMcpGrants400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response ListWorkspaceMcpGrants400JSONResponse) VisitListWorkspaceMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMcpGrants401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response ListWorkspaceMcpGrants401JSONResponse) VisitListWorkspaceMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMcpGrants403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListWorkspaceMcpGrants403JSONResponse) VisitListWorkspaceMcpGrantsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceMcpGrantRequestObject struct {
-	GrantId Id `json:"grantId"`
-	Params  RevokeWorkspaceMcpGrantParams
-	Body    *RevokeWorkspaceMcpGrantJSONRequestBody
-}
-
-type RevokeWorkspaceMcpGrantResponseObject interface {
-	VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error
-}
-
-type RevokeWorkspaceMcpGrant204Response struct {
-}
-
-func (response RevokeWorkspaceMcpGrant204Response) VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RevokeWorkspaceMcpGrant401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response RevokeWorkspaceMcpGrant401JSONResponse) VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceMcpGrant403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RevokeWorkspaceMcpGrant403JSONResponse) VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceMcpGrant404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RevokeWorkspaceMcpGrant404JSONResponse) VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeWorkspaceMcpGrant409JSONResponse struct{ ConflictJSONResponse }
-
-func (response RevokeWorkspaceMcpGrant409JSONResponse) VisitRevokeWorkspaceMcpGrantResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(409)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetWorkspaceMcpSettingsRequestObject struct {
-	Params GetWorkspaceMcpSettingsParams
-}
-
-type GetWorkspaceMcpSettingsResponseObject interface {
-	VisitGetWorkspaceMcpSettingsResponse(w http.ResponseWriter) error
-}
-
-type GetWorkspaceMcpSettings200JSONResponse McpWorkspaceSettings
-
-func (response GetWorkspaceMcpSettings200JSONResponse) VisitGetWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetWorkspaceMcpSettings401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response GetWorkspaceMcpSettings401JSONResponse) VisitGetWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetWorkspaceMcpSettings403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response GetWorkspaceMcpSettings403JSONResponse) VisitGetWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateWorkspaceMcpSettingsRequestObject struct {
-	Params UpdateWorkspaceMcpSettingsParams
-	Body   *UpdateWorkspaceMcpSettingsJSONRequestBody
-}
-
-type UpdateWorkspaceMcpSettingsResponseObject interface {
-	VisitUpdateWorkspaceMcpSettingsResponse(w http.ResponseWriter) error
-}
-
-type UpdateWorkspaceMcpSettings200JSONResponse McpWorkspaceSettings
-
-func (response UpdateWorkspaceMcpSettings200JSONResponse) VisitUpdateWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateWorkspaceMcpSettings400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response UpdateWorkspaceMcpSettings400JSONResponse) VisitUpdateWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateWorkspaceMcpSettings401JSONResponse struct{ UnauthenticatedJSONResponse }
-
-func (response UpdateWorkspaceMcpSettings401JSONResponse) VisitUpdateWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response.Body); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	if response.Headers.XTraceId != nil {
-		w.Header().Set("X-Trace-Id", fmt.Sprint(*response.Headers.XTraceId))
-	}
-	w.WriteHeader(401)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateWorkspaceMcpSettings403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response UpdateWorkspaceMcpSettings403JSONResponse) VisitUpdateWorkspaceMcpSettingsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMembersRequestObject struct {
-	Params ListWorkspaceMembersParams
-}
-
-type ListWorkspaceMembersResponseObject interface {
-	VisitListWorkspaceMembersResponse(w http.ResponseWriter) error
-}
-
-type ListWorkspaceMembers200JSONResponse []WorkspaceMember
-
-func (response ListWorkspaceMembers200JSONResponse) VisitListWorkspaceMembersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListWorkspaceMembers403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListWorkspaceMembers403JSONResponse) VisitListWorkspaceMembersResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RemoveWorkspaceMemberRequestObject struct {
-	UserId Id `json:"userId"`
-	Params RemoveWorkspaceMemberParams
-}
-
-type RemoveWorkspaceMemberResponseObject interface {
-	VisitRemoveWorkspaceMemberResponse(w http.ResponseWriter) error
-}
-
-type RemoveWorkspaceMember204Response struct {
-}
-
-func (response RemoveWorkspaceMember204Response) VisitRemoveWorkspaceMemberResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RemoveWorkspaceMember403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RemoveWorkspaceMember403JSONResponse) VisitRemoveWorkspaceMemberResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RemoveWorkspaceMember404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RemoveWorkspaceMember404JSONResponse) VisitRemoveWorkspaceMemberResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SetWorkspaceMemberRoleRequestObject struct {
-	UserId Id `json:"userId"`
-	Params SetWorkspaceMemberRoleParams
-	Body   *SetWorkspaceMemberRoleJSONRequestBody
-}
-
-type SetWorkspaceMemberRoleResponseObject interface {
-	VisitSetWorkspaceMemberRoleResponse(w http.ResponseWriter) error
-}
-
-type SetWorkspaceMemberRole204Response struct {
-}
-
-func (response SetWorkspaceMemberRole204Response) VisitSetWorkspaceMemberRoleResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type SetWorkspaceMemberRole400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response SetWorkspaceMemberRole400JSONResponse) VisitSetWorkspaceMemberRoleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type SetWorkspaceMemberRole403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response SetWorkspaceMemberRole403JSONResponse) VisitSetWorkspaceMemberRoleResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PresenceHeartbeatRequestObject struct {
-	Params PresenceHeartbeatParams
-	Body   *PresenceHeartbeatJSONRequestBody
-}
-
-type PresenceHeartbeatResponseObject interface {
-	VisitPresenceHeartbeatResponse(w http.ResponseWriter) error
-}
-
-type PresenceHeartbeat200JSONResponse []OnlineUser
-
-func (response PresenceHeartbeat200JSONResponse) VisitPresenceHeartbeatResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PresenceHeartbeat400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response PresenceHeartbeat400JSONResponse) VisitPresenceHeartbeatResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PresenceHeartbeat403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response PresenceHeartbeat403JSONResponse) VisitPresenceHeartbeatResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type PresenceLeaveRequestObject struct {
-	Params PresenceLeaveParams
-	Body   *PresenceLeaveJSONRequestBody
-}
-
-type PresenceLeaveResponseObject interface {
-	VisitPresenceLeaveResponse(w http.ResponseWriter) error
-}
-
-type PresenceLeave204Response struct {
-}
-
-func (response PresenceLeave204Response) VisitPresenceLeaveResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type ListOnlineRequestObject struct {
-	ResourceType string `json:"resourceType"`
-	ResourceId   Id     `json:"resourceId"`
-	Params       ListOnlineParams
-}
-
-type ListOnlineResponseObject interface {
-	VisitListOnlineResponse(w http.ResponseWriter) error
-}
-
-type ListOnline200JSONResponse []OnlineUser
-
-func (response ListOnline200JSONResponse) VisitListOnlineResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListOnline403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListOnline403JSONResponse) VisitListOnlineResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListGrantedSharesRequestObject struct {
-	Params ListGrantedSharesParams
-}
-
-type ListGrantedSharesResponseObject interface {
-	VisitListGrantedSharesResponse(w http.ResponseWriter) error
-}
-
-type ListGrantedShares200JSONResponse []Share
-
-func (response ListGrantedShares200JSONResponse) VisitListGrantedSharesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListGrantedShares403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ListGrantedShares403JSONResponse) VisitListGrantedSharesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GrantShareRequestObject struct {
-	Params GrantShareParams
-	Body   *GrantShareJSONRequestBody
-}
-
-type GrantShareResponseObject interface {
-	VisitGrantShareResponse(w http.ResponseWriter) error
-}
-
-type GrantShare201JSONResponse Share
-
-func (response GrantShare201JSONResponse) VisitGrantShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GrantShare400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response GrantShare400JSONResponse) VisitGrantShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GrantShare403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response GrantShare403JSONResponse) VisitGrantShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GrantShare404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response GrantShare404JSONResponse) VisitGrantShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ImportSharedResourceRequestObject struct {
-	Params ImportSharedResourceParams
-	Body   *ImportSharedResourceJSONRequestBody
-}
-
-type ImportSharedResourceResponseObject interface {
-	VisitImportSharedResourceResponse(w http.ResponseWriter) error
-}
-
-type ImportSharedResource201JSONResponse struct {
-	// ResourceId Snowflake id。内部 int64，**对外一律 string**（GO-34）。
-	ResourceId Id `json:"resourceId"`
-}
-
-func (response ImportSharedResource201JSONResponse) VisitImportSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ImportSharedResource400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response ImportSharedResource400JSONResponse) VisitImportSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ImportSharedResource403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response ImportSharedResource403JSONResponse) VisitImportSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ImportSharedResource404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response ImportSharedResource404JSONResponse) VisitImportSharedResourceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeShareRequestObject struct {
-	ShareId Id `json:"shareId"`
-	Params  RevokeShareParams
-}
-
-type RevokeShareResponseObject interface {
-	VisitRevokeShareResponse(w http.ResponseWriter) error
-}
-
-type RevokeShare204Response struct {
-}
-
-func (response RevokeShare204Response) VisitRevokeShareResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type RevokeShare403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response RevokeShare403JSONResponse) VisitRevokeShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type RevokeShare404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response RevokeShare404JSONResponse) VisitRevokeShareResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type TransferWorkspaceRequestObject struct {
-	Params TransferWorkspaceParams
-	Body   *TransferWorkspaceJSONRequestBody
-}
-
-type TransferWorkspaceResponseObject interface {
-	VisitTransferWorkspaceResponse(w http.ResponseWriter) error
-}
-
-type TransferWorkspace204Response struct {
-}
-
-func (response TransferWorkspace204Response) VisitTransferWorkspaceResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type TransferWorkspace400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response TransferWorkspace400JSONResponse) VisitTransferWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type TransferWorkspace403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response TransferWorkspace403JSONResponse) VisitTransferWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type TransferWorkspace404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response TransferWorkspace404JSONResponse) VisitTransferWorkspaceResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type WorkspaceUsageRequestObject struct {
-	Params WorkspaceUsageParams
-}
-
-type WorkspaceUsageResponseObject interface {
-	VisitWorkspaceUsageResponse(w http.ResponseWriter) error
-}
-
-type WorkspaceUsage200JSONResponse struct {
-	Members []MemberUsage `json:"members"`
-	Summary struct {
-		Consumed int `json:"consumed"`
-		Members  int `json:"members"`
-		Refunded int `json:"refunded"`
-		Tasks    int `json:"tasks"`
-	} `json:"summary"`
-}
-
-func (response WorkspaceUsage200JSONResponse) VisitWorkspaceUsageResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type WorkspaceUsage403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response WorkspaceUsage403JSONResponse) VisitWorkspaceUsageResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type WorkspaceUsageEntriesRequestObject struct {
-	Params WorkspaceUsageEntriesParams
-}
-
-type WorkspaceUsageEntriesResponseObject interface {
-	VisitWorkspaceUsageEntriesResponse(w http.ResponseWriter) error
-}
-
-type WorkspaceUsageEntries200JSONResponse struct {
-	Items      []UsageEntry `json:"items"`
-	NextCursor string       `json:"nextCursor"`
-}
-
-func (response WorkspaceUsageEntries200JSONResponse) VisitWorkspaceUsageEntriesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type WorkspaceUsageEntries400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response WorkspaceUsageEntries400JSONResponse) VisitWorkspaceUsageEntriesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type WorkspaceUsageEntries403JSONResponse struct{ ForbiddenJSONResponse }
-
-func (response WorkspaceUsageEntries403JSONResponse) VisitWorkspaceUsageEntriesResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(403)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AcceptWorkspaceInvitationRequestObject struct {
-	Body *AcceptWorkspaceInvitationJSONRequestBody
-}
-
-type AcceptWorkspaceInvitationResponseObject interface {
-	VisitAcceptWorkspaceInvitationResponse(w http.ResponseWriter) error
-}
-
-type AcceptWorkspaceInvitation200JSONResponse Workspace
-
-func (response AcceptWorkspaceInvitation200JSONResponse) VisitAcceptWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AcceptWorkspaceInvitation400JSONResponse struct{ BadRequestJSONResponse }
-
-func (response AcceptWorkspaceInvitation400JSONResponse) VisitAcceptWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type AcceptWorkspaceInvitation404JSONResponse struct{ NotFoundJSONResponse }
-
-func (response AcceptWorkspaceInvitation404JSONResponse) VisitAcceptWorkspaceInvitationResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListMyInvitationsRequestObject struct {
-}
-
-type ListMyInvitationsResponseObject interface {
-	VisitListMyInvitationsResponse(w http.ResponseWriter) error
-}
-
-type ListMyInvitations200JSONResponse []MyInvitation
-
-func (response ListMyInvitations200JSONResponse) VisitListMyInvitationsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 
@@ -61215,26 +51402,11 @@ type StrictServerInterface interface {
 	// (PUT /admin/agent/skills/{skillId}/references/{refId})
 	AdminUpdateAgentSkillReference(ctx context.Context, request AdminUpdateAgentSkillReferenceRequestObject) (AdminUpdateAgentSkillReferenceResponseObject, error)
 
+	// (POST /admin/agent/skills/{skillId}/restore-builtin)
+	AdminRestoreAgentSkillBuiltin(ctx context.Context, request AdminRestoreAgentSkillBuiltinRequestObject) (AdminRestoreAgentSkillBuiltinResponseObject, error)
+
 	// (GET /admin/agent/tools)
 	AdminListAgentTools(ctx context.Context, request AdminListAgentToolsRequestObject) (AdminListAgentToolsResponseObject, error)
-
-	// (GET /admin/announcements)
-	AdminListAnnouncements(ctx context.Context, request AdminListAnnouncementsRequestObject) (AdminListAnnouncementsResponseObject, error)
-
-	// (POST /admin/announcements)
-	AdminCreateAnnouncement(ctx context.Context, request AdminCreateAnnouncementRequestObject) (AdminCreateAnnouncementResponseObject, error)
-
-	// (DELETE /admin/announcements/{id})
-	AdminDeleteAnnouncement(ctx context.Context, request AdminDeleteAnnouncementRequestObject) (AdminDeleteAnnouncementResponseObject, error)
-
-	// (PUT /admin/announcements/{id})
-	AdminUpdateAnnouncement(ctx context.Context, request AdminUpdateAnnouncementRequestObject) (AdminUpdateAnnouncementResponseObject, error)
-
-	// (POST /admin/announcements/{id}/offline)
-	AdminOfflineAnnouncement(ctx context.Context, request AdminOfflineAnnouncementRequestObject) (AdminOfflineAnnouncementResponseObject, error)
-
-	// (POST /admin/announcements/{id}/publish)
-	AdminPublishAnnouncement(ctx context.Context, request AdminPublishAnnouncementRequestObject) (AdminPublishAnnouncementResponseObject, error)
 
 	// (GET /admin/audit-logs)
 	AdminListAuditLogs(ctx context.Context, request AdminListAuditLogsRequestObject) (AdminListAuditLogsResponseObject, error)
@@ -61257,56 +51429,44 @@ type StrictServerInterface interface {
 	// (POST /admin/auth/refresh)
 	AdminRefreshToken(ctx context.Context, request AdminRefreshTokenRequestObject) (AdminRefreshTokenResponseObject, error)
 
-	// (GET /admin/banners)
-	AdminListBanners(ctx context.Context, request AdminListBannersRequestObject) (AdminListBannersResponseObject, error)
-
-	// (POST /admin/banners)
-	AdminCreateBanner(ctx context.Context, request AdminCreateBannerRequestObject) (AdminCreateBannerResponseObject, error)
-
-	// (DELETE /admin/banners/{id})
-	AdminDeleteBanner(ctx context.Context, request AdminDeleteBannerRequestObject) (AdminDeleteBannerResponseObject, error)
-
-	// (PUT /admin/banners/{id})
-	AdminUpdateBanner(ctx context.Context, request AdminUpdateBannerRequestObject) (AdminUpdateBannerResponseObject, error)
-
-	// (GET /admin/billing-ops/orders)
-	SearchOrders(ctx context.Context, request SearchOrdersRequestObject) (SearchOrdersResponseObject, error)
-
-	// (GET /admin/billing-ops/orders/{orderId})
-	AdminOrderDetail(ctx context.Context, request AdminOrderDetailRequestObject) (AdminOrderDetailResponseObject, error)
-
-	// (POST /admin/billing-ops/orders/{orderId}/reconcile)
-	MarkReconcile(ctx context.Context, request MarkReconcileRequestObject) (MarkReconcileResponseObject, error)
-
-	// (GET /admin/billing-ops/payers/{payerId})
-	PayerOverview(ctx context.Context, request PayerOverviewRequestObject) (PayerOverviewResponseObject, error)
-
-	// (POST /admin/billing-ops/payers/{payerId}/adjust)
-	AdjustCredits(ctx context.Context, request AdjustCreditsRequestObject) (AdjustCreditsResponseObject, error)
-
-	// (GET /admin/billing/catalog)
-	GetBillingCatalog(ctx context.Context, request GetBillingCatalogRequestObject) (GetBillingCatalogResponseObject, error)
-
-	// (PUT /admin/billing/levels)
-	SaveMemberLevel(ctx context.Context, request SaveMemberLevelRequestObject) (SaveMemberLevelResponseObject, error)
-
-	// (PUT /admin/billing/packages)
-	SaveCreditPackage(ctx context.Context, request SaveCreditPackageRequestObject) (SaveCreditPackageResponseObject, error)
-
-	// (PUT /admin/billing/plans)
-	SaveMemberPlan(ctx context.Context, request SaveMemberPlanRequestObject) (SaveMemberPlanResponseObject, error)
-
 	// (GET /admin/canvas/config)
 	AdminGetCanvasConfig(ctx context.Context, request AdminGetCanvasConfigRequestObject) (AdminGetCanvasConfigResponseObject, error)
 
-	// (GET /admin/dead-letters)
-	AdminListDeadLetters(ctx context.Context, request AdminListDeadLettersRequestObject) (AdminListDeadLettersResponseObject, error)
+	// (PUT /admin/canvas/connection-rules)
+	AdminSaveConnectionRule(ctx context.Context, request AdminSaveConnectionRuleRequestObject) (AdminSaveConnectionRuleResponseObject, error)
 
-	// (POST /admin/dead-letters/{id}/discard)
-	AdminDiscardDeadLetter(ctx context.Context, request AdminDiscardDeadLetterRequestObject) (AdminDiscardDeadLetterResponseObject, error)
+	// (GET /admin/canvas/param-definitions)
+	AdminListParamDefinitions(ctx context.Context, request AdminListParamDefinitionsRequestObject) (AdminListParamDefinitionsResponseObject, error)
 
-	// (POST /admin/dead-letters/{id}/replay)
-	AdminReplayDeadLetter(ctx context.Context, request AdminReplayDeadLetterRequestObject) (AdminReplayDeadLetterResponseObject, error)
+	// (PUT /admin/canvas/param-definitions)
+	AdminSaveParamDefinition(ctx context.Context, request AdminSaveParamDefinitionRequestObject) (AdminSaveParamDefinitionResponseObject, error)
+
+	// (DELETE /admin/canvas/param-definitions/{code})
+	AdminDisableParamDefinition(ctx context.Context, request AdminDisableParamDefinitionRequestObject) (AdminDisableParamDefinitionResponseObject, error)
+
+	// (GET /admin/canvas/revision)
+	AdminGetCanvasRevision(ctx context.Context, request AdminGetCanvasRevisionRequestObject) (AdminGetCanvasRevisionResponseObject, error)
+
+	// (GET /admin/image-presets)
+	AdminListImagePresets(ctx context.Context, request AdminListImagePresetsRequestObject) (AdminListImagePresetsResponseObject, error)
+
+	// (POST /admin/image-presets)
+	AdminCreateImagePreset(ctx context.Context, request AdminCreateImagePresetRequestObject) (AdminCreateImagePresetResponseObject, error)
+
+	// (POST /admin/image-presets/preview)
+	AdminPreviewImagePreset(ctx context.Context, request AdminPreviewImagePresetRequestObject) (AdminPreviewImagePresetResponseObject, error)
+
+	// (PUT /admin/image-presets/{code})
+	AdminUpdateImagePreset(ctx context.Context, request AdminUpdateImagePresetRequestObject) (AdminUpdateImagePresetResponseObject, error)
+
+	// (POST /admin/image-presets/{code}/disable)
+	AdminDisableImagePreset(ctx context.Context, request AdminDisableImagePresetRequestObject) (AdminDisableImagePresetResponseObject, error)
+
+	// (POST /admin/image-presets/{code}/enable)
+	AdminEnableImagePreset(ctx context.Context, request AdminEnableImagePresetRequestObject) (AdminEnableImagePresetResponseObject, error)
+
+	// (POST /admin/image-presets/{code}/restore-builtin)
+	AdminRestoreImagePreset(ctx context.Context, request AdminRestoreImagePresetRequestObject) (AdminRestoreImagePresetResponseObject, error)
 
 	// (GET /admin/marketing/categories)
 	AdminListMarketingCategories(ctx context.Context, request AdminListMarketingCategoriesRequestObject) (AdminListMarketingCategoriesResponseObject, error)
@@ -61365,20 +51525,11 @@ type StrictServerInterface interface {
 	// (POST /admin/marketing/preset-characters/{presetId}/enable)
 	AdminEnableMarketingPresetCharacter(ctx context.Context, request AdminEnableMarketingPresetCharacterRequestObject) (AdminEnableMarketingPresetCharacterResponseObject, error)
 
-	// (GET /admin/mcp/grants)
-	AdminListMcpGrants(ctx context.Context, request AdminListMcpGrantsRequestObject) (AdminListMcpGrantsResponseObject, error)
+	// (PUT /admin/materials)
+	AdminSaveMaterial(ctx context.Context, request AdminSaveMaterialRequestObject) (AdminSaveMaterialResponseObject, error)
 
-	// (DELETE /admin/mcp/grants/{grantId})
-	AdminRevokeMcpGrant(ctx context.Context, request AdminRevokeMcpGrantRequestObject) (AdminRevokeMcpGrantResponseObject, error)
-
-	// (GET /admin/mcp/settings)
-	AdminGetMcpSettings(ctx context.Context, request AdminGetMcpSettingsRequestObject) (AdminGetMcpSettingsResponseObject, error)
-
-	// (PUT /admin/mcp/settings)
-	AdminUpdateMcpSettings(ctx context.Context, request AdminUpdateMcpSettingsRequestObject) (AdminUpdateMcpSettingsResponseObject, error)
-
-	// (GET /admin/mcp/stats)
-	AdminMcpStats(ctx context.Context, request AdminMcpStatsRequestObject) (AdminMcpStatsResponseObject, error)
+	// (GET /admin/materials/{type})
+	AdminListMaterials(ctx context.Context, request AdminListMaterialsRequestObject) (AdminListMaterialsResponseObject, error)
 
 	// (POST /admin/media)
 	AdminUploadMedia(ctx context.Context, request AdminUploadMediaRequestObject) (AdminUploadMediaResponseObject, error)
@@ -61386,44 +51537,83 @@ type StrictServerInterface interface {
 	// (GET /admin/media/{mediaId})
 	AdminDownloadMedia(ctx context.Context, request AdminDownloadMediaRequestObject) (AdminDownloadMediaResponseObject, error)
 
-	// (POST /admin/ops/tasks/generation/{id}/retry)
-	AdminRetryGeneration(ctx context.Context, request AdminRetryGenerationRequestObject) (AdminRetryGenerationResponseObject, error)
+	// (GET /admin/model-templates)
+	AdminListModelTemplates(ctx context.Context, request AdminListModelTemplatesRequestObject) (AdminListModelTemplatesResponseObject, error)
 
-	// (POST /admin/ops/tasks/{kind}/{id}/compensate)
-	AdminCompensateTask(ctx context.Context, request AdminCompensateTaskRequestObject) (AdminCompensateTaskResponseObject, error)
+	// (POST /admin/model-templates/{code}/enable)
+	AdminEnableModelTemplate(ctx context.Context, request AdminEnableModelTemplateRequestObject) (AdminEnableModelTemplateResponseObject, error)
 
-	// (POST /admin/orders/reconcile)
-	ReconcileOrders(ctx context.Context, request ReconcileOrdersRequestObject) (ReconcileOrdersResponseObject, error)
+	// (GET /admin/models)
+	AdminListModels(ctx context.Context, request AdminListModelsRequestObject) (AdminListModelsResponseObject, error)
 
-	// (GET /admin/orders/reconcile/diffs)
-	ListReconcileDiffs(ctx context.Context, request ListReconcileDiffsRequestObject) (ListReconcileDiffsResponseObject, error)
+	// (PUT /admin/models)
+	AdminSaveModel(ctx context.Context, request AdminSaveModelRequestObject) (AdminSaveModelResponseObject, error)
 
-	// (POST /admin/orders/{orderId}/refund)
-	AdminRefundOrder(ctx context.Context, request AdminRefundOrderRequestObject) (AdminRefundOrderResponseObject, error)
+	// (GET /admin/models/protocols)
+	AdminListModelProtocols(ctx context.Context, request AdminListModelProtocolsRequestObject) (AdminListModelProtocolsResponseObject, error)
 
-	// (GET /admin/orders/{orderId}/refund-check)
-	AdminCheckRefund(ctx context.Context, request AdminCheckRefundRequestObject) (AdminCheckRefundResponseObject, error)
+	// (GET /admin/models/providers)
+	AdminListProviders(ctx context.Context, request AdminListProvidersRequestObject) (AdminListProvidersResponseObject, error)
 
-	// (GET /admin/payments/callbacks)
-	ListPaymentCallbacks(ctx context.Context, request ListPaymentCallbacksRequestObject) (ListPaymentCallbacksResponseObject, error)
+	// (PUT /admin/models/providers)
+	AdminSaveProvider(ctx context.Context, request AdminSaveProviderRequestObject) (AdminSaveProviderResponseObject, error)
 
-	// (GET /admin/payments/channels)
-	ListPaymentChannels(ctx context.Context, request ListPaymentChannelsRequestObject) (ListPaymentChannelsResponseObject, error)
+	// (POST /admin/models/providers/{code}/probe)
+	AdminProbeProvider(ctx context.Context, request AdminProbeProviderRequestObject) (AdminProbeProviderResponseObject, error)
 
-	// (PUT /admin/payments/channels)
-	SavePaymentChannel(ctx context.Context, request SavePaymentChannelRequestObject) (SavePaymentChannelResponseObject, error)
+	// (GET /admin/models/{code}/capabilities)
+	AdminListModelCapabilities(ctx context.Context, request AdminListModelCapabilitiesRequestObject) (AdminListModelCapabilitiesResponseObject, error)
+
+	// (PUT /admin/models/{code}/capabilities)
+	AdminSaveModelCapability(ctx context.Context, request AdminSaveModelCapabilityRequestObject) (AdminSaveModelCapabilityResponseObject, error)
+
+	// (DELETE /admin/models/{code}/capabilities/{operation}/{role})
+	AdminDeleteModelCapability(ctx context.Context, request AdminDeleteModelCapabilityRequestObject) (AdminDeleteModelCapabilityResponseObject, error)
+
+	// (PUT /admin/models/{code}/operations)
+	AdminSaveModelOperation(ctx context.Context, request AdminSaveModelOperationRequestObject) (AdminSaveModelOperationResponseObject, error)
+
+	// (GET /admin/models/{code}/param-supports)
+	AdminListModelParamSupports(ctx context.Context, request AdminListModelParamSupportsRequestObject) (AdminListModelParamSupportsResponseObject, error)
+
+	// (PUT /admin/models/{code}/param-supports)
+	AdminSaveModelParamSupport(ctx context.Context, request AdminSaveModelParamSupportRequestObject) (AdminSaveModelParamSupportResponseObject, error)
+
+	// (DELETE /admin/models/{code}/param-supports/{paramCode})
+	AdminDeleteModelParamSupport(ctx context.Context, request AdminDeleteModelParamSupportRequestObject) (AdminDeleteModelParamSupportResponseObject, error)
+
+	// (GET /admin/models/{code}/publishable)
+	AdminCheckModelPublishable(ctx context.Context, request AdminCheckModelPublishableRequestObject) (AdminCheckModelPublishableResponseObject, error)
+
+	// (GET /admin/operations)
+	AdminListOperations(ctx context.Context, request AdminListOperationsRequestObject) (AdminListOperationsResponseObject, error)
 
 	// (GET /admin/permissions)
 	AdminListPermissions(ctx context.Context, request AdminListPermissionsRequestObject) (AdminListPermissionsResponseObject, error)
 
-	// (GET /admin/projects)
-	AdminListProjects(ctx context.Context, request AdminListProjectsRequestObject) (AdminListProjectsResponseObject, error)
+	// (GET /admin/prompts)
+	AdminListPrompts(ctx context.Context, request AdminListPromptsRequestObject) (AdminListPromptsResponseObject, error)
 
-	// (GET /admin/projects/{id})
-	AdminGetProject(ctx context.Context, request AdminGetProjectRequestObject) (AdminGetProjectResponseObject, error)
+	// (POST /admin/prompts/archive)
+	AdminArchivePrompt(ctx context.Context, request AdminArchivePromptRequestObject) (AdminArchivePromptResponseObject, error)
 
-	// (POST /admin/projects/{id}/actions)
-	AdminProjectAction(ctx context.Context, request AdminProjectActionRequestObject) (AdminProjectActionResponseObject, error)
+	// (PUT /admin/prompts/draft)
+	AdminSavePromptDraft(ctx context.Context, request AdminSavePromptDraftRequestObject) (AdminSavePromptDraftResponseObject, error)
+
+	// (POST /admin/prompts/preview)
+	AdminPreviewPrompt(ctx context.Context, request AdminPreviewPromptRequestObject) (AdminPreviewPromptResponseObject, error)
+
+	// (POST /admin/prompts/publish)
+	AdminPublishPrompt(ctx context.Context, request AdminPublishPromptRequestObject) (AdminPublishPromptResponseObject, error)
+
+	// (POST /admin/prompts/rollback)
+	AdminRollbackPrompt(ctx context.Context, request AdminRollbackPromptRequestObject) (AdminRollbackPromptResponseObject, error)
+
+	// (GET /admin/prompts/specs)
+	AdminListPromptSpecs(ctx context.Context, request AdminListPromptSpecsRequestObject) (AdminListPromptSpecsResponseObject, error)
+
+	// (GET /admin/prompts/versions)
+	AdminListPromptVersions(ctx context.Context, request AdminListPromptVersionsRequestObject) (AdminListPromptVersionsResponseObject, error)
 
 	// (GET /admin/render/renders/{renderId})
 	TraceRender(ctx context.Context, request TraceRenderRequestObject) (TraceRenderResponseObject, error)
@@ -61452,9 +51642,6 @@ type StrictServerInterface interface {
 	// (GET /admin/stats/series)
 	AdminStatsSeries(ctx context.Context, request AdminStatsSeriesRequestObject) (AdminStatsSeriesResponseObject, error)
 
-	// (GET /admin/tasks)
-	AdminListTasks(ctx context.Context, request AdminListTasksRequestObject) (AdminListTasksResponseObject, error)
-
 	// (GET /admin/users)
 	AdminSearchUsers(ctx context.Context, request AdminSearchUsersRequestObject) (AdminSearchUsersResponseObject, error)
 
@@ -61464,14 +51651,11 @@ type StrictServerInterface interface {
 	// (POST /admin/users/{userID}/ban)
 	AdminBanUser(ctx context.Context, request AdminBanUserRequestObject) (AdminBanUserResponseObject, error)
 
-	// (GET /admin/works)
-	AdminListWorks(ctx context.Context, request AdminListWorksRequestObject) (AdminListWorksResponseObject, error)
+	// (GET /admin/voices)
+	AdminListVoices(ctx context.Context, request AdminListVoicesRequestObject) (AdminListVoicesResponseObject, error)
 
-	// (GET /admin/works/{id})
-	AdminGetWork(ctx context.Context, request AdminGetWorkRequestObject) (AdminGetWorkResponseObject, error)
-
-	// (POST /admin/works/{id}/review)
-	AdminReviewWork(ctx context.Context, request AdminReviewWorkRequestObject) (AdminReviewWorkResponseObject, error)
+	// (PUT /admin/voices)
+	AdminSaveVoice(ctx context.Context, request AdminSaveVoiceRequestObject) (AdminSaveVoiceResponseObject, error)
 
 	// (GET /agent/preferences)
 	GetAgentPreferences(ctx context.Context, request GetAgentPreferencesRequestObject) (GetAgentPreferencesResponseObject, error)
@@ -61515,26 +51699,11 @@ type StrictServerInterface interface {
 	// (GET /agent/skills/{code}/cover)
 	AgentSkillCover(ctx context.Context, request AgentSkillCoverRequestObject) (AgentSkillCoverResponseObject, error)
 
-	// (POST /auth/code)
-	SendVerificationCode(ctx context.Context, request SendVerificationCodeRequestObject) (SendVerificationCodeResponseObject, error)
-
-	// (POST /auth/login)
-	Login(ctx context.Context, request LoginRequestObject) (LoginResponseObject, error)
-
-	// (POST /auth/logout)
-	Logout(ctx context.Context, request LogoutRequestObject) (LogoutResponseObject, error)
-
 	// (GET /auth/me)
 	GetCurrentUser(ctx context.Context, request GetCurrentUserRequestObject) (GetCurrentUserResponseObject, error)
 
-	// (POST /auth/password/reset)
-	ResetPassword(ctx context.Context, request ResetPasswordRequestObject) (ResetPasswordResponseObject, error)
-
-	// (POST /auth/refresh)
-	RefreshToken(ctx context.Context, request RefreshTokenRequestObject) (RefreshTokenResponseObject, error)
-
-	// (POST /auth/register)
-	Register(ctx context.Context, request RegisterRequestObject) (RegisterResponseObject, error)
+	// (PUT /auth/profile)
+	UpdateProfile(ctx context.Context, request UpdateProfileRequestObject) (UpdateProfileResponseObject, error)
 
 	// (GET /canvas/cameras)
 	ListCameraMaterials(ctx context.Context, request ListCameraMaterialsRequestObject) (ListCameraMaterialsResponseObject, error)
@@ -61556,12 +51725,6 @@ type StrictServerInterface interface {
 
 	// (GET /creations)
 	ListCreations(ctx context.Context, request ListCreationsRequestObject) (ListCreationsResponseObject, error)
-
-	// (GET /credits)
-	GetCredits(ctx context.Context, request GetCreditsRequestObject) (GetCreditsResponseObject, error)
-
-	// (GET /credits/transactions)
-	ListCreditTransactions(ctx context.Context, request ListCreditTransactionsRequestObject) (ListCreditTransactionsResponseObject, error)
 
 	// (GET /director/build-config)
 	GetDirectorBuildConfig(ctx context.Context, request GetDirectorBuildConfigRequestObject) (GetDirectorBuildConfigResponseObject, error)
@@ -61601,6 +51764,9 @@ type StrictServerInterface interface {
 
 	// (POST /generations/{generationId}/cancel)
 	CancelGeneration(ctx context.Context, request CancelGenerationRequestObject) (CancelGenerationResponseObject, error)
+
+	// (GET /generations/{generationId}/outputs)
+	ListGenerationOutputs(ctx context.Context, request ListGenerationOutputsRequestObject) (ListGenerationOutputsResponseObject, error)
 
 	// (GET /generations/{generationId}/outputs/{index})
 	GetGenerationOutput(ctx context.Context, request GetGenerationOutputRequestObject) (GetGenerationOutputResponseObject, error)
@@ -61734,42 +51900,6 @@ type StrictServerInterface interface {
 	// (PUT /marketing/products/{productId})
 	UpdateMarketingProduct(ctx context.Context, request UpdateMarketingProductRequestObject) (UpdateMarketingProductResponseObject, error)
 
-	// (GET /mcp/approvals/{quoteId})
-	GetMcpApproval(ctx context.Context, request GetMcpApprovalRequestObject) (GetMcpApprovalResponseObject, error)
-
-	// (POST /mcp/approvals/{quoteId}/approve)
-	ApproveMcpQuote(ctx context.Context, request ApproveMcpQuoteRequestObject) (ApproveMcpQuoteResponseObject, error)
-
-	// (POST /mcp/approvals/{quoteId}/reject)
-	RejectMcpQuote(ctx context.Context, request RejectMcpQuoteRequestObject) (RejectMcpQuoteResponseObject, error)
-
-	// (GET /mcp/consent)
-	GetMcpConsent(ctx context.Context, request GetMcpConsentRequestObject) (GetMcpConsentResponseObject, error)
-
-	// (POST /mcp/consent)
-	SubmitMcpConsent(ctx context.Context, request SubmitMcpConsentRequestObject) (SubmitMcpConsentResponseObject, error)
-
-	// (GET /me/mcp/client-snippets)
-	GetMcpClientSnippets(ctx context.Context, request GetMcpClientSnippetsRequestObject) (GetMcpClientSnippetsResponseObject, error)
-
-	// (GET /me/mcp/grants)
-	ListMcpGrants(ctx context.Context, request ListMcpGrantsRequestObject) (ListMcpGrantsResponseObject, error)
-
-	// (DELETE /me/mcp/grants/{grantId})
-	RevokeMcpGrant(ctx context.Context, request RevokeMcpGrantRequestObject) (RevokeMcpGrantResponseObject, error)
-
-	// (PATCH /me/mcp/grants/{grantId})
-	UpdateMcpGrant(ctx context.Context, request UpdateMcpGrantRequestObject) (UpdateMcpGrantResponseObject, error)
-
-	// (GET /me/mcp/keys)
-	ListMcpAccessKeys(ctx context.Context, request ListMcpAccessKeysRequestObject) (ListMcpAccessKeysResponseObject, error)
-
-	// (POST /me/mcp/keys)
-	CreateMcpAccessKey(ctx context.Context, request CreateMcpAccessKeyRequestObject) (CreateMcpAccessKeyResponseObject, error)
-
-	// (DELETE /me/mcp/keys/{keyId})
-	RevokeMcpAccessKey(ctx context.Context, request RevokeMcpAccessKeyRequestObject) (RevokeMcpAccessKeyResponseObject, error)
-
 	// (GET /media)
 	ListMyMedia(ctx context.Context, request ListMyMediaRequestObject) (ListMyMediaResponseObject, error)
 
@@ -61797,9 +51927,6 @@ type StrictServerInterface interface {
 	// (GET /media/{mediaId}/usages)
 	ListMediaUsages(ctx context.Context, request ListMediaUsagesRequestObject) (ListMediaUsagesResponseObject, error)
 
-	// (GET /membership)
-	GetMembership(ctx context.Context, request GetMembershipRequestObject) (GetMembershipResponseObject, error)
-
 	// (GET /models)
 	ListUsableModels(ctx context.Context, request ListUsableModelsRequestObject) (ListUsableModelsResponseObject, error)
 
@@ -61817,39 +51944,6 @@ type StrictServerInterface interface {
 
 	// (GET /notifications/unread-count)
 	UnreadCount(ctx context.Context, request UnreadCountRequestObject) (UnreadCountResponseObject, error)
-
-	// (GET /orders)
-	ListOrders(ctx context.Context, request ListOrdersRequestObject) (ListOrdersResponseObject, error)
-
-	// (POST /orders)
-	CreateOrder(ctx context.Context, request CreateOrderRequestObject) (CreateOrderResponseObject, error)
-
-	// (GET /orders/{orderId})
-	GetOrder(ctx context.Context, request GetOrderRequestObject) (GetOrderResponseObject, error)
-
-	// (POST /orders/{orderId}/cancel)
-	CancelOrder(ctx context.Context, request CancelOrderRequestObject) (CancelOrderResponseObject, error)
-
-	// (POST /orders/{orderId}/dev-pay)
-	DevPayOrder(ctx context.Context, request DevPayOrderRequestObject) (DevPayOrderResponseObject, error)
-
-	// (POST /orders/{orderId}/pay)
-	CreatePayment(ctx context.Context, request CreatePaymentRequestObject) (CreatePaymentResponseObject, error)
-
-	// (POST /orders/{orderId}/refund)
-	RefundOrder(ctx context.Context, request RefundOrderRequestObject) (RefundOrderResponseObject, error)
-
-	// (GET /orders/{orderId}/refund-check)
-	CheckRefund(ctx context.Context, request CheckRefundRequestObject) (CheckRefundResponseObject, error)
-
-	// (GET /orders/{orderId}/refunds)
-	ListRefunds(ctx context.Context, request ListRefundsRequestObject) (ListRefundsResponseObject, error)
-
-	// (POST /orders/{orderId}/sync)
-	SyncOrder(ctx context.Context, request SyncOrderRequestObject) (SyncOrderResponseObject, error)
-
-	// (POST /payments/callback/{channel})
-	PaymentCallback(ctx context.Context, request PaymentCallbackRequestObject) (PaymentCallbackResponseObject, error)
 
 	// (GET /project-templates)
 	ListProjectTemplates(ctx context.Context, request ListProjectTemplatesRequestObject) (ListProjectTemplatesResponseObject, error)
@@ -62085,29 +52179,26 @@ type StrictServerInterface interface {
 	// (POST /scripts/{scriptId}/storyboard)
 	GenerateStoryboard(ctx context.Context, request GenerateStoryboardRequestObject) (GenerateStoryboardResponseObject, error)
 
-	// (GET /shares/received)
-	ListReceivedShares(ctx context.Context, request ListReceivedSharesRequestObject) (ListReceivedSharesResponseObject, error)
+	// (GET /settings)
+	GetAppSettings(ctx context.Context, request GetAppSettingsRequestObject) (GetAppSettingsResponseObject, error)
 
-	// (GET /shares/received/{resourceType}/{resourceId})
-	OpenSharedResource(ctx context.Context, request OpenSharedResourceRequestObject) (OpenSharedResourceResponseObject, error)
+	// (PUT /settings)
+	UpdateAppSettings(ctx context.Context, request UpdateAppSettingsRequestObject) (UpdateAppSettingsResponseObject, error)
 
-	// (GET /showcase)
-	ListShowcase(ctx context.Context, request ListShowcaseRequestObject) (ListShowcaseResponseObject, error)
+	// (GET /settings/diagnostics)
+	GetDiagnostics(ctx context.Context, request GetDiagnosticsRequestObject) (GetDiagnosticsResponseObject, error)
 
-	// (GET /showcase/{workId}/cover)
-	ShowcaseCover(ctx context.Context, request ShowcaseCoverRequestObject) (ShowcaseCoverResponseObject, error)
+	// (POST /settings/storage/test)
+	TestS3Storage(ctx context.Context, request TestS3StorageRequestObject) (TestS3StorageResponseObject, error)
 
-	// (GET /showcase/{workId}/media)
-	ShowcaseMedia(ctx context.Context, request ShowcaseMediaRequestObject) (ShowcaseMediaResponseObject, error)
+	// (GET /settings/storage/usage)
+	GetStorageUsage(ctx context.Context, request GetStorageUsageRequestObject) (GetStorageUsageResponseObject, error)
 
 	// (GET /smartcut/config)
 	GetSmartcutConfig(ctx context.Context, request GetSmartcutConfigRequestObject) (GetSmartcutConfigResponseObject, error)
 
 	// (POST /smartcut/typeset)
 	TypesetSmartcutText(ctx context.Context, request TypesetSmartcutTextRequestObject) (TypesetSmartcutTextResponseObject, error)
-
-	// (GET /storefront)
-	GetStorefront(ctx context.Context, request GetStorefrontRequestObject) (GetStorefrontResponseObject, error)
 
 	// (GET /tasks)
 	ListTasks(ctx context.Context, request ListTasksRequestObject) (ListTasksResponseObject, error)
@@ -62166,6 +52257,12 @@ type StrictServerInterface interface {
 	// (PATCH /timelines/{timelineId}/tracks/{trackId}/clips/{clipId}/trim)
 	TrimClip(ctx context.Context, request TrimClipRequestObject) (TrimClipResponseObject, error)
 
+	// (GET /voices)
+	ListVoices(ctx context.Context, request ListVoicesRequestObject) (ListVoicesResponseObject, error)
+
+	// (POST /voices/{code}/favorite)
+	ToggleVoiceFavorite(ctx context.Context, request ToggleVoiceFavoriteRequestObject) (ToggleVoiceFavoriteResponseObject, error)
+
 	// (GET /workflow/runs/{runId})
 	GetWorkflowRun(ctx context.Context, request GetWorkflowRunRequestObject) (GetWorkflowRunResponseObject, error)
 
@@ -62189,81 +52286,6 @@ type StrictServerInterface interface {
 
 	// (GET /workspaces)
 	ListWorkspaces(ctx context.Context, request ListWorkspacesRequestObject) (ListWorkspacesResponseObject, error)
-
-	// (POST /workspaces)
-	CreateTeamWorkspace(ctx context.Context, request CreateTeamWorkspaceRequestObject) (CreateTeamWorkspaceResponseObject, error)
-
-	// (DELETE /workspaces/current)
-	ArchiveWorkspace(ctx context.Context, request ArchiveWorkspaceRequestObject) (ArchiveWorkspaceResponseObject, error)
-
-	// (PATCH /workspaces/current)
-	RenameWorkspace(ctx context.Context, request RenameWorkspaceRequestObject) (RenameWorkspaceResponseObject, error)
-
-	// (GET /workspaces/current/invitations)
-	ListWorkspaceInvitations(ctx context.Context, request ListWorkspaceInvitationsRequestObject) (ListWorkspaceInvitationsResponseObject, error)
-
-	// (POST /workspaces/current/invitations)
-	CreateWorkspaceInvitation(ctx context.Context, request CreateWorkspaceInvitationRequestObject) (CreateWorkspaceInvitationResponseObject, error)
-
-	// (DELETE /workspaces/current/invitations/{invitationId})
-	RevokeWorkspaceInvitation(ctx context.Context, request RevokeWorkspaceInvitationRequestObject) (RevokeWorkspaceInvitationResponseObject, error)
-
-	// (GET /workspaces/current/mcp/grants)
-	ListWorkspaceMcpGrants(ctx context.Context, request ListWorkspaceMcpGrantsRequestObject) (ListWorkspaceMcpGrantsResponseObject, error)
-
-	// (DELETE /workspaces/current/mcp/grants/{grantId})
-	RevokeWorkspaceMcpGrant(ctx context.Context, request RevokeWorkspaceMcpGrantRequestObject) (RevokeWorkspaceMcpGrantResponseObject, error)
-
-	// (GET /workspaces/current/mcp/settings)
-	GetWorkspaceMcpSettings(ctx context.Context, request GetWorkspaceMcpSettingsRequestObject) (GetWorkspaceMcpSettingsResponseObject, error)
-
-	// (PUT /workspaces/current/mcp/settings)
-	UpdateWorkspaceMcpSettings(ctx context.Context, request UpdateWorkspaceMcpSettingsRequestObject) (UpdateWorkspaceMcpSettingsResponseObject, error)
-
-	// (GET /workspaces/current/members)
-	ListWorkspaceMembers(ctx context.Context, request ListWorkspaceMembersRequestObject) (ListWorkspaceMembersResponseObject, error)
-
-	// (DELETE /workspaces/current/members/{userId})
-	RemoveWorkspaceMember(ctx context.Context, request RemoveWorkspaceMemberRequestObject) (RemoveWorkspaceMemberResponseObject, error)
-
-	// (PUT /workspaces/current/members/{userId}/role)
-	SetWorkspaceMemberRole(ctx context.Context, request SetWorkspaceMemberRoleRequestObject) (SetWorkspaceMemberRoleResponseObject, error)
-
-	// (POST /workspaces/current/presence)
-	PresenceHeartbeat(ctx context.Context, request PresenceHeartbeatRequestObject) (PresenceHeartbeatResponseObject, error)
-
-	// (POST /workspaces/current/presence/leave)
-	PresenceLeave(ctx context.Context, request PresenceLeaveRequestObject) (PresenceLeaveResponseObject, error)
-
-	// (GET /workspaces/current/presence/{resourceType}/{resourceId})
-	ListOnline(ctx context.Context, request ListOnlineRequestObject) (ListOnlineResponseObject, error)
-
-	// (GET /workspaces/current/shares)
-	ListGrantedShares(ctx context.Context, request ListGrantedSharesRequestObject) (ListGrantedSharesResponseObject, error)
-
-	// (POST /workspaces/current/shares)
-	GrantShare(ctx context.Context, request GrantShareRequestObject) (GrantShareResponseObject, error)
-
-	// (POST /workspaces/current/shares/import)
-	ImportSharedResource(ctx context.Context, request ImportSharedResourceRequestObject) (ImportSharedResourceResponseObject, error)
-
-	// (DELETE /workspaces/current/shares/{shareId})
-	RevokeShare(ctx context.Context, request RevokeShareRequestObject) (RevokeShareResponseObject, error)
-
-	// (POST /workspaces/current/transfer)
-	TransferWorkspace(ctx context.Context, request TransferWorkspaceRequestObject) (TransferWorkspaceResponseObject, error)
-
-	// (GET /workspaces/current/usage)
-	WorkspaceUsage(ctx context.Context, request WorkspaceUsageRequestObject) (WorkspaceUsageResponseObject, error)
-
-	// (GET /workspaces/current/usage/entries)
-	WorkspaceUsageEntries(ctx context.Context, request WorkspaceUsageEntriesRequestObject) (WorkspaceUsageEntriesResponseObject, error)
-
-	// (POST /workspaces/invitations/accept)
-	AcceptWorkspaceInvitation(ctx context.Context, request AcceptWorkspaceInvitationRequestObject) (AcceptWorkspaceInvitationResponseObject, error)
-
-	// (GET /workspaces/invitations/mine)
-	ListMyInvitations(ctx context.Context, request ListMyInvitationsRequestObject) (ListMyInvitationsResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx context.Context, w http.ResponseWriter, r *http.Request, request any) (any, error)
@@ -62737,6 +52759,32 @@ func (sh *strictHandler) AdminUpdateAgentSkillReference(w http.ResponseWriter, r
 	}
 }
 
+// AdminRestoreAgentSkillBuiltin operation middleware
+func (sh *strictHandler) AdminRestoreAgentSkillBuiltin(w http.ResponseWriter, r *http.Request, skillId Id) {
+	var request AdminRestoreAgentSkillBuiltinRequestObject
+
+	request.SkillId = skillId
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminRestoreAgentSkillBuiltin(ctx, request.(AdminRestoreAgentSkillBuiltinRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminRestoreAgentSkillBuiltin")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminRestoreAgentSkillBuiltinResponseObject); ok {
+		if err := validResponse.VisitAdminRestoreAgentSkillBuiltinResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // AdminListAgentTools operation middleware
 func (sh *strictHandler) AdminListAgentTools(w http.ResponseWriter, r *http.Request) {
 	var request AdminListAgentToolsRequestObject
@@ -62754,174 +52802,6 @@ func (sh *strictHandler) AdminListAgentTools(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(AdminListAgentToolsResponseObject); ok {
 		if err := validResponse.VisitAdminListAgentToolsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminListAnnouncements operation middleware
-func (sh *strictHandler) AdminListAnnouncements(w http.ResponseWriter, r *http.Request, params AdminListAnnouncementsParams) {
-	var request AdminListAnnouncementsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListAnnouncements(ctx, request.(AdminListAnnouncementsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListAnnouncements")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListAnnouncementsResponseObject); ok {
-		if err := validResponse.VisitAdminListAnnouncementsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminCreateAnnouncement operation middleware
-func (sh *strictHandler) AdminCreateAnnouncement(w http.ResponseWriter, r *http.Request) {
-	var request AdminCreateAnnouncementRequestObject
-
-	var body AdminCreateAnnouncementJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminCreateAnnouncement(ctx, request.(AdminCreateAnnouncementRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminCreateAnnouncement")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminCreateAnnouncementResponseObject); ok {
-		if err := validResponse.VisitAdminCreateAnnouncementResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminDeleteAnnouncement operation middleware
-func (sh *strictHandler) AdminDeleteAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminDeleteAnnouncementRequestObject
-
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminDeleteAnnouncement(ctx, request.(AdminDeleteAnnouncementRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminDeleteAnnouncement")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminDeleteAnnouncementResponseObject); ok {
-		if err := validResponse.VisitAdminDeleteAnnouncementResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminUpdateAnnouncement operation middleware
-func (sh *strictHandler) AdminUpdateAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminUpdateAnnouncementRequestObject
-
-	request.Id = id
-
-	var body AdminUpdateAnnouncementJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminUpdateAnnouncement(ctx, request.(AdminUpdateAnnouncementRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminUpdateAnnouncement")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminUpdateAnnouncementResponseObject); ok {
-		if err := validResponse.VisitAdminUpdateAnnouncementResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminOfflineAnnouncement operation middleware
-func (sh *strictHandler) AdminOfflineAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminOfflineAnnouncementRequestObject
-
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminOfflineAnnouncement(ctx, request.(AdminOfflineAnnouncementRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminOfflineAnnouncement")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminOfflineAnnouncementResponseObject); ok {
-		if err := validResponse.VisitAdminOfflineAnnouncementResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminPublishAnnouncement operation middleware
-func (sh *strictHandler) AdminPublishAnnouncement(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminPublishAnnouncementRequestObject
-
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminPublishAnnouncement(ctx, request.(AdminPublishAnnouncementRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminPublishAnnouncement")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminPublishAnnouncementResponseObject); ok {
-		if err := validResponse.VisitAdminPublishAnnouncementResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -63120,384 +53000,6 @@ func (sh *strictHandler) AdminRefreshToken(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// AdminListBanners operation middleware
-func (sh *strictHandler) AdminListBanners(w http.ResponseWriter, r *http.Request, params AdminListBannersParams) {
-	var request AdminListBannersRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListBanners(ctx, request.(AdminListBannersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListBanners")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListBannersResponseObject); ok {
-		if err := validResponse.VisitAdminListBannersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminCreateBanner operation middleware
-func (sh *strictHandler) AdminCreateBanner(w http.ResponseWriter, r *http.Request) {
-	var request AdminCreateBannerRequestObject
-
-	var body AdminCreateBannerJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminCreateBanner(ctx, request.(AdminCreateBannerRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminCreateBanner")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminCreateBannerResponseObject); ok {
-		if err := validResponse.VisitAdminCreateBannerResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminDeleteBanner operation middleware
-func (sh *strictHandler) AdminDeleteBanner(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminDeleteBannerRequestObject
-
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminDeleteBanner(ctx, request.(AdminDeleteBannerRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminDeleteBanner")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminDeleteBannerResponseObject); ok {
-		if err := validResponse.VisitAdminDeleteBannerResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminUpdateBanner operation middleware
-func (sh *strictHandler) AdminUpdateBanner(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminUpdateBannerRequestObject
-
-	request.Id = id
-
-	var body AdminUpdateBannerJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminUpdateBanner(ctx, request.(AdminUpdateBannerRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminUpdateBanner")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminUpdateBannerResponseObject); ok {
-		if err := validResponse.VisitAdminUpdateBannerResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SearchOrders operation middleware
-func (sh *strictHandler) SearchOrders(w http.ResponseWriter, r *http.Request, params SearchOrdersParams) {
-	var request SearchOrdersRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SearchOrders(ctx, request.(SearchOrdersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SearchOrders")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SearchOrdersResponseObject); ok {
-		if err := validResponse.VisitSearchOrdersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminOrderDetail operation middleware
-func (sh *strictHandler) AdminOrderDetail(w http.ResponseWriter, r *http.Request, orderId string) {
-	var request AdminOrderDetailRequestObject
-
-	request.OrderId = orderId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminOrderDetail(ctx, request.(AdminOrderDetailRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminOrderDetail")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminOrderDetailResponseObject); ok {
-		if err := validResponse.VisitAdminOrderDetailResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// MarkReconcile operation middleware
-func (sh *strictHandler) MarkReconcile(w http.ResponseWriter, r *http.Request, orderId string) {
-	var request MarkReconcileRequestObject
-
-	request.OrderId = orderId
-
-	var body MarkReconcileJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.MarkReconcile(ctx, request.(MarkReconcileRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "MarkReconcile")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(MarkReconcileResponseObject); ok {
-		if err := validResponse.VisitMarkReconcileResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// PayerOverview operation middleware
-func (sh *strictHandler) PayerOverview(w http.ResponseWriter, r *http.Request, payerId string) {
-	var request PayerOverviewRequestObject
-
-	request.PayerId = payerId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.PayerOverview(ctx, request.(PayerOverviewRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PayerOverview")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(PayerOverviewResponseObject); ok {
-		if err := validResponse.VisitPayerOverviewResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdjustCredits operation middleware
-func (sh *strictHandler) AdjustCredits(w http.ResponseWriter, r *http.Request, payerId string, params AdjustCreditsParams) {
-	var request AdjustCreditsRequestObject
-
-	request.PayerId = payerId
-	request.Params = params
-
-	var body AdjustCreditsJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdjustCredits(ctx, request.(AdjustCreditsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdjustCredits")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdjustCreditsResponseObject); ok {
-		if err := validResponse.VisitAdjustCreditsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetBillingCatalog operation middleware
-func (sh *strictHandler) GetBillingCatalog(w http.ResponseWriter, r *http.Request) {
-	var request GetBillingCatalogRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetBillingCatalog(ctx, request.(GetBillingCatalogRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetBillingCatalog")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetBillingCatalogResponseObject); ok {
-		if err := validResponse.VisitGetBillingCatalogResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SaveMemberLevel operation middleware
-func (sh *strictHandler) SaveMemberLevel(w http.ResponseWriter, r *http.Request) {
-	var request SaveMemberLevelRequestObject
-
-	var body SaveMemberLevelJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveMemberLevel(ctx, request.(SaveMemberLevelRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveMemberLevel")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SaveMemberLevelResponseObject); ok {
-		if err := validResponse.VisitSaveMemberLevelResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SaveCreditPackage operation middleware
-func (sh *strictHandler) SaveCreditPackage(w http.ResponseWriter, r *http.Request) {
-	var request SaveCreditPackageRequestObject
-
-	var body SaveCreditPackageJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveCreditPackage(ctx, request.(SaveCreditPackageRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveCreditPackage")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SaveCreditPackageResponseObject); ok {
-		if err := validResponse.VisitSaveCreditPackageResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SaveMemberPlan operation middleware
-func (sh *strictHandler) SaveMemberPlan(w http.ResponseWriter, r *http.Request) {
-	var request SaveMemberPlanRequestObject
-
-	var body SaveMemberPlanJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SaveMemberPlan(ctx, request.(SaveMemberPlanRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SaveMemberPlan")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SaveMemberPlanResponseObject); ok {
-		if err := validResponse.VisitSaveMemberPlanResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // AdminGetCanvasConfig operation middleware
 func (sh *strictHandler) AdminGetCanvasConfig(w http.ResponseWriter, r *http.Request) {
 	var request AdminGetCanvasConfigRequestObject
@@ -63522,39 +53024,11 @@ func (sh *strictHandler) AdminGetCanvasConfig(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// AdminListDeadLetters operation middleware
-func (sh *strictHandler) AdminListDeadLetters(w http.ResponseWriter, r *http.Request, params AdminListDeadLettersParams) {
-	var request AdminListDeadLettersRequestObject
+// AdminSaveConnectionRule operation middleware
+func (sh *strictHandler) AdminSaveConnectionRule(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveConnectionRuleRequestObject
 
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListDeadLetters(ctx, request.(AdminListDeadLettersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListDeadLetters")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListDeadLettersResponseObject); ok {
-		if err := validResponse.VisitAdminListDeadLettersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminDiscardDeadLetter operation middleware
-func (sh *strictHandler) AdminDiscardDeadLetter(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminDiscardDeadLetterRequestObject
-
-	request.Id = id
-
-	var body AdminDiscardDeadLetterJSONRequestBody
+	var body AdminSaveConnectionRuleJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -63562,18 +53036,18 @@ func (sh *strictHandler) AdminDiscardDeadLetter(w http.ResponseWriter, r *http.R
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminDiscardDeadLetter(ctx, request.(AdminDiscardDeadLetterRequestObject))
+		return sh.ssi.AdminSaveConnectionRule(ctx, request.(AdminSaveConnectionRuleRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminDiscardDeadLetter")
+		handler = middleware(handler, "AdminSaveConnectionRule")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminDiscardDeadLetterResponseObject); ok {
-		if err := validResponse.VisitAdminDiscardDeadLetterResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminSaveConnectionRuleResponseObject); ok {
+		if err := validResponse.VisitAdminSaveConnectionRuleResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -63581,35 +53055,301 @@ func (sh *strictHandler) AdminDiscardDeadLetter(w http.ResponseWriter, r *http.R
 	}
 }
 
-// AdminReplayDeadLetter operation middleware
-func (sh *strictHandler) AdminReplayDeadLetter(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminReplayDeadLetterRequestObject
-
-	request.Id = id
-
-	var body AdminReplayDeadLetterJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-			return
-		}
-	} else {
-		request.Body = &body
-	}
+// AdminListParamDefinitions operation middleware
+func (sh *strictHandler) AdminListParamDefinitions(w http.ResponseWriter, r *http.Request) {
+	var request AdminListParamDefinitionsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminReplayDeadLetter(ctx, request.(AdminReplayDeadLetterRequestObject))
+		return sh.ssi.AdminListParamDefinitions(ctx, request.(AdminListParamDefinitionsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminReplayDeadLetter")
+		handler = middleware(handler, "AdminListParamDefinitions")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminReplayDeadLetterResponseObject); ok {
-		if err := validResponse.VisitAdminReplayDeadLetterResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListParamDefinitionsResponseObject); ok {
+		if err := validResponse.VisitAdminListParamDefinitionsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSaveParamDefinition operation middleware
+func (sh *strictHandler) AdminSaveParamDefinition(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveParamDefinitionRequestObject
+
+	var body AdminSaveParamDefinitionJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSaveParamDefinition(ctx, request.(AdminSaveParamDefinitionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSaveParamDefinition")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSaveParamDefinitionResponseObject); ok {
+		if err := validResponse.VisitAdminSaveParamDefinitionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminDisableParamDefinition operation middleware
+func (sh *strictHandler) AdminDisableParamDefinition(w http.ResponseWriter, r *http.Request, code string) {
+	var request AdminDisableParamDefinitionRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminDisableParamDefinition(ctx, request.(AdminDisableParamDefinitionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminDisableParamDefinition")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminDisableParamDefinitionResponseObject); ok {
+		if err := validResponse.VisitAdminDisableParamDefinitionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminGetCanvasRevision operation middleware
+func (sh *strictHandler) AdminGetCanvasRevision(w http.ResponseWriter, r *http.Request) {
+	var request AdminGetCanvasRevisionRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminGetCanvasRevision(ctx, request.(AdminGetCanvasRevisionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminGetCanvasRevision")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminGetCanvasRevisionResponseObject); ok {
+		if err := validResponse.VisitAdminGetCanvasRevisionResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListImagePresets operation middleware
+func (sh *strictHandler) AdminListImagePresets(w http.ResponseWriter, r *http.Request) {
+	var request AdminListImagePresetsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListImagePresets(ctx, request.(AdminListImagePresetsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListImagePresets")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListImagePresetsResponseObject); ok {
+		if err := validResponse.VisitAdminListImagePresetsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminCreateImagePreset operation middleware
+func (sh *strictHandler) AdminCreateImagePreset(w http.ResponseWriter, r *http.Request) {
+	var request AdminCreateImagePresetRequestObject
+
+	var body AdminCreateImagePresetJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminCreateImagePreset(ctx, request.(AdminCreateImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminCreateImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminCreateImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminCreateImagePresetResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminPreviewImagePreset operation middleware
+func (sh *strictHandler) AdminPreviewImagePreset(w http.ResponseWriter, r *http.Request) {
+	var request AdminPreviewImagePresetRequestObject
+
+	var body AdminPreviewImagePresetJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminPreviewImagePreset(ctx, request.(AdminPreviewImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminPreviewImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminPreviewImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminPreviewImagePresetResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminUpdateImagePreset operation middleware
+func (sh *strictHandler) AdminUpdateImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	var request AdminUpdateImagePresetRequestObject
+
+	request.Code = code
+
+	var body AdminUpdateImagePresetJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminUpdateImagePreset(ctx, request.(AdminUpdateImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminUpdateImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminUpdateImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminUpdateImagePresetResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminDisableImagePreset operation middleware
+func (sh *strictHandler) AdminDisableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	var request AdminDisableImagePresetRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminDisableImagePreset(ctx, request.(AdminDisableImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminDisableImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminDisableImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminDisableImagePresetResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminEnableImagePreset operation middleware
+func (sh *strictHandler) AdminEnableImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	var request AdminEnableImagePresetRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminEnableImagePreset(ctx, request.(AdminEnableImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminEnableImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminEnableImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminEnableImagePresetResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminRestoreImagePreset operation middleware
+func (sh *strictHandler) AdminRestoreImagePreset(w http.ResponseWriter, r *http.Request, code PresetCode) {
+	var request AdminRestoreImagePresetRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminRestoreImagePreset(ctx, request.(AdminRestoreImagePresetRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminRestoreImagePreset")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminRestoreImagePresetResponseObject); ok {
+		if err := validResponse.VisitAdminRestoreImagePresetResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64162,39 +53902,11 @@ func (sh *strictHandler) AdminEnableMarketingPresetCharacter(w http.ResponseWrit
 	}
 }
 
-// AdminListMcpGrants operation middleware
-func (sh *strictHandler) AdminListMcpGrants(w http.ResponseWriter, r *http.Request, params AdminListMcpGrantsParams) {
-	var request AdminListMcpGrantsRequestObject
+// AdminSaveMaterial operation middleware
+func (sh *strictHandler) AdminSaveMaterial(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveMaterialRequestObject
 
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListMcpGrants(ctx, request.(AdminListMcpGrantsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListMcpGrants")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListMcpGrantsResponseObject); ok {
-		if err := validResponse.VisitAdminListMcpGrantsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminRevokeMcpGrant operation middleware
-func (sh *strictHandler) AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	var request AdminRevokeMcpGrantRequestObject
-
-	request.GrantId = grantId
-
-	var body AdminRevokeMcpGrantJSONRequestBody
+	var body AdminSaveMaterialJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -64202,18 +53914,18 @@ func (sh *strictHandler) AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Requ
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminRevokeMcpGrant(ctx, request.(AdminRevokeMcpGrantRequestObject))
+		return sh.ssi.AdminSaveMaterial(ctx, request.(AdminSaveMaterialRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminRevokeMcpGrant")
+		handler = middleware(handler, "AdminSaveMaterial")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminRevokeMcpGrantResponseObject); ok {
-		if err := validResponse.VisitAdminRevokeMcpGrantResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminSaveMaterialResponseObject); ok {
+		if err := validResponse.VisitAdminSaveMaterialResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64221,80 +53933,26 @@ func (sh *strictHandler) AdminRevokeMcpGrant(w http.ResponseWriter, r *http.Requ
 	}
 }
 
-// AdminGetMcpSettings operation middleware
-func (sh *strictHandler) AdminGetMcpSettings(w http.ResponseWriter, r *http.Request) {
-	var request AdminGetMcpSettingsRequestObject
+// AdminListMaterials operation middleware
+func (sh *strictHandler) AdminListMaterials(w http.ResponseWriter, r *http.Request, pType AdminListMaterialsParamsType, params AdminListMaterialsParams) {
+	var request AdminListMaterialsRequestObject
 
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminGetMcpSettings(ctx, request.(AdminGetMcpSettingsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminGetMcpSettings")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminGetMcpSettingsResponseObject); ok {
-		if err := validResponse.VisitAdminGetMcpSettingsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminUpdateMcpSettings operation middleware
-func (sh *strictHandler) AdminUpdateMcpSettings(w http.ResponseWriter, r *http.Request) {
-	var request AdminUpdateMcpSettingsRequestObject
-
-	var body AdminUpdateMcpSettingsJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminUpdateMcpSettings(ctx, request.(AdminUpdateMcpSettingsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminUpdateMcpSettings")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminUpdateMcpSettingsResponseObject); ok {
-		if err := validResponse.VisitAdminUpdateMcpSettingsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminMcpStats operation middleware
-func (sh *strictHandler) AdminMcpStats(w http.ResponseWriter, r *http.Request, params AdminMcpStatsParams) {
-	var request AdminMcpStatsRequestObject
-
+	request.Type = pType
 	request.Params = params
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminMcpStats(ctx, request.(AdminMcpStatsRequestObject))
+		return sh.ssi.AdminListMaterials(ctx, request.(AdminListMaterialsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminMcpStats")
+		handler = middleware(handler, "AdminListMaterials")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminMcpStatsResponseObject); ok {
-		if err := validResponse.VisitAdminMcpStatsResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListMaterialsResponseObject); ok {
+		if err := validResponse.VisitAdminListMaterialsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64360,32 +54018,23 @@ func (sh *strictHandler) AdminDownloadMedia(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// AdminRetryGeneration operation middleware
-func (sh *strictHandler) AdminRetryGeneration(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminRetryGenerationRequestObject
-
-	request.Id = id
-
-	var body AdminRetryGenerationJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
+// AdminListModelTemplates operation middleware
+func (sh *strictHandler) AdminListModelTemplates(w http.ResponseWriter, r *http.Request) {
+	var request AdminListModelTemplatesRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminRetryGeneration(ctx, request.(AdminRetryGenerationRequestObject))
+		return sh.ssi.AdminListModelTemplates(ctx, request.(AdminListModelTemplatesRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminRetryGeneration")
+		handler = middleware(handler, "AdminListModelTemplates")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminRetryGenerationResponseObject); ok {
-		if err := validResponse.VisitAdminRetryGenerationResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListModelTemplatesResponseObject); ok {
+		if err := validResponse.VisitAdminListModelTemplatesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64393,99 +54042,13 @@ func (sh *strictHandler) AdminRetryGeneration(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// AdminCompensateTask operation middleware
-func (sh *strictHandler) AdminCompensateTask(w http.ResponseWriter, r *http.Request, kind AdminCompensateTaskParamsKind, id Id) {
-	var request AdminCompensateTaskRequestObject
+// AdminEnableModelTemplate operation middleware
+func (sh *strictHandler) AdminEnableModelTemplate(w http.ResponseWriter, r *http.Request, code string) {
+	var request AdminEnableModelTemplateRequestObject
 
-	request.Kind = kind
-	request.Id = id
+	request.Code = code
 
-	var body AdminCompensateTaskJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminCompensateTask(ctx, request.(AdminCompensateTaskRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminCompensateTask")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminCompensateTaskResponseObject); ok {
-		if err := validResponse.VisitAdminCompensateTaskResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ReconcileOrders operation middleware
-func (sh *strictHandler) ReconcileOrders(w http.ResponseWriter, r *http.Request, params ReconcileOrdersParams) {
-	var request ReconcileOrdersRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ReconcileOrders(ctx, request.(ReconcileOrdersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ReconcileOrders")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ReconcileOrdersResponseObject); ok {
-		if err := validResponse.VisitReconcileOrdersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListReconcileDiffs operation middleware
-func (sh *strictHandler) ListReconcileDiffs(w http.ResponseWriter, r *http.Request, params ListReconcileDiffsParams) {
-	var request ListReconcileDiffsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListReconcileDiffs(ctx, request.(ListReconcileDiffsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListReconcileDiffs")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListReconcileDiffsResponseObject); ok {
-		if err := validResponse.VisitListReconcileDiffsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminRefundOrder operation middleware
-func (sh *strictHandler) AdminRefundOrder(w http.ResponseWriter, r *http.Request, orderId string) {
-	var request AdminRefundOrderRequestObject
-
-	request.OrderId = orderId
-
-	var body AdminRefundOrderJSONRequestBody
+	var body AdminEnableModelTemplateJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		if !errors.Is(err, io.EOF) {
 			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
@@ -64496,18 +54059,18 @@ func (sh *strictHandler) AdminRefundOrder(w http.ResponseWriter, r *http.Request
 	}
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminRefundOrder(ctx, request.(AdminRefundOrderRequestObject))
+		return sh.ssi.AdminEnableModelTemplate(ctx, request.(AdminEnableModelTemplateRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminRefundOrder")
+		handler = middleware(handler, "AdminEnableModelTemplate")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminRefundOrderResponseObject); ok {
-		if err := validResponse.VisitAdminRefundOrderResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminEnableModelTemplateResponseObject); ok {
+		if err := validResponse.VisitAdminEnableModelTemplateResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64515,25 +54078,23 @@ func (sh *strictHandler) AdminRefundOrder(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// AdminCheckRefund operation middleware
-func (sh *strictHandler) AdminCheckRefund(w http.ResponseWriter, r *http.Request, orderId string) {
-	var request AdminCheckRefundRequestObject
-
-	request.OrderId = orderId
+// AdminListModels operation middleware
+func (sh *strictHandler) AdminListModels(w http.ResponseWriter, r *http.Request) {
+	var request AdminListModelsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminCheckRefund(ctx, request.(AdminCheckRefundRequestObject))
+		return sh.ssi.AdminListModels(ctx, request.(AdminListModelsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminCheckRefund")
+		handler = middleware(handler, "AdminListModels")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminCheckRefundResponseObject); ok {
-		if err := validResponse.VisitAdminCheckRefundResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListModelsResponseObject); ok {
+		if err := validResponse.VisitAdminListModelsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64541,61 +54102,11 @@ func (sh *strictHandler) AdminCheckRefund(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// ListPaymentCallbacks operation middleware
-func (sh *strictHandler) ListPaymentCallbacks(w http.ResponseWriter, r *http.Request, params ListPaymentCallbacksParams) {
-	var request ListPaymentCallbacksRequestObject
+// AdminSaveModel operation middleware
+func (sh *strictHandler) AdminSaveModel(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveModelRequestObject
 
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListPaymentCallbacks(ctx, request.(ListPaymentCallbacksRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListPaymentCallbacks")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListPaymentCallbacksResponseObject); ok {
-		if err := validResponse.VisitListPaymentCallbacksResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListPaymentChannels operation middleware
-func (sh *strictHandler) ListPaymentChannels(w http.ResponseWriter, r *http.Request) {
-	var request ListPaymentChannelsRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListPaymentChannels(ctx, request.(ListPaymentChannelsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListPaymentChannels")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListPaymentChannelsResponseObject); ok {
-		if err := validResponse.VisitListPaymentChannelsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SavePaymentChannel operation middleware
-func (sh *strictHandler) SavePaymentChannel(w http.ResponseWriter, r *http.Request) {
-	var request SavePaymentChannelRequestObject
-
-	var body SavePaymentChannelJSONRequestBody
+	var body AdminSaveModelJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -64603,18 +54114,379 @@ func (sh *strictHandler) SavePaymentChannel(w http.ResponseWriter, r *http.Reque
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SavePaymentChannel(ctx, request.(SavePaymentChannelRequestObject))
+		return sh.ssi.AdminSaveModel(ctx, request.(AdminSaveModelRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SavePaymentChannel")
+		handler = middleware(handler, "AdminSaveModel")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SavePaymentChannelResponseObject); ok {
-		if err := validResponse.VisitSavePaymentChannelResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminSaveModelResponseObject); ok {
+		if err := validResponse.VisitAdminSaveModelResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListModelProtocols operation middleware
+func (sh *strictHandler) AdminListModelProtocols(w http.ResponseWriter, r *http.Request) {
+	var request AdminListModelProtocolsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListModelProtocols(ctx, request.(AdminListModelProtocolsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListModelProtocols")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListModelProtocolsResponseObject); ok {
+		if err := validResponse.VisitAdminListModelProtocolsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListProviders operation middleware
+func (sh *strictHandler) AdminListProviders(w http.ResponseWriter, r *http.Request) {
+	var request AdminListProvidersRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListProviders(ctx, request.(AdminListProvidersRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListProviders")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListProvidersResponseObject); ok {
+		if err := validResponse.VisitAdminListProvidersResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSaveProvider operation middleware
+func (sh *strictHandler) AdminSaveProvider(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveProviderRequestObject
+
+	var body AdminSaveProviderJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSaveProvider(ctx, request.(AdminSaveProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSaveProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSaveProviderResponseObject); ok {
+		if err := validResponse.VisitAdminSaveProviderResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminProbeProvider operation middleware
+func (sh *strictHandler) AdminProbeProvider(w http.ResponseWriter, r *http.Request, code string) {
+	var request AdminProbeProviderRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminProbeProvider(ctx, request.(AdminProbeProviderRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminProbeProvider")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminProbeProviderResponseObject); ok {
+		if err := validResponse.VisitAdminProbeProviderResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListModelCapabilities operation middleware
+func (sh *strictHandler) AdminListModelCapabilities(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminListModelCapabilitiesRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListModelCapabilities(ctx, request.(AdminListModelCapabilitiesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListModelCapabilities")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListModelCapabilitiesResponseObject); ok {
+		if err := validResponse.VisitAdminListModelCapabilitiesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSaveModelCapability operation middleware
+func (sh *strictHandler) AdminSaveModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminSaveModelCapabilityRequestObject
+
+	request.Code = code
+
+	var body AdminSaveModelCapabilityJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSaveModelCapability(ctx, request.(AdminSaveModelCapabilityRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSaveModelCapability")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSaveModelCapabilityResponseObject); ok {
+		if err := validResponse.VisitAdminSaveModelCapabilityResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminDeleteModelCapability operation middleware
+func (sh *strictHandler) AdminDeleteModelCapability(w http.ResponseWriter, r *http.Request, code ModelCode, operation string, role string) {
+	var request AdminDeleteModelCapabilityRequestObject
+
+	request.Code = code
+	request.Operation = operation
+	request.Role = role
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminDeleteModelCapability(ctx, request.(AdminDeleteModelCapabilityRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminDeleteModelCapability")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminDeleteModelCapabilityResponseObject); ok {
+		if err := validResponse.VisitAdminDeleteModelCapabilityResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSaveModelOperation operation middleware
+func (sh *strictHandler) AdminSaveModelOperation(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminSaveModelOperationRequestObject
+
+	request.Code = code
+
+	var body AdminSaveModelOperationJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSaveModelOperation(ctx, request.(AdminSaveModelOperationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSaveModelOperation")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSaveModelOperationResponseObject); ok {
+		if err := validResponse.VisitAdminSaveModelOperationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListModelParamSupports operation middleware
+func (sh *strictHandler) AdminListModelParamSupports(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminListModelParamSupportsRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListModelParamSupports(ctx, request.(AdminListModelParamSupportsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListModelParamSupports")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListModelParamSupportsResponseObject); ok {
+		if err := validResponse.VisitAdminListModelParamSupportsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSaveModelParamSupport operation middleware
+func (sh *strictHandler) AdminSaveModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminSaveModelParamSupportRequestObject
+
+	request.Code = code
+
+	var body AdminSaveModelParamSupportJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSaveModelParamSupport(ctx, request.(AdminSaveModelParamSupportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSaveModelParamSupport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSaveModelParamSupportResponseObject); ok {
+		if err := validResponse.VisitAdminSaveModelParamSupportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminDeleteModelParamSupport operation middleware
+func (sh *strictHandler) AdminDeleteModelParamSupport(w http.ResponseWriter, r *http.Request, code ModelCode, paramCode string) {
+	var request AdminDeleteModelParamSupportRequestObject
+
+	request.Code = code
+	request.ParamCode = paramCode
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminDeleteModelParamSupport(ctx, request.(AdminDeleteModelParamSupportRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminDeleteModelParamSupport")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminDeleteModelParamSupportResponseObject); ok {
+		if err := validResponse.VisitAdminDeleteModelParamSupportResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminCheckModelPublishable operation middleware
+func (sh *strictHandler) AdminCheckModelPublishable(w http.ResponseWriter, r *http.Request, code ModelCode) {
+	var request AdminCheckModelPublishableRequestObject
+
+	request.Code = code
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminCheckModelPublishable(ctx, request.(AdminCheckModelPublishableRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminCheckModelPublishable")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminCheckModelPublishableResponseObject); ok {
+		if err := validResponse.VisitAdminCheckModelPublishableResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListOperations operation middleware
+func (sh *strictHandler) AdminListOperations(w http.ResponseWriter, r *http.Request) {
+	var request AdminListOperationsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListOperations(ctx, request.(AdminListOperationsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListOperations")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListOperationsResponseObject); ok {
+		if err := validResponse.VisitAdminListOperationsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64646,25 +54518,23 @@ func (sh *strictHandler) AdminListPermissions(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// AdminListProjects operation middleware
-func (sh *strictHandler) AdminListProjects(w http.ResponseWriter, r *http.Request, params AdminListProjectsParams) {
-	var request AdminListProjectsRequestObject
-
-	request.Params = params
+// AdminListPrompts operation middleware
+func (sh *strictHandler) AdminListPrompts(w http.ResponseWriter, r *http.Request) {
+	var request AdminListPromptsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListProjects(ctx, request.(AdminListProjectsRequestObject))
+		return sh.ssi.AdminListPrompts(ctx, request.(AdminListPromptsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListProjects")
+		handler = middleware(handler, "AdminListPrompts")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListProjectsResponseObject); ok {
-		if err := validResponse.VisitAdminListProjectsResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListPromptsResponseObject); ok {
+		if err := validResponse.VisitAdminListPromptsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64672,39 +54542,11 @@ func (sh *strictHandler) AdminListProjects(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// AdminGetProject operation middleware
-func (sh *strictHandler) AdminGetProject(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminGetProjectRequestObject
+// AdminArchivePrompt operation middleware
+func (sh *strictHandler) AdminArchivePrompt(w http.ResponseWriter, r *http.Request) {
+	var request AdminArchivePromptRequestObject
 
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminGetProject(ctx, request.(AdminGetProjectRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminGetProject")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminGetProjectResponseObject); ok {
-		if err := validResponse.VisitAdminGetProjectResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminProjectAction operation middleware
-func (sh *strictHandler) AdminProjectAction(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminProjectActionRequestObject
-
-	request.Id = id
-
-	var body AdminProjectActionJSONRequestBody
+	var body AdminArchivePromptJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -64712,18 +54554,192 @@ func (sh *strictHandler) AdminProjectAction(w http.ResponseWriter, r *http.Reque
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminProjectAction(ctx, request.(AdminProjectActionRequestObject))
+		return sh.ssi.AdminArchivePrompt(ctx, request.(AdminArchivePromptRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminProjectAction")
+		handler = middleware(handler, "AdminArchivePrompt")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminProjectActionResponseObject); ok {
-		if err := validResponse.VisitAdminProjectActionResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminArchivePromptResponseObject); ok {
+		if err := validResponse.VisitAdminArchivePromptResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminSavePromptDraft operation middleware
+func (sh *strictHandler) AdminSavePromptDraft(w http.ResponseWriter, r *http.Request) {
+	var request AdminSavePromptDraftRequestObject
+
+	var body AdminSavePromptDraftJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminSavePromptDraft(ctx, request.(AdminSavePromptDraftRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminSavePromptDraft")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminSavePromptDraftResponseObject); ok {
+		if err := validResponse.VisitAdminSavePromptDraftResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminPreviewPrompt operation middleware
+func (sh *strictHandler) AdminPreviewPrompt(w http.ResponseWriter, r *http.Request) {
+	var request AdminPreviewPromptRequestObject
+
+	var body AdminPreviewPromptJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminPreviewPrompt(ctx, request.(AdminPreviewPromptRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminPreviewPrompt")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminPreviewPromptResponseObject); ok {
+		if err := validResponse.VisitAdminPreviewPromptResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminPublishPrompt operation middleware
+func (sh *strictHandler) AdminPublishPrompt(w http.ResponseWriter, r *http.Request) {
+	var request AdminPublishPromptRequestObject
+
+	var body AdminPublishPromptJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminPublishPrompt(ctx, request.(AdminPublishPromptRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminPublishPrompt")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminPublishPromptResponseObject); ok {
+		if err := validResponse.VisitAdminPublishPromptResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminRollbackPrompt operation middleware
+func (sh *strictHandler) AdminRollbackPrompt(w http.ResponseWriter, r *http.Request) {
+	var request AdminRollbackPromptRequestObject
+
+	var body AdminRollbackPromptJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminRollbackPrompt(ctx, request.(AdminRollbackPromptRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminRollbackPrompt")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminRollbackPromptResponseObject); ok {
+		if err := validResponse.VisitAdminRollbackPromptResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListPromptSpecs operation middleware
+func (sh *strictHandler) AdminListPromptSpecs(w http.ResponseWriter, r *http.Request) {
+	var request AdminListPromptSpecsRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListPromptSpecs(ctx, request.(AdminListPromptSpecsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListPromptSpecs")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListPromptSpecsResponseObject); ok {
+		if err := validResponse.VisitAdminListPromptSpecsResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminListPromptVersions operation middleware
+func (sh *strictHandler) AdminListPromptVersions(w http.ResponseWriter, r *http.Request, params AdminListPromptVersionsParams) {
+	var request AdminListPromptVersionsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminListPromptVersions(ctx, request.(AdminListPromptVersionsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminListPromptVersions")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminListPromptVersionsResponseObject); ok {
+		if err := validResponse.VisitAdminListPromptVersionsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -64973,32 +54989,6 @@ func (sh *strictHandler) AdminStatsSeries(w http.ResponseWriter, r *http.Request
 	}
 }
 
-// AdminListTasks operation middleware
-func (sh *strictHandler) AdminListTasks(w http.ResponseWriter, r *http.Request, params AdminListTasksParams) {
-	var request AdminListTasksRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListTasks(ctx, request.(AdminListTasksRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListTasks")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListTasksResponseObject); ok {
-		if err := validResponse.VisitAdminListTasksResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // AdminSearchUsers operation middleware
 func (sh *strictHandler) AdminSearchUsers(w http.ResponseWriter, r *http.Request, params AdminSearchUsersParams) {
 	var request AdminSearchUsersRequestObject
@@ -65077,25 +55067,25 @@ func (sh *strictHandler) AdminBanUser(w http.ResponseWriter, r *http.Request, us
 	}
 }
 
-// AdminListWorks operation middleware
-func (sh *strictHandler) AdminListWorks(w http.ResponseWriter, r *http.Request, params AdminListWorksParams) {
-	var request AdminListWorksRequestObject
+// AdminListVoices operation middleware
+func (sh *strictHandler) AdminListVoices(w http.ResponseWriter, r *http.Request, params AdminListVoicesParams) {
+	var request AdminListVoicesRequestObject
 
 	request.Params = params
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminListWorks(ctx, request.(AdminListWorksRequestObject))
+		return sh.ssi.AdminListVoices(ctx, request.(AdminListVoicesRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminListWorks")
+		handler = middleware(handler, "AdminListVoices")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminListWorksResponseObject); ok {
-		if err := validResponse.VisitAdminListWorksResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminListVoicesResponseObject); ok {
+		if err := validResponse.VisitAdminListVoicesResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -65103,39 +55093,11 @@ func (sh *strictHandler) AdminListWorks(w http.ResponseWriter, r *http.Request, 
 	}
 }
 
-// AdminGetWork operation middleware
-func (sh *strictHandler) AdminGetWork(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminGetWorkRequestObject
+// AdminSaveVoice operation middleware
+func (sh *strictHandler) AdminSaveVoice(w http.ResponseWriter, r *http.Request) {
+	var request AdminSaveVoiceRequestObject
 
-	request.Id = id
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminGetWork(ctx, request.(AdminGetWorkRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminGetWork")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminGetWorkResponseObject); ok {
-		if err := validResponse.VisitAdminGetWorkResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AdminReviewWork operation middleware
-func (sh *strictHandler) AdminReviewWork(w http.ResponseWriter, r *http.Request, id Id) {
-	var request AdminReviewWorkRequestObject
-
-	request.Id = id
-
-	var body AdminReviewWorkJSONRequestBody
+	var body AdminSaveVoiceJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -65143,18 +55105,18 @@ func (sh *strictHandler) AdminReviewWork(w http.ResponseWriter, r *http.Request,
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AdminReviewWork(ctx, request.(AdminReviewWorkRequestObject))
+		return sh.ssi.AdminSaveVoice(ctx, request.(AdminSaveVoiceRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AdminReviewWork")
+		handler = middleware(handler, "AdminSaveVoice")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AdminReviewWorkResponseObject); ok {
-		if err := validResponse.VisitAdminReviewWorkResponse(w); err != nil {
+	} else if validResponse, ok := response.(AdminSaveVoiceResponseObject); ok {
+		if err := validResponse.VisitAdminSaveVoiceResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -65585,92 +55547,6 @@ func (sh *strictHandler) AgentSkillCover(w http.ResponseWriter, r *http.Request,
 	}
 }
 
-// SendVerificationCode operation middleware
-func (sh *strictHandler) SendVerificationCode(w http.ResponseWriter, r *http.Request) {
-	var request SendVerificationCodeRequestObject
-
-	var body SendVerificationCodeJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SendVerificationCode(ctx, request.(SendVerificationCodeRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SendVerificationCode")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SendVerificationCodeResponseObject); ok {
-		if err := validResponse.VisitSendVerificationCodeResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// Login operation middleware
-func (sh *strictHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var request LoginRequestObject
-
-	var body LoginJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.Login(ctx, request.(LoginRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "Login")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(LoginResponseObject); ok {
-		if err := validResponse.VisitLoginResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// Logout operation middleware
-func (sh *strictHandler) Logout(w http.ResponseWriter, r *http.Request) {
-	var request LogoutRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.Logout(ctx, request.(LogoutRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "Logout")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(LogoutResponseObject); ok {
-		if err := validResponse.VisitLogoutResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // GetCurrentUser operation middleware
 func (sh *strictHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) {
 	var request GetCurrentUserRequestObject
@@ -65695,11 +55571,11 @@ func (sh *strictHandler) GetCurrentUser(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
-// ResetPassword operation middleware
-func (sh *strictHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
-	var request ResetPasswordRequestObject
+// UpdateProfile operation middleware
+func (sh *strictHandler) UpdateProfile(w http.ResponseWriter, r *http.Request) {
+	var request UpdateProfileRequestObject
 
-	var body ResetPasswordJSONRequestBody
+	var body UpdateProfileJSONRequestBody
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
 		return
@@ -65707,80 +55583,18 @@ func (sh *strictHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ResetPassword(ctx, request.(ResetPasswordRequestObject))
+		return sh.ssi.UpdateProfile(ctx, request.(UpdateProfileRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ResetPassword")
+		handler = middleware(handler, "UpdateProfile")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ResetPasswordResponseObject); ok {
-		if err := validResponse.VisitResetPasswordResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RefreshToken operation middleware
-func (sh *strictHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	var request RefreshTokenRequestObject
-
-	var body RefreshTokenJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RefreshToken(ctx, request.(RefreshTokenRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RefreshToken")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RefreshTokenResponseObject); ok {
-		if err := validResponse.VisitRefreshTokenResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// Register operation middleware
-func (sh *strictHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var request RegisterRequestObject
-
-	var body RegisterJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.Register(ctx, request.(RegisterRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "Register")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RegisterResponseObject); ok {
-		if err := validResponse.VisitRegisterResponse(w); err != nil {
+	} else if validResponse, ok := response.(UpdateProfileResponseObject); ok {
+		if err := validResponse.VisitUpdateProfileResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -65976,58 +55790,6 @@ func (sh *strictHandler) ListCreations(w http.ResponseWriter, r *http.Request, p
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ListCreationsResponseObject); ok {
 		if err := validResponse.VisitListCreationsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetCredits operation middleware
-func (sh *strictHandler) GetCredits(w http.ResponseWriter, r *http.Request, params GetCreditsParams) {
-	var request GetCreditsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetCredits(ctx, request.(GetCreditsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetCredits")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetCreditsResponseObject); ok {
-		if err := validResponse.VisitGetCreditsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListCreditTransactions operation middleware
-func (sh *strictHandler) ListCreditTransactions(w http.ResponseWriter, r *http.Request, params ListCreditTransactionsParams) {
-	var request ListCreditTransactionsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListCreditTransactions(ctx, request.(ListCreditTransactionsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListCreditTransactions")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListCreditTransactionsResponseObject); ok {
-		if err := validResponse.VisitListCreditTransactionsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -66406,6 +56168,33 @@ func (sh *strictHandler) CancelGeneration(w http.ResponseWriter, r *http.Request
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(CancelGenerationResponseObject); ok {
 		if err := validResponse.VisitCancelGenerationResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ListGenerationOutputs operation middleware
+func (sh *strictHandler) ListGenerationOutputs(w http.ResponseWriter, r *http.Request, generationId GenerationId, params ListGenerationOutputsParams) {
+	var request ListGenerationOutputsRequestObject
+
+	request.GenerationId = generationId
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListGenerationOutputs(ctx, request.(ListGenerationOutputsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListGenerationOutputs")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListGenerationOutputsResponseObject); ok {
+		if err := validResponse.VisitListGenerationOutputsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -67702,329 +57491,6 @@ func (sh *strictHandler) UpdateMarketingProduct(w http.ResponseWriter, r *http.R
 	}
 }
 
-// GetMcpApproval operation middleware
-func (sh *strictHandler) GetMcpApproval(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	var request GetMcpApprovalRequestObject
-
-	request.QuoteId = quoteId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMcpApproval(ctx, request.(GetMcpApprovalRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMcpApproval")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetMcpApprovalResponseObject); ok {
-		if err := validResponse.VisitGetMcpApprovalResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ApproveMcpQuote operation middleware
-func (sh *strictHandler) ApproveMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	var request ApproveMcpQuoteRequestObject
-
-	request.QuoteId = quoteId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ApproveMcpQuote(ctx, request.(ApproveMcpQuoteRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ApproveMcpQuote")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ApproveMcpQuoteResponseObject); ok {
-		if err := validResponse.VisitApproveMcpQuoteResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RejectMcpQuote operation middleware
-func (sh *strictHandler) RejectMcpQuote(w http.ResponseWriter, r *http.Request, quoteId Id) {
-	var request RejectMcpQuoteRequestObject
-
-	request.QuoteId = quoteId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RejectMcpQuote(ctx, request.(RejectMcpQuoteRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RejectMcpQuote")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RejectMcpQuoteResponseObject); ok {
-		if err := validResponse.VisitRejectMcpQuoteResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetMcpConsent operation middleware
-func (sh *strictHandler) GetMcpConsent(w http.ResponseWriter, r *http.Request, params GetMcpConsentParams) {
-	var request GetMcpConsentRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMcpConsent(ctx, request.(GetMcpConsentRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMcpConsent")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetMcpConsentResponseObject); ok {
-		if err := validResponse.VisitGetMcpConsentResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SubmitMcpConsent operation middleware
-func (sh *strictHandler) SubmitMcpConsent(w http.ResponseWriter, r *http.Request) {
-	var request SubmitMcpConsentRequestObject
-
-	var body SubmitMcpConsentJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SubmitMcpConsent(ctx, request.(SubmitMcpConsentRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SubmitMcpConsent")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SubmitMcpConsentResponseObject); ok {
-		if err := validResponse.VisitSubmitMcpConsentResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetMcpClientSnippets operation middleware
-func (sh *strictHandler) GetMcpClientSnippets(w http.ResponseWriter, r *http.Request) {
-	var request GetMcpClientSnippetsRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMcpClientSnippets(ctx, request.(GetMcpClientSnippetsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMcpClientSnippets")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetMcpClientSnippetsResponseObject); ok {
-		if err := validResponse.VisitGetMcpClientSnippetsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListMcpGrants operation middleware
-func (sh *strictHandler) ListMcpGrants(w http.ResponseWriter, r *http.Request) {
-	var request ListMcpGrantsRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListMcpGrants(ctx, request.(ListMcpGrantsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListMcpGrants")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListMcpGrantsResponseObject); ok {
-		if err := validResponse.VisitListMcpGrantsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RevokeMcpGrant operation middleware
-func (sh *strictHandler) RevokeMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	var request RevokeMcpGrantRequestObject
-
-	request.GrantId = grantId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RevokeMcpGrant(ctx, request.(RevokeMcpGrantRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RevokeMcpGrant")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RevokeMcpGrantResponseObject); ok {
-		if err := validResponse.VisitRevokeMcpGrantResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// UpdateMcpGrant operation middleware
-func (sh *strictHandler) UpdateMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id) {
-	var request UpdateMcpGrantRequestObject
-
-	request.GrantId = grantId
-
-	var body UpdateMcpGrantJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.UpdateMcpGrant(ctx, request.(UpdateMcpGrantRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "UpdateMcpGrant")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(UpdateMcpGrantResponseObject); ok {
-		if err := validResponse.VisitUpdateMcpGrantResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListMcpAccessKeys operation middleware
-func (sh *strictHandler) ListMcpAccessKeys(w http.ResponseWriter, r *http.Request) {
-	var request ListMcpAccessKeysRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListMcpAccessKeys(ctx, request.(ListMcpAccessKeysRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListMcpAccessKeys")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListMcpAccessKeysResponseObject); ok {
-		if err := validResponse.VisitListMcpAccessKeysResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateMcpAccessKey operation middleware
-func (sh *strictHandler) CreateMcpAccessKey(w http.ResponseWriter, r *http.Request) {
-	var request CreateMcpAccessKeyRequestObject
-
-	var body CreateMcpAccessKeyJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateMcpAccessKey(ctx, request.(CreateMcpAccessKeyRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateMcpAccessKey")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CreateMcpAccessKeyResponseObject); ok {
-		if err := validResponse.VisitCreateMcpAccessKeyResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RevokeMcpAccessKey operation middleware
-func (sh *strictHandler) RevokeMcpAccessKey(w http.ResponseWriter, r *http.Request, keyId Id) {
-	var request RevokeMcpAccessKeyRequestObject
-
-	request.KeyId = keyId
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RevokeMcpAccessKey(ctx, request.(RevokeMcpAccessKeyRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RevokeMcpAccessKey")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RevokeMcpAccessKeyResponseObject); ok {
-		if err := validResponse.VisitRevokeMcpAccessKeyResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // ListMyMedia operation middleware
 func (sh *strictHandler) ListMyMedia(w http.ResponseWriter, r *http.Request, params ListMyMediaParams) {
 	var request ListMyMediaRequestObject
@@ -68280,32 +57746,6 @@ func (sh *strictHandler) ListMediaUsages(w http.ResponseWriter, r *http.Request,
 	}
 }
 
-// GetMembership operation middleware
-func (sh *strictHandler) GetMembership(w http.ResponseWriter, r *http.Request, params GetMembershipParams) {
-	var request GetMembershipRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetMembership(ctx, request.(GetMembershipRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetMembership")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetMembershipResponseObject); ok {
-		if err := validResponse.VisitGetMembershipResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
 // ListUsableModels operation middleware
 func (sh *strictHandler) ListUsableModels(w http.ResponseWriter, r *http.Request, params ListUsableModelsParams) {
 	var request ListUsableModelsRequestObject
@@ -68456,346 +57896,6 @@ func (sh *strictHandler) UnreadCount(w http.ResponseWriter, r *http.Request) {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(UnreadCountResponseObject); ok {
 		if err := validResponse.VisitUnreadCountResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListOrders operation middleware
-func (sh *strictHandler) ListOrders(w http.ResponseWriter, r *http.Request, params ListOrdersParams) {
-	var request ListOrdersRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListOrders(ctx, request.(ListOrdersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListOrders")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListOrdersResponseObject); ok {
-		if err := validResponse.VisitListOrdersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateOrder operation middleware
-func (sh *strictHandler) CreateOrder(w http.ResponseWriter, r *http.Request, params CreateOrderParams) {
-	var request CreateOrderRequestObject
-
-	request.Params = params
-
-	var body CreateOrderJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateOrder(ctx, request.(CreateOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CreateOrderResponseObject); ok {
-		if err := validResponse.VisitCreateOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetOrder operation middleware
-func (sh *strictHandler) GetOrder(w http.ResponseWriter, r *http.Request, orderId string, params GetOrderParams) {
-	var request GetOrderRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetOrder(ctx, request.(GetOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetOrderResponseObject); ok {
-		if err := validResponse.VisitGetOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CancelOrder operation middleware
-func (sh *strictHandler) CancelOrder(w http.ResponseWriter, r *http.Request, orderId string, params CancelOrderParams) {
-	var request CancelOrderRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CancelOrder(ctx, request.(CancelOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CancelOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CancelOrderResponseObject); ok {
-		if err := validResponse.VisitCancelOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// DevPayOrder operation middleware
-func (sh *strictHandler) DevPayOrder(w http.ResponseWriter, r *http.Request, orderId string, params DevPayOrderParams) {
-	var request DevPayOrderRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.DevPayOrder(ctx, request.(DevPayOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DevPayOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(DevPayOrderResponseObject); ok {
-		if err := validResponse.VisitDevPayOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreatePayment operation middleware
-func (sh *strictHandler) CreatePayment(w http.ResponseWriter, r *http.Request, orderId string, params CreatePaymentParams) {
-	var request CreatePaymentRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	var body CreatePaymentJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CreatePayment(ctx, request.(CreatePaymentRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreatePayment")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CreatePaymentResponseObject); ok {
-		if err := validResponse.VisitCreatePaymentResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RefundOrder operation middleware
-func (sh *strictHandler) RefundOrder(w http.ResponseWriter, r *http.Request, orderId string, params RefundOrderParams) {
-	var request RefundOrderRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	var body RefundOrderJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-			return
-		}
-	} else {
-		request.Body = &body
-	}
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RefundOrder(ctx, request.(RefundOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RefundOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RefundOrderResponseObject); ok {
-		if err := validResponse.VisitRefundOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CheckRefund operation middleware
-func (sh *strictHandler) CheckRefund(w http.ResponseWriter, r *http.Request, orderId string, params CheckRefundParams) {
-	var request CheckRefundRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CheckRefund(ctx, request.(CheckRefundRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CheckRefund")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CheckRefundResponseObject); ok {
-		if err := validResponse.VisitCheckRefundResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListRefunds operation middleware
-func (sh *strictHandler) ListRefunds(w http.ResponseWriter, r *http.Request, orderId string, params ListRefundsParams) {
-	var request ListRefundsRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListRefunds(ctx, request.(ListRefundsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListRefunds")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListRefundsResponseObject); ok {
-		if err := validResponse.VisitListRefundsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SyncOrder operation middleware
-func (sh *strictHandler) SyncOrder(w http.ResponseWriter, r *http.Request, orderId string, params SyncOrderParams) {
-	var request SyncOrderRequestObject
-
-	request.OrderId = orderId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SyncOrder(ctx, request.(SyncOrderRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SyncOrder")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SyncOrderResponseObject); ok {
-		if err := validResponse.VisitSyncOrderResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// PaymentCallback operation middleware
-func (sh *strictHandler) PaymentCallback(w http.ResponseWriter, r *http.Request, channel string) {
-	var request PaymentCallbackRequestObject
-
-	request.Channel = channel
-	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
-
-		var body PaymentCallbackJSONRequestBody
-		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-			return
-		}
-		request.JSONBody = &body
-
-	}
-	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/x-www-form-urlencoded") {
-		if err := r.ParseForm(); err != nil {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode formdata: %w", err))
-			return
-		}
-		var body PaymentCallbackFormdataRequestBody
-		if err := runtime.BindForm(&body, r.Form, nil, nil); err != nil {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't bind formdata: %w", err))
-			return
-		}
-		request.FormdataBody = &body
-	}
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.PaymentCallback(ctx, request.(PaymentCallbackRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PaymentCallback")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(PaymentCallbackResponseObject); ok {
-		if err := validResponse.VisitPaymentCallbackResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71243,23 +60343,23 @@ func (sh *strictHandler) GenerateStoryboard(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// ListReceivedShares operation middleware
-func (sh *strictHandler) ListReceivedShares(w http.ResponseWriter, r *http.Request) {
-	var request ListReceivedSharesRequestObject
+// GetAppSettings operation middleware
+func (sh *strictHandler) GetAppSettings(w http.ResponseWriter, r *http.Request) {
+	var request GetAppSettingsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListReceivedShares(ctx, request.(ListReceivedSharesRequestObject))
+		return sh.ssi.GetAppSettings(ctx, request.(GetAppSettingsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListReceivedShares")
+		handler = middleware(handler, "GetAppSettings")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListReceivedSharesResponseObject); ok {
-		if err := validResponse.VisitListReceivedSharesResponse(w); err != nil {
+	} else if validResponse, ok := response.(GetAppSettingsResponseObject); ok {
+		if err := validResponse.VisitGetAppSettingsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71267,26 +60367,30 @@ func (sh *strictHandler) ListReceivedShares(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// OpenSharedResource operation middleware
-func (sh *strictHandler) OpenSharedResource(w http.ResponseWriter, r *http.Request, resourceType OpenSharedResourceParamsResourceType, resourceId Id) {
-	var request OpenSharedResourceRequestObject
+// UpdateAppSettings operation middleware
+func (sh *strictHandler) UpdateAppSettings(w http.ResponseWriter, r *http.Request) {
+	var request UpdateAppSettingsRequestObject
 
-	request.ResourceType = resourceType
-	request.ResourceId = resourceId
+	var body UpdateAppSettingsJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.OpenSharedResource(ctx, request.(OpenSharedResourceRequestObject))
+		return sh.ssi.UpdateAppSettings(ctx, request.(UpdateAppSettingsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "OpenSharedResource")
+		handler = middleware(handler, "UpdateAppSettings")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(OpenSharedResourceResponseObject); ok {
-		if err := validResponse.VisitOpenSharedResourceResponse(w); err != nil {
+	} else if validResponse, ok := response.(UpdateAppSettingsResponseObject); ok {
+		if err := validResponse.VisitUpdateAppSettingsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71294,25 +60398,23 @@ func (sh *strictHandler) OpenSharedResource(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// ListShowcase operation middleware
-func (sh *strictHandler) ListShowcase(w http.ResponseWriter, r *http.Request, params ListShowcaseParams) {
-	var request ListShowcaseRequestObject
-
-	request.Params = params
+// GetDiagnostics operation middleware
+func (sh *strictHandler) GetDiagnostics(w http.ResponseWriter, r *http.Request) {
+	var request GetDiagnosticsRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListShowcase(ctx, request.(ListShowcaseRequestObject))
+		return sh.ssi.GetDiagnostics(ctx, request.(GetDiagnosticsRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListShowcase")
+		handler = middleware(handler, "GetDiagnostics")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListShowcaseResponseObject); ok {
-		if err := validResponse.VisitListShowcaseResponse(w); err != nil {
+	} else if validResponse, ok := response.(GetDiagnosticsResponseObject); ok {
+		if err := validResponse.VisitGetDiagnosticsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71320,26 +60422,30 @@ func (sh *strictHandler) ListShowcase(w http.ResponseWriter, r *http.Request, pa
 	}
 }
 
-// ShowcaseCover operation middleware
-func (sh *strictHandler) ShowcaseCover(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseCoverParams) {
-	var request ShowcaseCoverRequestObject
+// TestS3Storage operation middleware
+func (sh *strictHandler) TestS3Storage(w http.ResponseWriter, r *http.Request) {
+	var request TestS3StorageRequestObject
 
-	request.WorkId = workId
-	request.Params = params
+	var body TestS3StorageJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ShowcaseCover(ctx, request.(ShowcaseCoverRequestObject))
+		return sh.ssi.TestS3Storage(ctx, request.(TestS3StorageRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ShowcaseCover")
+		handler = middleware(handler, "TestS3Storage")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ShowcaseCoverResponseObject); ok {
-		if err := validResponse.VisitShowcaseCoverResponse(w); err != nil {
+	} else if validResponse, ok := response.(TestS3StorageResponseObject); ok {
+		if err := validResponse.VisitTestS3StorageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71347,26 +60453,23 @@ func (sh *strictHandler) ShowcaseCover(w http.ResponseWriter, r *http.Request, w
 	}
 }
 
-// ShowcaseMedia operation middleware
-func (sh *strictHandler) ShowcaseMedia(w http.ResponseWriter, r *http.Request, workId Id, params ShowcaseMediaParams) {
-	var request ShowcaseMediaRequestObject
-
-	request.WorkId = workId
-	request.Params = params
+// GetStorageUsage operation middleware
+func (sh *strictHandler) GetStorageUsage(w http.ResponseWriter, r *http.Request) {
+	var request GetStorageUsageRequestObject
 
 	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ShowcaseMedia(ctx, request.(ShowcaseMediaRequestObject))
+		return sh.ssi.GetStorageUsage(ctx, request.(GetStorageUsageRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ShowcaseMedia")
+		handler = middleware(handler, "GetStorageUsage")
 	}
 
 	response, err := handler(r.Context(), w, r, request)
 
 	if err != nil {
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ShowcaseMediaResponseObject); ok {
-		if err := validResponse.VisitShowcaseMediaResponse(w); err != nil {
+	} else if validResponse, ok := response.(GetStorageUsageResponseObject); ok {
+		if err := validResponse.VisitGetStorageUsageResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -71426,32 +60529,6 @@ func (sh *strictHandler) TypesetSmartcutText(w http.ResponseWriter, r *http.Requ
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(TypesetSmartcutTextResponseObject); ok {
 		if err := validResponse.VisitTypesetSmartcutTextResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetStorefront operation middleware
-func (sh *strictHandler) GetStorefront(w http.ResponseWriter, r *http.Request, params GetStorefrontParams) {
-	var request GetStorefrontRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetStorefront(ctx, request.(GetStorefrontRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetStorefront")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetStorefrontResponseObject); ok {
-		if err := validResponse.VisitGetStorefrontResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {
@@ -72073,6 +61150,65 @@ func (sh *strictHandler) TrimClip(w http.ResponseWriter, r *http.Request, timeli
 	}
 }
 
+// ListVoices operation middleware
+func (sh *strictHandler) ListVoices(w http.ResponseWriter, r *http.Request, params ListVoicesParams) {
+	var request ListVoicesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ListVoices(ctx, request.(ListVoicesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListVoices")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ListVoicesResponseObject); ok {
+		if err := validResponse.VisitListVoicesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// ToggleVoiceFavorite operation middleware
+func (sh *strictHandler) ToggleVoiceFavorite(w http.ResponseWriter, r *http.Request, code string) {
+	var request ToggleVoiceFavoriteRequestObject
+
+	request.Code = code
+
+	var body ToggleVoiceFavoriteJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.ToggleVoiceFavorite(ctx, request.(ToggleVoiceFavoriteRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ToggleVoiceFavorite")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(ToggleVoiceFavoriteResponseObject); ok {
+		if err := validResponse.VisitToggleVoiceFavoriteResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
 // GetWorkflowRun operation middleware
 func (sh *strictHandler) GetWorkflowRun(w http.ResponseWriter, r *http.Request, runId string, params GetWorkflowRunParams) {
 	var request GetWorkflowRunRequestObject
@@ -72294,744 +61430,6 @@ func (sh *strictHandler) ListWorkspaces(w http.ResponseWriter, r *http.Request) 
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(ListWorkspacesResponseObject); ok {
 		if err := validResponse.VisitListWorkspacesResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateTeamWorkspace operation middleware
-func (sh *strictHandler) CreateTeamWorkspace(w http.ResponseWriter, r *http.Request) {
-	var request CreateTeamWorkspaceRequestObject
-
-	var body CreateTeamWorkspaceJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateTeamWorkspace(ctx, request.(CreateTeamWorkspaceRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateTeamWorkspace")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CreateTeamWorkspaceResponseObject); ok {
-		if err := validResponse.VisitCreateTeamWorkspaceResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ArchiveWorkspace operation middleware
-func (sh *strictHandler) ArchiveWorkspace(w http.ResponseWriter, r *http.Request, params ArchiveWorkspaceParams) {
-	var request ArchiveWorkspaceRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ArchiveWorkspace(ctx, request.(ArchiveWorkspaceRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ArchiveWorkspace")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ArchiveWorkspaceResponseObject); ok {
-		if err := validResponse.VisitArchiveWorkspaceResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RenameWorkspace operation middleware
-func (sh *strictHandler) RenameWorkspace(w http.ResponseWriter, r *http.Request, params RenameWorkspaceParams) {
-	var request RenameWorkspaceRequestObject
-
-	request.Params = params
-
-	var body RenameWorkspaceJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RenameWorkspace(ctx, request.(RenameWorkspaceRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RenameWorkspace")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RenameWorkspaceResponseObject); ok {
-		if err := validResponse.VisitRenameWorkspaceResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListWorkspaceInvitations operation middleware
-func (sh *strictHandler) ListWorkspaceInvitations(w http.ResponseWriter, r *http.Request, params ListWorkspaceInvitationsParams) {
-	var request ListWorkspaceInvitationsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListWorkspaceInvitations(ctx, request.(ListWorkspaceInvitationsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListWorkspaceInvitations")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListWorkspaceInvitationsResponseObject); ok {
-		if err := validResponse.VisitListWorkspaceInvitationsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// CreateWorkspaceInvitation operation middleware
-func (sh *strictHandler) CreateWorkspaceInvitation(w http.ResponseWriter, r *http.Request, params CreateWorkspaceInvitationParams) {
-	var request CreateWorkspaceInvitationRequestObject
-
-	request.Params = params
-
-	var body CreateWorkspaceInvitationJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateWorkspaceInvitation(ctx, request.(CreateWorkspaceInvitationRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateWorkspaceInvitation")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(CreateWorkspaceInvitationResponseObject); ok {
-		if err := validResponse.VisitCreateWorkspaceInvitationResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RevokeWorkspaceInvitation operation middleware
-func (sh *strictHandler) RevokeWorkspaceInvitation(w http.ResponseWriter, r *http.Request, invitationId Id, params RevokeWorkspaceInvitationParams) {
-	var request RevokeWorkspaceInvitationRequestObject
-
-	request.InvitationId = invitationId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RevokeWorkspaceInvitation(ctx, request.(RevokeWorkspaceInvitationRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RevokeWorkspaceInvitation")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RevokeWorkspaceInvitationResponseObject); ok {
-		if err := validResponse.VisitRevokeWorkspaceInvitationResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListWorkspaceMcpGrants operation middleware
-func (sh *strictHandler) ListWorkspaceMcpGrants(w http.ResponseWriter, r *http.Request, params ListWorkspaceMcpGrantsParams) {
-	var request ListWorkspaceMcpGrantsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListWorkspaceMcpGrants(ctx, request.(ListWorkspaceMcpGrantsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListWorkspaceMcpGrants")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListWorkspaceMcpGrantsResponseObject); ok {
-		if err := validResponse.VisitListWorkspaceMcpGrantsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RevokeWorkspaceMcpGrant operation middleware
-func (sh *strictHandler) RevokeWorkspaceMcpGrant(w http.ResponseWriter, r *http.Request, grantId Id, params RevokeWorkspaceMcpGrantParams) {
-	var request RevokeWorkspaceMcpGrantRequestObject
-
-	request.GrantId = grantId
-	request.Params = params
-
-	var body RevokeWorkspaceMcpGrantJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		if !errors.Is(err, io.EOF) {
-			sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-			return
-		}
-	} else {
-		request.Body = &body
-	}
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RevokeWorkspaceMcpGrant(ctx, request.(RevokeWorkspaceMcpGrantRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RevokeWorkspaceMcpGrant")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RevokeWorkspaceMcpGrantResponseObject); ok {
-		if err := validResponse.VisitRevokeWorkspaceMcpGrantResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GetWorkspaceMcpSettings operation middleware
-func (sh *strictHandler) GetWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params GetWorkspaceMcpSettingsParams) {
-	var request GetWorkspaceMcpSettingsRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GetWorkspaceMcpSettings(ctx, request.(GetWorkspaceMcpSettingsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetWorkspaceMcpSettings")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GetWorkspaceMcpSettingsResponseObject); ok {
-		if err := validResponse.VisitGetWorkspaceMcpSettingsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// UpdateWorkspaceMcpSettings operation middleware
-func (sh *strictHandler) UpdateWorkspaceMcpSettings(w http.ResponseWriter, r *http.Request, params UpdateWorkspaceMcpSettingsParams) {
-	var request UpdateWorkspaceMcpSettingsRequestObject
-
-	request.Params = params
-
-	var body UpdateWorkspaceMcpSettingsJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.UpdateWorkspaceMcpSettings(ctx, request.(UpdateWorkspaceMcpSettingsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "UpdateWorkspaceMcpSettings")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(UpdateWorkspaceMcpSettingsResponseObject); ok {
-		if err := validResponse.VisitUpdateWorkspaceMcpSettingsResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListWorkspaceMembers operation middleware
-func (sh *strictHandler) ListWorkspaceMembers(w http.ResponseWriter, r *http.Request, params ListWorkspaceMembersParams) {
-	var request ListWorkspaceMembersRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListWorkspaceMembers(ctx, request.(ListWorkspaceMembersRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListWorkspaceMembers")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListWorkspaceMembersResponseObject); ok {
-		if err := validResponse.VisitListWorkspaceMembersResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RemoveWorkspaceMember operation middleware
-func (sh *strictHandler) RemoveWorkspaceMember(w http.ResponseWriter, r *http.Request, userId Id, params RemoveWorkspaceMemberParams) {
-	var request RemoveWorkspaceMemberRequestObject
-
-	request.UserId = userId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RemoveWorkspaceMember(ctx, request.(RemoveWorkspaceMemberRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RemoveWorkspaceMember")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RemoveWorkspaceMemberResponseObject); ok {
-		if err := validResponse.VisitRemoveWorkspaceMemberResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// SetWorkspaceMemberRole operation middleware
-func (sh *strictHandler) SetWorkspaceMemberRole(w http.ResponseWriter, r *http.Request, userId Id, params SetWorkspaceMemberRoleParams) {
-	var request SetWorkspaceMemberRoleRequestObject
-
-	request.UserId = userId
-	request.Params = params
-
-	var body SetWorkspaceMemberRoleJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.SetWorkspaceMemberRole(ctx, request.(SetWorkspaceMemberRoleRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "SetWorkspaceMemberRole")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(SetWorkspaceMemberRoleResponseObject); ok {
-		if err := validResponse.VisitSetWorkspaceMemberRoleResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// PresenceHeartbeat operation middleware
-func (sh *strictHandler) PresenceHeartbeat(w http.ResponseWriter, r *http.Request, params PresenceHeartbeatParams) {
-	var request PresenceHeartbeatRequestObject
-
-	request.Params = params
-
-	var body PresenceHeartbeatJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.PresenceHeartbeat(ctx, request.(PresenceHeartbeatRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PresenceHeartbeat")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(PresenceHeartbeatResponseObject); ok {
-		if err := validResponse.VisitPresenceHeartbeatResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// PresenceLeave operation middleware
-func (sh *strictHandler) PresenceLeave(w http.ResponseWriter, r *http.Request, params PresenceLeaveParams) {
-	var request PresenceLeaveRequestObject
-
-	request.Params = params
-
-	var body PresenceLeaveJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.PresenceLeave(ctx, request.(PresenceLeaveRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "PresenceLeave")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(PresenceLeaveResponseObject); ok {
-		if err := validResponse.VisitPresenceLeaveResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListOnline operation middleware
-func (sh *strictHandler) ListOnline(w http.ResponseWriter, r *http.Request, resourceType string, resourceId Id, params ListOnlineParams) {
-	var request ListOnlineRequestObject
-
-	request.ResourceType = resourceType
-	request.ResourceId = resourceId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListOnline(ctx, request.(ListOnlineRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListOnline")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListOnlineResponseObject); ok {
-		if err := validResponse.VisitListOnlineResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListGrantedShares operation middleware
-func (sh *strictHandler) ListGrantedShares(w http.ResponseWriter, r *http.Request, params ListGrantedSharesParams) {
-	var request ListGrantedSharesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListGrantedShares(ctx, request.(ListGrantedSharesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListGrantedShares")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListGrantedSharesResponseObject); ok {
-		if err := validResponse.VisitListGrantedSharesResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// GrantShare operation middleware
-func (sh *strictHandler) GrantShare(w http.ResponseWriter, r *http.Request, params GrantShareParams) {
-	var request GrantShareRequestObject
-
-	request.Params = params
-
-	var body GrantShareJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.GrantShare(ctx, request.(GrantShareRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GrantShare")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(GrantShareResponseObject); ok {
-		if err := validResponse.VisitGrantShareResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ImportSharedResource operation middleware
-func (sh *strictHandler) ImportSharedResource(w http.ResponseWriter, r *http.Request, params ImportSharedResourceParams) {
-	var request ImportSharedResourceRequestObject
-
-	request.Params = params
-
-	var body ImportSharedResourceJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ImportSharedResource(ctx, request.(ImportSharedResourceRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ImportSharedResource")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ImportSharedResourceResponseObject); ok {
-		if err := validResponse.VisitImportSharedResourceResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// RevokeShare operation middleware
-func (sh *strictHandler) RevokeShare(w http.ResponseWriter, r *http.Request, shareId Id, params RevokeShareParams) {
-	var request RevokeShareRequestObject
-
-	request.ShareId = shareId
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.RevokeShare(ctx, request.(RevokeShareRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "RevokeShare")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(RevokeShareResponseObject); ok {
-		if err := validResponse.VisitRevokeShareResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// TransferWorkspace operation middleware
-func (sh *strictHandler) TransferWorkspace(w http.ResponseWriter, r *http.Request, params TransferWorkspaceParams) {
-	var request TransferWorkspaceRequestObject
-
-	request.Params = params
-
-	var body TransferWorkspaceJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.TransferWorkspace(ctx, request.(TransferWorkspaceRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "TransferWorkspace")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(TransferWorkspaceResponseObject); ok {
-		if err := validResponse.VisitTransferWorkspaceResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// WorkspaceUsage operation middleware
-func (sh *strictHandler) WorkspaceUsage(w http.ResponseWriter, r *http.Request, params WorkspaceUsageParams) {
-	var request WorkspaceUsageRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.WorkspaceUsage(ctx, request.(WorkspaceUsageRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "WorkspaceUsage")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(WorkspaceUsageResponseObject); ok {
-		if err := validResponse.VisitWorkspaceUsageResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// WorkspaceUsageEntries operation middleware
-func (sh *strictHandler) WorkspaceUsageEntries(w http.ResponseWriter, r *http.Request, params WorkspaceUsageEntriesParams) {
-	var request WorkspaceUsageEntriesRequestObject
-
-	request.Params = params
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.WorkspaceUsageEntries(ctx, request.(WorkspaceUsageEntriesRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "WorkspaceUsageEntries")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(WorkspaceUsageEntriesResponseObject); ok {
-		if err := validResponse.VisitWorkspaceUsageEntriesResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// AcceptWorkspaceInvitation operation middleware
-func (sh *strictHandler) AcceptWorkspaceInvitation(w http.ResponseWriter, r *http.Request) {
-	var request AcceptWorkspaceInvitationRequestObject
-
-	var body AcceptWorkspaceInvitationJSONRequestBody
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
-		return
-	}
-	request.Body = &body
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.AcceptWorkspaceInvitation(ctx, request.(AcceptWorkspaceInvitationRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "AcceptWorkspaceInvitation")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(AcceptWorkspaceInvitationResponseObject); ok {
-		if err := validResponse.VisitAcceptWorkspaceInvitationResponse(w); err != nil {
-			sh.options.ResponseErrorHandlerFunc(w, r, err)
-		}
-	} else if response != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
-	}
-}
-
-// ListMyInvitations operation middleware
-func (sh *strictHandler) ListMyInvitations(w http.ResponseWriter, r *http.Request) {
-	var request ListMyInvitationsRequestObject
-
-	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
-		return sh.ssi.ListMyInvitations(ctx, request.(ListMyInvitationsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListMyInvitations")
-	}
-
-	response, err := handler(r.Context(), w, r, request)
-
-	if err != nil {
-		sh.options.ResponseErrorHandlerFunc(w, r, err)
-	} else if validResponse, ok := response.(ListMyInvitationsResponseObject); ok {
-		if err := validResponse.VisitListMyInvitationsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

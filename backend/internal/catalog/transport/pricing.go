@@ -26,6 +26,15 @@ func (h *Handler) MountPricing(r chi.Router, requireUser func(http.Handler) http
 		r.With(requirePerm("model:write")).Delete("/{operation}/{model}", h.deletePrice)
 	})
 
+	h.MountQuote(r, requireUser)
+}
+
+// MountQuote 只挂用户端那一半：报价（能力校验）、图片工具栏、可用模型与模型参数。
+//
+// ⚠️ 桌面版去掉了计价管理（TT-T-09），但这四个端点**不是**计价功能：模型下拉、图片工具的可用性、
+// 发送前的能力校验都走它们。整组随 MountPricing 一起不挂的话，画布上没有模型可选、工具栏全灰，
+// 而后端测试照样全绿（TT-T-10 的契约对照测试抓出来的）。
+func (h *Handler) MountQuote(r chi.Router, requireUser func(http.Handler) http.Handler) {
 	r.Group(func(r chi.Router) {
 		r.Use(requireUser)
 		r.Post("/generations/estimate", h.estimate)
