@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import {
   Blocks,
-  Cable,
-  Crown,
   FilePenLine,
   FolderHeart,
-  ListTodo,
   Megaphone,
   PanelLeftClose,
   PanelLeftOpen,
   ScanFace,
+  Settings,
   Sparkles,
   Video,
   X
@@ -146,20 +144,13 @@ watch(() => route.fullPath, closeMobile);
       <NuxtLink to="/works" :class="{ active: active('/works') }" title="我的作品">
         <FolderHeart :size="18" :stroke-width="ICON_STROKE" /><span>我的作品</span>
       </NuxtLink>
-      <NuxtLink to="/tasks" :class="{ active: active('/tasks') }" title="任务中心">
-        <ListTodo :size="18" :stroke-width="ICON_STROKE" /><span>任务中心</span>
-      </NuxtLink>
-      <!-- MCP 接入指南（/mcp）。⚠️ 用 route.path 精确判：/mcp/authorize、/mcp/approve/* 是不套布局的授权页，不算这里 -->
-      <NuxtLink to="/mcp" :class="{ active: route.path === '/mcp' }" title="MCP 接入">
-        <Cable :size="18" :stroke-width="ICON_STROKE" /><span>MCP 接入</span>
-      </NuxtLink>
     </nav>
 
+    <!-- 桌面版（TT-T-13 / TT-UX-3）：任务中心、MCP、会员与积分入口删除；原「会员与积分」的位置换成「设置」 -->
     <div class="sidebar-account-navigation">
-      <NuxtLink to="/membership" :class="{ active: active('/membership') || active('/credits') }" title="会员与积分">
-        <Crown :size="18" :stroke-width="ICON_STROKE" /><span>会员与积分</span>
+      <NuxtLink to="/settings" :class="{ active: active('/settings') }" title="设置">
+        <Settings :size="18" :stroke-width="ICON_STROKE" /><span>设置</span>
       </NuxtLink>
-      <!-- 「账号设置」已并入顶栏头像的账号面板（个人中心 /account），这里不再单列 -->
     </div>
   </aside>
   <button v-if="mobileOpen" type="button" class="sidebar-backdrop" aria-label="关闭导航" @click="closeMobile" />

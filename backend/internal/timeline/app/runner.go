@@ -17,6 +17,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	"github.com/li904338203/tabtv/backend/internal/platform/ffsem"
 	"github.com/li904338203/tabtv/backend/internal/timeline/domain"
 	"github.com/li904338203/tabtv/backend/internal/timeline/repo"
@@ -507,7 +509,7 @@ func (x *Renderer) mixAudio(ctx context.Context, dir string, snap domain.RenderS
 // 自检本身出错不影响成片（记一条「自检没做成」的提醒）。
 func (x *Renderer) selfCheck(ctx context.Context, path string, wantMs, fps int, hasAudio bool) json.RawMessage {
 	gotMs := 0
-	if out, err := exec.CommandContext(ctx, "ffprobe", "-v", "error", "-show_entries", "format=duration",
+	if out, err := exec.CommandContext(ctx, ffbin.FFprobe(), "-v", "error", "-show_entries", "format=duration",
 		"-of", "csv=p=0", "--", path).Output(); err == nil {
 		if f, err := strconv.ParseFloat(strings.TrimSpace(string(out)), 64); err == nil {
 			gotMs = int(f * 1000)
@@ -542,7 +544,7 @@ func (x *Renderer) runFFmpeg(ctx context.Context, dir string, args []string, tot
 		full = append([]string{"-progress", "pipe:1", "-nostats"}, args...)
 	}
 	var tail strings.Builder
-	cmd := exec.CommandContext(ctx, "ffmpeg", full...)
+	cmd := exec.CommandContext(ctx, ffbin.FFmpeg(), full...)
 	cmd.Dir = dir
 	cmd.Stderr = &tailWriter{w: &tail, max: 2000}
 	var stdout io.ReadCloser
@@ -584,7 +586,7 @@ func (x *Renderer) runFFmpegOut(ctx context.Context, dir string, args []string, 
 		return err
 	}
 	defer release()
-	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	cmd := exec.CommandContext(ctx, ffbin.FFmpeg(), args...)
 	cmd.Dir = dir
 	cmd.Stderr = stderr
 	if err := cmd.Run(); err != nil {
@@ -623,7 +625,7 @@ func (t *tailWriter) Write(p []byte) (int, error) {
 // 只记时间线版本的话，升级 ffmpeg 后**同一个版本渲染出不同结果**就无法解释
 // （8.x 的 filter 行为跨版本有差异）。
 func ffmpegVersion() string {
-	out, err := exec.Command("ffmpeg", "-version").Output()
+	out, err := exec.Command(ffbin.FFmpeg(), "-version").Output()
 	if err != nil {
 		return ""
 	}
@@ -637,7 +639,7 @@ func ffmpegVersion() string {
 // FFmpegAvailable 本机有没有 ffmpeg。启动时查一次写进日志 ——
 // 没有它时渲染一律失败，而"为什么所有渲染都失败"是个很难猜的问题。
 func FFmpegAvailable() bool {
-	_, err := exec.LookPath("ffmpeg")
+	_, err := exec.LookPath(ffbin.FFmpeg())
 	return err == nil
 }
 

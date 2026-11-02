@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
 )
 
 // 媒体时长探测（NEW-07 的前置：裁切区间不能超出素材本身）。
@@ -41,7 +43,7 @@ func ProbeDuration(ctx context.Context, path, mime string) (ms int, ok bool) {
 	// ⚠️ 路径放在**最后**并用 `--` 隔开：以 `-` 开头的文件名会被 ffprobe
 	// 当成选项解析。我们的临时文件名是自己生成的，但这条防线成本为零，
 	// 而少了它就是一个「文件名即参数注入」的口子。
-	out, err := exec.CommandContext(ctx, "ffprobe",
+	out, err := exec.CommandContext(ctx, ffbin.FFprobe(),
 		"-v", "error",
 		"-show_entries", "format=duration",
 		"-of", "default=noprint_wrappers=1:nokey=1",
@@ -74,6 +76,6 @@ func kindOfMIME(mime string) string {
 // 启动时查一次写进日志：没有它时时长一律未知，而"为什么所有素材都没有时长"
 // 是个很难猜的问题 —— 日志里有一句就不用猜。
 func ProbeAvailable() bool {
-	_, err := exec.LookPath("ffprobe")
+	_, err := exec.LookPath(ffbin.FFprobe())
 	return err == nil
 }

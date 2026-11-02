@@ -15,6 +15,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
 )
 
 // 剪辑台的预览素材与分析（docs/agent/smartcut SCT-16，SCD-30）。
@@ -225,7 +227,7 @@ func ProbeStreams(ctx context.Context, path string) (StreamInfo, error) {
 	ctx, cancel := context.WithTimeout(ctx, ProbeTimeout)
 	defer cancel()
 	var stderr bytes.Buffer
-	cmd := exec.CommandContext(ctx, "ffprobe", ProbeArgs(path)...)
+	cmd := exec.CommandContext(ctx, ffbin.FFprobe(), ProbeArgs(path)...)
 	cmd.Stderr = &stderr
 	out, err := cmd.Output()
 	if err != nil {

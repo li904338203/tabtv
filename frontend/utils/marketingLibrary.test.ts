@@ -405,19 +405,16 @@ describe("生成角色（MKT-F-106、MKT-AC-39 前端部分）", () => {
 
   const gateBase = {
     readOnly: false, generating: false, description: "猫", appearanceLimit: 500, modelCode: "m", uploadingRefs: 0,
-    quoting: false, quoteError: "", quote: { credits: 16, blocked: false }, balance: 100
+    quoting: false, quoteError: "", quote: { blocked: false }
   };
 
-  it("按钮上的价格就是 dryRun 报价；理由按 只读 > 生成中 > 描述 > 模型 > 报价 > 被拒 > 余额 排", () => {
-    expect(marketingCharacterGenGate(gateBase)).toEqual({ disabled: false, reason: "", label: "生成角色 ✦16" });
-    expect(marketingCharacterGenGate({ ...gateBase, readOnly: true, balance: 0 }).reason).toBe("你在该工作区是只读，不能生成角色");
+  it("按钮不显示价格；理由按 只读 > 生成中 > 描述 > 模型 > 校验 > 被拒 排", () => {
+    expect(marketingCharacterGenGate(gateBase)).toEqual({ disabled: false, reason: "", label: "生成角色" });
+    expect(marketingCharacterGenGate({ ...gateBase, readOnly: true }).reason).toBe("你在该工作区是只读，不能生成角色");
     expect(marketingCharacterGenGate({ ...gateBase, description: " " }).reason).toBe("先写下角色的形象描述");
     expect(marketingCharacterGenGate({ ...gateBase, modelCode: "" }).reason).toBe("请选择图片模型");
     expect(marketingCharacterGenGate({ ...gateBase, quoting: true }).label).toBe("生成角色");
-    expect(marketingCharacterGenGate({ ...gateBase, quote: { credits: 0, blocked: true, blockedReason: "参考图超过模型上限（最多 4 张）" } }).reason).toBe("参考图超过模型上限（最多 4 张）");
-    expect(marketingCharacterGenGate({ ...gateBase, balance: 10 })).toEqual({ disabled: true, reason: "余额不足：需要 ✦16，当前 ✦10，还差 ✦6", label: "生成角色 ✦16" });
-    // 余额不知道时不猜（服务端会拦，不扣费）
-    expect(marketingCharacterGenGate({ ...gateBase, balance: undefined }).disabled).toBe(false);
+    expect(marketingCharacterGenGate({ ...gateBase, quote: { blocked: true, blockedReason: "参考图超过模型上限（最多 4 张）" } }).reason).toBe("参考图超过模型上限（最多 4 张）");
   });
 
   it("状态文案：轮询耗尽只说「仍在处理」，不说失败、不提退款（GAP-14）", () => {
@@ -425,7 +422,8 @@ describe("生成角色（MKT-F-106、MKT-AC-39 前端部分）", () => {
     expect(unknown).toBe("仍在处理中，稍后再打开该角色查看结果");
     expect(unknown).not.toMatch(/失败|退/);
     expect(marketingGenStatusText("success", 3)).toBe("已生成 3 张，点选加入角色图片");
-    expect(marketingGenStatusText("failed")).toContain("全额退回（以积分明细为准）");
+    expect(marketingGenStatusText("failed")).toBe("这次没有生成成功");
+    expect(marketingGenStatusText("failed")).not.toMatch(/积分|退回/);
   });
 
   it("候选：只认图片产物；去重；已加入的与点过「不要」的不再显示", () => {

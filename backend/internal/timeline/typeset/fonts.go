@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/resources"
+
 	"github.com/go-text/typesetting/font"
 	"github.com/go-text/typesetting/shaping"
 )
@@ -57,15 +59,24 @@ func (f *FontSet) acquire() *faces {
 
 func (f *FontSet) release(x *faces) { f.pool.Put(x) }
 
-// ResolveFontDir 取字体目录：显式传入的 > 环境变量 > 从当前目录往上找 backend/assets/fonts。
+// ResolveFontDir 取字体目录：显式传入的 > 环境变量 > 随包资源 resources/fonts > 从当前目录往上找 backend/assets/fonts。
 //
-// 往上找是给 `go test` 与 `make run-api` 用的：两者的工作目录不同，但都在源码树里。
+// ⚠️ 随包资源必须排在「往上找」之前（TT-T-25）：安装包里没有源码树，往上找必然落空，
+//
+//	而落空的表现是「带字幕的导出失败：字体未就绪」—— 看起来像用户少装了什么。
+//
+// 往上找是给 `go test` 与开发运行用的：两者的工作目录不同，但都在源码树里。
 func ResolveFontDir(explicit string) string {
 	if explicit != "" {
 		return explicit
 	}
 	if d := os.Getenv(EnvFontDir); d != "" {
 		return d
+	}
+	if root := resources.Root(); root != "" {
+		if cand := filepath.Join(root, "fonts"); fileExists(filepath.Join(cand, FileRegular)) {
+			return cand
+		}
 	}
 	wd, err := os.Getwd()
 	if err != nil {
@@ -92,7 +103,7 @@ func LoadFonts(dir string) (*FontSet, error) {
 		path := filepath.Join(dir, name)
 		data, err := os.ReadFile(path)
 		if err != nil {
-			return nil, fmt.Errorf("读取字体 %s 失败：%w（请先运行 make fonts，即 scripts/fetch-fonts.sh）", path, err)
+			return nil, fmt.Errorf("读取字体 %s 失败：%w（开发时运行 make fonts；安装包里应在 resources/fonts，缺失说明安装包不完整）", path, err)
 		}
 		face, err := font.ParseTTF(bytes.NewReader(data))
 		if err != nil {
@@ -146,4 +157,9 @@ func isJoiner(r rune) bool {
 		return true
 	}
 	return false
+}
+
+func fileExists(p string) bool {
+	_, err := os.Stat(p)
+	return err == nil
 }

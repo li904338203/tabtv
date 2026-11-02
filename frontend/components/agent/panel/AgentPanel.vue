@@ -612,10 +612,6 @@ defineExpose({ askAbout, attachMedia, openMemory, openHistory, openFiles, openPr
 .agent-plan-items li small { color: var(--canvas-muted); font-size: 11px; }
 .agent-plan-items li em { flex: none; color: var(--canvas-gold); font-style: normal; font-weight: 600; }
 .agent-plan-items li.is-blocked em { color: var(--canvas-faint); }
-.agent-plan-total { display: flex; justify-content: space-between; padding-top: 6px; border-top: 1px dashed var(--canvas-line); font-weight: 600; }
-.agent-plan-total strong { color: var(--canvas-gold); }
-.agent-plan-balance { color: var(--canvas-muted); font-size: 12px; }
-.agent-plan-note { padding-top: 8px; border-top: 1px solid var(--canvas-line); }
 .agent-plan-confirm { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
 .agent-plan-adjust { display: grid; gap: 8px; }
 
@@ -700,8 +696,6 @@ defineExpose({ askAbout, attachMedia, openMemory, openHistory, openFiles, openPr
 .agent-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentcolor; }
 .agent-status-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .agent-status-main svg.is-open { transform: rotate(180deg); }
-.agent-status-spent { flex: none; color: var(--canvas-muted); }
-.agent-status-spent.is-warn { color: var(--canvas-gold); font-weight: 600; }
 .agent-todo { margin: 0; padding: 8px 12px 2px; list-style: none; display: grid; gap: 4px; }
 .agent-todo li { display: flex; align-items: center; gap: 6px; color: var(--canvas-muted); }
 /* 三种状态靠图标区分（对勾 / 转圈 / 空心圆）。⚠️ 不用 --canvas-faint：它在亮色主题下是 #e3e4e5，白底上几乎看不见。 */

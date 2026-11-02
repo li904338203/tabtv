@@ -345,7 +345,7 @@ func TestValidateSlotDecl_非法key与accept(t *testing.T) {
 	}
 }
 
-// 旧形状（MKT-T-09 录入的技能、deploy/marketing 数据文件）→ 新形状；新形状原样不动（MKD-26）。
+// 旧形状（MKT-T-09 录入的技能、seed 数据文件（platform/seed/data/marketing））→ 新形状；新形状原样不动（MKD-26）。
 func TestNormalizeSlotDecls_旧形状与幂等(t *testing.T) {
 	old := []SlotDecl{
 		{Key: SlotSourceVideo, Label: "源视频", Accept: []string{AcceptVideo}, MaxCount: 1},
@@ -388,7 +388,7 @@ func TestNormalizeSlotDecls_旧形状与幂等(t *testing.T) {
 	}
 }
 
-// 开发库与数据文件里的 13 个营销技能（deploy/marketing/options-2026-10-21.json，库里的 input_slots
+// 开发库与数据文件里的 13 个营销技能（platform/seed/data/marketing/options-2026-10-21.json，库里的 input_slots
 // 与它逐字一致，2026-10-23 核对）：严格解码 → 规范化 → 校验全部通过。不改库、不改数据文件。
 func TestNormalizeSlotDecls_已录入技能可解码(t *testing.T) {
 	var data struct {
@@ -397,7 +397,7 @@ func TestNormalizeSlotDecls_已录入技能可解码(t *testing.T) {
 			InputSlots json.RawMessage `json:"inputSlots"`
 		} `json:"skills"`
 	}
-	readJSON(t, "../../../../deploy/marketing/options-2026-10-21.json", &data)
+	readJSON(t, "../../platform/seed/data/marketing/options-2026-10-21.json", &data)
 	if len(data.Skills) != 13 {
 		t.Fatalf("数据文件应有 13 个技能：%d", len(data.Skills))
 	}

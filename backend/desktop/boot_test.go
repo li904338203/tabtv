@@ -70,6 +70,35 @@ func TestBoot_空目录启动并能调用接口(t *testing.T) {
 	if code, out := call(http.MethodGet, "/api/v1/admin/models", nil); !ok(code) {
 		t.Fatalf("模型管理 %d %v", code, out)
 	}
+	// 本机身份的三个接口。
+	if code, out := call(http.MethodGet, "/api/v1/workspaces", nil); !ok(code) {
+		t.Fatalf("工作区 %d %v", code, out)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/auth/me", nil); !ok(code) || out["nickname"] != "本机用户" {
+		t.Fatalf("当前用户 %d %v", code, out)
+	}
+	if code, _ := call(http.MethodPut, "/api/v1/auth/profile", map[string]any{"isAiWatermarkOff": true}); code != 204 {
+		t.Fatalf("水印开关 %d", code)
+	}
+	// 本机设置与上游调用日志。
+	if code, out := call(http.MethodGet, "/api/v1/settings", nil); !ok(code) || out["items"] == nil {
+		t.Fatalf("设置 %d %v", code, out)
+	}
+	if code, out := call(http.MethodPut, "/api/v1/settings", map[string]any{"generation.max_running": 6}); !ok(code) {
+		t.Fatalf("改设置 %d %v", code, out)
+	}
+	if code, _ := call(http.MethodPut, "/api/v1/settings", map[string]any{"no.such.key": 1}); code != 400 {
+		t.Fatalf("未知设置键应 400，得到 %d", code)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/settings/storage/usage", nil); !ok(code) || out["database"] == nil {
+		t.Fatalf("存储占用 %d %v", code, out)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/admin/request-logs/provider", nil); !ok(code) {
+		t.Fatalf("上游调用日志 %d %v", code, out)
+	}
+	if code, out := call(http.MethodGet, "/api/v1/settings/diagnostics", nil); !ok(code) || out["checks"] == nil {
+		t.Fatalf("环境自检 %d %v", code, out)
+	}
 	// 被裁剪的域不挂路由。
 	for _, p := range []string{"/api/v1/credits/balance", "/api/v1/auth/login", "/api/v1/orders"} {
 		if code, _ := call(http.MethodGet, p, nil); code != 404 && code != 405 {

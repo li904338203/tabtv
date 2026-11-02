@@ -33,13 +33,12 @@ export function smartcutModelFits(granularity: string | undefined, purpose: Smar
   return granularity === "char" || granularity === "word";
 }
 
-/** 模型下拉里的一行：名字 · 粒度 · 单价（不够用途的照样列出并说明，不隐藏）。 */
+/** 模型下拉里的一行：名字 · 粒度（不够用途的照样列出并说明，不隐藏）。 */
 export function smartcutSpeechModelLabel(model: Pick<ModelChoice, "name" | "granularity" | "unitPrice" | "unit">,
   purpose: SmartcutTranscribePurpose): string {
   const parts = [model.name];
   const g = smartcutGranularityLabel(model.granularity);
   if (g) parts.push(g);
-  if (typeof model.unitPrice === "number") parts.push(model.unit === "per_second" ? `✦${model.unitPrice}/秒` : `✦${model.unitPrice}`);
   const label = parts.join(" · ");
   if (!smartcutModelFits(model.granularity, purpose)) return `${label}（不能用于${purpose === "talk" ? "口播精剪" : "解说成片"}）`;
   return label;
@@ -56,16 +55,16 @@ export function smartcutDefaultSpeechModel(models: readonly ModelChoice[], purpo
   return (fine ?? models.find(m => smartcutModelFits(m.granularity, purpose)) ?? models[0])?.code ?? "";
 }
 
-/** 报价的一句话（确认框里）：要识别几份、多少秒、多少积分；已识别过的不再收费。 */
+/** 报价的一句话（确认框里）：要识别几份、多少秒；已识别过的跳过（TT-T-14 不显示金额）。 */
 export function smartcutTranscribeQuoteText(quote: Quote | null | undefined): string {
   if (!quote) return "";
   if (quote.blockers?.length) return quote.blockers.map(b => b.message).join("；");
   const cached = (quote.skipped ?? []).filter(s => s.reason === "已有识别结果，不再收费").length;
   const others = (quote.skipped ?? []).length - cached;
-  const tail = [cached ? `${cached} 份已识别过，不再收费` : "", others ? `${others} 份没有声音或正在识别，跳过` : ""]
+  const tail = [cached ? `${cached} 份已识别过，跳过` : "", others ? `${others} 份没有声音或正在识别，跳过` : ""]
     .filter(Boolean).join("；");
   if (!quote.items) return tail ? `没有要识别的素材（${tail}）` : "没有要识别的素材";
-  const head = `识别 ${quote.items} 份素材，共 ${quote.durationSec ?? 0} 秒，✦${quote.credits}`;
+  const head = `识别 ${quote.items} 份素材，共 ${quote.durationSec ?? 0} 秒`;
   return tail ? `${head}（${tail}）` : head;
 }
 

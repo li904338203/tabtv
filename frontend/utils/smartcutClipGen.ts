@@ -134,33 +134,24 @@ export function smartcutMusicDuration(
   if (hi > 0) sec = Math.min(sec, hi);
   const landMs = Math.min(wantMs, sec * 1000);
   let note = "";
-  if (sec > want) note = `「${model?.name ?? "这个模型"}」单次最短 ${lo} 秒：按 ${sec} 秒生成并计费，放进时间线时裁到 ${smartcutSecondsText(wantMs)} 秒`;
+  if (sec > want) note = `「${model?.name ?? "这个模型"}」单次最短 ${lo} 秒：按 ${sec} 秒生成，放进时间线时裁到 ${smartcutSecondsText(wantMs)} 秒`;
   else if (sec < want) note = `「${model?.name ?? "这个模型"}」单次最长 ${hi} 秒：按 ${sec} 秒生成`;
   return { sec, wantMs, landMs, note };
 }
 
-/** 确认框里的花费说明。`blocked` 非空时确认按钮置灰（原因原样给用户）。 */
+/**
+ * 确认框里的说明：发给哪家处理、能不能生成。`blocked` 非空时确认按钮置灰（原因原样给用户）。
+ * 报价接口只用来判可用性（TT-T-14：不显示金额）。
+ */
 export function smartcutClipQuoteText(quote: Quote | null | undefined, modelName: string): {
-  cost: string;
-  detail: string;
   provider: string;
-  refund: string;
   blocked: string;
 } {
   const provider = `会发给「${modelName || "所选模型"}」处理`;
-  const refund = "生成失败或取消会按原批次全额退款";
-  if (!quote) return { cost: "", detail: "", provider, refund, blocked: "" };
+  if (!quote) return { provider, blocked: "" };
   const blocked = (quote.blockers ?? []).map(b => b.message).filter(Boolean).join("；");
-  if (blocked || quote.items === 0) {
-    return { cost: "", detail: "", provider, refund, blocked: blocked || "现在不能生成" };
-  }
-  let detail = "";
-  if (quote.unit === "per_second" && typeof quote.unitPrice === "number") {
-    detail = `按 ${quote.durationSec ?? "?"} 秒计费（✦${quote.unitPrice}/秒）`;
-  } else if (typeof quote.unitPrice === "number" && quote.unit) {
-    detail = quote.unit === "per_time" || quote.unit === "per_image" ? `按次计费（✦${quote.unitPrice}/次）` : `单价 ✦${quote.unitPrice}`;
-  }
-  return { cost: `✦${quote.credits}`, detail, provider, refund, blocked: "" };
+  if (blocked || quote.items === 0) return { provider, blocked: blocked || "现在不能生成" };
+  return { provider, blocked: "" };
 }
 
 const TERMINAL = new Set<Generation["status"]>(["success", "failed", "cancelled"]);

@@ -8,7 +8,7 @@ import { mediaThumbUrl } from "~/utils/authorizedMedia";
 import { LIBRARY_KIND_LABELS, libraryThumbMediaId, libraryTime, toggleTag, type LibraryItem } from "~/utils/assetLibrary";
 import { directorCanEdit } from "~/utils/directorRole";
 
-definePageMeta({ layout: "platform", middleware: "auth" });
+definePageMeta({ layout: "platform" });
 
 /**
  * 「我的作品 · 创作资产」= **保存过的**生成产物（我的资产，`GET /library/items`，迁移 00074）。

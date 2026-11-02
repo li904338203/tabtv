@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"strconv"
 	"strings"
 )
 
@@ -68,9 +67,8 @@ func FissionNote(it PlanItem) string {
 	default:
 		return ""
 	}
-	if it.Available() {
-		b.WriteString("，本项 ✦" + strconv.Itoa(it.Credits))
-	} else {
+	// tabtv 全部 0 价（TT-T-09）：不再写「本项 ✦N」，只在不可用时说明。
+	if !it.Available() {
 		b.WriteString("，本项暂不可用")
 	}
 	return b.String()

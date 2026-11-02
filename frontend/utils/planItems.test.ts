@@ -122,16 +122,15 @@ describe("素材裂变条目的说明（MKT-T-28 fissionNote）", () => {
 
 describe("确认卡按变体分组（MKT-AC-17 界面）", () => {
   const v = (variant: number, credits: number, extra: Record<string, unknown> = {}) => ({ kind: "video", label: "主片", credits, key: `k${variant}${credits}`, variant, ...extra });
-  it("3 个变体 3 组、组内小计之和 = 各行之和；按变体序排、0 组殿后", () => {
+  it("3 个变体 3 组；按变体序排、0 组殿后（tabtv 不算小计）", () => {
     const items = [v(2, 60, { variantLabel: "反问开场" }), v(1, 50), v(3, 40), v(0, 5), v(1, 3)];
     const groups = planVariantGroups(items);
     expect(groups.map(g => g.title)).toEqual(["变体 1", "变体 2 · 反问开场", "变体 3", "其他"]);
     expect(groups.map(g => g.indexes)).toEqual([[1, 4], [0], [2], [3]]);
-    expect(groups.map(g => g.subtotal)).toEqual([53, 60, 40, 5]);
-    expect(groups.reduce((sum, g) => sum + g.subtotal, 0)).toBe(158);
+    expect(groups[0]).not.toHaveProperty("subtotal");
   });
-  it("被拦下的条目不计小计；只有一个变体（或没有变体）不分组", () => {
-    expect(planVariantGroups([v(1, 50), v(2, 30, { blockedCode: "MARKETING_OPTION_UNAVAILABLE" })]).map(g => g.subtotal)).toEqual([50, 0]);
+  it("被拦下的条目照常分组；只有一个变体（或没有变体）不分组", () => {
+    expect(planVariantGroups([v(1, 50), v(2, 30, { blockedCode: "MARKETING_OPTION_UNAVAILABLE" })]).map(g => g.indexes)).toEqual([[0], [1]]);
     expect(planVariantGroups([v(1, 50), v(1, 30)])).toEqual([]);
     expect(planVariantGroups([{ kind: "image", label: "x", credits: 3 }])).toEqual([]);
   });
@@ -171,19 +170,15 @@ describe("执行进度：部分成功不摊平、停后续与失败分开、重�
     expect(view.items[1]!.reason).toContain("生成没有成功");
   });
 
-  it("余额不足那一项与被停掉的后续文案分开；被停掉的要等余额不足那项解决才可单独重试", () => {
+  it("失败与被停掉分开说，都可重试；不出现余额相关文案（TT-T-14）", () => {
     const view = planProgressView(progress("partial_success", [
-      item("v1", 1, "success"), item("v2", 2, "failed", "INSUFFICIENT_CREDITS"), item("v3", 3, "stopped", "plan_stopped_insufficient_credits")
+      item("v1", 1, "success"), item("v2", 2, "failed"), item("v3", 3, "stopped")
     ]))!;
-    expect(view.detail).toBe("余额不足 1 · 余额不足停止 1");
-    expect(view.items[1]).toMatchObject({ stateText: "余额不足", canRetry: true });
-    expect(view.items[1]!.reason).toContain("余额不足，没有提交，也没有扣费");
-    expect(view.items[2]).toMatchObject({ stateText: "已停止", canRetry: false, retryBlocked: "先充值并重试「变体 2 · 说明2」" });
-    expect(view.items[2]!.reason).toContain("前面有一项余额不足");
+    expect(view.detail).toBe("失败 1 · 停止 1");
+    expect(view.items[1]).toMatchObject({ stateText: "失败", canRetry: true });
+    expect(view.items[2]).toMatchObject({ stateText: "已停止", canRetry: true, retryBlocked: "" });
     expect(view.items[2]!.reason).not.toBe(view.items[1]!.reason);
-    // 余额不足那一项重试成功之后：被停掉的可以单独重试了
-    const after = planProgressView(progress("partial_success", [item("v1", 1, "success"), item("v2", 2, "success"), item("v3", 3, "stopped", "plan_stopped_insufficient_credits")]))!;
-    expect(after.items[2]!.canRetry).toBe(true);
+    expect(JSON.stringify(view)).not.toMatch(/余额|充值|积分|扣费/);
   });
 
   it("汇总文案直接用服务端计数；运行中 / 全成 / 全败", () => {

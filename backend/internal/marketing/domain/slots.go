@@ -104,7 +104,7 @@ const IssueNormalized IssueCode = "normalized"
 //   - 源视频槽与认不出的槽原样不动（认不出的交给 ValidateSlotDecl 报错，不在这里悄悄删掉）。
 //
 // ⚠️ **只有这一处实现**，读与写都调它：建会话读技能、管理端保存、`/agent/skills` 与管理端下发。
-// 各写一份的话总有一个页面看到旧形状。库里、数据文件（deploy/marketing）、导入工具因此都不用改 ——
+// 各写一份的话总有一个页面看到旧形状。库里、数据文件（platform/seed/data/marketing）、导入工具因此都不用改 ——
 // 只改库不改解码的话，下一次重复导入就把旧形状写回去。
 // ⚠️ 幂等：新形状输入原样返回、没有提醒。不改入参（返回副本）。
 func NormalizeSlotDecls(decls []SlotDecl) ([]SlotDecl, []Issue) {

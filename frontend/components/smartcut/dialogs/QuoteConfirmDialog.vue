@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /**
  * 片段级生成的通用确认框（docs/agent/smartcut SCT-40，dev/03 §5.6，SC-UX-05、SC-N-12）。五个工具的表单都套它：
- * 表单给出请求（不完整时为 null）→ 这里按请求取服务端报价（dryRun）→ 写明花费、按多少秒 / 次计费、发给哪家服务处理、
- * 失败全额退款 → 确认后带 `Idempotency-Key` 受理。
+ * 表单给出请求（不完整时为 null）→ 这里按请求取服务端报价（dryRun，只判可用性，TT-T-14 不显示金额）→ 写明发给哪家服务处理
+ * → 确认后带 `Idempotency-Key` 受理。
  *
- * - 价格只用服务端的报价，不在前端按单价自己算；`blockers` 非空时确认置灰并原样说明原因；
- * - 一次确认一个键：网络抖了一下点「确认」重发时复用同一个键（不会多扣一次）；请求一变，键作废；
+ * - `blockers` 非空时确认置灰并原样说明原因；
+ * - 一次确认一个键：网络抖了一下点「确认」重发时复用同一个键（不会重复受理）；请求一变，键作废；
  * - 受理之后不在前端替换片段：等服务端回填推 `timeline.updated`（SCR-13）。
  */
 import { ElMessage } from "element-plus";
@@ -41,7 +41,7 @@ const title = computed(() => (tool.value ? smartcutClipToolLabels[tool.value] : 
 const text = computed(() => smartcutClipQuoteText(quote.value, props.modelName));
 const blocked = computed(() => props.formReason || text.value.blocked);
 const confirmDisabled = computed(() => busy.value || quoting.value || !props.request || !quote.value || Boolean(blocked.value));
-const confirmLabel = computed(() => (busy.value ? "提交中…" : text.value.cost ? `确认（${text.value.cost}）` : "确认"));
+const confirmLabel = computed(() => (busy.value ? "提交中…" : "确认"));
 
 function errorText(cause: unknown, fallback: string): string {
   const message = (cause as { data?: { message?: unknown }; message?: unknown } | undefined);
@@ -120,11 +120,8 @@ async function confirm() {
         <template v-else>
           <p v-if="quoting" class="sc-note">报价中…</p>
           <p v-else-if="text.blocked" class="sc-error" data-testid="smartcut-clip-tool-reason">{{ text.blocked }}</p>
-          <p v-else-if="quote" class="sc-note" data-testid="smartcut-clip-tool-quote">
-            花费 <strong>{{ text.cost }}</strong><template v-if="text.detail"> · {{ text.detail }}</template>
-          </p>
         </template>
-        <p class="sc-note" data-testid="smartcut-clip-tool-provider">{{ text.provider }}；{{ text.refund }}。</p>
+        <p class="sc-note" data-testid="smartcut-clip-tool-provider">{{ text.provider }}。</p>
         <p v-if="failure" class="sc-error" role="alert">{{ failure }}</p>
       </div>
       <div class="sc-modal-actions">

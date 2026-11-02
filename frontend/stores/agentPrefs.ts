@@ -1,5 +1,5 @@
 import type { components } from "@tabtv/api-client";
-import { QUOTE_VIDEO_SECONDS, modelUnavailableReason, quoteUnitPrice, type ModelOption } from "~/utils/composerPrice";
+import { QUOTE_VIDEO_SECONDS, modelUnavailableReason, type ModelOption } from "~/utils/composerPrice";
 import { mergePrefs, type AgentPrefsValue, type PrefKind } from "~/utils/agentPrefs";
 import { modelBadges } from "~/utils/composerUi";
 import { LAST_MODE_KEY, writeLastMode, type ComposerMode } from "~/utils/quickGenerate";
@@ -10,7 +10,7 @@ import { LAST_MODE_KEY, writeLastMode, type ComposerMode } from "~/utils/quickGe
  * - `prefs`：`GET/PUT /agent/preferences`（只要登录）。会话级覆盖不在这里 —— 走 `agent.patchSession`；
  *   这里的是「设为默认」写的那一份。
  * - `options(kind)`：偏好浮层三页签的模型（视频 / 图片 / 推理）。⚠️ **不可用的照样列出**，原因来自
- *   服务端报价的原话（需要会员、没有定价……）；单价也来自报价（每个模型报 1 个单位），**页面不自己算**。
+ *   服务端能力校验（报价接口）的原话；tabtv 不计价，不显示单价（TT-T-14）。
  * - `lastMode`：创造页输入框上次的模式（本地存储，与 AGT-42 同一个键）。
  *
  * ⚠️ 只读不写：加载时只取偏好与报价，不写任何数据；写只发生在用户点「设为默认」时。
@@ -19,7 +19,6 @@ type AgentPreferences = components["schemas"]["AgentPreferences"];
 type AgentSkill = components["schemas"]["AgentSkill"];
 type SkillScene = components["schemas"]["AgentSkillScene"];
 type UsableModel = { code: string; name: string; resultType?: string; agentCapable?: boolean; minMemberLevelId?: string; hasNativeAudio?: boolean };
-type Quote = { creditsCost?: number; credits?: number; unit?: ModelOption["unit"] };
 
 /**
  * 模型目录的种类：偏好浮层的三页签，外加创造页直接生成的音频（直接生成复用同一个浮层与同一份目录，
@@ -29,15 +28,14 @@ export type OptionKind = PrefKind | "audio";
 
 const COMPOSER_MODES: readonly ComposerMode[] = ["agent", "video", "image", "audio"];
 
-/** 每种偏好用哪个操作报 1 个单位的价（单价）。 */
+/** 每种偏好用哪个操作做一次可用性报价（报价接口与受理同一条能力校验路径）。 */
 
 const QUOTE_OF: Record<OptionKind, { resultType?: string; operation: string; extra: Record<string, unknown> }> = {
-  // ⚠️ 视频按 5 秒报价再折回每秒单价（quoteUnitPrice）：报价入口会在扣费前校验时长范围（SCT-39 的 DurationDeclaring），
+  // ⚠️ 视频按 5 秒报价：报价入口会校验时长范围（SCT-39 的 DurationDeclaring），
   //    报 1 秒的话每个视频模型都回「时长必须在 4 到 30 秒之间（当前 1）」，整页模型全被标成不可用（2026-10-30 用户反馈）。
   video: { resultType: "video", operation: "text2video", extra: { durationSec: QUOTE_VIDEO_SECONDS, count: 1 } },
   image: { resultType: "image", operation: "text2img", extra: { count: 1 } },
   reasoning: { operation: "agent_chat", extra: { count: 1 } },
-  // 按字数计价的报 1 千字（空文本按 1 个单位计），显示成「✦x/千字」。
   audio: { resultType: "audio", operation: "text2audio", extra: { count: 1 } }
 };
 
@@ -104,20 +102,18 @@ export const useAgentPrefsStore = defineStore("agentPrefs", () => {
   async function quoteOne(kind: OptionKind, model: UsableModel): Promise<ModelOption> {
     const spec = QUOTE_OF[kind];
     try {
-      const quote = await useApi()<Quote>("/generations/estimate", {
+      await useApi()<unknown>("/generations/estimate", {
         method: "POST",
         body: { modelCode: model.code, operation: spec.operation, ...spec.extra }
       });
-      const price = quoteUnitPrice(typeof quote.creditsCost === "number" ? quote.creditsCost : quote.credits, quote.unit,
-        Number(spec.extra.durationSec ?? 1));
-      return { code: model.code, name: model.name || model.code, available: true, price, unit: quote.unit, badges: modelBadges(model), hasNativeAudio: model.hasNativeAudio };
+      return { code: model.code, name: model.name || model.code, available: true, badges: modelBadges(model), hasNativeAudio: model.hasNativeAudio };
     } catch (cause) {
       return { code: model.code, name: model.name || model.code, available: false, reason: modelUnavailableReason(cause), badges: modelBadges(model), hasNativeAudio: model.hasNativeAudio };
     }
   }
 
   /**
-   * 某一页签的模型（含不可用的）。单飞并缓存；`force` 重取（充值 / 开会员回来后）。
+   * 某一页签的模型（含不可用的）。单飞并缓存；`force` 重取（改了模型配置回来后）。
    * ⚠️ 推理模型只列 `agentCapable`（服务端按「支持 Agent」且绑定了 `agent_chat` 过滤）。
    */
   async function loadOptions(kind: OptionKind, force = false): Promise<ModelOption[]> {

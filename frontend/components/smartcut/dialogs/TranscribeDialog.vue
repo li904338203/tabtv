@@ -3,9 +3,8 @@
  * 语音识别的确认框（docs/agent/smartcut SCT-36，dev/03 §5.6，SC-F-120~124）：选范围、模型、是否保留口癖、语言、
  * 是否生成字幕 → 服务端报价 → 确认受理。
  *
- * - 识别**按模型收费**（SCK-4）：价格只显示服务端的报价（dryRun，逐份素材向上取整到秒），确认框写明花费、发给哪家服务、
- *   失败自动退款；
- * - 一次确认一个 `Idempotency-Key`，失败后的「重试」复用同一个键（网络抖一下重发不会多扣一次）；
+ * - 服务端报价（dryRun）只用来判可用性与要识别几份（TT-T-14 不显示金额），确认框写明发给哪家服务；
+ * - 一次确认一个 `Idempotency-Key`，失败后的「重试」复用同一个键（网络抖一下重发不会重复受理）；
  * - 不够口播 / 解说用的模型（只有整句或整段时间）照样列出并说明，不隐藏；
  * - 选了「生成字幕」：已识别过的素材当场写字幕，其余识别完成后服务端写进时间线（`timeline.updated`，reason=subtitles）。
  */
@@ -67,7 +66,7 @@ const confirmLabel = computed(() => {
   const q = quote.value;
   if (!q) return "确认识别";
   if (!q.items) return subtitles.value ? "生成字幕" : "没有要识别的素材";
-  return `确认识别（✦${q.credits}）`;
+  return "确认识别";
 });
 const confirmDisabled = computed(() => busy.value || quoting.value || !modelCode.value || blocked.value
   || !quote.value || (!quote.value.items && !subtitles.value));
@@ -156,7 +155,7 @@ async function confirm() {
       <div class="sc-section" aria-live="polite">
         <p v-if="quoting" class="sc-note">报价中…</p>
         <p v-else-if="quote" :class="blocked ? 'sc-error' : 'sc-note'" data-testid="smartcut-asr-quote">{{ smartcutTranscribeQuoteText(quote) }}</p>
-        <p class="sc-note">识别会发给「{{ model?.name ?? "所选模型" }}」处理，按秒计费；识别失败自动退款。同一份素材同样的设置识别过就不再收费。</p>
+        <p class="sc-note">识别会发给「{{ model?.name ?? "所选模型" }}」处理。同一份素材同样的设置识别过就不再重复识别。</p>
         <p v-if="failure" class="sc-error" role="alert">{{ failure }}</p>
       </div>
       <div class="sc-modal-actions">

@@ -63,6 +63,9 @@ func devThirdParty(name string) string {
 	}
 }
 
+// ThirdParty 返回开发态下载的第三方组件目录（build/third_party/<name>/<平台>）；找不到返回空串。
+func ThirdParty(name string) string { return devThirdParty(name) }
+
 // Postgres 返回 PG 二进制根目录（其下有 bin/、lib/、share/）。
 func Postgres() (string, error) {
 	if v := os.Getenv("TABTV_PG_HOME"); v != "" {

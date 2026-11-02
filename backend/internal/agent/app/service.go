@@ -1016,7 +1016,7 @@ func (s *Service) submitBudget(ctx context.Context, a SessionActor, sess repo.Se
 	}
 	locked.ApprovedBudget = n
 	turnID, msgID, err := s.writeUserTurn(ctx, tx, sess.ID,
-		"追加额度 ✦"+strconv.Itoa(p.Requested), nil, cardTurnKey(card.ID), card.ID)
+		"同意继续", nil, cardTurnKey(card.ID), card.ID)
 	if err != nil {
 		return SubmitResult{}, agentErr(err)
 	}
@@ -1171,7 +1171,7 @@ func (s *Service) submitPlan(ctx context.Context, a SessionActor, sess repo.Sess
 	}
 	locked.ApprovedBudget = approved
 	turnID, msgID, err := s.writeUserTurn(ctx, tx, sess.ID,
-		"确认规划，授权最多花费 ✦"+strconv.Itoa(total), nil, cardTurnKey(card.ID), card.ID)
+		"确认规划", nil, cardTurnKey(card.ID), card.ID)
 	if err != nil {
 		return SubmitResult{}, agentErr(err)
 	}

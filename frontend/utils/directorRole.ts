@@ -7,7 +7,7 @@
  *    会整个落进画布页的首屏 chunk（连同编辑器才用的场景校验）—— 包体积检查（DRT-09）在批次 4 因此超限。
  */
 import type { WorkspaceRole } from "./agentState";
-import { roleAllowsScope } from "./mcpScopes";
+import { roleAllowsScope } from "./roleScope";
 
 export function directorCanEdit(role: WorkspaceRole | null | undefined): boolean {
   return roleAllowsScope(role ?? undefined, "seeaitv:edit");

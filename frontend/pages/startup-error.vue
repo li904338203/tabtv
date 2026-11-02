@@ -37,6 +37,7 @@ async function retry() {
       </dl>
     </template>
     <p v-else>没有读到错误详情。</p>
+    <button type="button" @click="hostApp()?.OpenLogDir?.()">打开日志目录</button>
     <button type="button" :disabled="retrying" data-testid="startup-retry" @click="retry">
       {{ retrying ? "正在重试…" : "重试" }}
     </button>
@@ -61,5 +62,5 @@ async function retry() {
 dl { display: grid; grid-template-columns: 6em 1fr; gap: 4px 12px; }
 dt { opacity: 0.7; }
 dd { margin: 0; word-break: break-all; }
-button { margin-top: 16px; padding: 6px 20px; }
+button { margin: 16px 12px 0 0; padding: 6px 20px; }
 </style>

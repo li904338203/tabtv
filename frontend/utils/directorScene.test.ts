@@ -297,7 +297,7 @@ describe("对象操作", () => {
 describe("directorCanEdit", () => {
   it("directorCanEdit：与 roleAllowsScope 的编辑列逐角色一致", async () => {
     const { directorCanEdit } = await import("./directorRole");
-    const { roleAllowsScope } = await import("./mcpScopes");
+    const { roleAllowsScope } = await import("./roleScope");
     for (const role of ["owner", "admin", "editor", "viewer", undefined] as const) {
       expect(directorCanEdit(role), String(role)).toBe(roleAllowsScope(role, "seeaitv:edit"));
     }

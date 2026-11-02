@@ -19,6 +19,8 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	"github.com/li904338203/tabtv/backend/internal/media/domain"
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 	"github.com/li904338203/tabtv/backend/internal/platform/ffsem"
@@ -724,7 +726,7 @@ func (r analysisRun) ffmpeg(args []string, consume func(io.Reader) error) error 
 	}
 	defer release()
 	var stderr strings.Builder
-	cmd := exec.CommandContext(r.ctx, "ffmpeg", args...)
+	cmd := exec.CommandContext(r.ctx, ffbin.FFmpeg(), args...)
 	cmd.Stderr = &tailBuffer{w: &stderr, max: 4 << 10}
 	if consume == nil {
 		if err := cmd.Run(); err != nil {

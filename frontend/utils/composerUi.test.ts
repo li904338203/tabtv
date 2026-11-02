@@ -1,13 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { MODE_META, directTriggerParts, modelBadges, modelOptionNote, prefTriggerParts, ratioIconBox, splitCreditLabel } from "./composerUi";
+import { MODE_META, directTriggerParts, modelBadges, modelOptionNote, prefTriggerParts, ratioIconBox } from "./composerUi";
 
 describe("统一输入框展示", () => {
-  it("价格标签拆出 ✦，其余原样", () => {
-    expect(splitCreditLabel("✦4/秒")).toEqual({ star: true, text: "4/秒" });
-    expect(splitCreditLabel("✦ 36/轮")).toEqual({ star: true, text: "36/轮" });
-    expect(splitCreditLabel("—")).toEqual({ star: false, text: "—" });
-  });
-
   it("画幅图标长边固定、短边按比例且不小于 4px，解析不出给正方形", () => {
     expect(ratioIconBox("16:9")).toEqual({ width: 14, height: 8 });
     expect(ratioIconBox("9:16")).toEqual({ width: 8, height: 14 });
@@ -28,16 +22,15 @@ describe("统一输入框展示", () => {
     expect(directTriggerParts("gone", []).model).toBe("gone");
   });
 
-  it("角标只来自真实数据：有会员门槛才显示「会员」", () => {
-    expect(modelBadges({ minMemberLevelId: "3" })).toEqual(["会员"]);
+  it("没有会员体系：不出会员角标（TT-T-14）", () => {
+    expect(modelBadges({ minMemberLevelId: "3" })).toEqual([]);
     expect(modelBadges({})).toEqual([]);
   });
 
-  it("模型说明行：不可用写原因，可用写单价，未报价写报价中", () => {
-    expect(modelOptionNote({ code: "a", name: "A", available: false, reason: "需要会员" })).toBe("不可用：需要会员");
-    expect(modelOptionNote({ code: "a", name: "A", available: true, price: 4, unit: "per_second" })).toBe("✦4/秒");
-    expect(modelOptionNote({ code: "r", name: "R", available: true, price: 2 }, true)).toBe("✦2/轮");
-    expect(modelOptionNote({ code: "a", name: "A", available: true })).toBe("报价中");
+  it("模型说明行：不可用写原因，可用不写价格", () => {
+    expect(modelOptionNote({ code: "a", name: "A", available: false, reason: "未配置" })).toBe("不可用：未配置");
+    expect(modelOptionNote({ code: "a", name: "A", available: true })).toBe("");
+    expect(modelOptionNote({ code: "r", name: "R", available: true }, true)).toBe("");
   });
 
   it("每个模式都有说明", () => {

@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   budgetCardView,
   buildTimeline,
-  credits,
   emptySuggestions,
   etaText,
   extractSuggestions,
@@ -113,7 +112,8 @@ describe("步骤行", () => {
   it("步骤标题按工具类型", () => {
     expect(stepTitle(step({ id: "a", tool: "load_skill", display: { name: "故事选题" } }))).toEqual({ label: "技能学习", detail: "故事选题" });
     expect(stepTitle(step({ id: "a", tool: "read_canvas", display: { nodeCount: 6 } }))).toEqual({ label: "读取画布", detail: "6 个节点" });
-    expect(stepTitle(step({ id: "a", tool: "quote", display: { credits: 60, available: true } }))).toEqual({ label: "估算费用", detail: "✦60" });
+    expect(stepTitle(step({ id: "a", tool: "quote", display: { credits: 60, available: true } }))).toEqual({ label: "检查模型可用性", detail: "" });
+    expect(stepTitle(step({ id: "a", tool: "quote", display: { available: false, blockedReason: "模型已下线" } }))).toEqual({ label: "检查模型可用性", detail: "模型已下线" });
     expect(stepTitle(step({ id: "a", tool: "write_doc", display: { path: "/plan.md", fileName: "plan.md" } }))).toEqual({ label: "写入文档", detail: "plan.md" });
     expect(stepTitle(step({ id: "a", tool: "write_doc", display: { path: "/.memory.md" } })).label).toBe("更新项目记忆");
     expect(stepTitle(step({ id: "a", tool: "canvas_apply", display: { nodeIds: ["n1", "n2", "n3"], ops: 4 } }))).toEqual({ label: "更新画布", detail: "新增 3 个节点" });
@@ -220,28 +220,17 @@ describe("下一步建议", () => {
 });
 
 describe("页脚", () => {
-  it("页脚退回单列不从花费里减", () => {
-    const view = turnFooter({ chat: 4, generation: 60, refunded: 20 }, turn());
-    expect(view.chat).toBe("对话 ✦4（2 次调用）");
-    expect(view.generation).toBe("生成 ✦60");
-    expect(view.refunded).toBe("退回 ✦20");
-    // 页脚只显示时间与本轮消耗（design/03 R-6）：消耗 = 对话 + 生成，退回单列、不减
-    expect(view.spent).toBe("本轮消耗 ✦64（已退回 ✦20）");
-  });
-
-  it("页脚显示完整日期时间；没有退回时只写消耗", () => {
-    const view = turnFooter({ chat: 0, generation: 0, refunded: 0 }, turn({ finishedAt: "2026-10-25T09:22:38Z" }));
-    expect(view.spent).toBe("本轮消耗 ✦0");
+  it("页脚只显示时间与调用次数，不显示消耗（TT-T-14）", () => {
+    const view = turnFooter(turn({ finishedAt: "2026-10-25T09:22:38Z" }));
+    expect(view.calls).toBe("本轮调用模型 2 次");
+    expect(JSON.stringify(view)).not.toContain("✦");
     const local = new Date("2026-10-25T09:22:38Z");
     const pad = (n: number) => String(n).padStart(2, "0");
     expect(view.dateTime).toBe(`${local.getFullYear()}/${pad(local.getMonth() + 1)}/${pad(local.getDate())} ${pad(local.getHours())}:${pad(local.getMinutes())}:${pad(local.getSeconds())}`);
   });
 
-  it("账本没取到时不拿报价顶替", () => {
-    const view = turnFooter(undefined, turn({ creditsCost: 4 }));
-    expect(view.chat).toBe("对话 —（2 次调用）");
-    expect(view.generation).toBe("生成 —");
-    expect(view.spent).toBe("本轮消耗 —");
+  it("没有调用时不写调用次数", () => {
+    expect(turnFooter(turn({ callCount: 0 })).calls).toBe("");
   });
 });
 
@@ -279,7 +268,7 @@ describe("产出", () => {
 });
 
 describe("卡片", () => {
-  it("规划确认卡金额来自 payload，按钮写金额", () => {
+  it("规划确认卡列出每一项，不显示金额与余额", () => {
     const view = planCardView({
       title: "三打白骨精",
       docPath: "/plan.md",
@@ -289,38 +278,27 @@ describe("卡片", () => {
       shortfall: 0,
       canApprove: true
     });
-    expect(view.items[0]).toMatchObject({ label: "主片", amount: "✦60" });
-    expect(view.items[0]!.meta).toBe("视频 · seedance-2 · 15 秒");
-    expect(view.total).toBe("✦60");
-    expect(view.remaining).toBe("✦6,340");
-    expect(view.approveText).toBe("确认并开始 ✦60");
+    expect(view.items[0]).toEqual({ label: "主片", meta: "视频 · seedance-2 · 15 秒" });
+    expect(view.approveText).toBe("确认并开始");
     expect(view.blockedText).toBeUndefined();
+    expect(JSON.stringify(view)).not.toContain("✦");
   });
 
-  it("余额不足时写差额且不能确认", () => {
+  it("服务端说不能确认时照样不能确认，但不说余额", () => {
     const view = planCardView({ items: [{ kind: "video", label: "主片", credits: 60 }], total: 60, balance: 20, shortfall: 40, canApprove: false });
     expect(view.canApprove).toBe(false);
-    expect(view.blockedText).toBe("余额不足，还差 ✦40");
-    expect(view.remaining).toBeUndefined();
+    expect(view.blockedText).toBe("暂时无法确认");
   });
 
-  it("充值回来后按最新余额重算差额", () => {
-    const payload = { items: [{ kind: "video", label: "主片", credits: 60 }], total: 60, balance: 20, shortfall: 40, canApprove: false };
-    expect(planCardView(payload, 100)).toMatchObject({ canApprove: true, remaining: "✦40", balance: "✦100" });
-    expect(planCardView(payload, 30)).toMatchObject({ canApprove: false, shortfall: "✦30", blockedText: "余额不足，还差 ✦30" });
-    expect(planCardView(payload, 20).canApprove).toBe(false);
-  });
-
-  it("有不可用项时说明原因，不显示金额", () => {
+  it("有不可用项时说明原因", () => {
     const view = planCardView({ items: [{ kind: "video", label: "主片", credits: 0, blockedCode: "model_offline", blockedReason: "模型已下线" }], total: 0, balance: 100, shortfall: 0, canApprove: false });
-    expect(view.items[0]).toMatchObject({ amount: "—", blocked: "模型已下线" });
+    expect(view.items[0]).toMatchObject({ blocked: "模型已下线" });
     expect(view.blockedText).toBe("有计划项暂不可用，请调整规划");
   });
 
-  it("追加额度卡", () => {
+  it("追加额度卡（历史会话）只说原因，不显示金额", () => {
     const view = budgetCardView({ reason: "第 3 个镜头重试", requested: 20, approved: 60, used: 60, refunded: 20 });
-    expect(view.approveText).toBe("追加 ✦20");
-    expect(view.usage).toBe("已花 ✦60 / 额度 ✦60（失败已退回 ✦20）");
+    expect(view).toEqual({ reason: "第 3 个镜头重试", approveText: "同意继续" });
   });
 
   it("问答卡全部答完才可提交", () => {
@@ -374,9 +352,4 @@ describe("空状态", () => {
     expect(suggestionIcon("说说「音乐」能怎么用")).toBe("help");
     expect(suggestionIcon("随便聊聊")).toBe("spark");
   });
-});
-
-it("积分千分位", () => {
-  expect(credits(6400)).toBe("✦6,400");
-  expect(credits(undefined)).toBe("✦0");
 });

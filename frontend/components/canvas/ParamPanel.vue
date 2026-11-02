@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { components } from '~/types/legacy';
 import type { components as ApiComponents } from "@tabtv/api-client";
-import { ArrowUp, AudioLines, CircleAlert, Clapperboard, FileText, Image as ImageIcon, LoaderCircle, Maximize2, TextCursorInput, Video, X, Zap } from "@lucide/vue";
+import { ArrowUp, AudioLines, CircleAlert, Clapperboard, FileText, Image as ImageIcon, LoaderCircle, Maximize2, TextCursorInput, Video, X } from "@lucide/vue";
 import { ElMessage } from "element-plus";
 import CameraMoveChip from "./CameraMoveChip.vue";
 import MaterialPlaza from "./MaterialPlaza.vue";
@@ -134,7 +134,6 @@ const operation = computed(() => {
   const node = canvas.nodes.find(item => item.id === props.nodeId);
   return node ? operationForNode(node, canvas.edges) : undefined;
 });
-const estimate = computed(() => generation.estimates[props.nodeId] ?? 0);
 const status = computed(() => props.data.generation?.status);
 const running = computed(() => status.value === "queued" || status.value === "running");
 const selectedVoiceId = computed(() => String(props.data.params.voiceId ?? props.data.params.voice ?? ""));
@@ -836,7 +835,8 @@ onMounted(async () => {
           @update="editParam"
         />
       </div>
-      <span class="node-estimate" title="预计积分"><Zap :size="14" />{{ estimate || '—' }}</span>
+      <!-- 原「预计积分」角标的位置（TT-T-14 删除金额）：保留空占位把发送键推到右侧，布局不变 -->
+      <span class="node-estimate" aria-hidden="true" />
       <button class="node-generate" type="button" :disabled="!canGenerate || running" :title="generateHint" @click="generate">
         <LoaderCircle v-if="running" :size="17" class="spin" />
         <ArrowUp v-else :size="18" />

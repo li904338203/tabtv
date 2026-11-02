@@ -7,7 +7,7 @@
  *
  * ⚠️ 引用以胶囊对象为准，发出去的 `refs` 只有 `{kind,id}`（AG-03、GO-27），不带预览 URL。
  * ⚠️ 「选中即引用」：画布选中的节点自动成为胶囊；取消选中只移除**自动加入**的，手动 `@` 的保留。
- * ⚠️ 禁用理由给最根本的那一条（`utils/agentState.composerAvailability`：权限 > 已取消 > 卡片提示 > 余额）。
+ * ⚠️ 禁用理由给最根本的那一条（`utils/agentState.composerAvailability`：权限 > 已取消 > 卡片提示）。
  * ⚠️ 运行中（模型正在输出）发送键变停止；**挂起等待时照样能发**（等生成时可以追问别的事）。
  * ⚠️ 发送失败**保留正文、胶囊与附件**，原话显示在输入框下方（断网说断网）。
  * ⚠️ 打开页面不写任何数据：只读偏好、模型目录与报价；写只发生在用户点发送 / 改偏好 / 设为默认时。
@@ -25,7 +25,7 @@
  * `scene='marketing'`（营销页，MKT-T-14，营销 dev/03 §3）：在 `context='create'` 的基础上**只加不改** ——
  * 左侧槽位区（`MarketingSlots`）、正文开头四维胶囊、底栏技能之后三个选项按钮（`MarketingSelectorBar`
  * + `MarketingOptionPicker`）、技能弹层只列营销技能、营销草稿与 `loginPath("/marketing")`；
- * `@`、`＋`、模型偏好、画布开关（同一个本地键）、价格（同一个 `agentPriceView` + `PricePill`）、一键优化、失败保留不变。
+ * `@`、`＋`、模型偏好、画布开关（同一个本地键）、一键优化、失败保留不变。
  * 联动规则全在 `utils/marketingComposer`（纯函数），这里只负责把它的结果落到正文 / 偏好 / 槽位上。
  * 发送（MKT-T-24，营销 dev/03 §3.5）：一次 `POST /agent/sessions {scene:"marketing", marketing, refs(带 slot/order)}`
  * 建项目 + 营销会话 + 首条消息（请求体见 `utils/marketingRequest`），成功清营销草稿、按画布开关跳画布页或全屏对话页；
@@ -39,14 +39,12 @@ import AttachmentChips, { type ComposerAttachment } from "./AttachmentChips.vue"
 import ComposerEditor from "./ComposerEditor.vue";
 import MentionPicker from "./MentionPicker.vue";
 import ModelPrefPopover from "./ModelPrefPopover.vue";
-import PricePill from "./PricePill.vue";
 import SkillPicker, { type AgentSkill } from "./SkillPicker.vue";
 import { composerAvailability, composerSubmitAction, sendButtonMode } from "~/utils/agentState";
 import { effectivePrefs as resolvePrefs, prefModel, resolveReasoningModel, withPrefFields, type AgentPrefsValue } from "~/utils/agentPrefs";
 import { canSubmitContent, type ComposerChip, type ComposerChipDim, type Trigger } from "~/utils/composerKeys";
 import { pickerPlacement, type PickerPlacement } from "~/utils/pickerPlacement";
-import { agentPriceView, optimizePriceView } from "~/utils/composerPrice";
-import { creditBalanceOf } from "~/utils/accountPanel";
+import { reasoningUnavailable } from "~/utils/composerPrice";
 import { saveCreateDraft } from "~/utils/createDraft";
 import { loginPath } from "~/utils/safeRedirect";
 import { mediaThumbUrl } from "~/utils/authorizedMedia";
@@ -114,7 +112,6 @@ import {
   MARKETING_LEGACY_DRAFT_TEXT
 } from "~/utils/marketingDraft";
 import { buildMarketingSessionRequest, marketingSendFailure, marketingSendFingerprint, type MarketingRequestInput } from "~/utils/marketingRequest";
-import { isBatchSkill } from "~/utils/skillEntries";
 
 type Attachment = ComposerAttachment & { file: File; mediaType: "image" | "video" | "audio" };
 type MarketingConfig = components["schemas"]["MarketingConfig"];
@@ -151,8 +148,6 @@ const manualPicker = ref<"/" | "@" | null>(null);
 const sendError = ref("");
 /** 还没有会话时（新会话草稿）对偏好的改动；建会话时随首条消息一起发。 */
 const draftPrefs = ref<AgentPrefsValue>({});
-/** 余额；没取到为 undefined —— **不猜**（generation store 取失败时记 0，拿它判「余额不足」会误拦）。 */
-const balance = ref<number | undefined>();
 const editor = ref<InstanceType<typeof ComposerEditor>>();
 const skillPicker = ref<InstanceType<typeof SkillPicker>>();
 const mentionPicker = ref<InstanceType<typeof MentionPicker>>();
@@ -205,13 +200,6 @@ const serverBlocks = ref<Record<string, ServerOptionBlock>>({});
 const invalidSlot = ref<SlotKey | null>(null);
 /** 建会话回 42215 时标红的胶囊（维度 + code）；那一维换了 / 删了就撤掉。 */
 const invalidChip = ref<{ dim: PickDim; code: string } | null>(null);
-const marketingPriceExtra = computed(() => {
-  if (!isMarketing.value) return {};
-  const code = mk.value.chips.find(chip => chip.dim === "skill")?.code;
-  const max = props.marketingConfig?.maxVariants;
-  // 是不是批量读技能目录的 isBatch（MKT-T-32），不按 code 认
-  return isBatchSkill(code, prefsStore.sceneSkills.marketing) && max ? { variants: { max } } : {};
-});
 
 /** 生效的偏好：会话级（没有会话时是草稿）的完整快照；空的才用用户默认（见 utils/agentPrefs.effectivePrefs）。 */
 const effectivePrefs = computed<AgentPrefsValue>(() => resolvePrefs(
@@ -220,14 +208,10 @@ const effectivePrefs = computed<AgentPrefsValue>(() => resolvePrefs(
 ));
 const reasoningOptions = computed(() => prefsStore.options("reasoning"));
 const reasoningCode = computed(() => resolveReasoningModel(effectivePrefs.value, reasoningOptions.value));
-const price = computed(() => agentPriceView({
-  // 解析不出可用的推理模型时，拿所选（或第一个）不可用的那个来说明原因。
-  reasoning: prefsStore.option("reasoning", reasoningCode.value)
-    ?? prefsStore.option("reasoning", prefModel(effectivePrefs.value, "reasoning"))
-    ?? reasoningOptions.value[0],
-  video: prefsStore.option("video", prefModel(effectivePrefs.value, "video")),
-  image: prefsStore.option("image", prefModel(effectivePrefs.value, "image"))
-}, marketingPriceExtra.value));
+/** 推理模型不能用的原因（没有 / 未启用）：Agent 发送、一键优化据此禁用。解析不出可用的推理模型时，拿所选（或第一个）不可用的那个来说明原因。 */
+const reasoningError = computed(() => reasoningUnavailable(prefsStore.option("reasoning", reasoningCode.value)
+  ?? prefsStore.option("reasoning", prefModel(effectivePrefs.value, "reasoning"))
+  ?? reasoningOptions.value[0]));
 const reasoningLoading = computed(() => !prefsStore.optionsByKind.reasoning && !prefsStore.optionErrors.reasoning);
 
 const availability = computed(() => {
@@ -236,16 +220,14 @@ const availability = computed(() => {
     role: role.value,
     isInitiator: current.value ? current.value.isInitiator : true,
     state: current.value?.state,
-    pendingCardId: current.value?.pendingCardId,
-    balance: balance.value,
-    turnPrice: prefsStore.option("reasoning", reasoningCode.value)?.price
+    pendingCardId: current.value?.pendingCardId
   });
   // 创造页的只读说法照设计 02 §8（这里还没有「对话」）。
   if (isCreate.value && role.value === "viewer") return { ...value, reason: "你在该工作区是只读，无法发起创作" };
   return value;
 });
-/** 权限 / 会话已结束：连正文都不让写（写了也发不出去）。余额不足只禁发送键。 */
-const locked = computed(() => !availability.value.canSend && availability.value.shortfall === undefined);
+/** 权限 / 会话已结束：连正文都不让写（写了也发不出去）。 */
+const locked = computed(() => !availability.value.canSend);
 const mode = computed(() => (isCanvas.value ? sendButtonMode(current.value?.state, agent.isStreaming) : "send"));
 const uploading = computed(() => attachments.value.some(item => item.status === "uploading"));
 const doneAttachments = computed(() => attachments.value.filter(item => item.status === "done" && item.referenceId));
@@ -264,7 +246,7 @@ const blockReason = computed(() => {
   if (busy.value) return "正在发送";
   if (uploading.value) return "附件上传中，完成后再发送";
   if (reasoningLoading.value) return "正在读取推理模型";
-  if (price.value.error) return price.value.error;
+  if (reasoningError.value) return reasoningError.value;
   if (!hasContent.value) return "先写下想让 Agent 做的事";
   return "";
 });
@@ -276,11 +258,6 @@ const placeholder = computed(() => {
   if (isCanvas.value) return "";
   return "描述你想做的视频，比如：三打白骨精，悟空视角，15 秒竖屏";
 });
-/**
- * 输入框右下角的每轮单价「✦N/轮」：画布面板不显示（2026-11-01 按用户要求，设计 03 R-16）。
- * 余额不够时照样有「去充值」和输入框下面那行原因；创造页、营销页照旧显示。
- */
-const showPrice = computed(() => !isCanvas.value);
 
 const pickerKind = computed<"/" | "@" | null>(() => trigger.value?.kind ?? manualPicker.value);
 
@@ -321,12 +298,6 @@ onBeforeUnmount(() => {
 const mentionNodes = computed(() => (canvasNodes.value ? nodeCandidates(canvas.nodes, trigger.value?.kind === "@" ? trigger.value.query : "") : []));
 const loadedSkillCodes = computed(() => current.value?.session.skillCodes ?? []);
 
-/** 一键优化的价格：与对话同一个推理模型、同一个每轮单价。 */
-const optimizePrice = computed(() => optimizePriceView(
-  prefsStore.option("reasoning", reasoningCode.value)
-    ?? prefsStore.option("reasoning", prefModel(effectivePrefs.value, "reasoning"))
-    ?? reasoningOptions.value[0]
-));
 const optimizeBlock = computed(() => {
   if (guest.value) return "";
   if (locked.value) return availability.value.reason;
@@ -351,21 +322,6 @@ watch(refs, list => {
   void thumbs.appendAll(list
     .filter(item => item.thumbMediaId)
     .map(item => ({ key: item.thumbMediaId!, url: mediaThumbUrl(item.thumbMediaId, 160) })));
-});
-
-async function loadBalance() {
-  if (guest.value) return;
-  try {
-    // 契约是 `{ balance, grants }`（此前读老结构的 total，恒为 undefined，「积分不足」永远判不出来）
-    balance.value = creditBalanceOf(await useApi()<unknown>("/credits"));
-  } catch {
-    balance.value = undefined;
-  }
-}
-
-// 一轮跑完（回到空闲 / 等确认 / 失败）时余额可能变了：重新取一次（只读）。
-watch(() => current.value?.state, (next, prev) => {
-  if (prev && next !== prev && (next === "idle" || next === "failed" || next === "awaiting_approval" || next === "awaiting_input")) void loadBalance();
 });
 
 // 换会话：上一条没发出去的错误不再挂着。
@@ -506,7 +462,7 @@ async function saveDefault(next: AgentPrefsValue) {
 
 /**
  * 这次发送要带的偏好。会话偏好里没有可用的推理模型时，把解析出来的那一个写进去：服务端虽然会兜底
- * （按会员等级报得出价的第一个，04 文档 P-13），但按钮上显示的模型与价格要和实际用的一致。新会话带完整的生效偏好。
+ * （第一个可用的，04 文档 P-13），但按钮上显示的模型要和实际用的一致。新会话带完整的生效偏好。
  */
 function prefsForSend(): AgentPrefsValue | undefined {
   const code = reasoningCode.value;
@@ -597,7 +553,6 @@ async function submitCreate(outgoing: ReturnType<typeof serializeRefs>) {
   } catch (cause) {
     // ⚠️ 正文、技能、引用与附件都留着；原话放在输入框下方（断网说断网）。
     sendError.value = quickErrorText(cause, navigator.onLine);
-    void loadBalance();
   } finally {
     creating.value = false;
   }
@@ -649,7 +604,6 @@ async function submitMarketing() {
       invalidChip.value = { dim: failure.option.dim, code: failure.option.code };
       serverBlocks.value = { ...serverBlocks.value, [failure.option.code]: failure.option.block };
     }
-    void loadBalance();
   } finally {
     creating.value = false;
   }
@@ -698,7 +652,6 @@ async function submit() {
     attachments.value = [];
     draftPrefs.value = {};
     closePicker();
-    void loadBalance();
   } catch (cause) {
     // ⚠️ 正文、胶囊、附件都留着；原话放在输入框下方。
     sendError.value = quickErrorText(cause, navigator.onLine);
@@ -1099,7 +1052,6 @@ onMounted(() => {
   // 只读：偏好、推理模型（含每轮单价）。视频 / 图片目录等打开偏好浮层或用户选过时再取。
   void prefsStore.load();
   void prefsStore.loadOptions("reasoning");
-  void loadBalance();
   if (prefModel(effectivePrefs.value, "video")) void prefsStore.loadOptions("video");
   if (prefModel(effectivePrefs.value, "image")) void prefsStore.loadOptions("image");
 });
@@ -1166,11 +1118,10 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
         class="composer-optimize"
         :text="text"
         :model-code="reasoningCode"
-        :price="optimizePrice"
+        :unavailable="reasoningError"
         :block-reason="optimizeBlock"
         :guard="optimizeGuard"
         @replace="replaceText"
-        @charged="loadBalance"
       />
       <SkillPicker
         v-if="pickerKind === '/'"
@@ -1234,7 +1185,7 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
             :selected="pickedCharacters"
             :limits="characterLimits"
             :read-only="role === 'viewer'"
-            :optimize-price="optimizePrice"
+            :optimize-unavailable="reasoningError"
             :optimize-model-code="reasoningCode"
             :default-model-code="prefModel(effectivePrefs, 'image') ?? ''"
             @close="characterPickerOpen = false"
@@ -1355,11 +1306,6 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
             <span>画布</span>
           </button>
           <span v-if="isCreate" class="composer-divider" aria-hidden="true" />
-          <template v-if="!guest">
-            <PricePill v-if="showPrice" :agent="price" :up="isCanvas" />
-            <NuxtLink v-if="availability.shortfall" to="/credits" class="composer-recharge">去充值</NuxtLink>
-            <span v-if="showPrice || availability.shortfall" class="composer-divider" aria-hidden="true" />
-          </template>
           <button
             v-if="mode === 'stop'"
             type="button"
@@ -1386,7 +1332,6 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
     </div>
     <p v-if="sendError" class="composer-error" role="alert">{{ sendError }}</p>
     <p v-else-if="locked" class="composer-note">{{ availability.reason }}</p>
-    <p v-else-if="availability.shortfall" class="composer-note">{{ availability.reason }}</p>
     <p v-else-if="marketingNote" class="composer-note">{{ marketingNote }}</p>
   </section>
 </template>
@@ -1394,7 +1339,7 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
 <style scoped>
 /*
  * 统一输入框（照对标改版）：大圆角深色卡片，上方多行正文，下方一行三组工具栏 ——
- * 左「＋ @」、中「技能 ⌄」「模型｜创作偏好 ⌄」居中、右「✦价格 ｜ 发送」。
+ * 左「＋ @」、中「技能 ⌄」「模型｜创作偏好 ⌄」居中、右「发送」。
  * 宽度按**输入框自身**判断（容器查询），画布右侧面板（320~640px）里中组换到第一行、
  * 再窄时收起胶囊文字，不靠视口宽度。
  */
@@ -1446,7 +1391,7 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
 @container composer (max-width: 360px) {
   .composer-pill-text, .composer-group.center :deep(.model-pref-tail), .composer-group.center :deep(.model-pref-sep) { display: none; }
 }
-/* 画布面板（iconTools）：技能、模型是左组里的图标，没有中组 —— 不论多窄都是一行，左「＋ @ 模型 Skill」、右「✦价格 ｜ 发送」 */
+/* 画布面板（iconTools）：技能、模型是左组里的图标，没有中组 —— 不论多窄都是一行，左「＋ @ 模型 Skill」、右「发送」 */
 .composer-bar.compact { display: flex; justify-content: space-between; }
 /*
  * 图标的悬停说明（2026-11-01 按参考图）：鼠标移上去立刻在图标正上方出一个小标签，不等系统 title 的延迟。
@@ -1564,8 +1509,6 @@ defineExpose({ focus, fillText, addRef, addNodeRef, setSkill, restoreDraft, open
 .composer-canvas-toggle.on { color: var(--portal-text); }
 .composer-canvas-toggle.on .composer-switch { background: var(--portal-mark-bg); box-shadow: none; }
 .composer-canvas-toggle.on .composer-switch i { transform: translateX(11px); background: var(--portal-mark-text); }
-.composer-recharge { color: var(--portal-gold); font-size: 12px; text-decoration: none; white-space: nowrap; }
-.composer-recharge:hover { text-decoration: underline; }
 .composer-error, .composer-note { margin: 6px 2px 0; font-size: 12px; }
 /*
  * 营销（MKT-T-14 / MKT-T-38）：方形卡片区在正文左侧，输入框窄于 640px 时移到正文上方（卡片仍横排）。

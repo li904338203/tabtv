@@ -12,8 +12,6 @@ import {
 
 const session = (state: AgentSessionState, extra: Partial<StatusBarSession> = {}): StatusBarSession => ({
   state,
-  approvedBudget: 0,
-  spent: 0,
   ...extra
 });
 
@@ -44,21 +42,15 @@ describe("statusBar 状态条", () => {
     }
   });
 
-  it("执行中显示已花与额度", () => {
-    const view = statusBar(session("executing", { approvedBudget: 60, spent: 4 }), todo);
+  it("执行中显示当前步骤（TT-T-14：不显示已花与额度）", () => {
+    const view = statusBar(session("executing"), todo);
     expect(view.text).toBe("Step 2/3 · 撰写创作规划");
-    expect(view.spentText).toBe("已花 ✦4 / 额度 ✦60");
-    expect(view.warn).toBe(false);
-  });
-
-  it("额度达到 80% 警示", () => {
-    expect(statusBar(session("executing", { approvedBudget: 60, spent: 48 }), []).warn).toBe(true);
-    expect(statusBar(session("executing", { approvedBudget: 60, spent: 47 }), []).warn).toBe(false);
+    expect(view).not.toHaveProperty("spentText");
   });
 
   it("生成超时说比预计慢不说失败", () => {
     const start = Date.parse("2026-10-15T10:00:00Z");
-    const on = statusBar(session("waiting_task", { approvedBudget: 60, spent: 60 }), [], {
+    const on = statusBar(session("waiting_task"), [], {
       waitingSince: "2026-10-15T10:00:00Z", estimatedSeconds: 120, now: start + 60_000
     });
     expect(on.text).toBe("生成中 · 预计约 2 分钟");
@@ -76,10 +68,10 @@ describe("statusBar 状态条", () => {
   it("除 failed 外任何状态的文案都不含「失败」", () => {
     const states: AgentSessionState[] = ["idle", "planning", "awaiting_input", "awaiting_approval", "executing", "waiting_task", "cancelled"];
     for (const state of states) {
-      const view = statusBar(session(state, { approvedBudget: 10, spent: 9, failureReason: "上游失败" }), todo, {
+      const view = statusBar(session(state, { failureReason: "上游失败" }), todo, {
         waitingSince: "2020-01-01T00:00:00Z", estimatedSeconds: 1
       });
-      expect(`${view.text}${view.spentText}`).not.toContain("失败");
+      expect(view.text).not.toContain("失败");
     }
     expect(statusBar(session("failed", { failureReason: "推理模型报价失败" }), []).text).toBe("已停止：推理模型报价失败");
   });
@@ -103,27 +95,26 @@ describe("normalizeTodo", () => {
 });
 
 describe("composerAvailability 输入框可用性", () => {
-  const base = { role: "editor" as const, isInitiator: true, state: "idle" as const, balance: 100, turnPrice: 2 };
+  const base = { role: "editor" as const, isInitiator: true, state: "idle" as const };
 
   it("可以发送", () => {
     expect(composerAvailability(base)).toEqual({ canSend: true, reason: "", hint: "" });
   });
 
-  it("禁用理由权限优先于余额", () => {
-    const view = composerAvailability({ ...base, role: "viewer", balance: 0 });
+  it("只读不能发送", () => {
+    const view = composerAvailability({ ...base, role: "viewer" });
     expect(view.canSend).toBe(false);
     expect(view.reason).toContain("只读");
-    expect(view.shortfall).toBeUndefined();
   });
 
   it("非发起人不能发送", () => {
-    const view = composerAvailability({ ...base, isInitiator: false, balance: 0 });
+    const view = composerAvailability({ ...base, isInitiator: false });
     expect(view.canSend).toBe(false);
     expect(view.reason).toContain("只有发起人能继续对话");
   });
 
   it("会话已取消不能发送", () => {
-    expect(composerAvailability({ ...base, state: "cancelled", balance: 0 }).reason).toContain("会话已结束");
+    expect(composerAvailability({ ...base, state: "cancelled" }).reason).toContain("会话已结束");
   });
 
   it("卡片待处理只提示不禁用", () => {
@@ -132,14 +123,6 @@ describe("composerAvailability 输入框可用性", () => {
     expect(view.hint).toBe("有一张卡片等你确认");
   });
 
-  it("余额不足写明差额", () => {
-    const view = composerAvailability({ ...base, balance: 1, turnPrice: 4 });
-    expect(view).toMatchObject({ canSend: false, reason: "积分不足，还差 ✦3", shortfall: 3 });
-  });
-
-  it("不知道余额时不猜", () => {
-    expect(composerAvailability({ ...base, balance: undefined }).canSend).toBe(true);
-  });
 });
 
 describe("sendButtonMode", () => {

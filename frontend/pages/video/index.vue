@@ -11,7 +11,7 @@ import { projectBadgeVariant, projectCanvasPath, projectOpenPath } from "~/utils
 // 模板里不直接调 navigateTo：自动导入在模板上下文里 vue-tsc 解析不到（运行时没问题，但门禁会红）。
 const go = navigateTo
 
-definePageMeta({ layout: "platform", middleware: "auth" });
+definePageMeta({ layout: "platform" });
 
 type HomeResponse = components["schemas"]["HomeResp"];
 type ProjectResponse = components["schemas"]["ProjectResp"];
@@ -316,9 +316,6 @@ onMounted(() => {
         <div v-if="projectsLoading && !projects.length" class="portal-empty wide">正在加载项目</div>
       </section>
 
-      <div class="section-head"><div><h2>灵感与作品</h2><p>平台精选创作</p></div></div>
-      <!-- 与工作台首页、创造页同一个组件；分类走服务端 type 参数，没有搜索框（后端不支持关键词） -->
-      <ShowcaseGrid show-categories />
     </ProductAvailabilityGate>
   </main>
 </template>

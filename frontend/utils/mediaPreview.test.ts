@@ -29,16 +29,9 @@ describe("媒体预览浮层只有一份", () => {
     expect(offenders, `这些页面自己写了一份预览浮层：\n${offenders.join("\n")}`).toEqual([]);
   });
 
-  // 首页与 AI 视频首页的精选作品已收进 ShowcaseGrid（AGT-40），预览浮层随之在组件里。
-  it.each(["components/showcase/ShowcaseGrid.vue", "pages/works.vue", "components/canvas/BaseNode.vue"])("%s 用的是 MediaPreviewDialog", (page) => {
+  // 精选作品墙（ShowcaseGrid）随被排除的公开精选一起删除（TT-T-13）。
+  it.each(["pages/works.vue", "components/canvas/BaseNode.vue"])("%s 用的是 MediaPreviewDialog", (page) => {
     expect(readFileSync(join(APP, page), "utf8")).toContain("<MediaPreviewDialog");
-  });
-
-  // 根路径 2026-11-01 起直接重定向到创造页（pages/index.vue 不再有自己的内容），精选作品在创造页与 AI 视频页
-  it.each(["pages/video/index.vue", "pages/create.vue"])("%s 的精选作品用的是共享的 ShowcaseGrid", (page) => {
-    const text = readFileSync(join(APP, page), "utf8");
-    expect(text).toContain("<ShowcaseGrid");
-    expect(text, "页面里又自己写了一份精选作品墙").not.toMatch(/class="[^"]*\bshowcase-grid\b/);
   });
 
   it("创作资产的下载在预览里，卡片上不再有下载按钮", () => {

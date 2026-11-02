@@ -1,6 +1,6 @@
 /**
  * 情绪调节编辑器（docs/agent/imagetools IMGT-17，IMG-F-10~22）专用的纯函数：角色增删改、坐标盘键盘移动、
- * 节点参数还原、源图变化判定、脸部小图裁切区域、报价用的选项。
+ * 节点参数还原、源图变化判定、脸部小图裁切区域、能力校验用的选项。
  *
  * 方案（2026-10-31 变更）：**只有手动框选**，没有自动人物识别；服务端把框选区域裁出来发给图片模型（img2img），
  * 再羽化贴回原图 —— 输出就是原图分辨率，所以也没有分辨率选项。
@@ -162,14 +162,15 @@ export function imageToolEmotionInputHint(roles: readonly ImageToolEditorRole[])
 }
 
 /**
- * 报价用的选项：价格 = 单价 × 张数，与角色无关；但服务端校验 `roles` 不能为空（「先选一个角色的情绪」），
- * 没有调整过的角色时借第一个角色的框报价，**只为算出积分显示**，发送仍按 touched 过滤（发送按钮此时也是禁用的）。
- * 一个角色都没有返回 null（不报价）。
+ * 能力校验（报价接口）用的选项：只带调整过（touched）的角色，与发送同形。
+ * 一个调整过的角色都没有返回 null（不校验 —— 发送按钮此时由「先选一个角色的情绪」禁用）。
+ * tabtv 不计价（TT-T-14）：来源系统「没有调整过时借第一个角色的框，只为算出积分显示」的做法删除。
  */
 export function imageToolEmotionQuoteOptions(sourceMediaId: string, state: ImageToolEmotionState): ImageToolExpressionOptions | null {
   if (!sourceMediaId || !state.roles.length) return null;
   const touched = state.roles.filter(role => role.touched);
-  const roles = (touched.length ? touched : [imageToolEmotionOrdered(state.roles)[0]!]).map(role => ({
+  if (!touched.length) return null;
+  const roles = touched.map(role => ({
     id: role.id,
     box: { ...role.box },
     arousal: role.arousal,

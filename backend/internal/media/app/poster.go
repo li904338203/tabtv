@@ -16,6 +16,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	"github.com/li904338203/tabtv/backend/internal/media/domain"
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 )
@@ -173,7 +175,7 @@ func runFFmpeg(ctx context.Context, args []string) error {
 	ctx, cancel := context.WithTimeout(ctx, domain.PosterTimeout)
 	defer cancel()
 	var stderr bytes.Buffer
-	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	cmd := exec.CommandContext(ctx, ffbin.FFmpeg(), args...)
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
 		msg := strings.TrimSpace(stderr.String())

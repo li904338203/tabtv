@@ -142,6 +142,6 @@ func (t SubmitPlan) checkLongFilm(ctx context.Context, rc RunContext, items []do
 	if err != nil || !p.Available {
 		return nil
 	}
-	return fmt.Errorf("规划未提交（没有发卡、没有扣费）：成片 %d 秒用 %s 一次就能生成（单条报价 ✦%d），一支视频不要拆成 %d 段走脚本线。"+
-		"改成一个 %d 秒的视频条目，多个镜头写进同一段提示词", d, first.ModelCode, p.Item.Credits, segments, d)
+	return fmt.Errorf("规划未提交（没有发卡、没有扣费）：成片 %d 秒用 %s 一次就能生成，一支视频不要拆成 %d 段走脚本线。"+
+		"改成一个 %d 秒的视频条目，多个镜头写进同一段提示词", d, first.ModelCode, segments, d)
 }

@@ -4,7 +4,6 @@ import { describe, expect, it } from "vitest";
 import {
   IMAGE_TOOL_FALLBACK_CONFIG,
   IMAGE_TOOL_PRESET_OFFLINE,
-  imageToolBalanceBlocker,
   imageToolCount,
   imageToolDefaultOptions,
   imageToolDisabledReason,
@@ -199,29 +198,25 @@ describe("显示坐标 ↔ 原图坐标", () => {
   });
 });
 
-describe("禁用理由排序（权限 > 不可用 > 余额）", () => {
+describe("禁用理由排序（权限 > 不可用 > 输入 > 能力校验）", () => {
   const permission = imageToolPermissionBlocker(false, true);
   const unavailable = imageToolUnavailableBlocker({ available: false, blockedReason: "该模型未绑定此操作", userFixable: false });
-  const balance = imageToolBalanceBlocker(3, 8);
+  const quote = { kind: "quote" as const, text: "x" };
 
   it("给最根本的那一条", () => {
-    expect(imageToolDisabledReason([balance, unavailable, permission])?.kind).toBe("permission");
-    expect(imageToolDisabledReason([balance, unavailable, null])?.kind).toBe("unavailable");
-    expect(imageToolDisabledReason([balance, { kind: "input", text: "先选一个角色的情绪" }])?.kind).toBe("input");
+    expect(imageToolDisabledReason([quote, unavailable, permission])?.kind).toBe("permission");
+    expect(imageToolDisabledReason([quote, unavailable, null])?.kind).toBe("unavailable");
+    expect(imageToolDisabledReason([quote, { kind: "input", text: "先选一个角色的情绪" }])?.kind).toBe("input");
     expect(imageToolDisabledReason([null, undefined, false])).toBeNull();
-    expect(imageToolSortBlockers([balance, { kind: "quote", text: "x" }, permission]).map(item => item.kind)).toEqual(["permission", "quote", "balance"]);
+    expect(imageToolSortBlockers([quote, permission]).map(item => item.kind)).toEqual(["permission", "quote"]);
   });
 
-  it("文案：只读说权限、运营问题标明需要运营、余额说清还差多少、未知不猜", () => {
+  it("文案：只读说权限、运营问题标明需要运营", () => {
     expect(permission?.text).toBe("需要生成权限，你在该工作区是只读成员");
     expect(imageToolPermissionBlocker(true, false)).toBeNull();
     expect(unavailable).toEqual({ kind: "unavailable", text: "该模型未绑定此操作（需要运营配置）", userFixable: false });
     expect(imageToolUnavailableBlocker({ available: false, blockedReason: "需要先连一张图", userFixable: true })?.userFixable).toBe(true);
     expect(imageToolUnavailableBlocker({ available: true, userFixable: true })).toBeNull();
-    expect(balance?.text).toBe("积分不足，还差 5 积分");
-    expect(imageToolBalanceBlocker(10, 8)).toBeNull();
-    expect(imageToolBalanceBlocker(undefined, 8)).toBeNull();
-    expect(imageToolBalanceBlocker(3, undefined)).toBeNull();
   });
 });
 

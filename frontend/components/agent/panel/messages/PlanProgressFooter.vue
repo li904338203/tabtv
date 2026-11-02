@@ -8,7 +8,7 @@
  * - 「部分成功」不摊平：说成成功用户不会去翻失败那条，说成失败他会把成功的也重跑一遍 —— 两种都在花他的钱（AV-24）。
  * - 「重试」= 交给 Agent（重新报价、走额度检查，服务端建新步骤、新幂等键），点名条目键，已成功的不重做；
  *   与「重试这一步」同一条发送路径，能不能发与输入框同一个判定。
- * - 余额不足没提交的、因此被停掉的、上游生成失败的三种原因分开说（文案在 `utils/planItems.planProgressView`）。
+ * - 被停掉的与上游生成失败的原因分开说（文案在 `utils/planItems.planProgressView`）。
  */
 import { CircleAlert, CircleCheck, CircleDashed, LoaderCircle, OctagonPause } from "@lucide/vue";
 import { planProgressView, planRetryMessage, type PlanProgressItemView } from "~/utils/planItems";

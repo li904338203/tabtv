@@ -19,7 +19,7 @@ import (
 const mktSlots = `[{"key":"product","label":"商品","accept":["marketing_product"],"required":true,"maxCount":1},` +
 	`{"key":"character","label":"角色","accept":["marketing_character","character_asset"],"required":false,"maxCount":2}]`
 
-// legacySlots 是 MKT-T-09 录入时的旧形状（库里与 deploy/marketing 数据文件里还是它）。
+// legacySlots 是 MKT-T-09 录入时的旧形状（库里与 seed 数据文件（platform/seed/data/marketing）里还是它）。
 const legacySlots = `[{"key":"product","label":"商品","accept":["image"],"required":true,"maxCount":20,` +
 	`"fields":[{"key":"name","label":"商品名称","maxLen":30},{"key":"sellingPoints","label":"卖点","maxLen":300}]},` +
 	`{"key":"character","label":"角色","accept":["image","character_asset"],"required":false,"maxCount":2}]`

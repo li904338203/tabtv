@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"strconv"
 	"time"
+
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
 )
 
 // 视频的封面帧与末帧（CD-83）。
@@ -103,6 +105,6 @@ func MostlyBlack(img image.Image) bool {
 // 启动时查一次写进日志：没有它时所有视频都没有封面帧，而「为什么视频项目一直是占位图」
 // 是个很难猜的问题 —— 日志里有一句就不用猜。
 func FFmpegAvailable() bool {
-	_, err := exec.LookPath("ffmpeg")
+	_, err := exec.LookPath(ffbin.FFmpeg())
 	return err == nil
 }

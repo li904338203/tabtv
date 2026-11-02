@@ -399,13 +399,13 @@ export function imageToolImageBoxToDisplay(box: ImageToolPixelBox, fit: ImageToo
 // ---------------------------------------------------------------------------
 
 /**
- * 阻塞的种类，排序即优先级：权限 > 工具不可用 > 编辑器里还缺东西 > 报价失败 > 余额。
+ * 阻塞的种类，排序即优先级：权限 > 工具不可用 > 编辑器里还缺东西 > 能力校验失败。
+ * tabtv 不计价（TT-T-14）：没有余额这一类。
  *
- * ⚠️ 权限必须排第一：只读成员先看到「余额不足」的话会去充值，而真正的原因从头到尾都是他没有权限。
- * ⚠️ 不可用排在余额之前：没绑模型的工具，充多少积分都点不动。
+ * ⚠️ 权限必须排第一：真正的原因是没有权限时，先说别的只会让人去修不相干的问题。
  */
-export type ImageToolBlockerKind = "permission" | "unavailable" | "input" | "quote" | "balance";
-const BLOCKER_ORDER: readonly ImageToolBlockerKind[] = ["permission", "unavailable", "input", "quote", "balance"];
+export type ImageToolBlockerKind = "permission" | "unavailable" | "input" | "quote";
+const BLOCKER_ORDER: readonly ImageToolBlockerKind[] = ["permission", "unavailable", "input", "quote"];
 
 export type ImageToolBlocker = {
   kind: ImageToolBlockerKind;
@@ -436,15 +436,6 @@ export function imageToolUnavailableBlocker(tool: Pick<ImageToolInfo, "available
   const reason = tool.blockedReason?.trim();
   if (tool.userFixable) return { kind: "unavailable", text: reason || "当前图片还不满足这个工具的条件", userFixable: true };
   return { kind: "unavailable", text: `${reason || "该工具暂未开放"}（需要运营配置）`, userFixable: false };
-}
-
-/**
- * 余额阻塞：说清还差多少。⚠️ 余额或报价未知时**不猜**，返回 null。
- */
-export function imageToolBalanceBlocker(balance: number | null | undefined, credits: number | null | undefined): ImageToolBlocker | null {
-  if (typeof balance !== "number" || typeof credits !== "number" || !Number.isFinite(balance) || !Number.isFinite(credits)) return null;
-  if (balance >= credits) return null;
-  return { kind: "balance", text: `积分不足，还差 ${credits - balance} 积分`, userFixable: true };
 }
 
 /** 只读成员（没有生成权限）的说明（IMG-UX-05）。 */

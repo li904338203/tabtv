@@ -58,8 +58,8 @@ export function withPrefFields(prefs: AgentPrefsValue | null | undefined, kind: 
 /**
  * 实际要用的推理模型：所选的若仍在可选列表里且可用就用它，否则用列表里第一个可用的。
  *
- * ⚠️ 服务端在会话偏好没有 `reasoning.model` 时会兜底取「按付费主体会员等级报得出价的第一个」（04 文档 P-13），
- *    但前端仍然显式给出一个：按钮上要显示用的是哪个、价格多少；所选模型被下架 / 变成需要会员时退回第一个可用的，
+ * ⚠️ 服务端在会话偏好没有 `reasoning.model` 时会兜底取第一个可用的（04 文档 P-13），
+ *    但前端仍然显式给出一个：按钮上要显示用的是哪个；所选模型被下架 / 变成不可用时退回第一个可用的，
  *    而不是带着它去发一轮必然失败的请求。
  */
 export function resolveReasoningModel(

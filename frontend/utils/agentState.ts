@@ -90,8 +90,6 @@ export function todoProgress(todo: TodoItem[]): { index: number; total: number; 
 
 export type StatusBarSession = {
   state: AgentSessionState;
-  approvedBudget: number;
-  spent: number;
   pendingCardId?: string | null;
   /** 最近一轮失败时服务端的原话（`AgentTurn.errorMessage`）。 */
   failureReason?: string;
@@ -113,21 +111,11 @@ export type StatusBarView = {
   visible: boolean;
   icon: StatusBarIcon;
   text: string;
-  /** 「已花 ✦x / 额度 ✦y」；没有已批准额度时为空串。 */
-  spentText: string;
-  /** 额度用到 80% 及以上：数字变警示色。 */
-  warn: boolean;
   /** 点击状态条应跳到卡片（等你确认）。 */
   jumpToCard: boolean;
 };
 
-const HIDDEN: StatusBarView = { visible: false, icon: "dot", text: "", spentText: "", warn: false, jumpToCard: false };
-
-/** 已花 / 额度。额度为 0（还没批准过规划）时不显示 —— 「已花 ✦0 / 额度 ✦0」没有信息量。 */
-export function budgetText(approved: number, spent: number): { spentText: string; warn: boolean } {
-  if (!(approved > 0)) return { spentText: "", warn: false };
-  return { spentText: `已花 ✦${spent} / 额度 ✦${approved}`, warn: spent * 100 >= approved * 80 };
-}
+const HIDDEN: StatusBarView = { visible: false, icon: "dot", text: "", jumpToCard: false };
 
 /** 秒 → 「约 N 分钟」（不足一分钟按 1 分钟说，避免「约 0 分钟」）。 */
 function minutesText(seconds: number): string {
@@ -148,7 +136,6 @@ export function statusBar(session: StatusBarSession | null | undefined, todoRaw:
   const todo = normalizeTodo(todoRaw);
   const progress = todoProgress(todo);
   const step = progress ? `Step ${progress.index}/${progress.total} · ${progress.title}` : "";
-  const budget = budgetText(session.approvedBudget, session.spent);
 
   switch (session.state) {
     case "planning":
@@ -157,7 +144,7 @@ export function statusBar(session: StatusBarSession | null | undefined, todoRaw:
     case "awaiting_approval":
       return { ...HIDDEN, visible: true, icon: "dot", text: "等你确认 · 点击跳到卡片", jumpToCard: true };
     case "executing":
-      return { ...HIDDEN, visible: true, icon: "spinner", text: step || "执行中", ...budget };
+      return { ...HIDDEN, visible: true, icon: "spinner", text: step || "执行中" };
     case "waiting_task": {
       let text = "生成中";
       const estimate = options.estimatedSeconds;
@@ -167,11 +154,11 @@ export function statusBar(session: StatusBarSession | null | undefined, todoRaw:
         const overdue = Number.isFinite(since) && now - since > estimate * 1000;
         text = overdue ? "生成中 · 仍在处理，比预计慢" : `生成中 · 预计${minutesText(estimate)}`;
       }
-      return { ...HIDDEN, visible: true, icon: "spinner", text, ...budget };
+      return { ...HIDDEN, visible: true, icon: "spinner", text };
     }
     case "failed": {
       const reason = (session.failureReason ?? "").trim();
-      return { ...HIDDEN, visible: true, icon: "error", text: reason ? `已停止：${reason}` : "已停止：这一步失败了", ...budget };
+      return { ...HIDDEN, visible: true, icon: "error", text: reason ? `已停止：${reason}` : "已停止：这一步失败了" };
     }
     default:
       return HIDDEN;
@@ -188,10 +175,6 @@ export type ComposerAvailabilityInput = {
   /** 当前会话状态；还没有会话时为 undefined。 */
   state?: AgentSessionState;
   pendingCardId?: string | null;
-  /** 余额；不知道时为 undefined —— **不猜**。 */
-  balance?: number;
-  /** 所选推理模型的每轮单价；不知道时为 undefined（不据此禁用）。 */
-  turnPrice?: number;
   connection?: ConnectionState;
 };
 
@@ -201,13 +184,11 @@ export type ComposerAvailability = {
   reason: string;
   /** 能发但要提醒的事（如「有一张卡片等你确认」）。 */
   hint: string;
-  /** 余额不足时还差多少（给「去充值」用）。 */
-  shortfall?: number;
 };
 
 /**
  * 输入框能不能发（设计 03 §2.3 / §8）。理由的优先级：
- * **权限（只读 / 非发起人）> 会话已取消 > 卡片待处理（只提示不禁用）> 余额不足（写差额）**。
+ * **权限（只读 / 非发起人）> 会话已取消 > 卡片待处理（只提示不禁用）**。tabtv 不计价，没有余额条件（TT-T-14）。
  *
  * ⚠️ 卡片待处理时**照样能发**：直接发文字视为对卡片的补充说明，由 Agent 决定怎么处理（设计 03 §2.3）。
  * ⚠️ 断网不禁用：发送走 HTTP，与实时连接无关；连接状态由状态条说。
@@ -223,10 +204,6 @@ export function composerAvailability(input: ComposerAvailabilityInput): Composer
     return { canSend: false, reason: "会话已结束，新建一个会话继续", hint: "" };
   }
   const hint = input.pendingCardId ? "有一张卡片等你确认" : "";
-  if (input.balance !== undefined && input.turnPrice !== undefined && input.balance < input.turnPrice) {
-    const shortfall = input.turnPrice - input.balance;
-    return { canSend: false, reason: `积分不足，还差 ✦${shortfall}`, hint, shortfall };
-  }
   return { canSend: true, reason: "", hint };
 }
 

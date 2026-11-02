@@ -30,7 +30,7 @@ import {
   Video,
   Volume2,
   WandSparkles,
-  Zap,
+  Settings,
   NotebookText
 } from "@lucide/vue";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -505,11 +505,6 @@ const historyPickerOpen = ref(false);
 
 /** 「添加资源」与生成历史弹窗都是按需加载的，建节点的逻辑在它们自己那里（useCanvasResourceNodes）；画布只负责选中与对焦。 */
 const CanvasAddResources = defineAsyncComponent(() => import("./CanvasAddResources.vue"));
-/**
- * 顶栏的 ⚡ 积分与头像：悬停弹出与门户顶栏同一个面板（2026-11-01，AppAccountPanel，⚡ 用它的 `variant="credits"`）。
- * 按需加载：画布页首屏包体积有上限（scripts/director-bundle-check.mjs），这两块到不了首屏也不影响画布。
- */
-const AccountPanel = defineAsyncComponent(() => import("~/components/AppAccountPanel.vue"));
 function onResourcesCreated(ids: string[]) {
   addMenuOpen.value = false;
   if (!ids.length) return;
@@ -1855,7 +1850,7 @@ onBeforeUnmount(() => {
       <button v-else type="button" class="project-name" title="点击重命名项目" @click="startRename">
         <strong>{{ canvas.projectName }}</strong><ChevronDown :size="14" />
       </button><span :class="['save-indicator', canvas.saveState]"><LoaderCircle v-if="canvas.saveState === 'saving'" :size="13" class="spin" /><CircleAlert v-else-if="canvas.saveState === 'conflict' || canvas.saveState === 'error'" :size="13" /><CloudCheck v-else :size="13" />{{ saveLabel }}</span></div>
-      <div class="canvas-account"><button type="button" class="agent-toggle" :class="{ active: agent.panelOpen }" :aria-pressed="agent.panelOpen" title="Agent 面板（⌘J）" @click="agent.togglePanel()"><Sparkles :size="15" />Agent<LoaderCircle v-if="agent.anyWorking" :size="12" class="spin" /><i v-else-if="agent.anyAwaiting" class="agent-red-dot" /></button><AccountPanel variant="credits" trigger-class="credit-pill" @open="generation.loadBalance()"><Zap :size="14" />{{ generation.balance.toLocaleString('zh-CN') }}</AccountPanel><AccountPanel trigger-class="canvas-avatar" /></div>
+      <div class="canvas-account"><button type="button" class="agent-toggle" :class="{ active: agent.panelOpen }" :aria-pressed="agent.panelOpen" title="Agent 面板（⌘J）" @click="agent.togglePanel()"><Sparkles :size="15" />Agent<LoaderCircle v-if="agent.anyWorking" :size="12" class="spin" /><i v-else-if="agent.anyAwaiting" class="agent-red-dot" /></button><NuxtLink to="/settings" class="canvas-avatar" title="设置" aria-label="设置"><Settings :size="15" /></NuxtLink></div>
     </header>
 
     <aside v-if="sidebarOpen" class="canvas-sidebar">

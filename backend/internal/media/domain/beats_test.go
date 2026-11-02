@@ -442,10 +442,21 @@ func TestBeats_不依赖数据库与网络(t *testing.T) {
 	for _, dep := range strings.Fields(string(out)) {
 		switch {
 		case dep == "database/sql", dep == "net", dep == "net/http", strings.Contains(dep, "jackc/pgx"),
-			strings.HasPrefix(dep, "github.com/li904338203/tabtv/backend/internal/") && dep != "github.com/li904338203/tabtv/backend/internal/media/domain":
+			strings.HasPrefix(dep, "github.com/li904338203/tabtv/backend/internal/") && !pureLeaf(dep):
 			t.Errorf("media/domain 依赖了 %s", dep)
 		}
 	}
+}
+
+// pureLeaf：只依赖标准库、不碰库不发网络的叶子包（ffbin 定位随包的 ffmpeg，TT-T-26）。
+func pureLeaf(dep string) bool {
+	switch dep {
+	case "github.com/li904338203/tabtv/backend/internal/media/domain",
+		"github.com/li904338203/tabtv/backend/internal/platform/ffbin",
+		"github.com/li904338203/tabtv/backend/internal/platform/resources":
+		return true
+	}
+	return false
 }
 
 // 性能：3 分钟的合成音频走流式读取，记一次耗时与分配（写进执行记录）。PCM 由读取器边读边生成，

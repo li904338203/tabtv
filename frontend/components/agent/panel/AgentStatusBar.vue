@@ -29,8 +29,6 @@ const view = computed(() => {
   if (!current) return statusBar(null, []);
   return statusBar({
     state: current.state,
-    approvedBudget: current.approvedBudget,
-    spent: current.spent,
     pendingCardId: current.pendingCardId,
     failureReason: current.latestTurn?.errorMessage
   }, current.todo, {
@@ -70,7 +68,6 @@ function click() {
         <ChevronUp v-if="todo.length && !view.jumpToCard" :size="12" :class="{ 'is-open': open }" />
       </button>
       <button v-if="view.icon === 'error'" type="button" class="agent-link-button" :disabled="Boolean(retryDisabledReason)" :title="retryDisabledReason || '不会重新执行已经成功的步骤'" @click="emit('retry')">重试这一步</button>
-      <span v-else-if="view.spentText" class="agent-status-spent" :class="{ 'is-warn': view.warn }">{{ view.spentText }}</span>
     </div>
   </div>
 </template>

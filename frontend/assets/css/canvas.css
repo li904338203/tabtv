@@ -867,8 +867,6 @@
 .script-translate { width: 42px; height: 42px; display: grid; place-items: center; border: 0; border-radius: 7px; color: var(--cv-n92); background: transparent; }
 .script-translate:hover, .script-translate:focus-visible { background: var(--cv-tint-7); }
 .script-translate.active { color: var(--canvas-cyan); background: var(--cv-cyan-52a10); }
-.script-estimate { min-width: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 5px; color: var(--cv-n58); font-size: 13px; }
-.script-estimate svg { color: var(--cv-n62); }
 .script-entry-submit { width: 52px; height: 52px; flex: 0 0 52px; display: inline-grid; place-items: center; border: 1px solid var(--cv-n94); border-radius: 8px; padding: 0; color: var(--cv-n09); background: var(--cv-n94); }
 .script-entry-submit:hover:not(:disabled), .script-entry-submit:focus-visible:not(:disabled) { background: var(--cv-n100); }
 .script-entry-submit:disabled { opacity: .58; cursor: not-allowed; }

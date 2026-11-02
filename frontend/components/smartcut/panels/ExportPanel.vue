@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * 导出（SCT-24，dev/03 §5.4，SC-F-70~78）：顶栏「导出 ▾」展开的面板 —— 选规格、免费预检、导出（带进度、可取消）、
+ * 导出（SCT-24，dev/03 §5.4，SC-F-70~78）：顶栏「导出 ▾」展开的面板 —— 选规格、预检、导出（带进度、可取消）、
  * 完成后用签名链接下载、发布到画布、手动提交作品。
  *
  * - 先存再导出：服务端按**已保存**的时间线冻结快照，本地没存上的那一刀导不进成片（store.flush）；
@@ -69,7 +69,7 @@ const generatingList = computed(() => {
   const video = store.timeline?.tracks.find(t => t.kind === "video")?.clips ?? [];
   return video.map((c, i) => ({ clipId: c.id, no: i + 1 })).filter((_, i) => Boolean(video[i]!.pendingGenerationId));
 });
-const blocker = computed(() => smartcutRenderBlocker(precheck.value, null, running.value, denied.value, {
+const blocker = computed(() => smartcutRenderBlocker(precheck.value, running.value, denied.value, {
   retryAfterSeconds: retryAfter.value || undefined,
   generatingClips: generatingClips.value
 }));
@@ -280,7 +280,7 @@ const durationText = computed(() => smartcutFormatTime(precheck.value?.durationM
 
 <template>
   <div ref="rootEl" class="sc-export" data-testid="smartcut-export">
-    <button type="button" class="sc-btn" :class="{ active: open || running }" :aria-expanded="open" aria-haspopup="dialog" aria-label="导出" title="导出成片（免费）" @click="toggle">
+    <button type="button" class="sc-btn" :class="{ active: open || running }" :aria-expanded="open" aria-haspopup="dialog" aria-label="导出" title="导出成片" @click="toggle">
       <LoaderCircle v-if="running" :size="14" class="sc-spin" /><ChevronDown v-else :size="14" />{{ running ? progressText : "导出" }}
     </button>
     <section v-if="open" class="sc-export-panel" role="dialog" aria-label="导出成片">
@@ -301,7 +301,7 @@ const durationText = computed(() => smartcutFormatTime(precheck.value?.durationM
       </div>
 
       <div class="sc-section">
-        <h3>预检（免费）</h3>
+        <h3>预检</h3>
         <button type="button" class="sc-btn" :disabled="Boolean(busy) || running" data-testid="smartcut-precheck" @click="runPrecheck">
           <LoaderCircle v-if="busy === 'precheck'" :size="13" class="sc-spin" />{{ precheck ? "重新预检" : "预检" }}
         </button>
@@ -312,7 +312,7 @@ const durationText = computed(() => smartcutFormatTime(precheck.value?.durationM
       </div>
 
       <div class="sc-section">
-        <h3>导出（免费）</h3>
+        <h3>导出</h3>
         <button
           type="button"
           class="sc-btn primary"

@@ -2,7 +2,7 @@
 import { projectTopic } from "~/utils/realtime";
 import { parseNodeParam, parseSessionParam } from "~/utils/agentChat";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({});
 const route = useRoute();
 const canvas = useCanvasStore();
 const config = useCanvasConfigStore();

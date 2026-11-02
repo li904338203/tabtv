@@ -2,29 +2,30 @@
 /**
  * 一键优化提示词（AGT-43，设计 02 §4.1「✎」）：输入框右上角。
  *
- * 流程：点按钮 → 浮层先说清**这次要花多少**（按轮计费，与 Agent 对话同价）→ 用户点「优化」才调
+ * 流程：点按钮 → 浮层说明会做什么 → 用户点「优化」才调
  * `POST /agent/prompt-optimize` → 结果以「原文 / 优化后」对比给出，「替换」才写回输入框，「保留原文」什么都不改。
  *
  * ⚠️ **不自动覆盖**：模型改写可能丢掉用户在意的细节，替换与否由用户决定。
- * ⚠️ 这是付费调用：每次点「优化」换一个新的幂等键（每次都是一次新的改写、单独计费）；
+ * ⚠️ 每次点「优化」换一个新的幂等键（每次都是一次新的改写，调用一次上游模型）；
  *    同一次请求的网络重试才复用键（这里不自动重试，由用户自己再点）。
- * ⚠️ 失败时说服务端原话（其中带「已全额退回 ✦N」）；断网说断网。
- * ⚠️ 打开页面、打开浮层都不发请求：只有点「优化」那一下才花钱。
+ * ⚠️ 失败时说服务端原话；断网说断网。
+ * ⚠️ 打开页面、打开浮层都不发请求：只有点「优化」那一下才调用模型。
  * ⚠️ `purpose`（MKT-T-39「AI 帮写」用 `character_appearance`）**不传时请求体逐字不变**（`optimizeRequestBody`）；
  *    `label` / `placement` 只改外观（按钮带字、浮层向上弹），不传时与原来一样。
  */
 import { Check, LoaderCircle, Wand2, X } from "@lucide/vue";
-import { optimizeRequestBody, type OptimizePriceView, type OptimizePurpose } from "~/utils/composerPrice";
+import { optimizeRequestBody, type OptimizePurpose } from "~/utils/composerPrice";
 import { quickErrorText } from "~/utils/quickGenerate";
 
-type OptimizeResult = { id: string; text: string; modelCode: string; credits: number; replayed: boolean };
+type OptimizeResult = { id: string; text: string; modelCode: string; replayed: boolean };
 
 const props = defineProps<{
   /** 输入框当前正文。 */
   text: string;
   /** 要用的推理模型（与 Agent 对话同一个）；不给由服务端取第一个可用的。 */
   modelCode?: string;
-  price: OptimizePriceView;
+  /** 推理模型不能用的原因（没有 / 未启用）；为空可用。 */
+  unavailable?: string;
   /** 不能用的原因（只读、正在发送…）；为空可用。 */
   blockReason?: string;
   /** 点之前的检查（未登录时去登录）；返回 false 就不打开。 */
@@ -43,14 +44,13 @@ const intro = computed(() => (props.purpose === "character_appearance"
 const emit = defineEmits<{
   /** 用户选了「替换」。 */
   replace: [text: string];
-  /** 发生过一次计费调用（成功或失败），父组件据此刷新余额。 */
+  /** 发生过一次模型调用（成功或失败）。 */
   charged: [];
 }>();
 
 type Phase = "closed" | "confirm" | "running" | "result" | "error";
 const phase = ref<Phase>("closed");
 const result = ref("");
-const credits = ref(0);
 const error = ref("");
 /** 发起优化时的原文：对比与「输入框改过了」的提示都以它为准。 */
 const original = ref("");
@@ -59,7 +59,7 @@ const root = ref<HTMLElement>();
 const disabledReason = computed(() => {
   if (props.blockReason) return props.blockReason;
   if (!props.text.trim()) return "先写下想法，再让 AI 帮你润色";
-  if (props.price.error) return props.price.error;
+  if (props.unavailable) return props.unavailable;
   return "";
 });
 const editedSince = computed(() => phase.value === "result" && props.text !== original.value);
@@ -89,7 +89,6 @@ async function run() {
       body: optimizeRequestBody(original.value, props.modelCode, props.purpose)
     });
     result.value = response.text;
-    credits.value = response.credits;
     phase.value = "result";
   } catch (cause) {
     error.value = quickErrorText(cause, navigator.onLine);
@@ -129,7 +128,7 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside));
       :disabled="phase === 'running'"
       :aria-disabled="Boolean(disabledReason)"
       :aria-expanded="phase !== 'closed'"
-      :title="disabledReason || `${title}${price.label ? `（${price.label}/次）` : ''}`"
+      :title="disabledReason || title"
       :aria-label="title"
       @click.stop="toggle"
     >
@@ -141,11 +140,10 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside));
       <template v-if="phase === 'confirm'">
         <strong>{{ title }}</strong>
         <p>{{ intro }}</p>
-        <p class="optimize-price">{{ price.text || '按轮计费' }}</p>
         <div class="optimize-actions">
           <button type="button" class="ghost" @click="keep">取消</button>
           <button type="button" class="primary" :disabled="Boolean(disabledReason)" @click="run">
-            优化<template v-if="price.label">（{{ price.label }}）</template>
+            优化
           </button>
         </div>
       </template>
@@ -159,12 +157,12 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside));
         <div class="optimize-actions">
           <button type="button" class="ghost" @click="keep">关闭</button>
           <button type="button" class="primary" :disabled="Boolean(disabledReason)" @click="run">
-            再试一次<template v-if="price.label">（{{ price.label }}）</template>
+            再试一次
           </button>
         </div>
       </template>
       <template v-else>
-        <strong>优化结果<small v-if="credits">（已扣 ✦{{ credits }}）</small></strong>
+        <strong>优化结果</strong>
         <div class="optimize-compare">
           <section>
             <h4>原文</h4>
@@ -235,7 +233,6 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside));
 .optimize-popover strong { font-size: 13px; }
 .optimize-popover strong small { margin-left: 4px; color: var(--portal-muted); font-weight: 400; }
 .optimize-popover p { margin: 0; color: var(--portal-text-soft); line-height: 18px; }
-.optimize-price { color: var(--portal-text) !important; }
 .optimize-error { color: var(--portal-danger) !important; }
 .optimize-warn { color: var(--portal-gold) !important; }
 .optimize-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

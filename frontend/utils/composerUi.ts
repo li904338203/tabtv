@@ -2,20 +2,11 @@
  * 统一输入框的展示用纯函数（输入框改版：大圆角卡片 + 三组工具栏 + 两个浮层）。
  *
  * 只管「长什么样」：文案拆分、画幅图标尺寸、模型角标与说明行、模式下拉的标签与说明。
- * 数据与价格仍然来自原处（`agentPrefs` store、`/generations/estimate`），这里不算钱、不取数。
+ * 数据仍然来自原处（`agentPrefs` store），这里不取数。tabtv 不计价（TT-T-14），不显示价格与会员角标。
  */
 import { prefModel, type AgentPrefsValue } from "~/utils/agentPrefs";
-import { unitPriceText, type ModelOption } from "~/utils/composerPrice";
+import type { ModelOption } from "~/utils/composerPrice";
 import type { ComposerMode } from "~/utils/quickGenerate";
-
-/**
- * 价格标签拆成「✦」与其余部分（✦ 单独着品牌色）。没有 ✦ 的（`—`、`报价中`）原样作为正文。
- */
-export function splitCreditLabel(label: string): { star: boolean; text: string } {
-  const trimmed = label.trim();
-  if (trimmed.startsWith("✦")) return { star: true, text: trimmed.slice(1).trim() };
-  return { star: false, text: trimmed };
-}
 
 /**
  * 画幅分段按钮里的小矩形尺寸：长边固定为 `max`，短边按比例（至少 4px，免得 21:9 缩成一条线）。
@@ -57,20 +48,19 @@ export function directTriggerParts(
 }
 
 /**
- * 模型角标：**只显示数据里真有的**。`/models` 目前只给会员门槛（`minMemberLevelId`），
- * 所以只有「会员」一种；没有门槛就没有角标 —— 不编 NEW / 限时优惠。
+ * 模型角标：**只显示数据里真有的**。来源系统唯一的角标是会员门槛；tabtv 没有会员（TT-T-14），
+ * 所以目前没有角标 —— 不编 NEW / 限时优惠。保留函数是为了角标位置与数据流不变。
  */
-export function modelBadges(model: { minMemberLevelId?: string | null }): string[] {
-  return model.minMemberLevelId ? ["会员"] : [];
+export function modelBadges(_model: { minMemberLevelId?: string | null }): string[] {
+  return [];
 }
 
 /**
- * 模型下面那行灰字：不可用写原因（服务端原话）；可用写单价；单价还没报出来写「报价中」。
- * 目录里没有模型说明字段，所以说明行就是单价（不编一段介绍）。
+ * 模型下面那行灰字：不可用写原因（服务端原话）；可用时没有说明（tabtv 不显示单价，目录里也没有说明字段）。
  */
-export function modelOptionNote(option: ModelOption, perTurn = false): string {
+export function modelOptionNote(option: ModelOption, _perTurn = false): string {
   if (!option.available) return `不可用：${option.reason || "暂时不可用"}`;
-  return unitPriceText(option.price, option.unit, perTurn) || "报价中";
+  return "";
 }
 
 /** 模式下拉每一项的小标签与说明（选中项下方那行灰字）。没有标签的不放。 */

@@ -95,7 +95,7 @@ func (r *Repo) UpdateSkill(ctx context.Context, s Skill, expectVersion int) (Ski
 			cover_media_id = nullif($7::bigint,0), body = $8, steps = $9, tools = $10,
 			model_bindings = $11, is_quick_entry = $12, sort = $13,
 			scenes = $14, input_slots = $15, prefill_text = $16, is_batch = $17,
-			version = version + 1, updated_at = now()
+			is_user_modified = true, version = version + 1, updated_at = now()
 		where id = $1 and version = $2
 		returning `+skillCols,
 		s.ID, expectVersion, s.Name, s.Category, s.Description, jsonOr(s.Tags, "[]"), s.CoverMediaID,
@@ -169,7 +169,7 @@ func (r *Repo) withSkillBump(ctx context.Context, skillID int64, expectVersion i
 	defer func() { _ = tx.Rollback(ctx) }()
 	var v int
 	err = tx.QueryRow(ctx, `
-		update agent_skill set version = version + 1, updated_at = now()
+		update agent_skill set is_user_modified = true, version = version + 1, updated_at = now()
 		where id = $1 and version = $2 returning version`, skillID, expectVersion).Scan(&v)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return 0, r.staleOrMissing(ctx, tx, skillID)

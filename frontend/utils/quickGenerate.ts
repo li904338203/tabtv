@@ -245,7 +245,7 @@ export function agentCanvasPath(projectId: string, sessionId: string): string {
 
 /**
  * 发送失败的文案。⚠️ 断网要说成断网（不说「发送失败」：用户会反复点，而该做的是看网络）；
- * 其余**原样带出服务端那句话**（余额不足差多少、模型为什么不可用都在里面）。
+ * 其余**原样带出服务端那句话**（模型为什么不可用都在里面）。
  */
 export function quickErrorText(cause: unknown, online: boolean): string {
   if (!online) return "网络已断开，恢复后再发送";

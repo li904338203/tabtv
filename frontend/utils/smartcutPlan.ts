@@ -194,7 +194,7 @@ export type SmartcutUnsuitable = {
   text: string;
   options: Array<{ action: SmartcutUnsuitableAction; label: string }>;
   /** 缺识别结果时「先识别语音」打开的识别框的缺省值：服务端报价用的模型、要不要保留口癖（口播要）、报价（SCT-36）。 */
-  transcribe?: { modelCode?: string; keepFillers?: boolean; credits?: number };
+  transcribe?: { modelCode?: string; keepFillers?: boolean };
 };
 
 /** 服务端给的出路码（`details.options`）→ 界面的动作。认不出的码丢掉（不给一个点了不知道做什么的按钮）。 */
@@ -216,7 +216,7 @@ function missingText(missing: unknown): string {
   return typeof missing === "string" && missing.trim() ? `（缺：${missing.trim()}）` : "";
 }
 
-function optionLabel(action: SmartcutUnsuitableAction, reason: string, credits: number | undefined): string {
+function optionLabel(action: SmartcutUnsuitableAction, reason: string): string {
   switch (action) {
     case "allowSlow": return "允许放慢（最低 0.75×）";
     case "allowRepeat": return "允许重复使用片段";
@@ -224,7 +224,7 @@ function optionLabel(action: SmartcutUnsuitableAction, reason: string, credits: 
     case "connectAudio": return reason === "no_voice" ? "去连音频节点（配音）" : "去连音频节点（配乐）";
     case "connectPicture": return "去连视频或图片节点";
     case "noBeat": return "不卡点，直接剪";
-    case "transcribe": return credits !== undefined ? `先识别语音（✦${credits}）` : "先识别语音";
+    case "transcribe": return "先识别语音";
   }
 }
 
@@ -246,8 +246,7 @@ export function smartcutUnsuitable(details: unknown, message = ""): SmartcutUnsu
   const raw = details && typeof details === "object" && !Array.isArray(details) ? details as Record<string, unknown> : {};
   const reason = typeof raw.reason === "string" ? raw.reason : "";
   const missing = missingText(raw.missing);
-  const quote = raw.quote && typeof raw.quote === "object" ? raw.quote as { credits?: unknown; modelCode?: unknown; keepFillers?: unknown } : undefined;
-  const credits = typeof quote?.credits === "number" ? quote.credits : undefined;
+  const quote = raw.quote && typeof raw.quote === "object" ? raw.quote as { modelCode?: unknown; keepFillers?: unknown } : undefined;
   const known = REASONS[reason];
   const fromServer = Array.isArray(raw.options)
     ? raw.options.map(code => (typeof code === "string" ? OPTION_ACTIONS[code] : undefined)).filter((a): a is SmartcutUnsuitableAction => Boolean(a))
@@ -258,13 +257,12 @@ export function smartcutUnsuitable(details: unknown, message = ""): SmartcutUnsu
   return {
     reason,
     text,
-    options: actions.map(action => ({ action, label: optionLabel(action, reason, credits) })),
+    options: actions.map(action => ({ action, label: optionLabel(action, reason) })),
     ...(reason === "asr_missing"
       ? {
           transcribe: {
             ...(typeof quote?.modelCode === "string" && quote.modelCode ? { modelCode: quote.modelCode } : {}),
-            ...(typeof quote?.keepFillers === "boolean" ? { keepFillers: quote.keepFillers } : {}),
-            ...(credits !== undefined ? { credits } : {})
+            ...(typeof quote?.keepFillers === "boolean" ? { keepFillers: quote.keepFillers } : {})
           }
         }
       : {})

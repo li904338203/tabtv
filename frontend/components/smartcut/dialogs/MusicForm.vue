@@ -59,7 +59,7 @@ const request = computed(() => {
       <select id="sc-music-model" v-model="modelCode" class="sc-select" :disabled="!models.length">
         <option v-if="!models.length" value="">没有可用的配乐模型</option>
         <option v-for="m in models" :key="m.code" :value="m.code">
-          {{ m.name }}{{ m.minSec || m.maxSec ? ` · ${m.minSec}~${m.maxSec} 秒` : "" }}{{ typeof m.unitPrice === "number" ? ` · ✦${m.unitPrice}/秒` : "" }}
+          {{ m.name }}{{ m.minSec || m.maxSec ? ` · ${m.minSec}~${m.maxSec} 秒` : "" }}
         </option>
       </select>
     </div>

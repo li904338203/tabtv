@@ -123,7 +123,7 @@ describe("42217 的出路（SC-UX-09）", () => {
   it("缺识别结果：先识别，带报价", () => {
     const u = smartcutUnsuitable({ reason: "asr_missing", missing: ["2", "5"], quote: { credits: 12, modelCode: "volc_asr", blockers: [] } });
     expect(u.text).toBe("需要先识别语音（缺：2、5）");
-    expect(u.options).toEqual([{ action: "transcribe", label: "先识别语音（✦12）" }]);
+    expect(u.options).toEqual([{ action: "transcribe", label: "先识别语音" }]);
     expect(smartcutUnsuitable({ reason: "asr_missing" }).options[0]!.label).toBe("先识别语音");
   });
 
@@ -131,7 +131,7 @@ describe("42217 的出路（SC-UX-09）", () => {
     const u = smartcutUnsuitable({ reason: "asr_missing", missing: ["1"], quote: { credits: 22, modelCode: "volc", keepFillers: true } },
       "口播精剪要先识别语音（编号 1：识别时去掉了口癖，要选「保留口癖」重新识别）");
     expect(u.text).toBe("口播精剪要先识别语音（编号 1：识别时去掉了口癖，要选「保留口癖」重新识别）");
-    expect(u.transcribe).toEqual({ modelCode: "volc", keepFillers: true, credits: 22 });
+    expect(u.transcribe).toEqual({ modelCode: "volc", keepFillers: true });
     expect(smartcutUnsuitable({ reason: "no_voice" }, "解说成片需要一条配音").text).toBe("解说成片需要配音");
     expect(smartcutUnsuitable({ reason: "asr_missing" }).transcribe).toEqual({});
   });

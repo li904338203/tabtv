@@ -225,26 +225,26 @@ describe("选创意带入默认技能（MK-20）", () => {
 });
 
 describe("marketingSendGate（MKT-AC-04 前端部分）", () => {
-  const balanceGate = { disabled: true, reason: "积分不足，还差 ✦30", shortfall: 30 };
+  const baseGate = { disabled: true, reason: "推理模型暂时不可用" };
 
   it("商品必填未填 → 「请选择商品」", () => {
     expect(marketingSendGate(base(), { readOnly: false, uploading: false })).toMatchObject({ disabled: true, reason: "请选择商品", code: "slot_required", slot: "product" });
   });
 
-  it("只读排最前，其次上传中，再次必填槽，再次选项要求，最后才是余额", () => {
+  it("只读排最前，其次上传中，再次必填槽，再次选项要求，最后才是原有判定", () => {
     const s = applyPick(base(), "hook", { code: "h", name: "反问", inputRequirements: { character: "required" } });
-    expect(marketingSendGate(s, { readOnly: true, uploading: true, base: balanceGate }).code).toBe("read_only");
+    expect(marketingSendGate(s, { readOnly: true, uploading: true, base: baseGate }).code).toBe("read_only");
     expect(marketingSendGate(s, { readOnly: true, uploading: true }).reason).toBe("你在该工作区是只读，无法发起创作");
-    expect(marketingSendGate(s, { readOnly: false, uploading: true, base: balanceGate }).code).toBe("uploading");
-    expect(marketingSendGate(s, { readOnly: false, uploading: false, base: balanceGate }).reason).toBe("请选择商品");
+    expect(marketingSendGate(s, { readOnly: false, uploading: true, base: baseGate }).code).toBe("uploading");
+    expect(marketingSendGate(s, { readOnly: false, uploading: false, base: baseGate }).reason).toBe("请选择商品");
     const withProduct = { ...s, filled: { product: 1 } };
-    expect(marketingSendGate(withProduct, { readOnly: false, uploading: false, base: balanceGate })).toMatchObject({
+    expect(marketingSendGate(withProduct, { readOnly: false, uploading: false, base: baseGate })).toMatchObject({
       code: "pick_requirement",
       slot: "character",
       reason: "「Hook：反问」需要角色，请选择角色"
     });
     const satisfied = { ...withProduct, filled: { product: 1, character: 1 } };
-    expect(marketingSendGate(satisfied, { readOnly: false, uploading: false, base: balanceGate })).toMatchObject({ code: "base", reason: balanceGate.reason, shortfall: 30 });
+    expect(marketingSendGate(satisfied, { readOnly: false, uploading: false, base: baseGate })).toMatchObject({ code: "base", reason: baseGate.reason });
     expect(marketingSendGate(satisfied, { readOnly: false, uploading: false, base: { disabled: false, reason: "" } })).toEqual({ disabled: false, reason: "" });
   });
 

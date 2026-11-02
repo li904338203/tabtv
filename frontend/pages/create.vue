@@ -116,8 +116,6 @@ async function openBlankCanvas() {
     </nav>
     <p v-if="createError" class="create-error" role="alert">{{ createError }}</p>
 
-    <div class="section-head create-showcase-head"><div><h2>精选作品</h2><p>平台精选创作</p></div></div>
-    <ShowcaseGrid show-categories />
   </main>
 </template>
 
@@ -144,6 +142,4 @@ async function openBlankCanvas() {
 .create-shortcut:hover:not(:disabled) { border-color: var(--portal-line-strong); color: var(--portal-text); background: var(--portal-surface-2); }
 .create-shortcut:disabled { color: var(--portal-disabled-text); cursor: not-allowed; }
 .create-error { margin: 10px 0 0; color: var(--portal-danger); font-size: 12px; text-align: center; }
-/* 首屏只放标题、输入框、快捷入口，精选作品在首屏底部露出一行（设计 02 §2） */
-.create-showcase-head { margin-top: 56px; }
 </style>

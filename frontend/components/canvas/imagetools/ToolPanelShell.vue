@@ -1,17 +1,15 @@
 <script setup lang="ts">
 /**
  * 四个图片工具编辑器共用的外壳（docs/agent/imagetools IMGD-23）：标题、关闭、头部右侧插槽、重置参数、
- * 积分（服务端报价）、发送、禁用理由。
+ * 发送、禁用理由。tabtv 不计价（TT-T-14）：不显示积分，报价接口只用来做能力校验。
  *
- * ⚠️ 禁用理由只在这里排一次序（权限 > 工具不可用 > 编辑器里还缺东西 > 报价失败 > 余额，CLAUDE.md §5.17）：
- *    四个编辑器各写一份的话，迟早有一个把「余额不足」排到「你是只读成员」前面 —— 只读成员会去充值。
+ * ⚠️ 禁用理由只在这里排一次序（权限 > 工具不可用 > 编辑器里还缺东西 > 能力校验失败，CLAUDE.md §5.17）。
  * ⚠️ 只读成员**能打开、能看、能调**，只是发送置灰并说明权限（IMG-UX-05）。
- * ⚠️ 积分只显示服务端报价（IMG-UX-02）：报价中显示加载、失败显示原因并禁用发送，不在前端按单价估。
+ * ⚠️ 校验中禁用发送、失败显示原因并禁用发送（IMG-UX-02）。
  */
-import { ArrowUp, CircleAlert, LoaderCircle, RotateCcw, X, Zap } from "@lucide/vue";
-import { roleAllowsScope } from "~/utils/mcpScopes";
+import { ArrowUp, CircleAlert, LoaderCircle, RotateCcw, X } from "@lucide/vue";
+import { roleAllowsScope } from "~/utils/roleScope";
 import {
-  imageToolBalanceBlocker,
   imageToolDisabledReason,
   imageToolPermissionBlocker,
   imageToolUnavailableBlocker,
@@ -24,7 +22,7 @@ const props = withDefaults(defineProps<{
   title: string;
   /** 工具码：取 `/image-tools` 里这个工具的可用性（与工具条同一份缓存；方案变更后与源图尺寸无关）。 */
   tool: ImageToolCode;
-  /** 服务端报价（`useImageToolsStore().quotes[key]`）。 */
+  /** 能力校验（`useImageToolsStore().quotes[key]`）。 */
   quote?: ImageToolQuote;
   /** 编辑器自己的前置条件没满足时的说明（如「先选一个角色的情绪」），排在权限与不可用之后。 */
   inputHint?: string;
@@ -44,42 +42,32 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{ close: []; reset: []; send: [] }>();
 
 const workspace = useWorkspaceStore();
-const generation = useGenerationStore();
 const imageTools = useImageToolsStore();
-/** 余额取到过才参与判断：不知道余额时**不猜**（初始 0 不等于没钱）。 */
-const balanceLoaded = ref(false);
 
 const role = computed(() => workspace.current?.role);
 const canGenerate = computed(() => roleAllowsScope(role.value, "seeaitv:generate"));
 const toolInfo = computed(() => imageTools.toolOf(props.tool));
-const credits = computed(() => props.quote?.credits);
 
 const blockers = computed<Array<ImageToolBlocker | null>>(() => [
   imageToolPermissionBlocker(canGenerate.value, role.value === "viewer"),
   imageToolUnavailableBlocker(toolInfo.value),
   props.inputHint ? { kind: "input", text: props.inputHint, userFixable: true } : null,
-  props.quote?.error ? { kind: "quote", text: props.quote.error } : null,
-  balanceLoaded.value ? imageToolBalanceBlocker(generation.balance, credits.value) : null
+  props.quote?.error ? { kind: "quote", text: props.quote.error } : null
 ]);
 /** 最根本的那一条。 */
 const reason = computed(() => imageToolDisabledReason(blockers.value));
 const quoting = computed(() => Boolean(props.quote?.loading));
-const disabled = computed(() => Boolean(reason.value) || quoting.value || props.sending || typeof credits.value !== "number");
+const disabled = computed(() => Boolean(reason.value) || quoting.value || props.sending || !props.quote?.ready);
 const sendTitle = computed(() => {
   if (reason.value) return reason.value.text;
-  if (quoting.value) return "正在计算积分…";
-  if (typeof credits.value !== "number") return "积分还没算出来";
+  if (quoting.value) return "正在检查模型能否使用…";
+  if (!props.quote?.ready) return "还没检查模型能否使用";
   return props.sendLabel;
 });
 
 function send() {
   if (!disabled.value) emit("send");
 }
-
-onMounted(async () => {
-  await generation.loadBalance();
-  balanceLoaded.value = true;
-});
 
 defineExpose({ reason, disabled });
 </script>
@@ -98,10 +86,8 @@ defineExpose({ reason, disabled });
       <p v-if="reason" class="tool-panel-reason" :class="`is-${reason.kind}`" role="status" data-testid="tool-panel-reason">
         <CircleAlert :size="13" /><span>{{ reason.text }}</span>
       </p>
-      <span class="node-estimate" :title="quote?.error ? `报价失败：${quote.error}` : '预计积分（服务端报价）'">
-        <LoaderCircle v-if="quoting" :size="13" class="spin" />
-        <Zap v-else :size="14" />{{ quoting ? '计算中' : typeof credits === 'number' ? credits : '—' }}
-      </span>
+      <!-- 原「预计积分」角标的位置（TT-T-14 删除金额）：保留空占位把发送键推到右侧，布局不变 -->
+      <span class="node-estimate" aria-hidden="true" />
       <button class="node-generate" type="button" :disabled="disabled" :title="sendTitle" :aria-label="sendLabel" @click="send">
         <LoaderCircle v-if="sending" :size="17" class="spin" />
         <ArrowUp v-else :size="18" />

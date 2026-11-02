@@ -163,28 +163,42 @@ func seedAgentSkills(ctx context.Context, tx *sql.Tx, nextID func() int64) error
 		if err != nil {
 			return err
 		}
+		hash := builtinHash(s.code, s.name, s.category, s.description, string(tags), s.body,
+			string(steps), string(tools), s.quickEntry, s.sort, refsKey(s.refs))
+		// 内置版本规则（TT-T-24）：新内置 → 插入；没被用户改过且内置内容变了 → 更新（版本 +1）；
+		// 用户改过 → 不动（设置页提供「恢复内置版本」）。
 		var skillID int64
+		var modified bool
 		err = tx.QueryRowContext(ctx, `
 			insert into agent_skill (id, code, name, category, description, tags, body, steps, tools,
-				is_quick_entry, sort)
-			values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8::jsonb, $9::jsonb, $10, $11)
-			on conflict (code) do nothing
-			returning id`,
+				is_quick_entry, sort, builtin_hash)
+			values ($1, $2, $3, $4, $5, $6::jsonb, $7, $8::jsonb, $9::jsonb, $10, $11, $12)
+			on conflict (code) do update set
+				name = excluded.name, category = excluded.category, description = excluded.description,
+				tags = excluded.tags, body = excluded.body, steps = excluded.steps, tools = excluded.tools,
+				is_quick_entry = excluded.is_quick_entry, sort = excluded.sort,
+				builtin_hash = excluded.builtin_hash, version = agent_skill.version + 1, updated_at = now()
+			where agent_skill.is_user_modified = false
+			  and agent_skill.builtin_hash is distinct from excluded.builtin_hash
+			returning id, is_user_modified`,
 			nextID(), s.code, s.name, s.category, s.description, string(tags), s.body,
-			string(steps), string(tools), s.quickEntry, s.sort).Scan(&skillID)
+			string(steps), string(tools), s.quickEntry, s.sort, hash).Scan(&skillID, &modified)
 		if errors.Is(err, sql.ErrNoRows) {
-			// 已存在（可能被运营改过）：不动它，只取 ID 补齐缺的附属文档。
-			err = tx.QueryRowContext(ctx, `select id from agent_skill where code = $1`, s.code).Scan(&skillID)
+			// 已是最新内置版本，或被用户改过：只取 ID，补齐缺的附属文档。
+			err = tx.QueryRowContext(ctx, `select id, is_user_modified from agent_skill where code = $1`, s.code).
+				Scan(&skillID, &modified)
 		}
 		if err != nil {
 			return fmt.Errorf("技能 %s: %w", s.code, err)
 		}
 		for _, r := range s.refs {
+			// 附属文档跟着技能走：技能没被用户改过时同步内置正文，改过时只补缺的。
 			if _, err := tx.ExecContext(ctx, `
 				insert into agent_skill_reference (id, skill_id, name, body, sort)
 				values ($1, $2, $3, $4, $5)
-				on conflict (skill_id, name) do nothing`,
-				nextID(), skillID, r.name, r.body, r.sort); err != nil {
+				on conflict (skill_id, name) do update set body = excluded.body, sort = excluded.sort, updated_at = now()
+				where not $6 and agent_skill_reference.body is distinct from excluded.body`,
+				nextID(), skillID, r.name, r.body, r.sort, modified); err != nil {
 				return fmt.Errorf("技能 %s 的附属文档 %s: %w", s.code, r.name, err)
 			}
 		}
@@ -433,3 +447,12 @@ const videoPromptGuideRef = agentSkillPlaceholder + `
 
 // AgentSkillCount 是内置通用技能的条数（测试按它断言，别再写死一个会随技能库增长而过期的数）。
 func AgentSkillCount() int { return len(agentSkillSeeds()) }
+
+// refsKey 把附属文档摊成可序列化的值（结构体字段未导出，直接 json.Marshal 得到的是空对象，哈希就漏掉了正文）。
+func refsKey(refs []agentSkillRef) []string {
+	out := make([]string, 0, len(refs)*3)
+	for _, r := range refs {
+		out = append(out, r.name, r.body, fmt.Sprint(r.sort))
+	}
+	return out
+}

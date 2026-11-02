@@ -25,7 +25,7 @@ async function store(handler: (call: Call) => unknown) {
   const { useImageToolsStore } = await import("./imageTools");
   // ⚠️ 测试里的 defineStore 替身不像 Pinia 那样解包 ref：状态字段要按 `.value` 读
   type Raw = Omit<ReturnType<typeof useImageToolsStore>, "quotes"> & {
-    quotes: { value: Record<string, { loading: boolean; credits?: number; error?: string } | undefined> };
+    quotes: { value: Record<string, { loading: boolean; ready?: boolean; error?: string } | undefined> };
   };
   return { store: useImageToolsStore() as unknown as Raw, calls };
 }
@@ -97,7 +97,7 @@ describe("编辑器报价", () => {
       }
     });
     expect(calls[0]!.body).not.toHaveProperty("sourceWidth");
-    expect(s.quotes.value.k).toEqual({ loading: false, credits: 34 });
+    expect(s.quotes.value.k).toEqual({ loading: false, ready: true });
   });
 
   it("失败显示服务端原话（422 / 400 带字段路径）", async () => {

@@ -326,7 +326,7 @@ export type MarketingSendGate = SendGate & { code?: MarketingGateCode; slot?: Sl
  * 发送键能不能点、不能点为什么（MKT-F-17、MKT-AC-04 前端部分）。
  *
  * 顺序（给**最根本的那一条**，CD-59 / CD-60）：只读权限 > 上传中 > 必填槽缺失（「请选择商品」）
- * > 所选创意 / Hook / 风格的输入要求未满足 > 其余交给 Agent 模式原有的判定 `base`（发送中、空内容、报价、余额）。
+ * > 所选创意 / Hook / 风格的输入要求未满足 > 其余交给 Agent 模式原有的判定 `base`（发送中、空内容、模型可用性）。
  * 只读排最前：否则只读成员会去传图、去充值，而真正的原因从头到尾是他没有权限。
  */
 export function marketingSendGate(

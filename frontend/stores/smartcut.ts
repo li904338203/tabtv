@@ -1,6 +1,6 @@
 import type { components } from "@tabtv/api-client";
 import { VERSION_CONFLICT, errorCode } from "~/utils/asyncState";
-import { roleAllowsScope } from "~/utils/mcpScopes";
+import { roleAllowsScope } from "~/utils/roleScope";
 import { smartcutValidateContent, smartcutApplyIdMap, smartcutRemapSnapshots, smartcutMapId } from "~/utils/smartcutContent";
 import { smartcutContentOf, smartcutRelayout, smartcutSameContent, smartcutTempId } from "~/utils/smartcutModel";
 import { smartcutConflictDetails, type SmartcutConflict, type SmartcutEditorKind, type SmartcutPlanKind } from "~/utils/smartcutPlan";

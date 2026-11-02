@@ -21,7 +21,6 @@ import { Check, LoaderCircle, Pencil, Plus, Search, Trash2, UserRound, X } from 
 import CharacterEditorDialog from "./CharacterEditorDialog.vue";
 import { mediaThumbUrl } from "~/utils/authorizedMedia";
 import { apiFailure } from "~/utils/agentPanelBridge";
-import type { OptimizePriceView } from "~/utils/composerPrice";
 import {
   MARKETING_CHARACTER_READ_ONLY_TEXT,
   MARKETING_LIBRARY_PAGE_SIZE,
@@ -52,10 +51,11 @@ const props = withDefaults(defineProps<{
   selected?: MarketingPickedCharacter[];
   limits: MarketingCharacterLimits;
   readOnly?: boolean;
-  optimizePrice: OptimizePriceView;
+  /** AI 帮写用的推理模型不能用的原因；为空可用。 */
+  optimizeUnavailable?: string;
   optimizeModelCode?: string;
   defaultModelCode?: string;
-}>(), { selected: () => [], readOnly: false, optimizeModelCode: undefined, defaultModelCode: "" });
+}>(), { selected: () => [], readOnly: false, optimizeUnavailable: "", optimizeModelCode: undefined, defaultModelCode: "" });
 
 const emit = defineEmits<{
   close: [];
@@ -443,7 +443,7 @@ onBeforeUnmount(() => {
       :character-id="editor.characterId"
       :limits="limits"
       :read-only="readOnly"
-      :optimize-price="optimizePrice"
+      :optimize-unavailable="optimizeUnavailable"
       :optimize-model-code="optimizeModelCode"
       :default-model-code="defaultModelCode"
       @close="editor = { open: false, characterId: '' }"

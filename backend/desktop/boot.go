@@ -22,6 +22,7 @@ import (
 	"github.com/li904338203/tabtv/backend/internal/platform/migrate"
 	"github.com/li904338203/tabtv/backend/internal/platform/pgembed"
 	"github.com/li904338203/tabtv/backend/internal/platform/resources"
+	"github.com/li904338203/tabtv/backend/internal/platform/settings"
 	"github.com/li904338203/tabtv/backend/migrations"
 )
 
@@ -72,8 +73,11 @@ type Runtime struct {
 	Timings map[string]time.Duration
 	// Bus 是事件总线：宿主窗口就绪后用 SetEmitter 接上出口（Wails EventsEmit）。
 	Bus *eventbus.Local
+	// Builtin 是本次启动安装内置营销内容的结果（TT-T-24）。
+	Builtin BuiltinReport
 
 	pool      *db.Pool
+	settings  *settings.Store
 	bg        *background
 	cancel    context.CancelFunc
 	closeOnce sync.Once

@@ -146,12 +146,15 @@ func seedImagePresets(ctx context.Context, tx *sql.Tx, nextID func() int64) erro
 		if p.dimensions != "" {
 			dims = p.dimensions
 		}
+		hash := builtinHash(p.code, p.name, p.group, p.spec, p.inputMode, p.prompt, params, p.dimensions,
+			p.operation, p.sort, p.icon, p.description, p.isNew)
+		// 内置版本规则（TT-T-24）：用户在设置页改过的预设不覆盖（来源系统是无条件 do update）。
 		if _, err := tx.ExecContext(ctx, `
 			insert into image_preset (id, code, name, preset_group, spec, input_mode,
 				prompt, params, dimensions, operation, sort, is_enabled,
-				icon, description, is_new)
+				icon, description, is_new, builtin_hash)
 			values ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,$10,$11,true,
-				nullif($12,''), nullif($13,''), $14)
+				nullif($12,''), nullif($13,''), $14, $15)
 			on conflict (code) do update set
 				name = excluded.name, preset_group = excluded.preset_group,
 				spec = excluded.spec, input_mode = excluded.input_mode,
@@ -159,10 +162,11 @@ func seedImagePresets(ctx context.Context, tx *sql.Tx, nextID func() int64) erro
 				dimensions = excluded.dimensions, operation = excluded.operation,
 				sort = excluded.sort, icon = excluded.icon,
 				description = excluded.description, is_new = excluded.is_new,
-				updated_at = now()`,
+				builtin_hash = excluded.builtin_hash, updated_at = now()
+			where image_preset.is_user_modified = false`,
 			nextID(), p.code, p.name, p.group, p.spec, p.inputMode,
 			p.prompt, params, dims, p.operation, p.sort,
-			p.icon, p.description, p.isNew); err != nil {
+			p.icon, p.description, p.isNew, hash); err != nil {
 			return err
 		}
 	}

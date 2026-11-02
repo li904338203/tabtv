@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { components } from '~/types/legacy';
-import { ArrowUp, FileText, Image as ImageIcon, Languages, LoaderCircle, Maximize2, Minimize2, Sparkles, X, Zap } from "@lucide/vue";
+import { ArrowUp, FileText, Image as ImageIcon, Languages, LoaderCircle, Maximize2, Minimize2, Sparkles, X } from "@lucide/vue";
 import { ElMessage } from "element-plus";
 import type { CanvasNodeData } from "~/types/canvas";
 import type { ScriptDetail, ScriptEntryMode, ScriptSourceType } from "~/types/script";
@@ -11,7 +11,6 @@ const props = defineProps<{ nodeId: string; data: CanvasNodeData }>();
 const canvas = useCanvasStore();
 const scripts = useScriptApi();
 const config = useCanvasConfigStore();
-const generation = useGenerationStore();
 const inputText = ref(String(props.data.params.sourceText ?? ""));
 const model = ref(String(props.data.params.model ?? ""));
 const translatePrompt = ref(Boolean(props.data.params.translatePrompt));
@@ -21,7 +20,6 @@ const submitting = ref(false);
 const serverRunning = ref(false);
 const loading = computed(() => submitting.value || serverRunning.value);
 const expanded = ref(false);
-let estimateTimer: ReturnType<typeof setTimeout> | undefined;
 let runningTimer: ReturnType<typeof setInterval> | undefined;
 
 const existingScriptId = computed(() => String(props.data.params.scriptId ?? ""));
@@ -95,7 +93,6 @@ const submitTitle = computed(() => {
   if (loading.value) return "分镜生成中，请稍候";
   return canGenerate.value ? submitLabel.value : modeHint.value;
 });
-const estimate = computed(() => generation.estimates[props.nodeId] ?? 0);
 
 function effectiveInputText() {
   return scriptTranslatedInput(inputText.value, translatePrompt.value);
@@ -106,7 +103,6 @@ async function loadModels() {
     modelOptions.value = await config.models("text", "storyboard_gen");
     if (!modelOptions.value.some(item => item.code === model.value)) model.value = modelOptions.value[0]?.code ?? "";
     if (model.value && props.data.params.model !== model.value) persistDraft();
-    scheduleEstimate();
   } catch {
     modelOptions.value = [];
   }
@@ -124,33 +120,6 @@ function persistDraft() {
 function toggleTranslation() {
   translatePrompt.value = !translatePrompt.value;
   persistDraft();
-  scheduleEstimate();
-}
-
-function scheduleEstimate() {
-  if (estimateTimer) clearTimeout(estimateTimer);
-  estimateTimer = setTimeout(() => void refreshEstimate(), 320);
-}
-
-async function refreshEstimate() {
-  if (!model.value) {
-    generation.estimates[props.nodeId] = 0;
-    return;
-  }
-  const prompt = effectiveInputText();
-  try {
-    await generation.estimate(props.nodeId, {
-      projectId: canvas.projectId,
-      nodeId: props.nodeId,
-      operation: "storyboard_gen",
-      // ⚠️ 字段名是 `modelCode`（老后端 `model`）。
-      modelCode: model.value,
-      params: { prompt, text: prompt },
-      count: 1
-    });
-  } catch {
-    generation.estimates[props.nodeId] = 0;
-  }
 }
 
 function selectReference(nodeId: string) {
@@ -340,15 +309,12 @@ watch(() => props.data.params, (params) => {
   if (typeof params.translatePrompt === "boolean" && params.translatePrompt !== translatePrompt.value) translatePrompt.value = params.translatePrompt;
 }, { deep: true });
 
-watch([inputText, model], scheduleEstimate);
-
 onMounted(async () => {
   await loadModels();
   await hydrateExistingScript();
 });
 
 onBeforeUnmount(() => {
-  if (estimateTimer) clearTimeout(estimateTimer);
   if (runningTimer) clearInterval(runningTimer);
 });
 </script>
@@ -376,14 +342,13 @@ onBeforeUnmount(() => {
     <div class="script-entry-footer">
       <label class="script-model-select" title="文本模型">
         <Sparkles :size="20" />
-        <select v-model="model" aria-label="文本模型" @change="persistDraft(); scheduleEstimate()">
+        <select v-model="model" aria-label="文本模型" @change="persistDraft()">
           <option value="" disabled>选择模型</option>
           <option v-for="item in modelOptions" :key="item.code" :value="item.code">{{ item.name ?? item.code }}</option>
         </select>
       </label>
       <div class="script-entry-actions">
         <button class="script-translate" :class="{ active: translatePrompt }" type="button" :aria-pressed="translatePrompt" title="翻译并优化提示词" @click="toggleTranslation"><Languages :size="20" /></button>
-        <span class="script-estimate" title="预计积分"><Zap :size="15" />{{ estimate || '—' }}</span>
         <button v-if="entryMode !== 'manual'" class="script-entry-submit" type="button" :disabled="loading || !canGenerate" :title="submitTitle" :aria-label="submitTitle" :aria-busy="loading" @click="start">
           <LoaderCircle v-if="loading" :size="18" class="spin" />
           <ArrowUp v-else :size="22" />

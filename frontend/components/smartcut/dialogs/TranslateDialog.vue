@@ -2,7 +2,7 @@
 /**
  * 字幕翻译（docs/agent/smartcut SCT-36，SC-F-125 / 126）：选源字幕轨、目标语言（中英日韩之一）、新轨或替换原文。
  *
- * - 翻译算 AI 剪辑的一部分：免费，与 AI 剪辑共用每小时次数（SCK-2），被限流时说多久后再试；
+ * - 翻译算 AI 剪辑的一部分：与 AI 剪辑共用每小时次数（SCK-2），被限流时说多久后再试；
  * - 完成后说清译了几条、放在哪，没译出来的按序号说（那几条不改）；一条都没译出来时时间线不动。
  */
 import { ElMessage } from "element-plus";
@@ -48,7 +48,7 @@ const disabledReason = computed(() => {
   if (store.planRunning) return "AI 剪辑进行中，请等它完成";
   return "";
 });
-const usage = computed(() => (config.value ? `免费 · 与 AI 剪辑共用次数（本小时已用 ${config.value.usedThisHour} / ${config.value.perHour} 次）` : "免费 · 与 AI 剪辑共用每小时次数"));
+const usage = computed(() => (config.value ? `与 AI 剪辑共用次数（本小时已用 ${config.value.usedThisHour} / ${config.value.perHour} 次）` : "与 AI 剪辑共用每小时次数"));
 
 async function submit() {
   if (busy.value || disabledReason.value || !targetLang.value) return;

@@ -8,7 +8,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 // 模板里不直接调 navigateTo：自动导入在模板上下文里 vue-tsc 解析不到（运行时没问题，但门禁会红）。
 const go = navigateTo
 
-definePageMeta({ layout: "platform", middleware: "auth" });
+definePageMeta({ layout: "platform" });
 
 // ⚠️ 类型取自**生成的新契约**，不用 `types/legacy`（老 Java 契约的抄本）：
 //    老类型里没有 `displayCoverMediaId`，分页是 `{list,total}` —— 照老类型写，

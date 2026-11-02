@@ -40,14 +40,15 @@ func TestRegenerateItem_不发源视频(t *testing.T) {
 	}
 }
 
-func TestFissionNote_写明路径与费用(t *testing.T) {
+func TestFissionNote_写明路径且不报金额(t *testing.T) {
+	// tabtv 全部 0 价（TT-T-09）：说明只写路径与原因，不再出现「本项 ✦N」。
 	v := Video2VideoItem(PlanItem{Kind: "video", Credits: 50}, "777")
-	if n := FissionNote(v); !strings.Contains(n, "视频生视频") || !strings.Contains(n, "✦50") {
+	if n := FissionNote(v); !strings.Contains(n, "视频生视频") || strings.Contains(n, "✦") {
 		t.Fatalf("video2video 说明：%q", n)
 	}
 	r := RegenerateItem(PlanItem{Kind: "video", Credits: 40}, "777", "所选模型不支持以视频为输入（视频生视频）。")
 	n := FissionNote(r)
-	if !strings.Contains(n, "重新生成") || !strings.Contains(n, "不支持以视频为输入") || !strings.Contains(n, "✦40") ||
+	if !strings.Contains(n, "重新生成") || !strings.Contains(n, "不支持以视频为输入") || strings.Contains(n, "✦") ||
 		strings.Contains(n, "。，") {
 		t.Fatalf("重新生成说明：%q", n)
 	}
@@ -58,10 +59,10 @@ func TestFissionNote_写明路径与费用(t *testing.T) {
 	if FissionNote(PlanItem{Kind: "video", Credits: 9}) != "" {
 		t.Fatal("非裂变条目没有说明")
 	}
-	// 重新报价后说明跟着金额走。
+	// 重新报价后说明照样重写，且不带金额。
 	v.Credits = 70
 	out := WithFissionNotes([]PlanItem{v, {Kind: "image"}})
-	if !strings.Contains(out[0].FissionNote, "✦70") || out[1].FissionNote != "" {
+	if !strings.Contains(out[0].FissionNote, "视频生视频") || strings.Contains(out[0].FissionNote, "✦") || out[1].FissionNote != "" {
 		t.Fatalf("重写说明：%+v", out)
 	}
 }

@@ -104,7 +104,7 @@ describe("节点参数还原与源图变化", () => {
   });
 });
 
-describe("请求与报价选项", () => {
+describe("请求与能力校验选项", () => {
   const state = { count: 2, roles: [role("b", 300), role("a", 0, { touched: true, arousal: 1, warmth: 2 })] };
 
   it("发送只带 touched 的角色，且没有界面字段", () => {
@@ -114,10 +114,10 @@ describe("请求与报价选项", () => {
     expect(imageToolWireOptions("expression_edit", options)).toEqual(options);
   });
 
-  it("报价：有 touched 用 touched；没有时借最左的角色只为算积分；没有角色不报价", () => {
+  it("能力校验：只带 touched；没有 touched 或没有角色不校验", () => {
     expect(imageToolEmotionQuoteOptions("9", state)?.roles.map(item => item.id)).toEqual(["a"]);
     const untouched = { ...state, roles: [role("b", 300), role("a", 0)] };
-    expect(imageToolEmotionQuoteOptions("9", untouched)?.roles.map(item => item.id)).toEqual(["a"]);
+    expect(imageToolEmotionQuoteOptions("9", untouched)).toBeNull();
     expect(imageToolEmotionQuoteOptions("9", { ...state, roles: [] })).toBeNull();
     expect(imageToolEmotionQuoteOptions("", state)).toBeNull();
   });

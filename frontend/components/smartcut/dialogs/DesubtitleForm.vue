@@ -30,7 +30,7 @@ const seconds = computed(() => Math.ceil(props.sourceMs / 1000));
       <label for="sc-erase-model">模型</label>
       <select id="sc-erase-model" v-model="modelCode" class="sc-select" :disabled="!models.length">
         <option v-if="!models.length" value="">没有可用的去字幕模型</option>
-        <option v-for="m in models" :key="m.code" :value="m.code">{{ m.name }}{{ typeof m.unitPrice === "number" ? ` · ✦${m.unitPrice}/秒` : "" }}</option>
+        <option v-for="m in models" :key="m.code" :value="m.code">{{ m.name }}</option>
       </select>
     </div>
     <div class="sc-field">

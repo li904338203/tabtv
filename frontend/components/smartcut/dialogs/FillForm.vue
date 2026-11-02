@@ -54,7 +54,7 @@ const request = computed(() => {
       <label for="sc-fill-model">模型</label>
       <select id="sc-fill-model" v-model="modelCode" class="sc-select" :disabled="!models.length">
         <option v-if="!models.length" value="">没有可用的视频模型</option>
-        <option v-for="m in models" :key="m.code" :value="m.code">{{ m.name }}{{ typeof m.unitPrice === "number" ? ` · ✦${m.unitPrice}${m.unit === "per_second" ? "/秒" : "/次"}` : "" }}</option>
+        <option v-for="m in models" :key="m.code" :value="m.code">{{ m.name }}</option>
       </select>
     </div>
     <div class="sc-field">

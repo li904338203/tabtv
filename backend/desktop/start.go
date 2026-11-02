@@ -12,6 +12,7 @@ import (
 	"github.com/li904338203/tabtv/backend/internal/platform/eventbus"
 	"github.com/li904338203/tabtv/backend/internal/platform/id"
 	"github.com/li904338203/tabtv/backend/internal/platform/objstore"
+	"github.com/li904338203/tabtv/backend/internal/platform/settings"
 )
 
 // desktopConfig 是桌面应用的配置：来源系统的默认值 + 桌面差异（TT-T-12 再把可调项接到设置表）。
@@ -42,6 +43,12 @@ func (r *Runtime) start(ctx context.Context, log *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	st, err := settings.Open(ctx, pool.Pool)
+	if err != nil {
+		return fmt.Errorf("读取设置失败：%w", err)
+	}
+	r.settings = st
+	applySettings(&cfg, st)
 	r.Bus = eventbus.NewLocal()
 	deps := &bootstrap.Deps{DB: pool, Bus: r.Bus, ObjStore: store}
 
@@ -56,9 +63,12 @@ func (r *Runtime) start(ctx context.Context, log *slog.Logger) error {
 	if err := freePricing(ctx, pool.Pool, gen.Next); err != nil {
 		return fmt.Errorf("写入价格配置失败：%w", err)
 	}
-	a, err := assemble(ctx, cfg, deps, ident, tokenService{tokens}, gen, log)
+	a, err := assemble(ctx, cfg, deps, ident, tokenService{tokens}, gen, log, st, r.Dirs)
 	if err != nil {
 		return err
+	}
+	if r.Builtin, err = installBuiltinContent(ctx, pool.Pool, store, gen.Next, ident.AdminID, log); err != nil {
+		return fmt.Errorf("安装内置营销内容失败：%w", err)
 	}
 	bgCtx, cancel := context.WithCancel(context.Background())
 	r.cancel = cancel

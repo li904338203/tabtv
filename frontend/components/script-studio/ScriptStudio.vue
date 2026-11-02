@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronLeft, ChevronRight, CircleAlert, CircleCheck, Copy, FileText, Film, Image as ImageIcon, LoaderCircle, MoreHorizontal, Plus, RectangleHorizontal, Save, Sparkles, Trash2, X, Zap } from "@lucide/vue";
+import { ChevronLeft, ChevronRight, CircleAlert, CircleCheck, Copy, FileText, Film, Image as ImageIcon, LoaderCircle, MoreHorizontal, Plus, RectangleHorizontal, Save, Sparkles, Trash2, X } from "@lucide/vue";
 import { ElMessage } from "element-plus";
 import type { components } from '~/types/legacy';
 import ScriptDescriptionRichEditor from "./ScriptDescriptionRichEditor.vue";
@@ -24,7 +24,6 @@ const emit = defineEmits<{
   "group-created": [group: GroupDetail];
 }>();
 const config = useCanvasConfigStore();
-const auth = useAuthStore();
 /** 脚本接口只走这一个入口（新契约，见 utils/scriptContract）。 */
 const scripts = useScriptApi();
 const media = useAuthenticatedMedia();
@@ -81,16 +80,12 @@ const assetGenerationSettings = reactive<Record<"quality" | "clarity" | "ratio",
   ratio: "2:1"
 });
 const assetModelOverrides = ref<Record<string, unknown>>({});
-const assetEstimatedCredits = ref<number>();
-const assetEstimateLoading = ref(false);
 const editingDescriptionShotId = ref("");
 const descriptionDraft = ref("");
 const descriptionOriginal = ref("");
 const descriptionEditorPosition = ref<Record<string, string>>({});
 const descriptionEditor = ref<{ focusEnd: () => void }>();
 let assetRefreshTimer: ReturnType<typeof setTimeout> | undefined;
-let assetEstimateTimer: ReturnType<typeof setTimeout> | undefined;
-let assetEstimateRequest = 0;
 let assetModelRequest = 0;
 
 const current = computed(() => detail.value);
@@ -105,11 +100,10 @@ const promptBatchShots = computed(() => shots.value.filter(shot => !shot.id.star
 const allPromptBatchSelected = computed(() => promptBatchShots.value.length > 0
   && promptBatchShots.value.every(shot => promptBatchSelectedIds.value.includes(shot.id)));
 /**
- * 一键合成的报价**由服务端给**（GAP-21，`dryRun`）：老界面按「选中数 × 6」写死估算，
- * 而服务端按定价目录算、还会跳过已就绪的 —— 用户看到的价和实际扣的钱不是一回事。
+ * 一键合成的 dryRun（GAP-21）：服务端会跳过已就绪且没有改动的镜头，跳过几条要说出来。
+ * tabtv 不计价（TT-T-14）：只显示跳过条数，不显示金额。
  */
 const promptBatchQuote = ref<ComposeResultResp["quote"]>();
-const promptBatchEstimatedCredits = computed(() => promptBatchQuote.value?.total);
 let promptQuoteTimer: ReturnType<typeof setTimeout> | undefined;
 let promptQuoteRequest = 0;
 const finalPromptsReady = computed(() => shots.value.filter(
@@ -123,8 +117,6 @@ const assetGroupExists = computed(() => current.value?.groups.some(group => grou
 const assetGenerationCandidates = computed(() => (current.value?.assets ?? [])
   .filter(asset => asset.status !== "ready" && asset.status !== "generating"));
 const selectedAssetGenerationCount = computed(() => selectedAssetGenerationIds.value.length);
-const assetGenerationInsufficientCredits = computed(() => assetEstimatedCredits.value !== undefined
-  && assetEstimatedCredits.value > auth.creditBalance);
 const allAssetGenerationSelected = computed(() => assetGenerationCandidates.value.length > 0
   && assetGenerationCandidates.value.every(asset => selectedAssetGenerationIds.value.includes(asset.id)));
 const storyboardEligible = computed(() => shots.value.filter(shot => shot.imagePromptStatus === "ready" && Boolean(shot.imagePrompt)));
@@ -541,44 +533,6 @@ async function syncAssetModelOptions() {
     assetModelOverrides.value = {};
   }
   reconcileAssetGenerationSettings();
-}
-
-function scheduleAssetEstimate() {
-  clearTimeout(assetEstimateTimer);
-  assetEstimatedCredits.value = undefined;
-  if (!assetGenerationDialogOpen.value || !selectedAssetGenerationCount.value || !selectedAssetImageModel.value) {
-    assetEstimateLoading.value = false;
-    return;
-  }
-  assetEstimateTimer = setTimeout(() => void refreshAssetEstimate(), 280);
-}
-
-async function refreshAssetEstimate() {
-  const request = ++assetEstimateRequest;
-  const selectedCount = selectedAssetGenerationCount.value;
-  if (!current.value || !selectedCount || !selectedAssetImageModel.value) return;
-  assetEstimateLoading.value = true;
-  try {
-    // ⚠️ 新后端的报价体：`modelCode`（老后端 `model`）、`inputs` 是 {角色:条数}；回的是 `credits`（老后端 `creditsCost`）
-    //    —— 读错的话报价永远显示 0，用户会以为这批资产图是免费的。
-    const estimate = await useApi()<{ credits?: number; creditsCost?: number }>("/generations/estimate", {
-      method: "POST",
-      body: {
-        modelCode: selectedAssetImageModel.value,
-        operation: "asset_gen",
-        count: 1,
-        text: "批量资产设定图",
-        inputs: {}
-      }
-    });
-    if (request === assetEstimateRequest) {
-      assetEstimatedCredits.value = Number(estimate.credits ?? estimate.creditsCost ?? 0) * selectedCount;
-    }
-  } catch {
-    if (request === assetEstimateRequest) assetEstimatedCredits.value = undefined;
-  } finally {
-    if (request === assetEstimateRequest) assetEstimateLoading.value = false;
-  }
 }
 
 async function setStep(step: number) {
@@ -1120,10 +1074,6 @@ async function generateAssets() {
     ElMessage.warning("暂无支持资产生成的图片模型");
     return;
   }
-  if (assetGenerationInsufficientCredits.value) {
-    ElMessage.warning(`积分不足：当前 ${auth.creditBalance}，预计需要 ${assetEstimatedCredits.value}`);
-    return;
-  }
   batchBusy.value = true;
   try {
     await saveAssetGenerationDrafts(assetIds);
@@ -1136,8 +1086,7 @@ async function generateAssets() {
     assetGenerationDialogOpen.value = false;
     selectedAssetGenerationIds.value = [];
     await load(true);
-    await auth.loadProfile().catch(() => undefined);
-    // 逐项结果：允许部分成功（余额不足会停掉后续项，单项失败不影响别的项）
+    // 逐项结果：允许部分成功（单项失败不影响别的项）
     const submitted = items.filter(item => item.generationId && !item.skipped).length;
     const skipped = items.find(item => item.skipped && item.reason);
     if (submitted === assetIds.length) {
@@ -1229,24 +1178,11 @@ watch(
   schedulePromptQuote
 );
 
-watch(
-  () => JSON.stringify([
-    assetGenerationDialogOpen.value,
-    selectedAssetGenerationIds.value,
-    selectedAssetImageModel.value,
-    assetGenerationSettings.quality,
-    assetGenerationSettings.clarity,
-    assetGenerationSettings.ratio
-  ]),
-  scheduleAssetEstimate
-);
 
 onBeforeUnmount(() => {
   clearTimeout(assetRefreshTimer);
-  clearTimeout(assetEstimateTimer);
   clearTimeout(promptQuoteTimer);
   promptQuoteRequest += 1;
-  assetEstimateRequest += 1;
   assetModelRequest += 1;
   Object.keys(assetPreviewUrls.value).forEach(revokeAssetPreview);
 });
@@ -1459,7 +1395,7 @@ onBeforeUnmount(() => {
           <label><input v-model="promptComposeMode" type="radio" value="smart">智能合成</label>
           <label><input v-model="promptComposeMode" type="radio" value="template">自动拼接</label>
         </div>
-        <span class="prompt-batch-credits" :title="promptBatchQuote?.skipCount ? `${promptBatchQuote.skipCount} 条已就绪且没有改动，跳过不收费` : undefined"><Zap :size="17" />{{ promptBatchEstimatedCredits ?? "--" }}<small v-if="promptBatchQuote?.skipCount">（跳过 {{ promptBatchQuote.skipCount }} 条已就绪）</small></span>
+        <span class="prompt-batch-credits" :title="promptBatchQuote?.skipCount ? `${promptBatchQuote.skipCount} 条已就绪且没有改动，会跳过` : undefined"><small v-if="promptBatchQuote?.skipCount">（跳过 {{ promptBatchQuote.skipCount }} 条已就绪）</small></span>
         <button
           type="button"
           class="prompt-batch-submit"
@@ -1535,16 +1471,8 @@ onBeforeUnmount(() => {
             <option v-for="option in assetRatioOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
           </select>
         </label>
-        <span
-          class="asset-generation-credits"
-          :class="{ insufficient: assetGenerationInsufficientCredits }"
-          :title="assetGenerationInsufficientCredits ? `积分不足，当前余额 ${auth.creditBalance}` : '预计消耗积分'"
-        >
-          <LoaderCircle v-if="assetEstimateLoading" :size="19" class="spin" />
-          <Zap v-else :size="20" />
-          {{ assetEstimatedCredits ?? "—" }}
-          <small v-if="assetGenerationInsufficientCredits">余额 {{ auth.creditBalance }}</small>
-        </span>
+        <!-- 原「预计消耗积分」的位置（TT-T-14 删除金额）：保留空占位把提交键推到右侧，布局不变 -->
+        <span class="asset-generation-credits" aria-hidden="true" />
         <button
           class="asset-generation-submit"
           type="button"
@@ -1721,7 +1649,6 @@ onBeforeUnmount(() => {
         <div class="prompt-compose-options">
           <label><input v-model="promptComposeMode" type="radio" value="smart">智能合成</label>
           <label><input v-model="promptComposeMode" type="radio" value="template">自动拼接</label>
-          <span><Zap :size="16" />6</span>
         </div>
         <button type="button" class="prompt-save-button" :disabled="promptSaving || composing.includes(selectedPromptShot.id)" @click="savePrompt"><Save :size="15" />保存修改</button>
         <button type="button" class="prompt-compose-button" :disabled="promptSaving || composing.includes(selectedPromptShot.id)" @click="composePrompt(selectedPromptShot)"><LoaderCircle v-if="composing.includes(selectedPromptShot.id)" :size="16" class="spin" /><Sparkles v-else :size="16" />{{ finalPromptStatus(selectedPromptShot) === 'pending' ? '合成提示词' : '重新合成提示词' }}</button>
@@ -2280,11 +2207,6 @@ onBeforeUnmount(() => {
   color: #b0b0b4;
   font-size: 17px;
 }
-.asset-generation-credits svg:not(.spin) { color: #bababe; fill: #bababe; }
-.asset-generation-credits small { color: #85858a; font-size: 11px; }
-.asset-generation-credits.insufficient,
-.asset-generation-credits.insufficient small { color: #ef8585; }
-.asset-generation-credits.insufficient svg:not(.spin) { color: #ef8585; fill: #ef8585; }
 .asset-generation-submit {
   min-width: 120px;
   min-height: 52px;

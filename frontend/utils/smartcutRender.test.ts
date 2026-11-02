@@ -29,38 +29,28 @@ function pre(over: Partial<RenderPrecheck> = {}): RenderPrecheck {
 }
 
 describe("smartcutRenderBlocker", () => {
-  it("还没预检时不让点 —— 预检免费，导出单独一步", () => {
-    expect(smartcutRenderBlocker(null, 100, false)).toContain("预检");
+  it("还没预检时不让点 —— 预检与导出是两步", () => {
+    expect(smartcutRenderBlocker(null, false)).toContain("预检");
   });
 
   // ⚠️ 只说"有问题"的话用户不知道去改什么；一条一条报也太长 ——
   // 给第一条原文 + 总数。
   it("有问题时给第一条原文和总数", () => {
-    expect(smartcutRenderBlocker(pre({ runnable: false, issues: [{ code: "media_missing", detail: "第 2 段素材已被删除" }] }), 100, false))
+    expect(smartcutRenderBlocker(pre({ runnable: false, issues: [{ code: "media_missing", detail: "第 2 段素材已被删除" }] }), false))
       .toBe("第 2 段素材已被删除");
     const many = smartcutRenderBlocker(
       pre({ runnable: false, issues: [{ code: "media_missing", detail: "第 2 段素材已被删除" }, { code: "too_long", detail: "超长" }] }),
-      100, false);
+      false);
     expect(many).toContain("第 2 段素材已被删除");
     expect(many).toContain("共 2 项");
   });
 
-  // ⚠️ 余额不足要在**点之前**说清还差多少，而不是点了收一个 422。
-  it("余额不足说清还差多少", () => {
-    expect(smartcutRenderBlocker(pre({ credits: 30 }), 10, false)).toBe("积分不足，还差 20 分");
-  });
-
-  // ⚠️ 不知道余额时**不猜**：猜"不够"会把一次本来能跑的导出拦掉。
-  it("余额未知时不拦", () => {
-    expect(smartcutRenderBlocker(pre({ credits: 30 }), null, false)).toBe("");
-  });
-
   it("已有导出在跑时不让再发一次", () => {
-    expect(smartcutRenderBlocker(pre(), 100, true)).toContain("进行中");
+    expect(smartcutRenderBlocker(pre(), true)).toContain("进行中");
   });
 
   it("一切就绪时不拦", () => {
-    expect(smartcutRenderBlocker(pre(), 100, false)).toBe("");
+    expect(smartcutRenderBlocker(pre(), false)).toBe("");
   });
 });
 
@@ -142,18 +132,9 @@ describe("smartcutDownloadable", () => {
 
 describe("smartcutPrecheckSummary", () => {
   // ⚠️ 要把**时长**说出来：只给一个数字用户没法判断导的是不是他以为的那一版。
-  it("说清段数、时长与预计积分", () => {
+  it("说清段数、时长与字幕条数，不报价", () => {
     const s = smartcutPrecheckSummary(pre({ subtitles: 4 }), "10 秒");
-    expect(s).toContain("3 段");
-    expect(s).toContain("10 秒");
-    expect(s).toContain("4 条字幕");
-    expect(s).toContain("预计 10 积分");
-  });
-
-  // 有问题时不报价：那个价是按"能跑"算出来的，报出来会让用户以为能点。
-  it("有问题时不报价", () => {
-    expect(smartcutPrecheckSummary(pre({ runnable: false, issues: [{ code: "too_long", detail: "y" }] }), "10 秒"))
-      .not.toContain("积分");
+    expect(s).toBe("3 段 · 10 秒 · 4 条字幕");
   });
 });
 
@@ -175,22 +156,22 @@ describe("smartcutWatermarkNote", () => {
 
 // ⚠️ 没有导出权限时，禁用的理由要给**最根本**的那一条（P12-04）。
 //
-// 一个只读成员看到"先点预检"会去点预检（它免费且只读，服务端特意放宽了），
-// 然后看到"余额不足"又去充值 —— 而真正的原因从头到尾都是他没有导出权限。
+// 一个只读成员看到"先点预检"会去点预检（它只读，服务端特意放宽了），
+// 然后又去改别的 —— 而真正的原因从头到尾都是他没有导出权限。
 describe("smartcutRenderBlocker 的权限原因优先", () => {
   const denied = "需要导出权限，你在该工作区是只读";
 
   it("排在「先点预检」之前", () => {
-    expect(smartcutRenderBlocker(null, 100, false, denied)).toBe(denied);
+    expect(smartcutRenderBlocker(null, false, denied)).toBe(denied);
   });
 
   it("排在「已有导出在进行中」之前", () => {
-    expect(smartcutRenderBlocker(null, 100, true, denied)).toBe(denied);
+    expect(smartcutRenderBlocker(null, true, denied)).toBe(denied);
   });
 
   it("有权限时不影响原有判定", () => {
-    expect(smartcutRenderBlocker(null, 100, false, "")).toContain("预检");
-    expect(smartcutRenderBlocker(null, 100, true, "")).toContain("进行中");
+    expect(smartcutRenderBlocker(null, false, "")).toContain("预检");
+    expect(smartcutRenderBlocker(null, true, "")).toContain("进行中");
   });
 });
 
@@ -198,29 +179,23 @@ describe("smartcutRenderBlocker 的权限原因优先", () => {
 
 describe("smartcutRenderBlocker 的新增原因（只读 / 限流 / 片段生成中）", () => {
   it("只读排在运行中之前，权限之后", () => {
-    expect(smartcutRenderBlocker(pre(), 100, true, "", { readonly: "这条时间线现在只能查看" })).toBe("这条时间线现在只能查看");
-    expect(smartcutRenderBlocker(pre(), 100, true, "没有导出权限", { readonly: "只能查看" })).toBe("没有导出权限");
+    expect(smartcutRenderBlocker(pre(), true, "", { readonly: "这条时间线现在只能查看" })).toBe("这条时间线现在只能查看");
+    expect(smartcutRenderBlocker(pre(), true, "没有导出权限", { readonly: "只能查看" })).toBe("没有导出权限");
   });
 
-  // ⚠️ 限流与生成中排在「先预检」之前：预检免费、真能点，点完才发现原因一直都在。
+  // ⚠️ 限流与生成中排在「先预检」之前：预检真能点，点完才发现原因一直都在。
   it("被限流时说清多久后可以再试，排在预检之前", () => {
-    expect(smartcutRenderBlocker(null, 100, false, "", { retryAfterSeconds: 125 })).toBe("导出太频繁，请约 3 分钟后再试");
-    expect(smartcutRenderBlocker(null, 100, true, "", { retryAfterSeconds: 125 })).toContain("进行中");
+    expect(smartcutRenderBlocker(null, false, "", { retryAfterSeconds: 125 })).toBe("导出太频繁，请约 3 分钟后再试");
+    expect(smartcutRenderBlocker(null, true, "", { retryAfterSeconds: 125 })).toContain("进行中");
   });
 
   it("还有片段在生成时不让导出，并说出段数", () => {
-    expect(smartcutRenderBlocker(null, 100, false, "", { generatingClips: 2 })).toBe("还有 2 段片段在生成，生成完再导出");
-    expect(smartcutRenderBlocker(pre(), 100, false, "", { generatingClips: 0 })).toBe("");
+    expect(smartcutRenderBlocker(null, false, "", { generatingClips: 2 })).toBe("还有 2 段片段在生成，生成完再导出");
+    expect(smartcutRenderBlocker(pre(), false, "", { generatingClips: 0 })).toBe("");
   });
 
   it("预检不可运行但没给问题时也要有话说", () => {
-    expect(smartcutRenderBlocker(pre({ runnable: false }), 100, false)).toBe("这条时间线现在不能导出");
-  });
-
-  // 导出免费（SCK-3）：0 积分时不拿余额拦，摘要说「免费」而不是「预计 0 积分」。
-  it("免费导出不受余额影响，摘要写免费", () => {
-    expect(smartcutRenderBlocker(pre({ credits: 0 }), 0, false)).toBe("");
-    expect(smartcutPrecheckSummary(pre({ credits: 0 }), "10 秒")).toBe("3 段 · 10 秒 · 免费");
+    expect(smartcutRenderBlocker(pre({ runnable: false }), false)).toBe("这条时间线现在不能导出");
   });
 });
 

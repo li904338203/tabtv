@@ -38,12 +38,18 @@ import (
 	mediaapp "github.com/li904338203/tabtv/backend/internal/media/app"
 	mediarepo "github.com/li904338203/tabtv/backend/internal/media/repo"
 	mediahttp "github.com/li904338203/tabtv/backend/internal/media/transport"
+	obsapp "github.com/li904338203/tabtv/backend/internal/observability/app"
+	obsrepo "github.com/li904338203/tabtv/backend/internal/observability/repo"
+	obshttp "github.com/li904338203/tabtv/backend/internal/observability/transport"
 	"github.com/li904338203/tabtv/backend/internal/platform/audit"
 	"github.com/li904338203/tabtv/backend/internal/platform/bootstrap"
 	"github.com/li904338203/tabtv/backend/internal/platform/buildinfo"
 	"github.com/li904338203/tabtv/backend/internal/platform/config"
+	"github.com/li904338203/tabtv/backend/internal/platform/datadir"
 	"github.com/li904338203/tabtv/backend/internal/platform/id"
 	"github.com/li904338203/tabtv/backend/internal/platform/secret"
+	"github.com/li904338203/tabtv/backend/internal/platform/settings"
+	providerrepo "github.com/li904338203/tabtv/backend/internal/provider/repo"
 	providertransport "github.com/li904338203/tabtv/backend/internal/provider/transport"
 	scriptapp "github.com/li904338203/tabtv/backend/internal/script/app"
 	scripthttp "github.com/li904338203/tabtv/backend/internal/script/transport"
@@ -70,7 +76,7 @@ type assembled struct {
 }
 
 func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, ident *Identity,
-	tokens tokenService, gen *id.Generator, logger *slog.Logger) (*assembled, error) {
+	tokens tokenService, gen *id.Generator, logger *slog.Logger, st *settings.Store, dirs datadir.Dirs) (*assembled, error) {
 	pool := deps.DB.Pool
 	auditLog := audit.New(pool, gen.Next, logger)
 
@@ -241,6 +247,13 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 			writeJSON(w, map[string]any{"status": "ok", "version": buildinfo.Version})
 		})
 		identity.MountAdmin(r) // 管理端 /admin/auth/me 等（设置页读当前权限用）
+		mountLocalRoutes(r, ident, pool)
+		mountSettingsRoutes(r, st, dirs)
+		mountDiagnostics(r, pool)
+		// 上游调用日志（设置 → 调用日志，TT-F-36）：沿用来源系统的管理端检索 /admin/request-logs/provider。
+		obsSvc := obsapp.New(obsrepo.New(pool, gen.Next))
+		obsSvc.SetProviderLogs(providerrepo.New(pool, gen.Next))
+		obshttp.NewHandler(obsSvc).Mount(r, identity.RequireAdmin, identity.RequirePermission)
 		wsGuard := func(next http.Handler) http.Handler {
 			return collab.RequireWorkspace(collabhttp.GuardByMethod(next))
 		}
@@ -273,7 +286,7 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 	bg := &background{
 		cfg: cfg, deps: deps, gen: gen, logger: logger,
 		media: mediaSvc, catalog: catalogSvc, core: core, timeline: tlSvc, smartcut: smartcutSvc,
-		agent: agentSvc, analysisWake: analysisWake, billing: billingRepo,
+		agent: agentSvc, analysisWake: analysisWake, billing: billingRepo, settings: st,
 	}
 	return &assembled{handler: r, bg: bg}, nil
 }

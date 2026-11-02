@@ -70,7 +70,6 @@ async function placeAtPlayhead(g: SmartcutStoreGeneration) {
         <div class="sc-gen-row">
           <span class="sc-gen-kind">{{ smartcutGenerationKindLabels[g.kind] ?? g.kind }}</span>
           <span class="sc-gen-time">{{ timeText(g.createdAt) }}</span>
-          <span class="sc-gen-credits">✦{{ g.credits }}</span>
         </div>
         <p class="sc-note" :class="{ 'sc-error': g.status === 'failed' }">{{ smartcutGenerationStatusText(g) }}</p>
         <div v-if="placeable(g) || g.status === 'failed'" class="sc-seg">
@@ -112,6 +111,5 @@ async function placeAtPlayhead(g: SmartcutStoreGeneration) {
 .sc-gen-list li.placeable { cursor: grab; border-style: dashed; }
 .sc-gen-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
 .sc-gen-kind { font-weight: 600; }
-.sc-gen-time, .sc-gen-credits { color: var(--portal-muted); font-variant-numeric: tabular-nums; }
-.sc-gen-credits { margin-left: auto; }
+.sc-gen-time { color: var(--portal-muted); font-variant-numeric: tabular-nums; }
 </style>

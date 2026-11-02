@@ -14,6 +14,8 @@ export interface StartupError {
 interface HostApp {
   GetStartupError(): Promise<StartupError | null>;
   RetryStartup(): Promise<StartupError | null>;
+  OpenDataDir?(): Promise<void>;
+  OpenLogDir?(): Promise<void>;
 }
 
 export function hostApp(): HostApp | null {
@@ -24,3 +26,24 @@ export function hostApp(): HostApp | null {
 
 /** 启动错误页的路由。 */
 export const STARTUP_ERROR_PATH = "/startup-error";
+
+/** 宿主推来的实时事件名（与 Go 侧 app.EventName 一致）。 */
+export const HOST_EVENT = "tabtv:event";
+
+interface HostRuntime {
+  EventsOn(name: string, cb: (...data: unknown[]) => void): () => void;
+}
+
+/**
+ * 订阅宿主推来的实时事件（dev/01 TTD-3）。每条事件是 `{topic, payload}`。
+ * 没有宿主时返回 null（浏览器直接打开开发服务器）。
+ */
+export function onHostEvent(cb: (topic: string, payload: unknown) => void): (() => void) | null {
+  if (typeof window === "undefined") return null;
+  const rt = (window as unknown as { runtime?: HostRuntime }).runtime;
+  if (!rt?.EventsOn) return null;
+  return rt.EventsOn(HOST_EVENT, (...data: unknown[]) => {
+    const ev = data[0] as { topic?: unknown; payload?: unknown } | undefined;
+    if (ev && typeof ev.topic === "string") cb(ev.topic, ev.payload);
+  });
+}

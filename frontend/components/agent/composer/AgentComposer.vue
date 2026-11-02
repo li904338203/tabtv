@@ -15,7 +15,7 @@
  * ⚠️ 同一次「发送意图」（含网络重试）用同一个 `Idempotency-Key`：连点、重试只建一个项目；
  *    用户改了任何输入就是新的意图，换一个键。
  * ⚠️ 失败时**保留正文与附件**，在输入框下方显示服务端原话（断网说断网）。
- * ⚠️ 页面打开时**不写任何数据**：只读配置、模型、余额、报价。
+ * ⚠️ 页面打开时**不写任何数据**：只读配置、模型、能力校验（报价接口）。
  *
  * `context='canvas'`（画布右侧 Agent 面板，AGT-29）：只有 Agent 模式，整块交给 `AgentModeComposer`
  * （技能、@ 引用、选中即引用、模型偏好、每轮单价、发送 / 停止）；下面这套直接生成的加载一律不跑。
@@ -34,11 +34,9 @@ import AttachmentChips, { type ComposerAttachment } from "./AttachmentChips.vue"
 import ComposerEditor from "./ComposerEditor.vue";
 import ModeSelect from "./ModeSelect.vue";
 import ModelPrefPopover, { type DirectPref } from "./ModelPrefPopover.vue";
-import PricePill from "./PricePill.vue";
 import type { JsonObject } from "~/types/canvas";
 import { asObject } from "~/utils/canvas";
-import { priceView, sendGate, type QuoteState } from "~/utils/composerPrice";
-import { creditBalanceOf } from "~/utils/accountPanel";
+import { sendGate, type QuoteState } from "~/utils/composerPrice";
 import { paramKey } from "~/utils/paramLayout";
 import { saveCreateDraft, takeCreateDraft } from "~/utils/createDraft";
 import { loginPath } from "~/utils/safeRedirect";
@@ -63,7 +61,6 @@ import type { MarketingOption } from "~/utils/marketingOptions";
 
 type ModelSummary = components["schemas"]["ModelSummaryResp"];
 type VoiceItem = components["schemas"]["VoiceResp"];
-type EstimateResponse = { credits?: number; unit?: string };
 type QuickResult = {
   projectId: string;
   nodeId: string;
@@ -102,7 +99,6 @@ const paramsByMode = reactive<Record<QuickMode, JsonObject>>({ video: {}, image:
 const modelsByMode = reactive<Record<QuickMode, ModelSummary[] | undefined>>({ video: undefined, image: undefined, audio: undefined });
 const attachments = ref<Array<ComposerAttachment & { file: File }>>([]);
 const quote = ref<QuoteState>({ loading: false });
-const balance = ref<number | undefined>();
 const sending = ref(false);
 const sendError = ref("");
 const voiceOpen = ref(false);
@@ -154,7 +150,6 @@ const unavailable = computed(() => {
   return out;
 });
 
-const price = computed(() => priceView(quote.value));
 const gate = computed(() => sendGate({
   readOnly: readOnly.value,
   sending: sending.value,
@@ -164,8 +159,7 @@ const gate = computed(() => sendGate({
   // 音色在 param_def 里是必填（与画布音频节点同一条：没选音色不让生成）。
   missingParam: mode.value === "audio" && !params.value.voiceId && !params.value.voice ? "请先选择音色" : undefined,
   modeUnavailable: unavailable.value[mode.value],
-  quote: quote.value,
-  balance: balance.value
+  quote: quote.value
 }));
 const placeholder = computed(() => readOnly.value
   ? "你在该工作区是只读，无法发起创作"
@@ -198,15 +192,6 @@ async function loadModels(target: QuickMode) {
   }
 }
 
-async function loadBalance() {
-  try {
-    // 契约是 `{ balance, grants }`（此前读老结构的 total，恒为 undefined）
-    balance.value = creditBalanceOf(await useApi()<unknown>("/credits"));
-  } catch {
-    balance.value = undefined;
-  }
-}
-
 async function bootstrap() {
   if (!auth.isAuthenticated) return;
   try {
@@ -215,7 +200,7 @@ async function bootstrap() {
     // 配置取不到时参数行为空，报价不会发起；不让整个输入框报错。
   }
   for (const item of QUICK_MODES) applyDefaults(item);
-  await Promise.all([...QUICK_MODES.map(loadModels), loadBalance()]);
+  await Promise.all(QUICK_MODES.map(loadModels));
   scheduleQuote();
 }
 
@@ -238,7 +223,7 @@ async function refreshQuote() {
   const quantities = quickQuantities(mode.value, params.value);
   quote.value = { ...quote.value, loading: true, error: undefined };
   try {
-    const response = await useApi()<EstimateResponse>("/generations/estimate", {
+    await useApi()<unknown>("/generations/estimate", {
       method: "POST",
       body: {
         modelCode,
@@ -249,7 +234,7 @@ async function refreshQuote() {
       }
     });
     if (seq !== quoteSeq) return;
-    quote.value = { loading: false, credits: response.credits ?? 0, unit: response.unit, ...quantities };
+    quote.value = { loading: false };
   } catch (cause) {
     if (seq !== quoteSeq) return;
     quote.value = { loading: false, error: quickErrorText(cause, import.meta.client ? navigator.onLine : true) };
@@ -431,7 +416,6 @@ async function send() {
   } catch (cause) {
     // ⚠️ 保留正文与附件，原话显示在输入框下方。
     sendError.value = quickErrorText(cause, navigator.onLine);
-    void loadBalance();
   } finally {
     sending.value = false;
   }
@@ -548,9 +532,6 @@ defineExpose({ setMode, applySkill, focus, fillText, addNodeRef, addMediaRef, op
         />
       </div>
       <div class="composer-group right">
-        <PricePill v-if="auth.isAuthenticated" :view="price" />
-        <NuxtLink v-if="gate.shortfall" to="/credits" class="composer-recharge">去充值</NuxtLink>
-        <span v-if="auth.isAuthenticated" class="composer-divider" aria-hidden="true" />
         <button
           type="button"
           class="composer-submit"
@@ -648,8 +629,6 @@ defineExpose({ setMode, applySkill, focus, fillText, addNodeRef, addMediaRef, op
   cursor: pointer;
 }
 .composer-submit:disabled { color: var(--portal-disabled-text); background: var(--portal-disabled-bg); cursor: not-allowed; }
-.composer-recharge { color: var(--portal-gold); font-size: 12px; text-decoration: none; white-space: nowrap; }
-.composer-recharge:hover { text-decoration: underline; }
 .composer-error, .composer-note { margin: 8px 0 0; font-size: 12px; }
 .composer-error { color: var(--portal-danger); }
 .composer-note { color: var(--portal-muted); }

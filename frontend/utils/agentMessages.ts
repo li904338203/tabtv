@@ -34,12 +34,6 @@ function num(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
-/** `✦6,400`：积分一律整数，千分位只是展示。 */
-export function credits(value: number | undefined | null): string {
-  const n = typeof value === "number" && Number.isFinite(value) ? Math.trunc(value) : 0;
-  return `✦${n.toLocaleString("en-US")}`;
-}
-
 /** 截取前 n 个字（按码点，不切半个汉字 / emoji），超出加省略号。 */
 export function clip(text: string, n: number): string {
   const chars = Array.from(text.replace(/\s+/g, " ").trim());
@@ -131,10 +125,11 @@ export function stepTitle(step: Pick<AgentStep, "tool" | "status" | "display" | 
       title = { label: "查看商品图", detail: index === undefined ? "" : `第 ${index} 张` };
       break;
     }
+    // tabtv 不计价（TT-T-14）：报价工具只用来确认模型能不能用。
     case "quote":
       title = d.available === false
-        ? { label: "估算费用", detail: str(d.blockedReason) || "暂不可用" }
-        : { label: "估算费用", detail: num(d.credits) === undefined ? "" : credits(num(d.credits)) };
+        ? { label: "检查模型可用性", detail: str(d.blockedReason) || "暂不可用" }
+        : { label: "检查模型可用性", detail: "" };
       break;
     case "ask_user":
       title = { label: "向你提问", detail: str(d.title) || str(args.title) };
@@ -145,7 +140,7 @@ export function stepTitle(step: Pick<AgentStep, "tool" | "status" | "display" | 
         : { label: "写入文档", detail: fileName || str(args.path).split("/").pop() || "" };
       break;
     case "submit_plan":
-      title = { label: "提交创作规划", detail: num(d.total) === undefined ? "" : `合计 ${credits(num(d.total))}` };
+      title = { label: "提交创作规划", detail: "" };
       break;
     case "canvas_apply": {
       const added = Array.isArray(d.nodeIds) ? d.nodeIds.length : 0;
@@ -180,7 +175,6 @@ export type StepOutputs = {
   state: "generating" | "done" | "failed" | "cancelled";
   generationId?: string;
   nodeId?: string;
-  credits?: number;
   modelCode?: string;
   items: OutputItem[];
   error?: string;
@@ -190,7 +184,7 @@ export type StepOutputs = {
  * 生成步骤的产出（设计 03 §3.5）。不是生成步骤或还没受理（没有 generationId）返回 undefined。
  * ⚠️ **全部列出**：`outputs` 是数组，只给 `[0]` 等于把另外几张已经扣过费的产出丢了（GO-40）。
  */
-export function stepOutputs(step: Pick<AgentStep, "tool" | "status" | "display" | "generationId" | "errorMessage" | "creditsQuoted">): StepOutputs | undefined {
+export function stepOutputs(step: Pick<AgentStep, "tool" | "status" | "display" | "generationId" | "errorMessage">): StepOutputs | undefined {
   if (!PAID_TOOLS.has(step.tool)) return undefined;
   const d = obj(step.display);
   const generationId = step.generationId || str(d.generationId) || undefined;
@@ -213,7 +207,6 @@ export function stepOutputs(step: Pick<AgentStep, "tool" | "status" | "display" 
     state,
     generationId,
     nodeId: str(d.nodeId) || undefined,
-    credits: num(d.credits) ?? step.creditsQuoted,
     modelCode: str(d.modelCode) || undefined,
     items,
     error: state === "failed" || state === "cancelled" ? step.errorMessage || str(result.error) || undefined : undefined
@@ -383,7 +376,7 @@ export function buildTimeline(input: TimelineInput): TimelineItem[] {
 
   // 页脚：已结束的轮次，排在该轮最后一项之后
   for (const turn of turns.values()) {
-    // 系统轮（唤醒、作废规划）不花钱时不出页脚，免得刷一排「✦0」
+    // 系统轮（唤醒、作废规划）没有调用模型时不出页脚，免得刷一排空页脚
     if (!TERMINAL_TURN.has(turn.status) || (turn.trigger !== "user" && turn.creditsCost === 0 && turn.callCount === 0)) continue;
     const own = entries.filter(entry => entry.turnId === turn.id);
     if (!own.length) continue;
@@ -463,15 +456,8 @@ export type FooterView = {
   time: string;
   /** 页脚显示的完整日期时间「2026/10/25 18:22:38」（design/03 R-6）。 */
   dateTime: string;
-  /**
-   * 「本轮消耗 ✦64」；有退回时「本轮消耗 ✦64（已退回 ✦20）」。
-   * ⚠️ 消耗 = 对话 + 生成，**不减退回**：退回单列，否则用户拿它对账本流水会对不上（CLAUDE.md §5.18）。
-   */
-  spent: string;
-  /** 「对话 ✦4（2 次调用）」（悬浮提示里的明细） */
-  chat: string;
-  generation: string;
-  refunded: string;
+  /** 「本轮调用模型 2 次」（悬浮提示）；没有调用时为空串。tabtv 不计价，不显示金额（TT-T-14）。 */
+  calls: string;
 };
 
 function clock(value: string | null | undefined): string {
@@ -481,24 +467,10 @@ function clock(value: string | null | undefined): string {
   return `${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}`;
 }
 
-/**
- * 每轮页脚：对话｜生成｜退回，**三项全部来自账本**（`GET .../turns/{id}/ledger`）。
- * ⚠️ 退回单列，不从花费里减 —— 减掉的话「已花」与余额变化、账本流水都对不上（§5.18）。
- * 账本还没取到时金额给「—」，不拿轮次上的报价顶替（报价不是实扣）。
- */
-export function turnFooter(ledger: Pick<AgentTurnLedger, "chat" | "generation" | "refunded"> | undefined, turn: Pick<AgentTurn, "callCount" | "finishedAt" | "createdAt">): FooterView {
-  const amount = (value: number | undefined) => (ledger ? credits(value) : "—");
-  const calls = turn.callCount > 0 ? `（${turn.callCount} 次调用）` : "";
-  const chat = `对话 ${amount(ledger?.chat)}${calls}`;
-  const generation = `生成 ${amount(ledger?.generation)}`;
-  const refunded = `退回 ${amount(ledger?.refunded)}`;
+/** 每轮页脚：完成时间与调用次数。 */
+export function turnFooter(turn: Pick<AgentTurn, "callCount" | "finishedAt" | "createdAt">): FooterView {
   const at = turn.finishedAt ?? turn.createdAt;
-  const time = clock(at);
-  const back = ledger?.refunded ?? 0;
-  const spent = ledger
-    ? `本轮消耗 ${credits((ledger.chat ?? 0) + (ledger.generation ?? 0))}${back > 0 ? `（已退回 ${credits(back)}）` : ""}`
-    : "本轮消耗 —";
-  return { time, dateTime: dateClock(at), spent, chat, generation, refunded };
+  return { time: clock(at), dateTime: dateClock(at), calls: turn.callCount > 0 ? `本轮调用模型 ${turn.callCount} 次` : "" };
 }
 
 /** 「2026/10/25 18:22:38」；取不到时间返回空串。 */
@@ -512,33 +484,26 @@ function dateClock(value: string | null | undefined): string {
 
 // ---------------------------------------------------------------- 卡片
 
-export type PlanItemView = { label: string; meta: string; amount: string; blocked?: string; userFixable?: boolean };
+export type PlanItemView = { label: string; meta: string; blocked?: string; userFixable?: boolean };
 
 export type PlanCardView = {
   title: string;
   docPath?: string;
   items: PlanItemView[];
-  total: string;
-  balance: string;
-  /** 「确认后预计剩余 ✦6,340」；余额不足时为空 */
-  remaining?: string;
-  shortfall?: string;
   canApprove: boolean;
-  /** 「确认并开始 ✦60」 */
+  /** 「确认并开始」 */
   approveText: string;
-  /** 余额不足 / 有不可用项时按钮旁边那句话 */
+  /** 有不可用项时按钮旁边那句话 */
   blockedText?: string;
-  budgetNote: string;
 };
 
 const UNIT_LABELS: Record<string, string> = { second: "秒", image: "张", time: "次" };
 
 /**
- * 规划确认卡（设计 03 §3.4 C）。**金额全部取自服务端 payload**：逐项 credits、total、balance、
- * shortfall、canApprove 都是服务端报价算好的，这里只拼措辞；「剩余」= balance − total 只是展示。
- * @param liveBalance 当前余额（`/credits`）。与卡片上的不同（用户去充值了）时据它重算差额与能否点确认。
+ * 规划确认卡（设计 03 §3.4 C）。tabtv 不计价（TT-T-14）：只列每一项用哪个模型、做多少，不显示金额与余额；
+ * 能不能确认取服务端的 `canApprove`（它同时管不可用项）。
  */
-export function planCardView(payload: unknown, liveBalance?: number): PlanCardView {
+export function planCardView(payload: unknown): PlanCardView {
   const p = obj(payload);
   const items = (Array.isArray(p.items) ? p.items : []).map((raw): PlanItemView => {
     const it = obj(raw);
@@ -550,48 +515,33 @@ export function planCardView(payload: unknown, liveBalance?: number): PlanCardVi
     return {
       label: str(it.label) || kind || "计划项",
       meta,
-      amount: blocked ? "—" : credits(num(it.credits)),
       ...(blocked ? { blocked, userFixable: Boolean(it.userFixable) } : {})
     };
   });
-  const total = num(p.total) ?? 0;
   const anyBlocked = items.some(item => item.blocked);
-  // 充值回来：报价时的余额已经过时，用刚从 /credits 取到的余额重算差额（两个数都是服务端给的）。
-  // 批准时服务端还会按同一组参数重新报价、重新查余额，这里放行只是让按钮能点。
-  const live = typeof liveBalance === "number" && Number.isFinite(liveBalance) && liveBalance !== num(p.balance);
-  const balance = live ? liveBalance! : num(p.balance) ?? 0;
-  const shortfall = live ? Math.max(0, total - balance) : num(p.shortfall) ?? 0;
-  const canApprove = live ? !anyBlocked && items.length > 0 && shortfall === 0 : p.canApprove === true;
+  const canApprove = p.canApprove === true;
   let blockedText: string | undefined;
   if (anyBlocked) blockedText = "有计划项暂不可用，请调整规划";
-  else if (shortfall > 0) blockedText = `余额不足，还差 ${credits(shortfall)}`;
   else if (!canApprove) blockedText = "暂时无法确认";
   return {
     title: str(p.title) || "请确认创作规划",
     ...(str(p.docPath) ? { docPath: str(p.docPath) } : {}),
     items,
-    total: credits(total),
-    balance: credits(balance),
-    ...(shortfall > 0 ? { shortfall: credits(shortfall) } : { remaining: credits(balance - total) }),
     canApprove,
-    approveText: `确认并开始 ${credits(total)}`,
-    ...(blockedText ? { blockedText } : {}),
-    budgetNote: `确认后 Agent 最多花费 ${credits(total)}；需要更多时会再问你`
+    approveText: "确认并开始",
+    ...(blockedText ? { blockedText } : {})
   };
 }
 
-export type BudgetCardView = { reason: string; requested: string; usage: string; approveText: string };
+export type BudgetCardView = { reason: string; approveText: string };
 
-/** 追加额度卡（设计 03 §3.4 D）。 */
+/**
+ * 追加额度卡（设计 03 §3.4 D）。tabtv 全部 0 价，后端不会再发这张卡（额度永远够）；
+ * 保留解析是为了历史会话里已有的卡片还能显示，金额不再展示。
+ */
 export function budgetCardView(payload: unknown): BudgetCardView {
   const p = obj(payload);
-  const refunded = num(p.refunded) ?? 0;
-  return {
-    reason: str(p.reason) || "需要追加额度才能继续",
-    requested: credits(num(p.requested)),
-    usage: `已花 ${credits(num(p.used))} / 额度 ${credits(num(p.approved))}${refunded > 0 ? `（失败已退回 ${credits(refunded)}）` : ""}`,
-    approveText: `追加 ${credits(num(p.requested))}`
-  };
+  return { reason: str(p.reason) || "需要追加额度才能继续", approveText: "同意继续" };
 }
 
 export const CARD_STATUS_LABELS: Record<string, string> = { submitted: "已提交", voided: "已作废", expired: "已过期" };

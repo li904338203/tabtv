@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	"github.com/li904338203/tabtv/backend/internal/media/repo"
 )
 
@@ -65,7 +67,7 @@ func (s *Service) largeThumb(ctx context.Context, body io.ReadCloser, m repo.Med
 
 // ffmpegThumb 用 ffmpeg 把图缩到 width 宽（等比、高取偶数），格式跟着原图（PNG 仍是 PNG、JPEG 仍是 JPEG）。
 func ffmpegThumb(ctx context.Context, src, dir, mime string, width int) ([]byte, error) {
-	if _, err := exec.LookPath("ffmpeg"); err != nil {
+	if _, err := exec.LookPath(ffbin.FFmpeg()); err != nil {
 		return nil, fmt.Errorf("本机没有 ffmpeg")
 	}
 	select {
@@ -88,7 +90,7 @@ func ffmpegThumb(ctx context.Context, src, dir, mime string, width int) ([]byte,
 	}
 	args = append(args, out)
 	var stderr bytes.Buffer
-	cmd := exec.CommandContext(ctx, "ffmpeg", args...)
+	cmd := exec.CommandContext(ctx, ffbin.FFmpeg(), args...)
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
 		return nil, fmt.Errorf("ffmpeg 缩略失败：%w %s", err, tail(stderr.String(), 300))

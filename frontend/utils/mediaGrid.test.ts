@@ -36,16 +36,9 @@ describe("mediaGridColumns 断点", () => {
     expect(mediaGridColumns(375)).toBe(1);
   });
 
-  it("作品墙与模板墙的 CSS 断点与 MEDIA_GRID_BREAKPOINTS 逐条一致（改一边另一边会红）", () => {
-    expect(cssBreakpoints(source("../components/showcase/ShowcaseGrid.vue"), "showcase-grid")).toEqual(MEDIA_GRID_BREAKPOINTS);
+  // 作品墙（ShowcaseGrid）随精选作品一起删除（TT-T-13），只剩模板墙。
+  it("模板墙的 CSS 断点与 MEDIA_GRID_BREAKPOINTS 逐条一致（改一边另一边会红）", () => {
     expect(cssBreakpoints(source("../components/marketing/TemplateWall.vue"), "tpl-grid")).toEqual(MEDIA_GRID_BREAKPOINTS);
-  });
-
-  it("作品墙的悬停播放走 mediaGrid，不再自己写一份", () => {
-    const text = source("../components/showcase/ShowcaseGrid.vue");
-    expect(text).toContain("startHoverPreview");
-    expect(text).toContain("stopHoverPreview");
-    expect(text).not.toMatch(/video\.play\(\)/);
   });
 });
 

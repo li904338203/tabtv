@@ -63,9 +63,9 @@ describe("smartcutClipToolReason：工具能不能用、为什么", () => {
 describe("smartcutMusicDuration：时长缺省取从播放头到成片结尾，按模型的单次范围截", () => {
   const volc = { name: "豆包音乐", minSec: 30, maxSec: 60 };
   const eleven = { name: "ElevenLabs Music", minSec: 3, maxSec: 300 };
-  it("成片 9 秒、播放头 1.5 秒、豆包最短 30 秒：按 30 秒生成计费，放进时间线时裁到 7.5 秒（说出来）", () => {
+  it("成片 9 秒、播放头 1.5 秒、豆包最短 30 秒：按 30 秒生成，放进时间线时裁到 7.5 秒（说出来）", () => {
     expect(smartcutMusicDuration(9000, 1500, null, volc)).toEqual({ sec: 30, wantMs: 7500, landMs: 7500,
-      note: "「豆包音乐」单次最短 30 秒：按 30 秒生成并计费，放进时间线时裁到 7.5 秒" });
+      note: "「豆包音乐」单次最短 30 秒：按 30 秒生成，放进时间线时裁到 7.5 秒" });
   });
   it("播放头在 0 就是成片时长；ElevenLabs 按向上取整的秒数生成、落下去按毫秒收在结尾，不额外说明", () => {
     expect(smartcutMusicDuration(8200, 0, null, eleven)).toEqual({ sec: 9, wantMs: 8200, landMs: 8200, note: "" });
@@ -86,17 +86,15 @@ describe("smartcutMusicDuration：时长缺省取从播放头到成片结尾，�
   });
 });
 
-describe("smartcutClipQuoteText：确认框的花费说明", () => {
-  it("写明花费、按多少秒计费、发给哪家、失败退款（价格只用服务端的报价）", () => {
+describe("smartcutClipQuoteText：确认框的说明", () => {
+  it("写明发给哪家、可以生成时不拦（不显示金额）", () => {
     const text = smartcutClipQuoteText({ credits: 6, unitPrice: 2, unit: "per_second", durationSec: 3, modelCode: "erase-m", blockers: [], items: 1 }, "火山 MediaKit 去字幕");
-    expect(text).toEqual({ cost: "✦6", detail: "按 3 秒计费（✦2/秒）", provider: "会发给「火山 MediaKit 去字幕」处理",
-      refund: "生成失败或取消会按原批次全额退款", blocked: "" });
+    expect(text).toEqual({ provider: "会发给「火山 MediaKit 去字幕」处理", blocked: "" });
   });
   it("有 blockers 时确认置灰并原样给出原因", () => {
     const text = smartcutClipQuoteText({ credits: 0, modelCode: "erase-m", items: 0,
       blockers: [{ code: "42204", message: "这个模型只收公网地址的素材……请联系管理员" }] }, "去字幕");
     expect(text.blocked).toBe("这个模型只收公网地址的素材……请联系管理员");
-    expect(text.cost).toBe("");
   });
 });
 

@@ -12,7 +12,7 @@
  */
 import CharacterPickerDialog from "~/components/agent/composer/marketing/CharacterPickerDialog.vue";
 import { effectivePrefs as resolvePrefs, prefModel, resolveReasoningModel } from "~/utils/agentPrefs";
-import { optimizePriceView } from "~/utils/composerPrice";
+import { reasoningUnavailable } from "~/utils/composerPrice";
 import { marketingCharacterLimits, type MarketingPickedCharacter } from "~/utils/marketingLibrary";
 
 const props = defineProps<{
@@ -40,7 +40,7 @@ onMounted(() => {
 const prefs = computed(() => resolvePrefs(prefsStore.prefs, {}));
 const reasoningOptions = computed(() => prefsStore.options("reasoning"));
 const reasoningCode = computed(() => resolveReasoningModel(prefs.value, reasoningOptions.value));
-const optimizePrice = computed(() => optimizePriceView(
+const optimizeUnavailable = computed(() => reasoningUnavailable(
   prefsStore.option("reasoning", reasoningCode.value) ?? reasoningOptions.value[0]
 ));
 const limits = computed(() => ({ ...marketingCharacterLimits(marketing.config.value), maxRefs: props.maxRefs }));
@@ -52,7 +52,7 @@ const readOnly = computed(() => workspace.current?.role === "viewer");
     :selected="selected"
     :limits="limits"
     :read-only="readOnly"
-    :optimize-price="optimizePrice"
+    :optimize-unavailable="optimizeUnavailable"
     :optimize-model-code="reasoningCode"
     :default-model-code="prefModel(prefs, 'image') ?? ''"
     @close="emit('close')"

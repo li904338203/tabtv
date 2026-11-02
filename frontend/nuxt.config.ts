@@ -64,6 +64,13 @@ export default defineNuxtConfig({
   // 3D 导演台的开发用沙盒（DRT-12，dev/03 §14）：**只在开发态**注册 `/__director-sandbox`，生产构建里没有这个路由。
   // 画布接入之前，引擎与编辑器的浏览器检查都在这里做（检查脚本拦截场景 fixture，不碰用户的真实画布）。
   $development: {
+    // 开发态：浏览器直接打开 Nuxt 开发服务器时，接口代理到无窗口后端（backend/cmd/headless，默认 :8180）。
+    // ⚠️ target 必须带 `/api`：nitro 会剥掉前缀，不带的话后端收到的是 `/v1/...`。
+    nitro: {
+      devProxy: {
+        "/api": { target: "http://127.0.0.1:8180/api", changeOrigin: true }
+      }
+    },
     hooks: {
       "pages:extend"(pages) {
         pages.push({

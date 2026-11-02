@@ -6,7 +6,8 @@
  *   `@` 来的多带一个 `fromNodeId`（DR-D-05）。两者都是节点参数，走画布正常的自动保存；
  * - 「发送」**不在这里发请求**：校验通过后打开编辑器并自动搭景一次（`pendingAction: build`）——
  *   提案要在 3D 视口里预览、确认之后才落进场景（DR-F-102）；
- * - 「免费」与「本小时已用 N / M 次」来自 build-config（DRK-4），置灰理由与编辑器里的 AI 条用同一个函数。
+ * - 「本小时已用 N / M 次」来自 build-config（DRK-4），置灰理由与编辑器里的 AI 条用同一个函数。
+ *   tabtv 不计价（TT-T-14）：原「免费」价格角标删除，次数说明留在原位置。
  */
 import { ArrowUp, AtSign, Sparkles } from "@lucide/vue";
 import { ElMessage } from "element-plus";
@@ -154,12 +155,12 @@ onMounted(() => {
         <small v-if="disabledReason" class="director-build-reason">{{ disabledReason }}</small>
         <button v-if="build.state.value === 'error'" type="button" class="director-build-retry" @click="build.refresh()">重试</button>
       </span>
-      <span class="node-estimate director-build-price" :title="usage || '免费'">免费<small v-if="usage">{{ usage }}</small></span>
+      <span class="node-estimate director-build-price" :title="usage || undefined"><small v-if="usage">{{ usage }}</small></span>
       <button
         class="node-generate"
         type="button"
         :disabled="Boolean(disabledReason)"
-        :title="disabledReason || '发送：打开导演台并按描述搭景（免费）'"
+        :title="disabledReason || '发送：打开导演台并按描述搭景'"
         aria-label="发送"
         @click="send"
       ><ArrowUp :size="18" /></button>

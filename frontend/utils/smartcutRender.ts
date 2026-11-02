@@ -1,9 +1,9 @@
 /**
  * 剪辑台导出面板的纯逻辑（docs/agent/smartcut SCT-18；移植自 `.backup/web-rewrite/app/features/timeline/render.ts`）。
  *
- * ⚠️ 与整图运行面板同一套规矩：**预检免费、导出单独一个按钮**。抽成纯函数是为了能表驱动测 ——
+ * ⚠️ 与整图运行面板同一套规矩：**预检与导出是两个按钮**。抽成纯函数是为了能表驱动测 ——
  *    这些判断错了的表现都是"用户在不该点的时候点了"或"该拦的没拦住"，而界面上一切正常。
- * ⚠️ 导出本身免费（SCK-3），但按用户限流（SC-F-73）；余额那一条保留给计价非 0 的情形。
+ * ⚠️ 导出按用户限流（SC-F-73）。
  * ⚠️ 所有导出带 `smartcut` 前缀并显式 import（Nuxt 自动导入重名会悄悄顶替，CLAUDE.md §5.28）。
  */
 import type { components } from "@tabtv/api-client";
@@ -44,20 +44,18 @@ export type SmartcutRenderBlockerExtra = {
  * 能不能点「导出」，不能的话说清为什么。
  *
  * ⚠️ **禁用了就要说为什么**：一个灰掉的按钮不解释原因，用户只会反复点它。
- *    余额不足要在**点之前**说清还差多少，而不是点了收一个 422。
- * ⚠️ 顺序 = 最根本的排前面：权限 → 只读 → 运行中 → 限流 → 片段生成中 → 没预检 → 问题 → 余额。
- *    限流与生成中排在「先预检」之前：预检免费、真能点，用户点完看到「能导出」再点导出，
+ * ⚠️ 顺序 = 最根本的排前面：权限 → 只读 → 运行中 → 限流 → 片段生成中 → 没预检 → 问题。
+ *    限流与生成中排在「先预检」之前：预检真能点，用户点完看到「能导出」再点导出，
  *    才收到一句「太频繁」或「还在生成」—— 原因从头到尾都在那里。
  */
 export function smartcutRenderBlocker(
   pre: RenderPrecheck | null,
-  balance: number | null,
   running: boolean,
   /**
    * 没有导出权限时的原因；空串表示有权限（P12-04）。
    *
    * ⚠️ **排在所有其他判定之前**：一个只读成员看到"先点预检"会去点预检，
-   *    预检还真能点（它免费且只读），然后看到"余额不足"又去充值 —— 而真正的原因从头到尾都是他没有导出权限。
+   *    预检还真能点（它只读），然后又去改别的 —— 而真正的原因从头到尾都是他没有导出权限。
    */
   denied = "",
   extra: SmartcutRenderBlockerExtra = {}
@@ -78,10 +76,6 @@ export function smartcutRenderBlocker(
     return pre.issues.length === 1 ? first : `${first}（共 ${pre.issues.length} 项待修）`;
   }
   if (!pre.runnable) return "这条时间线现在不能导出";
-  // ⚠️ 不知道余额时**不猜**：猜"够"会让用户点了收 422，猜"不够"会把一次本来能跑的导出拦掉。
-  if (balance !== null && pre.credits > balance) {
-    return `积分不足，还差 ${pre.credits - balance} 分`;
-  }
   return "";
 }
 
@@ -151,13 +145,11 @@ export function smartcutMergeJob<T extends Pick<RenderJob, "id" | "status" | "pr
  * 预检结论那行摘要。
  *
  * ⚠️ 要把**时长**说出来：用户看到"3 分 20 秒 / 3 段"才知道导出的是不是他以为的那一版。
- *    有问题时不报价：那个价是按"能跑"算出来的，报出来会让用户以为能点。
  */
 export function smartcutPrecheckSummary(pre: RenderPrecheck, durationText: string): string {
   const parts = [`${pre.clipCount} 段`, durationText];
   const subtitles = pre.subtitles ?? 0;
   if (subtitles > 0) parts.push(`${subtitles} 条字幕`);
-  if (pre.issues.length === 0) parts.push(pre.credits > 0 ? `预计 ${pre.credits} 积分` : "免费");
   return parts.join(" · ");
 }
 

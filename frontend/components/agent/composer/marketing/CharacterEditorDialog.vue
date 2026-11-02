@@ -5,8 +5,8 @@
  * - 左：大图预览 + 「添加图片 / 设为主图 / 删除」+「n / 9」+ 缩略图条（首张即主图）；候选图区（生成结果，点选加入，满 9 张禁用）。
  *   上传处写明「请上传非真人形象…」（MKT-PARAM-25，不做自动识别）。
  * - 下：形象描述 + 画风（`/canvas/styles`，可不选）+ 参考图（上传）+ 模型（`/models?resultType=image`）+ 数量 +
- *   「AI 帮写」（`OptimizePromptButton purpose="character_appearance"`，与创造页一键优化同价同链路）+
- *   「生成角色 ✦N」—— N 来自 `POST /marketing/characters/generate {dryRun:true}`，输入变了 300ms 防抖重报。
+ *   「AI 帮写」（`OptimizePromptButton purpose="character_appearance"`，与创造页一键优化同链路）+
+ *   「生成角色」—— 能不能生成由 `POST /marketing/characters/generate {dryRun:true}` 判，输入变了 300ms 防抖重判。
  * - 右：角色名称（即时校验，禁用字符表取配置；重名 409 标红）、音色描述、上传音频（单段、可播放）+ 如实说明（MK-25）。
  * - 保存：新建 `POST` / 编辑 `PUT` 带 `version`；40902 说清是谁改的并保留输入。
  *
@@ -15,7 +15,7 @@
  * 候选记 sessionStorage 24 小时（按角色分组），关掉再开仍可添加（MKT-UX-15：已扣费的结果不悄悄丢）。
  *
  * 规则全在 `utils/marketingLibrary.ts`（有单测）。
- * ⚠️ 打开只发 GET（详情、模型、画风、余额、已记录的生成状态）；报价（dryRun）只在写了描述之后才发，不扣费。
+ * ⚠️ 打开只发 GET（详情、模型、画风、已记录的生成状态）；dryRun 只在写了描述之后才发。
  * ⚠️ 本地选的文件用 object URL 预览，已有的受保护媒体走 `useAuthenticatedMedia` —— 两种都要释放。
  */
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -24,8 +24,6 @@ import OptimizePromptButton from "../OptimizePromptButton.vue";
 import { mediaThumbUrl } from "~/utils/authorizedMedia";
 import { apiFailure } from "~/utils/agentPanelBridge";
 import { isTerminalStatus } from "~/utils/asyncState";
-import { creditBalanceOf } from "~/utils/accountPanel";
-import type { OptimizePriceView } from "~/utils/composerPrice";
 import { workspaceTopic } from "~/utils/realtime";
 import {
   MARKETING_CHARACTER_UPLOAD_NOTE,
@@ -80,13 +78,13 @@ const props = withDefaults(defineProps<{
   characterId?: string;
   limits: MarketingCharacterLimits;
   readOnly?: boolean;
-  /** AI 帮写的价格（与创造页一键优化同一个 `optimizePriceView`）。 */
-  optimizePrice: OptimizePriceView;
+  /** AI 帮写用的推理模型不能用的原因（与创造页一键优化同一个判断）；为空可用。 */
+  optimizeUnavailable?: string;
   /** AI 帮写用的推理模型（与 Agent 对话同一个）。 */
   optimizeModelCode?: string;
   /** 默认图片模型（Agent 偏好里的图片模型）；不在列表里就用第一个。 */
   defaultModelCode?: string;
-}>(), { characterId: "", readOnly: false, optimizeModelCode: undefined, defaultModelCode: "" });
+}>(), { characterId: "", readOnly: false, optimizeUnavailable: "", optimizeModelCode: undefined, defaultModelCode: "" });
 
 const emit = defineEmits<{
   close: [];
@@ -140,7 +138,6 @@ const quoting = ref(false);
 const quoteError = ref("");
 const generating = ref(false);
 const genError = ref("");
-const balance = ref<number | undefined>();
 const entries = ref<MarketingCharGenEntry[]>([]);
 const tracks = ref<Record<string, GenTrack>>({});
 /** AI 帮写替换前的原文（可撤销一次，MKT-F-108）。 */
@@ -183,8 +180,7 @@ const genGate = computed(() => marketingCharacterGenGate({
   uploadingRefs: references.value.filter(item => item.status === "uploading").length,
   quoting: quoting.value,
   quoteError: quoteError.value,
-  quote: quote.value,
-  balance: balance.value
+  quote: quote.value
 }));
 const optimizeBlock = computed(() => (props.readOnly ? "你在该工作区是只读，不能使用 AI 帮写" : ""));
 /** 最近一条生成的状态（列在候选区标题旁）。 */
@@ -265,15 +261,6 @@ async function loadModels() {
     modelsError.value = models.value.length ? "" : "还没有可用的图片模型";
   } catch (cause) {
     modelsError.value = !navigator.onLine ? "网络已断开" : apiFailure(cause).message || "图片模型加载失败";
-  }
-}
-
-async function loadBalance() {
-  try {
-    // 契约是 `{ balance, grants }`（此前读老结构的 total，恒为 undefined）
-    balance.value = creditBalanceOf(await useApi()<unknown>("/credits"));
-  } catch {
-    balance.value = undefined;
   }
 }
 
@@ -448,7 +435,6 @@ function removeVoice() {
 function onOptimized(text: string) {
   undoAppearance.value = form.value.appearance;
   form.value = { ...form.value, appearance: text };
-  void loadBalance();
 }
 
 function undoOptimize() {
@@ -522,7 +508,6 @@ async function generate() {
     genError.value = !navigator.onLine ? "网络已断开，这次没有发出去" : apiFailure(cause).message;
   } finally {
     generating.value = false;
-    void loadBalance();
   }
 }
 
@@ -548,7 +533,6 @@ async function reconcile(id: string) {
     tracks.value = { ...tracks.value, [id]: { phase, candidates: phase === "success" ? marketingCandidatesOf(id, view.outputs ?? []) : [] } };
     if (isTerminalStatus(view.status)) {
       stopPolling(id);
-      if (phase !== "success") void loadBalance();
     }
   } catch (cause) {
     // 任务查不到了（换了工作区 / 被清理）：不再跟踪。其余错误（断网）下一轮再试。
@@ -689,7 +673,6 @@ onMounted(async () => {
   window.addEventListener("keydown", onKeydown, true);
   void load();
   void loadModels();
-  void loadBalance();
   restoreTracking();
   styles.value = await configStore.materials("style");
 });
@@ -813,13 +796,12 @@ defineExpose({ requestClose });
                 <OptimizePromptButton
                   :text="form.appearance"
                   :model-code="optimizeModelCode"
-                  :price="optimizePrice"
+                  :unavailable="optimizeUnavailable"
                   :block-reason="optimizeBlock"
                   purpose="character_appearance"
                   label="AI 帮写"
                   placement="top"
                   @replace="onOptimized"
-                  @charged="loadBalance"
                 />
                 <span class="ce-spacer" />
                 <select v-model="modelCode" class="ce-pill ce-select" aria-label="图片模型" :disabled="readOnly || !models.length" :title="modelsError">
@@ -829,11 +811,11 @@ defineExpose({ requestClose });
                 <select v-model.number="count" class="ce-pill ce-select ce-count-select" aria-label="生成张数" :disabled="readOnly">
                   <option v-for="n in genCounts" :key="n" :value="n">{{ n }} 张</option>
                 </select>
-                <button type="button" class="ce-generate" :disabled="genGate.disabled" :title="genGate.reason || '按报价扣费，失败全额退回'" @click="generate">
+                <button type="button" class="ce-generate" :disabled="genGate.disabled" :title="genGate.reason || '生成角色图片'" @click="generate">
                   <LoaderCircle v-if="generating || (quoting && form.appearance.trim())" :size="13" class="spin" /><Sparkles v-else :size="13" />{{ genGate.label }}
                 </button>
               </div>
-              <p v-if="genGate.disabled && genGate.reason && !readOnly && form.appearance.trim()" class="ce-hint" :class="{ warn: Boolean(quote?.blocked) || genGate.reason.startsWith('余额不足') }">{{ genGate.reason }}</p>
+              <p v-if="genGate.disabled && genGate.reason && !readOnly && form.appearance.trim()" class="ce-hint" :class="{ warn: Boolean(quote?.blocked) }">{{ genGate.reason }}</p>
               <p v-if="genError" class="ce-hint warn" role="alert">{{ genError }}</p>
             </div>
           </section>

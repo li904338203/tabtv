@@ -10,7 +10,6 @@ import { ElMessage } from "element-plus";
 import FileCard from "./FileCard.vue";
 import OutputCard from "./OutputCard.vue";
 import {
-  credits,
   mergedStepsTitle,
   stepFile,
   stepIcon,
@@ -99,11 +98,11 @@ function subtitleFor(childStep: AgentStep) {
         <p v-if="step.status === 'failed'" class="agent-error-text">{{ step.errorMessage || '这一步没有成功' }}</p>
         <p v-if="step.tool === 'load_skill' && display.description" class="agent-muted">{{ display.description }}</p>
         <p v-if="step.tool === 'quote'" class="agent-muted">
-          {{ display.label || display.modelCode }}<template v-if="display.available === false"> · {{ display.blockedReason || '暂不可用' }}</template><template v-else> · {{ credits(Number(display.credits ?? 0)) }}</template>
+          {{ display.label || display.modelCode }}<template v-if="display.available === false"> · {{ display.blockedReason || '暂不可用' }}</template><template v-else> · 可用</template>
         </p>
         <!-- 生成步骤的完整提示词不在这里展示（design/03 R-9）；成功的生成步骤也不能展开（R-10），参数行只在失败等可展开时出现。 -->
-        <p v-if="params.length || step.creditsQuoted" class="agent-muted">
-          {{ params.join(' · ') }}<template v-if="step.creditsQuoted"> · 费用 {{ credits(step.creditsQuoted) }}</template>
+        <p v-if="params.length" class="agent-muted">
+          {{ params.join(' · ') }}
         </p>
         <div v-if="nodeIds.length" class="agent-ref-chips">
           <button v-for="id in nodeIds" :key="id" type="button" class="agent-chip" title="在画布上定位" @click="locate(id)">▶ {{ canvasTitle(id) }}</button>

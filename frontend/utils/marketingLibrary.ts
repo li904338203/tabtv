@@ -649,9 +649,9 @@ export function marketingCharacterGenKey(input: MarketingCharacterGenInput, max:
 }
 
 /**
- * 「生成角色 ✦N」按钮（MKT-F-106、MKT-UX-17）：禁用理由给最根本的一条 ——
- * 只读 > 正在生成 > 缺描述 > 缺模型 > 描述超长 > 参考图上传中 > 报价中 / 报价失败 > 报价被拒 > 余额不足（写差额）。
- * ⚠️ 余额未知（没取到）时**不猜**：按能点处理，服务端会拦（42201，不扣费）。
+ * 「生成角色」按钮（MKT-F-106、MKT-UX-17）：禁用理由给最根本的一条 ——
+ * 只读 > 正在生成 > 缺描述 > 缺模型 > 描述超长 > 参考图上传中 > 校验中 / 校验失败 > 校验被拒。
+ * tabtv 不计价（TT-T-14）：dryRun 只用来判这个组合能不能生成，按钮上不显示价格。
  */
 export function marketingCharacterGenGate(input: {
   readOnly: boolean;
@@ -662,10 +662,9 @@ export function marketingCharacterGenGate(input: {
   uploadingRefs: number;
   quoting: boolean;
   quoteError: string;
-  quote: Pick<MarketingCharacterGenQuote, "credits" | "blocked" | "blockedReason"> | null;
-  balance: number | undefined;
+  quote: Pick<MarketingCharacterGenQuote, "blocked" | "blockedReason"> | null;
 }): { disabled: boolean; reason: string; label: string } {
-  const label = input.quote && !input.quote.blocked && !input.quoting ? `生成角色 ✦${input.quote.credits}` : "生成角色";
+  const label = "生成角色";
   const no = (reason: string) => ({ disabled: true, reason, label });
   if (input.readOnly) return no("你在该工作区是只读，不能生成角色");
   if (input.generating) return no("正在生成");
@@ -676,9 +675,6 @@ export function marketingCharacterGenGate(input: {
   if (input.uploadingRefs > 0) return no("参考图还在上传");
   if (input.quoting || !input.quote) return no(input.quoteError || "正在报价");
   if (input.quote.blocked) return no(input.quote.blockedReason || "当前组合不能生成");
-  if (input.balance !== undefined && input.balance < input.quote.credits) {
-    return no(`余额不足：需要 ✦${input.quote.credits}，当前 ✦${input.balance}，还差 ✦${input.quote.credits - input.balance}`);
-  }
   return { disabled: false, reason: "", label };
 }
 
@@ -687,15 +683,14 @@ export type MarketingGenPhase = "queued" | "running" | "success" | "failed" | "c
 /**
  * 一次生成的状态文案。
  * ⚠️ `unknown`（浏览器轮询耗尽）**不说失败、不提退款**（GAP-14）：任务多半还在跑。
- * ⚠️ 失败 / 取消说「已按原路退回」并指向积分明细 —— 退款以账本为准，前端不报一个自己算的数。
  */
 export function marketingGenStatusText(phase: MarketingGenPhase, outputs = 0): string {
   switch (phase) {
     case "queued": return "排队中…";
     case "running": return "生成中…";
     case "success": return outputs > 0 ? `已生成 ${outputs} 张，点选加入角色图片` : "已完成，但没有返回图片";
-    case "failed": return "这次没有生成成功，消耗的积分已全额退回（以积分明细为准）";
-    case "cancelled": return "已取消，消耗的积分已全额退回（以积分明细为准）";
+    case "failed": return "这次没有生成成功";
+    case "cancelled": return "已取消";
     default: return "仍在处理中，稍后再打开该角色查看结果";
   }
 }

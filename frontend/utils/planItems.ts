@@ -181,14 +181,12 @@ export type PlanVariantGroup = {
   title: string;
   /** 这一组的条目在 `payload.items` 里的下标（保持服务端顺序）。 */
   indexes: number[];
-  /** 本组小计（服务端逐项报价之和；被拦下的条目报价为 0，不计）。 */
-  subtotal: number;
 };
 
 /**
  * 确认卡按变体分组：**至少两个不同变体**时才分组（一个变体分组只是多一层标题），否则返回空数组、卡片照旧平铺。
  * 组的顺序 = 变体序号升序（与画布上从左到右的排列一致），0 组放最后；组内保持服务端顺序。
- * ⚠️ 小计只是把服务端每一行的报价加起来，**合计仍以服务端 `total` 为准**（不在页面上另算一个合计）。
+ * tabtv 不计价（TT-T-14）：不算小计。
  */
 export function planVariantGroups(items: readonly unknown[]): PlanVariantGroup[] {
   const groups = new Map<number, PlanVariantGroup>();
@@ -197,14 +195,12 @@ export function planVariantGroups(items: readonly unknown[]): PlanVariantGroup[]
     const variant = nonNegInt(it.variant) ?? 0;
     let group = groups.get(variant);
     if (!group) {
-      group = { variant, title: variant ? `变体 ${variant}` : "其他", indexes: [], subtotal: 0 };
+      group = { variant, title: variant ? `变体 ${variant}` : "其他", indexes: [] };
       groups.set(variant, group);
     }
     const label = typeof it.variantLabel === "string" ? it.variantLabel.trim() : "";
     if (variant && label && group.title === `变体 ${variant}`) group.title = `变体 ${variant} · ${label}`;
     group.indexes.push(index);
-    const blocked = Boolean(it.blockedCode) || Boolean(it.blockedReason);
-    group.subtotal += blocked ? 0 : nonNegInt(it.credits) ?? 0;
   });
   const variants = [...groups.keys()].filter(v => v > 0);
   if (variants.length < 2) return [];
@@ -225,9 +221,6 @@ export function planFailedItemKey(failure: { code?: number; details: Record<stri
 export type AgentPlanProgress = components["schemas"]["AgentPlanProgress"];
 export type AgentPlanItemProgress = components["schemas"]["AgentPlanItemProgress"];
 
-/** 余额不足没提交的那一项（受理时被账本拒）与「因前面余额不足停掉」的码；按码判不按文案。 */
-export const PLAN_ERR_INSUFFICIENT = "INSUFFICIENT_CREDITS";
-export const PLAN_ERR_STOPPED = "plan_stopped_insufficient_credits";
 
 export type PlanProgressTone = "running" | "partial" | "success" | "failed" | "pending";
 
@@ -238,7 +231,7 @@ export type PlanProgressItemView = {
   state: AgentPlanItemProgress["state"];
   /** 「已完成」「生成中」「失败」…… */
   stateText: string;
-  /** 没成功的原因（余额不足 / 被停掉 / 生成失败分开说）；成功与进行中为空。 */
+  /** 没成功的原因（被停掉 / 生成失败分开说）；成功与进行中为空。 */
   reason: string;
   /** 能不能点「重试」；不能时 `retryBlocked` 说清为什么。 */
   canRetry: boolean;
@@ -249,7 +242,7 @@ export type PlanProgressView = {
   tone: PlanProgressTone;
   /** 「部分成功（2/3）」—— 直接用服务端的 succeeded / total，不自己数。 */
   summary: string;
-  /** 「失败 1 · 余额不足停止 1」；没有为空。 */
+  /** 「失败 1 · 停止 1」；没有为空。 */
   detail: string;
   items: PlanProgressItemView[];
 };
@@ -269,12 +262,13 @@ function progressItemTitle(item: AgentPlanItemProgress): string {
   return item.label || item.key;
 }
 
-/** 失败原因：余额不足（这一项被账本拒）、被停掉（前面一项余额不足）、生成失败（上游）三种分开说。 */
+/**
+ * 失败原因：被停掉、生成失败（上游）分开说。tabtv 全部 0 价，来源系统的「余额不足 / 因余额不足停止」不会再出现（TT-T-14）。
+ */
 function progressReason(item: AgentPlanItemProgress): string {
-  if (item.state === "stopped" || item.errorCode === PLAN_ERR_STOPPED) return "前面有一项余额不足，本项已停止：没有提交，也没有扣费";
+  if (item.state === "stopped") return "本项已停止，没有提交";
   if (item.state !== "failed") return "";
-  if (item.errorCode === PLAN_ERR_INSUFFICIENT) return "余额不足，没有提交，也没有扣费；充值后可重试";
-  return "生成没有成功，扣除的积分会退回（以本轮账单为准）";
+  return "生成没有成功";
 }
 
 /**
@@ -282,9 +276,7 @@ function progressReason(item: AgentPlanItemProgress): string {
  * 没有进度、只有一项（单项失败已有步骤行上的「重试这一步」），或这一项还都没开始。
  *
  * 重试可用性（只读服务端给的状态，**不在前端判断要不要停后续**）：
- * - `failed`：可重试（余额不足的那一项要先充值，文案里说清）；
- * - `stopped`：只要还有「余额不足」的那一项没解决（它仍是 failed + INSUFFICIENT_CREDITS），就先重试那一项 ——
- *   直接重试被停掉的会再次被停掉；那一项解决之后才可以单独重试；
+ * - `failed` / `stopped`：可重试；
  * - 成功 / 进行中 / 未开始：不给重试；
  * - `blockedReason`（只读成员、Agent 正忙等，与输入框同一判定）非空时全部不可点，并说那一句。
  */
@@ -300,22 +292,15 @@ export function planProgressView(progress: AgentPlanProgress | null | undefined,
     pending: ["pending", "尚未开始"]
   };
   const [tone, summary] = SUMMARY[progress.status] ?? ["failed", `未知状态${ofTotal}`];
-  const insufficient = progress.items.find(item => item.state === "failed" && item.errorCode === PLAN_ERR_INSUFFICIENT);
-  const failedUpstream = progress.items.filter(item => item.state === "failed" && item.errorCode !== PLAN_ERR_INSUFFICIENT).length;
-  const failedCredits = progress.items.filter(item => item.state === "failed" && item.errorCode === PLAN_ERR_INSUFFICIENT).length;
+  const failed = progress.items.filter(item => item.state === "failed").length;
   const detail = [
-    failedUpstream ? `失败 ${failedUpstream}` : "",
-    failedCredits ? `余额不足 ${failedCredits}` : "",
-    progress.stopped ? `余额不足停止 ${progress.stopped}` : "",
+    failed ? `失败 ${failed}` : "",
+    progress.stopped ? `停止 ${progress.stopped}` : "",
     progress.running ? `生成中 ${progress.running}` : ""
   ].filter(Boolean).join(" · ");
   const items = progress.items.map((item): PlanProgressItemView => {
     let canRetry = item.state === "failed" || item.state === "stopped";
     let retryBlocked = "";
-    if (canRetry && item.state === "stopped" && insufficient) {
-      canRetry = false;
-      retryBlocked = `先充值并重试「${progressItemTitle(insufficient)}」`;
-    }
     if (canRetry && blockedReason) {
       canRetry = false;
       retryBlocked = blockedReason;
@@ -324,7 +309,7 @@ export function planProgressView(progress: AgentPlanProgress | null | undefined,
       key: item.key,
       title: progressItemTitle(item),
       state: item.state,
-      stateText: item.state === "failed" && item.errorCode === PLAN_ERR_INSUFFICIENT ? "余额不足" : STATE_TEXT[item.state] ?? item.state,
+      stateText: STATE_TEXT[item.state] ?? item.state,
       reason: progressReason(item),
       canRetry,
       retryBlocked

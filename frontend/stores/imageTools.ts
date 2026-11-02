@@ -1,16 +1,14 @@
-import type { components } from "@tabtv/api-client";
 import { estimateRejectionText } from "~/utils/canvas";
 import type { ImageToolInfo, ImageToolRequest } from "~/utils/imageTools";
 
 /**
- * ⚠️ 服务端实际回的是 `credits`（`catalog/app.Quote`），契约里写的是 `creditsCost` —— 两个都认（同 stores/generation）。
+ * 一次编辑器的能力校验（`POST /generations/estimate`，IMG-UX-02：校验中显示加载，失败显示原因并禁用发送）。
+ * tabtv 不计价（TT-T-14）：只关心能不能发，不显示积分。
  */
-type QuoteResponse = Partial<components["schemas"]["GenerationQuote"]> & { credits?: number };
-
-/** 一次编辑器报价的状态（IMG-UX-02：报价中显示加载，失败显示原因并禁用发送）。 */
 export type ImageToolQuote = {
   loading: boolean;
-  credits?: number;
+  /** 校验通过（可以发送）。 */
+  ready?: boolean;
   /** 报价失败的原因（服务端原话；400 带 details.path / 422 类原样显示，其余回落到通用文案）。 */
   error?: string;
 };
@@ -142,7 +140,7 @@ export const useImageToolsStore = defineStore("image-tools", () => {
     quoteSeq.set(key, seq);
     quotes.value[key] = { ...quotes.value[key], loading: true };
     try {
-      const response = await useApi()<QuoteResponse>("/generations/estimate", {
+      await useApi()<unknown>("/generations/estimate", {
         method: "POST",
         body: {
           modelCode: request.modelCode,
@@ -154,7 +152,7 @@ export const useImageToolsStore = defineStore("image-tools", () => {
         }
       });
       if (quoteSeq.get(key) !== seq) return quotes.value[key];
-      quotes.value[key] = { loading: false, credits: response.credits ?? response.creditsCost ?? 0 };
+      quotes.value[key] = { loading: false, ready: true };
     } catch (cause) {
       if (quoteSeq.get(key) !== seq) return quotes.value[key];
       quotes.value[key] = { loading: false, error: quoteErrorText(cause) };

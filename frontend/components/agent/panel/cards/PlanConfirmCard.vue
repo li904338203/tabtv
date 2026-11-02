@@ -2,31 +2,27 @@
 /**
  * 规划确认卡（`submit_plan`，设计 03 §3.4 C —— 最关键的一张）。
  *
- * - **逐项列费用**、合计、当前余额 → 确认后预计剩余；确认按钮上直接写金额（对比 XYQ-101 确认时不给费用）。
- * - 金额**全部来自服务端 payload**（`planCardView` 只拼措辞，不推算）。
- * - 余额不足：按钮置灰、写「余额不足，还差 ✦x」+「去充值」（新标签页打开，回来时按最新余额重算）。
- * - 价格变了：服务端回 409 `reason=price_changed` 并把新报价写回卡片，这里提示「价格已更新」，
- *   由用户核对后再点一次 —— 不替他自动确认一个他没看过的价。
+ * - 逐项列出要生成什么、用哪个模型、做多少。tabtv 不计价（TT-T-14）：不显示费用、合计与余额。
+ * - 能不能确认取服务端的 `canApprove`（`planCardView` 只拼措辞）。
  * - 「需要调整」：展开意见框，提交后此卡作废、Agent 回到规划。
  *
  * 营销会话（MKT-T-24，营销 dev/03 §3.1；条目字段见 MKT-T-20 `AgentPlanItem`，逻辑在 `utils/planItems`）：
  * - `notices`（口播类的如实提示，服务端追加）**置顶**；
  * - 营销条目多显示变体标签、选项、选用的商品图缩略图（角标 = 发给模型的顺序）与「共 X 张，本项用 Y 张（模型上限 L）」；
  * - 「更换」打开 `ProductImagePicker`，选好的序号随批准以 `itemOverrides` 提交。换了图**不在页面估价**：
- *   服务端重报价，合计不变直接批准，变了回 409 + 新报价（已按换后的图写回卡片）→ 卡片刷新、用户再确认一次。
+ *   服务端重新核对，有变化时回 409（已按换后的图写回卡片）→ 卡片刷新、用户再确认一次。
  * - 通用会话的卡片没有这些字段，渲染与提交体与改动前一致（`{decision:"approve"}`）。
  *
  * 批量 / 裂变（MKT-T-29，MKT-F-50 / 53、MKT-AC-17）：
- * - 两个以上变体时按变体分组（组头「变体 N · 说明」+ 本组小计），每一行仍是服务端的逐项报价；
- *   **合计只显示服务端的 `total`**，不在页面上另算一个。
- * - 素材裂变条目显示服务端写的 `fissionNote`（走视频生视频还是重新生成、为什么、本项花多少）。
+ * - 两个以上变体时按变体分组（组头「变体 N · 说明」）。
+ * - 素材裂变条目显示服务端写的 `fissionNote`（走视频生视频还是重新生成、为什么）。
  * - 批准回 42215：`details.key` 指向的那一项标红并滚到它（之前只有一句错误原话，用户要自己去找是哪一项）。
  */
 import { FileText, ImageIcon } from "@lucide/vue";
 import CardSummary from "./CardSummary.vue";
 import FileCard from "../messages/FileCard.vue";
 import ProductImagePicker from "../../composer/marketing/ProductImagePicker.vue";
-import { credits, planCardView, type AgentCard, type PlanItemView } from "~/utils/agentMessages";
+import { planCardView, type AgentCard, type PlanItemView } from "~/utils/agentMessages";
 import { apiFailure } from "~/utils/agentPanelBridge";
 import { mediaThumbUrl } from "~/utils/authorizedMedia";
 import { marketingProductTitle } from "~/utils/marketingLibrary";
@@ -42,11 +38,9 @@ import {
 } from "~/utils/planItems";
 
 const props = defineProps<{ card: AgentCard; readOnlyReason?: string; submit: (submission: Record<string, unknown>) => Promise<void> }>();
-const generation = useGenerationStore();
 const agent = useAgentStore();
 
-const liveBalance = ref<number>();
-const view = computed(() => planCardView(props.card.payload, liveBalance.value));
+const view = computed(() => planCardView(props.card.payload));
 const adjusting = ref(false);
 const comment = ref("");
 const busy = ref(false);
@@ -62,14 +56,14 @@ const notices = computed(() => planNotices(props.card.payload));
 const groups = computed(() => planVariantGroups(rawItems.value));
 /** 渲染顺序：分组时「组头 + 组内条目」，否则原样平铺。 */
 type PlanItemRow = { kind: "item"; key: string; index: number; item: PlanItemView };
-const rows = computed<Array<{ kind: "group"; key: string; title: string; subtotal: string } | PlanItemRow>>(() => {
+const rows = computed<Array<{ kind: "group"; key: string; title: string } | PlanItemRow>>(() => {
   const itemRow = (index: number): PlanItemRow[] => {
     const item = view.value.items[index];
     return item ? [{ kind: "item", key: `i${index}`, index, item }] : [];
   };
   if (!groups.value.length) return view.value.items.flatMap((_, index) => itemRow(index));
   return groups.value.flatMap(group => [
-    { kind: "group" as const, key: `g${group.variant}`, title: group.title, subtotal: credits(group.subtotal) },
+    { kind: "group" as const, key: `g${group.variant}`, title: group.title },
     ...group.indexes.flatMap(itemRow)
   ]);
 });
@@ -106,17 +100,6 @@ watch(() => marketing.value.flatMap((_, i) => selectionOf(i).mediaIds), ids => {
   void thumbs.appendAll([...new Set(ids)].map(id => ({ key: id, url: mediaThumbUrl(id, 160) })));
 }, { immediate: true });
 
-/** 从充值页回来：重新取余额（卡片上的余额是报价那一刻的）。 */
-async function refreshBalance() {
-  if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
-  await generation.loadBalance();
-  liveBalance.value = generation.balance;
-}
-onMounted(() => document.addEventListener("visibilitychange", refreshBalance));
-onBeforeUnmount(() => document.removeEventListener("visibilitychange", refreshBalance));
-
-// 卡片被重新报价（payload 变了）：以服务端新给的余额为准
-watch(() => props.card.payload, () => { liveBalance.value = undefined; });
 // 条目真的变了（409 后服务端按换后的图写回了新报价）：本地的换图选择作废 —— 卡片上已经是换后的结果。
 // 只看条目内容不看对象身份：每次对账都会换一个新对象，按身份清的话用户选到一半就被清掉。
 watch(() => JSON.stringify(rawItems.value), (next, prev) => {
@@ -135,7 +118,7 @@ async function send(submission: Record<string, unknown>) {
     await props.submit(submission);
   } catch (cause) {
     const failure = apiFailure(cause);
-    if (failure.details.reason === "price_changed") notice.value = "价格已更新，请核对新的费用后再确认";
+    if (failure.details.reason === "price_changed") notice.value = "规划已按最新配置更新，请核对后再确认";
     else if (failure.details.reason === "plan_doc_changed") notice.value = "规划文档在确认前被修改过，这张卡已作废，Agent 会按最新文档重新规划";
     else error.value = failure.message;
     failedKey.value = planFailedItemKey(failure);
@@ -175,7 +158,7 @@ function resetChange(key: string) {
 </script>
 
 <template>
-  <CardSummary v-if="card.status !== 'pending'" :title="view.title" :status="card.status" :detail="card.status === 'submitted' && card.submission?.decision === 'approve' ? `已批准 ${view.total}` : undefined" />
+  <CardSummary v-if="card.status !== 'pending'" :title="view.title" :status="card.status" :detail="card.status === 'submitted' && card.submission?.decision === 'approve' ? '已批准' : undefined" />
   <section v-else ref="root" class="agent-card is-plan" :data-card-id="card.id">
     <header class="agent-card-title">请确认创作规划</header>
     <ul v-if="notices.length" class="plan-notices" role="note">
@@ -188,7 +171,7 @@ function resetChange(key: string) {
       <span class="agent-muted">将要生成</span>
       <ul class="agent-plan-items">
         <template v-for="row in rows" :key="row.key">
-        <li v-if="row.kind === 'group'" class="plan-group"><span>{{ row.title }}</span><em>小计 {{ row.subtotal }}</em></li>
+        <li v-if="row.kind === 'group'" class="plan-group"><span>{{ row.title }}</span></li>
         <li
           v-else
           :class="{ 'is-blocked': row.item.blocked, 'is-marketing': marketing[row.index], 'plan-failed': failedKey && marketing[row.index]?.key === failedKey, 'in-group': groups.length }"
@@ -231,20 +214,13 @@ function resetChange(key: string) {
             <small v-if="marketing[row.index]?.fissionNote" class="plan-fission">{{ marketing[row.index]!.fissionNote }}</small>
             <small v-if="row.item.blocked" class="agent-error-text">{{ row.item.blocked }}</small>
           </span>
-          <em>{{ row.item.amount }}</em>
         </li>
         </template>
         <li v-if="!view.items.length" class="agent-muted">（没有计划项）</li>
       </ul>
-      <div class="agent-plan-total"><span>合计</span><strong>{{ view.total }}</strong></div>
-      <p class="agent-plan-balance">
-        当前余额 {{ view.balance }}
-        <template v-if="view.remaining"> → 确认后预计剩余 {{ view.remaining }}</template>
-      </p>
-      <p v-if="overrides.length" class="agent-muted plan-reprice">已更换 {{ overrides.length }} 项的商品图：确认时按新选择重新报价，费用有变化会先请你再确认一次</p>
+      <p v-if="overrides.length" class="agent-muted plan-reprice">已更换 {{ overrides.length }} 项的商品图：确认时按新选择重新核对，有变化会先请你再确认一次</p>
     </div>
 
-    <p class="agent-muted agent-plan-note">{{ view.budgetNote }}</p>
     <p v-if="notice" class="agent-notice">{{ notice }}</p>
     <p v-if="error" class="agent-error-text">{{ error }}</p>
 
@@ -264,7 +240,6 @@ function resetChange(key: string) {
       <span class="agent-plan-confirm">
         <small v-if="view.blockedText" class="agent-error-text">{{ view.blockedText }}</small>
         <small v-else-if="changing" class="agent-muted">先确定或取消换图</small>
-        <NuxtLink v-if="view.shortfall" to="/credits" target="_blank" class="agent-link-button">去充值</NuxtLink>
         <button type="button" class="agent-primary" :disabled="!view.canApprove || busy || Boolean(changing)" :title="view.blockedText || ''" @click="approve">{{ view.approveText }}</button>
       </span>
     </footer>

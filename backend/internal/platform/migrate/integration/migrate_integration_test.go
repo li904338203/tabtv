@@ -57,8 +57,8 @@ func TestIntegration_空库迁移与回滚(t *testing.T) {
 	// 而不是某次迁移顺手删表后没人发现。新增建表的迁移时同步改这里。
 	if got := count(t, r.DB(),
 		`select count(*) from information_schema.tables
-		 where table_schema='public' and table_name<>'schema_migration'`); got != 118 {
-		t.Errorf("期望 118 张业务表，实际 %d", got)
+		 where table_schema='public' and table_name<>'schema_migration'`); got != 119 {
+		t.Errorf("期望 119 张业务表，实际 %d", got)
 	}
 
 	// 版本号不写死：它随每次迁移递增，写死等于每加一条迁移就改一次测试，

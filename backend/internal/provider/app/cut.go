@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	gendomain "github.com/li904338203/tabtv/backend/internal/generation/domain"
 
 	genapp "github.com/li904338203/tabtv/backend/internal/generation/app"
@@ -233,7 +235,7 @@ func (p *HTTPProvider) fetchSource(ctx context.Context, mediaID int64, dst strin
 
 // runCut 跑一次 ffmpeg：占一个 CPU 名额、带超时，失败时带 stderr 的尾巴回来。
 func (p *HTTPProvider) runCut(ctx context.Context, args []string) error {
-	if _, err := exec.LookPath("ffmpeg"); err != nil {
+	if _, err := exec.LookPath(ffbin.FFmpeg()); err != nil {
 		return errors.New("Worker 上没有 ffmpeg，截不出输入区间")
 	}
 	release, err := p.ffSem.Acquire(ctx)
@@ -244,7 +246,7 @@ func (p *HTTPProvider) runCut(ctx context.Context, args []string) error {
 	cctx, cancel := context.WithTimeout(ctx, cutTimeout)
 	defer cancel()
 	var stderr bytes.Buffer
-	cmd := exec.CommandContext(cctx, "ffmpeg", args...)
+	cmd := exec.CommandContext(cctx, ffbin.FFmpeg(), args...)
 	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
 		tail := strings.TrimSpace(stderr.String())

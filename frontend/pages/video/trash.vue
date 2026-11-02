@@ -4,7 +4,7 @@ import { ArrowLeft, RotateCcw, Trash2, TriangleAlert, Video } from "@lucide/vue"
 import { ElMessage, ElMessageBox } from "element-plus";
 import { projectCoverUrl } from "~/utils/authorizedMedia";
 
-definePageMeta({ layout: "platform", middleware: "auth" });
+definePageMeta({ layout: "platform" });
 
 // ⚠️ 类型取自**生成的新契约**。老类型描述的是 `{list,total}` 页码分页 ——
 //    照它读 `response.list`，新后端下恒为 undefined，于是回收站**永远显示「是空的」**，

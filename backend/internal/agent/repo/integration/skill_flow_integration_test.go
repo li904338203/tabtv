@@ -229,8 +229,9 @@ func TestSeed_重复执行不覆盖已改内容(t *testing.T) {
 	}
 
 	// 运营改了正文与一份附属文档、停用了一个技能。
+	// 用户在设置页改过（tabtv：内置版本规则据 is_user_modified 判断，TT-T-24）。
 	if _, err := e.pool.Exec(ctx, `update agent_skill set body = '运营定稿的正文', is_enabled = false,
-		version = version + 1 where code = 'video_single'`); err != nil {
+		is_user_modified = true, version = version + 1 where code = 'video_single'`); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := e.pool.Exec(ctx, `update agent_skill_reference set body = '运营定稿的指引'

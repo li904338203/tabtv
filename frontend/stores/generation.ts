@@ -5,7 +5,6 @@ import { watch as watchSource } from "vue";
 import { authorizedMediaRequest } from "~/utils/authorizedMedia";
 import { isTerminalStatus, pollExhausted } from "~/utils/asyncState";
 import { eventTarget, workspaceTopic } from "~/utils/realtime";
-import { creditBalanceOf } from "~/utils/accountPanel";
 
 /**
  * 受理请求 —— **形状由新后端决定**（`generation/transport.create`）。
@@ -90,7 +89,6 @@ export const useGenerationStore = defineStore("generation", () => {
   const auth = useAuthStore();
   const config = useRuntimeConfig();
   const estimates = ref<Record<string, number>>({});
-  const balance = ref(0);
   // 连接、握手、续期、退避都在 realtime store；这里只关心「本页的工作区 topic 订上了没有」。
   const realtime = useRealtimeStore();
   // 当前订着的工作区 topic；空串 = 没订（未打开画布或还没有工作区）。
@@ -157,7 +155,6 @@ export const useGenerationStore = defineStore("generation", () => {
     if (!id) throw new Error("接口响应缺少生成 ID");
     watch(nodeId, id, created.status ?? "queued");
     void poll(nodeId, id);
-    await loadBalance();
     return id;
   }
 
@@ -170,7 +167,6 @@ export const useGenerationStore = defineStore("generation", () => {
       error: "用户已取消"
     });
     canvas.scheduleSave();
-    await loadBalance();
   }
 
   async function retry(nodeId: string, generationId: string) {
@@ -184,7 +180,6 @@ export const useGenerationStore = defineStore("generation", () => {
     if (!id) throw new Error("接口响应缺少生成 ID");
     watch(nodeId, id, created.status ?? "queued");
     void poll(nodeId, id);
-    await loadBalance();
   }
 
   async function poll(nodeId: string, generationId: string) {
@@ -230,12 +225,10 @@ export const useGenerationStore = defineStore("generation", () => {
       if (generationId) await applyOutput(nodeId, await firstOutput(generationId));
       if (generationId) active.delete(generationId);
       if (onCanvas) canvas.scheduleSave();
-      await loadBalance();
-    } else if (response.status === "failed" || cancelled) {
+      } else if (response.status === "failed" || cancelled) {
       if (generationId) active.delete(generationId);
       if (onCanvas) canvas.scheduleSave();
-      await loadBalance();
-    }
+      }
   }
 
   function watch(nodeId: string, generationId: string, status: string) {
@@ -280,7 +273,6 @@ export const useGenerationStore = defineStore("generation", () => {
     }
     syncTopic();
     ensureRealtime();
-    void loadBalance();
   }
 
   function close() {
@@ -436,19 +428,8 @@ export const useGenerationStore = defineStore("generation", () => {
     });
   }
 
-  async function loadBalance() {
-    try {
-      // ⚠️ 契约是 `{ balance, grants }`：此前读老结构的 `total`，恒为 undefined（画布顶栏的 ⚡ 不显示数字）
-      const response = await useApi()<unknown>("/credits");
-      balance.value = creditBalanceOf(response) ?? 0;
-    } catch {
-      balance.value = 0;
-    }
-  }
-
   return {
     estimates,
-    balance,
     connectionState,
     estimate,
     generate,
@@ -459,7 +440,6 @@ export const useGenerationStore = defineStore("generation", () => {
     restore,
     // 发布到画布的导演台截图（DRT-17）：节点是当场建的，`restore()` 只在页面挂载时跑过一次 ——
     // 不对新节点单独 restore 的话，它们直到刷新都是空的，看着像发布失败（DRB-7）
-    restoreNode,
-    loadBalance
+    restoreNode
   };
 });

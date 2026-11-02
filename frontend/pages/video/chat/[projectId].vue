@@ -7,7 +7,7 @@
  *
  * ⚠️ 不渲染画布、**不加载也不保存 canvasData**：不调 `canvas.load`、不碰画布 store —— 画布 store 是全局的，
  *    里面可能还留着上一个打开过的画布，所以面板组件在这一页一律不读它（桥上 `canvasLoaded: false`）。
- * ⚠️ 打开页面只读不写：项目名（只取名字）、余额、会话列表与详情；订阅 `project:{id}` 与对账沿用
+ * ⚠️ 打开页面只读不写：项目名（只取名字）、会话列表与详情；订阅 `project:{id}` 与对账沿用
  *    `agent.openProject`。写只发生在用户发送 / 提交卡片 / 改偏好时。
  * 「在画布中查看」= 跳画布页并带 `?node=`（画布页只平移选中、不写数据）。
  */
@@ -16,9 +16,8 @@ import { ArrowUpRight, Brain, FolderOpen, History, LoaderCircle, Plus, SlidersHo
 import AgentPanel from "~/components/agent/panel/AgentPanel.vue";
 import { AGENT_PANEL_BRIDGE } from "~/utils/agentPanelBridge";
 import { agentCanvasViewPath, agentChatPath, parseSessionParam } from "~/utils/agentChat";
-import { creditBalanceOf } from "~/utils/accountPanel";
 
-definePageMeta({ middleware: "auth" });
+definePageMeta({});
 
 type ProjectResponse = Pick<components["schemas"]["Project"], "id" | "name">;
 
@@ -30,8 +29,6 @@ const projectId = String(route.params.projectId);
 const projectName = ref("");
 const ready = ref(false);
 const error = ref("");
-/** 余额；没取到为 undefined（不显示，不猜）。 */
-const balance = ref<number | undefined>();
 let unmounted = false;
 
 /** 面板 → 「画布」：这一页没有画布，定位 = 跳画布页并带 `?node=`（同一会话、面板展开）。 */
@@ -49,20 +46,6 @@ const canvasPath = computed(() => agentCanvasViewPath(projectId, { sessionId: ag
 const sessionTitle = computed(() => agent.current?.session.title || (agent.currentId ? "" : "新会话"));
 
 useHead(() => ({ title: projectName.value ? `${projectName.value} · 对话` : "对话" }));
-
-async function loadBalance() {
-  try {
-    // 契约是 `{ balance, grants }`（此前读老结构的 total，恒为 undefined）
-    balance.value = creditBalanceOf(await useApi()<unknown>("/credits"));
-  } catch {
-    balance.value = undefined;
-  }
-}
-
-// 一轮跑完（回到空闲 / 等确认 / 失败）时余额可能变了：重取一次（只读）。
-watch(() => agent.current?.state, (next, prev) => {
-  if (prev && next !== prev && (next === "idle" || next === "failed" || next === "awaiting_approval" || next === "awaiting_input")) void loadBalance();
-});
 
 /**
  * 地址栏跟着当前会话走（刷新后还是这个会话；复制链接给同事打开的是同一个会话）。
@@ -82,7 +65,6 @@ onMounted(async () => {
     projectName.value = project.name ?? "";
     ready.value = true;
     void agent.openProject(projectId, parseSessionParam(route.query.session)).catch(() => undefined);
-    void loadBalance();
   } catch (cause) {
     error.value = cause instanceof Error ? cause.message : "项目加载失败";
   }
@@ -110,10 +92,6 @@ onBeforeUnmount(() => {
               <button type="button" class="agent-chat-icon" title="新建会话（正在运行的会话不受影响）" aria-label="新建会话" @click="newSession()"><Plus :size="17" /></button>
             </div>
             <div class="agent-chat-right">
-              <span v-if="balance !== undefined" class="agent-chat-credits" title="积分余额"><Sparkles :size="13" />{{ balance.toLocaleString('en-US') }}</span>
-              <span v-if="balance !== undefined" class="agent-chat-dot" aria-hidden="true">·</span>
-              <NuxtLink to="/membership" class="agent-chat-link">开会员</NuxtLink>
-              <span class="agent-chat-sep" aria-hidden="true" />
               <button type="button" class="agent-chat-pill" :class="{ active: filesOpen }" @click="openFiles()"><FolderOpen :size="14" />对话文件</button>
               <span class="agent-chat-sep" aria-hidden="true" />
               <button type="button" class="agent-chat-icon" title="创作偏好（本会话的模型与参数）" aria-label="创作偏好" @click="openPrefs()"><SlidersHorizontal :size="16" /></button>
@@ -149,11 +127,6 @@ onBeforeUnmount(() => {
 .agent-chat-icon:hover, .agent-chat-icon.active { color: var(--canvas-text); background: var(--canvas-raised); }
 .agent-chat-icon .agent-red-dot { position: absolute; top: 4px; right: 4px; width: 6px; height: 6px; }
 
-.agent-chat-credits { display: inline-flex; align-items: center; gap: 4px; color: var(--cv-n90); font-size: 12px; font-weight: 600; }
-.agent-chat-credits :deep(svg) { color: var(--canvas-cyan); }
-.agent-chat-dot { color: var(--canvas-faint); }
-.agent-chat-link { color: var(--cv-n90); font-size: 12px; text-decoration: none; }
-.agent-chat-link:hover { color: var(--canvas-gold); }
 .agent-chat-sep { width: 1px; height: 14px; margin: 0 4px; background: var(--canvas-line-strong); }
 
 .agent-chat-pill { height: 28px; display: inline-flex; align-items: center; gap: 5px; border: 0; border-radius: 7px; padding: 0 10px; color: var(--cv-n90); background: var(--canvas-raised); font: inherit; font-size: 12px; text-decoration: none; white-space: nowrap; cursor: pointer; }

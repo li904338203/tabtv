@@ -2,10 +2,10 @@
 /**
  * 生成产出（设计 03 §3.5）。
  *
- * - 生成中：预计时间 + 「取消 ✦x」（写明退回多少）。与画布节点上的取消是**同一个接口**
- *   （`POST /generations/{id}/cancel`），退款只发生一次。超过预计时间说「仍在处理」，不说失败（GAP-14）。
+ * - 生成中：预计时间 + 「取消」。与画布节点上的取消是**同一个接口**
+ *   （`POST /generations/{id}/cancel`）。超过预计时间说「仍在处理」，不说失败（GAP-14）。
  * - 完成：缩略图**全部列出**（多产出不只给第一张，GO-40）；点击在面板内预览，「在画布中查看」定位节点。
- * - 失败：原因 + 「重试」—— 重试交给 Agent（重新报价、走额度检查），这里不绕过额度直接重跑。
+ * - 失败：原因 + 「重试」—— 重试交给 Agent（重新校验模型与参数），这里不绕过它直接重跑。
  *
  * ⚠️ 受保护媒体一律 fetch → blob → objectURL（`useAuthenticatedMedia`），卸载 / 换产出时 `release()`；
  *    列表只取 `?w=320` 的缩略图（原图一张就上 MB）。视频不预取（缩略图端点对视频原样返回整片），
@@ -13,7 +13,7 @@
  */
 import { Download, Film, Image as ImageIcon, LoaderCircle, Music, X } from "@lucide/vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { credits, etaText, type OutputItem, type StepOutputs } from "~/utils/agentMessages";
+import { etaText, type OutputItem, type StepOutputs } from "~/utils/agentMessages";
 import { mediaThumbUrl } from "~/utils/authorizedMedia";
 import { saveBlob, extensionFor, safeFilename } from "~/utils/download";
 import { AGENT_PANEL_BRIDGE, NOOP_BRIDGE, apiFailure } from "~/utils/agentPanelBridge";
@@ -75,7 +75,7 @@ async function cancel() {
   const id = props.outputs.generationId;
   if (!id || cancelling.value) return;
   try {
-    await ElMessageBox.confirm(`取消后会退回 ${credits(props.outputs.credits)}，已经在跑的这一次就不会再有产出。`, "取消这次生成", {
+    await ElMessageBox.confirm("取消后这一次就不会再有产出。", "取消这次生成", {
       confirmButtonText: "取消生成",
       cancelButtonText: "继续等",
       closeOnClickModal: false
@@ -88,7 +88,7 @@ async function cancel() {
     // 节点在画布上：走 generation store（同一个接口，顺带把节点上的状态改成「已取消」）
     if (props.outputs.nodeId && nodeOnCanvas.value) await generation.cancel(props.outputs.nodeId, id);
     else await useApi()(`/generations/${id}/cancel`, { method: "POST" });
-    ElMessage.success("已取消，积分会按原批次退回");
+    ElMessage.success("已取消");
   } catch (cause) {
     ElMessage.error(apiFailure(cause).message);
   } finally {
@@ -131,7 +131,7 @@ async function download(item: OutputItem) {
       <LoaderCircle :size="14" class="spin" />
       <span>{{ eta }}</span>
       <button v-if="!readOnlyReason" type="button" class="agent-link-button" :disabled="cancelling" @click="cancel">
-        <X :size="12" />取消 {{ credits(outputs.credits) }}
+        <X :size="12" />取消
       </button>
     </div>
 
@@ -165,7 +165,6 @@ async function download(item: OutputItem) {
       </div>
       <div class="agent-output-actions">
         <button v-if="outputs.nodeId" type="button" class="agent-link-button" @click="locate">在画布中查看</button>
-        <span v-if="outputs.credits" class="agent-muted">{{ credits(outputs.credits) }}</span>
       </div>
     </template>
 

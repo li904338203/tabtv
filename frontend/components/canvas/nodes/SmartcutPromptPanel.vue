@@ -6,7 +6,7 @@
  * - 「+ 参考」两条路：从画布选（连一条线）、上传（建一个带「已有产出」的上传节点再连线）—— 都只改画布，
  *   画布保存成功后由画布按连线变化同步一次（SCD-49），素材条随后刷新；
  * - 要求、剪辑方式、规格、方案数：节点参数配置驱动（`configStore.nodeType("smartcut")`），改动走 markTouched + updateParams；
- * - 价格「免费 · 本小时已用 N / M 次」来自 `/smartcut/config`；「发送」不在这里发请求：打开剪辑台并带 `pendingAction: plan`。
+ * - 「本小时已用 N / M 次」来自 `/smartcut/config`（tabtv 不计价，原「免费」角标删除，TT-T-14）；「发送」不在这里发请求：打开剪辑台并带 `pendingAction: plan`。
  * - 发送的禁用原因（SC-UX-05）：只读、AI 剪辑进行中（摘要的 `activeCall`）、没有素材、不可用、被限流（说多久后再试，
  *   时间来自剪辑台里上一次 429 的 `retry_after_seconds`，SC-AC-35）。
  * - 剪辑台里点「去连音频节点 / 去连画面」时收起剪辑台、选中本节点，这里打开「+ 参考 → 从画布选」（`useSmartcutLocate`）。
@@ -262,12 +262,12 @@ onMounted(() => {
           @update:model-value="editParam(param.code ?? '', $event)"
         />
       </div>
-      <span class="node-estimate smartcut-price" :title="usage ? `AI 剪辑免费 · ${usage}` : 'AI 剪辑免费'">免费</span>
+      <span class="node-estimate smartcut-price" aria-hidden="true" />
       <button
         class="node-generate"
         type="button"
         :disabled="Boolean(sendReason)"
-        :title="sendReason || '发送：打开剪辑台并按要求剪一版（免费）'"
+        :title="sendReason || '发送：打开剪辑台并按要求剪一版'"
         aria-label="发送"
         data-testid="smartcut-send"
         @click="send"

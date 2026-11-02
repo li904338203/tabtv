@@ -53,7 +53,7 @@ func TestSubmitPlan_裂变条目文案写明路径与费用(t *testing.T) {
 	if !reflect.DeepEqual(v1.Inputs, map[string]int{"video": 1}) || len(v1.ProductMediaIDs) != 0 || v1.ImageLimit != nil {
 		t.Fatalf("视频生视频只发源视频、不选商品图：%+v", v1)
 	}
-	if v1.Credits != 50 || !strings.Contains(v1.FissionNote, "视频生视频") || !strings.Contains(v1.FissionNote, "✦50") {
+	if v1.Credits != 50 || !strings.Contains(v1.FissionNote, "视频生视频") || strings.Contains(v1.FissionNote, "✦") {
 		t.Fatalf("v1 说明应写明路径与费用：%d %q", v1.Credits, v1.FissionNote)
 	}
 
@@ -68,8 +68,8 @@ func TestSubmitPlan_裂变条目文案写明路径与费用(t *testing.T) {
 		v2.Credits == 0 {
 		t.Fatalf("v2 说明应写明原因：%q", v2.FissionNote)
 	}
-	if !strings.Contains(v2.FissionNote, "✦"+itoa(v2.Credits)) {
-		t.Fatalf("v2 说明里的金额应等于条目报价 %d：%q", v2.Credits, v2.FissionNote)
+	if strings.Contains(v2.FissionNote, "✦") {
+		t.Fatalf("v2 说明不再报金额（TT-T-09）：%q", v2.FissionNote)
 	}
 
 	// ③ 显式 sourceVideo:false 与图片条目：不是裂变条目，不带 video、没有说明。

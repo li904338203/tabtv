@@ -35,6 +35,7 @@ import (
 	"github.com/li904338203/tabtv/backend/internal/platform/id"
 	"github.com/li904338203/tabtv/backend/internal/platform/memqueue"
 	"github.com/li904338203/tabtv/backend/internal/platform/objstore"
+	"github.com/li904338203/tabtv/backend/internal/platform/settings"
 	providerapp "github.com/li904338203/tabtv/backend/internal/provider/app"
 	providerrepo "github.com/li904338203/tabtv/backend/internal/provider/repo"
 	"github.com/li904338203/tabtv/backend/internal/provider/transport"
@@ -66,6 +67,7 @@ type background struct {
 	agent        *agentapp.Service
 	analysisWake *wiring.AnalysisWake
 	billing      *billingrepo.Repo
+	settings     *settings.Store
 
 	broker *memqueue.Broker
 	wg     sync.WaitGroup
@@ -136,6 +138,14 @@ func (b *background) Start(ctx context.Context) error {
 	if cfg.GenerationMaxRunningPerPayer > 0 {
 		executor.MaxRunningPerPayer = cfg.GenerationMaxRunningPerPayer
 	}
+	// 并发上限改了即生效（设置 → 常规）。执行器每次领任务时读这个字段，单个 int 的写入无需加锁。
+	if b.settings != nil {
+		b.settings.Watch(settings.GenerationMaxRunning, func(v any) {
+			if n, ok := v.(int); ok && n > 0 {
+				executor.MaxRunningPerPayer = n
+			}
+		})
+	}
 	b.broker.Register(queueGeneration, gendomain.OutboxTopic, max(cfg.Queue.Prefetch, 4),
 		func(c context.Context, body []byte) memqueue.Action {
 			var msg gendomain.OutboxPayload
@@ -189,7 +199,15 @@ func (b *background) Start(ctx context.Context) error {
 	renderer.SetFFmpegSem(ffSem)
 	renderer.SetEvents(deps.Bus)
 	renderer.SetTypesetter(typeset.New(typeset.Options{}))
-	renderer.MaxConcurrent = 1 // 渲染并发（TT-F-33 的设置项在 TT-T-22 接入）
+	renderer.MaxConcurrent = 1
+	if b.settings != nil {
+		renderer.MaxConcurrent = b.settings.Int(settings.RenderMaxConcurrent)
+		b.settings.Watch(settings.RenderMaxConcurrent, func(v any) {
+			if n, ok := v.(int); ok && n > 0 {
+				renderer.MaxConcurrent = n
+			}
+		})
+	}
 	b.broker.Register(queueRender, timelineapp.RenderTopic, 1, func(c context.Context, body []byte) memqueue.Action {
 		var msg timelineapp.RenderPayload
 		if err := json.Unmarshal(body, &msg); err != nil {
@@ -237,7 +255,11 @@ func (b *background) Start(ctx context.Context) error {
 	}))
 	provLogs := providerrepo.New(pool, nextID)
 	b.go_(ctx, every(time.Hour, true, func(c context.Context) {
-		if n, err := provLogs.CleanupBefore(c, time.Now().Add(-cfg.LogRetention), 50000); err != nil {
+		retention := cfg.LogRetention
+		if b.settings != nil {
+			retention = time.Duration(b.settings.Int(settings.RequestLogRetention)) * 24 * time.Hour
+		}
+		if n, err := provLogs.CleanupBefore(c, time.Now().Add(-retention), 50000); err != nil {
 			log.Warn("清理上游调用日志失败", "error", err)
 		} else if n > 0 {
 			log.Info("清理过期上游调用日志", "rows", n)

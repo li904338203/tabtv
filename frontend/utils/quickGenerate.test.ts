@@ -172,8 +172,8 @@ describe("Agent 模式发送体（buildAgentSessionRequest）", () => {
 describe("失败文案", () => {
 
   it("断网说断网，其余带服务端原话", () => {
-    expect(quickErrorText(new Error("积分不足"), false)).toBe("网络已断开，恢复后再发送");
-    expect(quickErrorText(new Error("积分不足：还差 45"), true)).toBe("积分不足：还差 45");
+    expect(quickErrorText(new Error("模型暂时不可用"), false)).toBe("网络已断开，恢复后再发送");
+    expect(quickErrorText(new Error("模型暂时不可用：已下线"), true)).toBe("模型暂时不可用：已下线");
     expect(quickErrorText(new Error("请求失败"), true)).toBe("发送没有成功，请稍后重试");
   });
 });

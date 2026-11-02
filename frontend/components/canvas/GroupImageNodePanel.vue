@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { components } from '~/types/legacy';
 import type { components as ApiComponents } from "@tabtv/api-client";
-import { ArrowUp, Image as ImageIcon, LoaderCircle, Save, X, Zap } from "@lucide/vue";
+import { ArrowUp, Image as ImageIcon, LoaderCircle, Save, X } from "@lucide/vue";
 import { ElMessage } from "element-plus";
 import DynamicControl from "./DynamicControl.vue";
 import GenerationSizeControl, { type FormatParam } from "./GenerationSizeControl.vue";
@@ -150,8 +150,6 @@ const savedFingerprint = ref("");
 const modelOptions = ref<components["schemas"]["ModelSummaryResp"][]>([]);
 const modelOverrides = ref<JsonObject>({});
 const busy = ref<"save" | "generate" | "">("");
-const estimate = ref(0);
-let estimateTimer: ReturnType<typeof setTimeout> | undefined;
 let syncVersion = 0;
 /** 用户在面板里动过没有（提示词单独记）：载入镜头之前他就打了字的话，不能拿镜头上的词盖掉。 */
 let userTouched = false;
@@ -281,7 +279,6 @@ function updateParam(code: string, value: unknown) {
   if (code === "prompt") promptTouched = true;
   draft.value = { ...draft.value, [code]: value };
   if (code === "model" && typeof value === "string") void applyModel(value);
-  scheduleEstimate();
 }
 
 async function applyModel(modelCode: string) {
@@ -291,12 +288,11 @@ async function applyModel(modelCode: string) {
   modelOverrides.value = overrides;
   draft.value = reconcileParams(draft.value, modelReconcileRules(params.value, overrides));
   draft.value.count = 1;
-  scheduleEstimate();
 }
 
 async function syncModels() {
   // domain 必须跟着组类型走：视频子项的 operation 是 img2video/text2video，
-  // 拿 image 域去查一个模型都取不到，选择器会变成空壳、积分也算不出来
+  // 拿 image 域去查一个模型都取不到，选择器会变成空壳
   modelOptions.value = await configStore.models(videoGroup.value ? "video" : "image", operation.value);
   const selected = modelOptions.value.find(model => model.code === draft.value.model) ?? modelOptions.value[0];
   if (!selected?.code) return;
@@ -307,48 +303,11 @@ async function syncModels() {
 function selectImagePreset(preset: PresetItem) {
   userTouched = true;
   draft.value = applyImagePreset(draft.value, preset);
-  scheduleEstimate();
 }
 
 function clearPreset() {
   userTouched = true;
   draft.value = clearImagePreset(draft.value);
-  scheduleEstimate();
-}
-
-function requestBody() {
-  // ⚠️ 新后端的报价体：`modelCode`（老后端 `model`）、`inputs` 是 {角色:条数}；回的是 `credits`。
-  //    张数取解析好的参考图：照老形状数 `type:"image"` 的话恒为 0，能力矩阵的张数上限形同没查
-  const images = referenceInputs.value.length;
-  return {
-    modelCode: String(draft.value.model ?? ""),
-    operation: operation.value,
-    text: String(draft.value.prompt ?? ""),
-    durationSec: videoGroup.value ? Number(draft.value.duration ?? 0) || undefined : undefined,
-    inputs: images ? { image: images } : {},
-    count: 1
-  };
-}
-
-function scheduleEstimate() {
-  clearTimeout(estimateTimer);
-  estimateTimer = setTimeout(() => void refreshEstimate(), 300);
-}
-
-async function refreshEstimate() {
-  if (!canGenerate.value) {
-    estimate.value = 0;
-    return;
-  }
-  try {
-    const result = await useApi()<{ credits?: number; creditsCost?: number }>("/generations/estimate", {
-      method: "POST",
-      body: requestBody()
-    });
-    estimate.value = Number(result.credits ?? result.creditsCost ?? 0);
-  } catch {
-    estimate.value = 0;
-  }
 }
 
 /**
@@ -422,16 +381,13 @@ watch(() => props.item.itemId, resetDraft, { immediate: true });
 watch(() => JSON.stringify(props.item.paramsSnapshot ?? {}), () => {
   if (!dirty.value) resetDraft();
 });
-watch(() => props.item.status, scheduleEstimate);
 
 onMounted(async () => {
   await configStore.load();
   await syncModels();
   await loadSource();
-  scheduleEstimate();
 });
 
-onBeforeUnmount(() => clearTimeout(estimateTimer));
 </script>
 
 <template>
@@ -513,7 +469,8 @@ onBeforeUnmount(() => clearTimeout(estimateTimer));
         <LoaderCircle v-if="busy === 'save'" :size="16" class="spin" />
         <Save v-else :size="16" />
       </button>
-      <span class="node-estimate" title="预计积分"><Zap :size="14" />{{ estimate || '—' }}</span>
+      <!-- 原「预计积分」角标的位置（TT-T-14 删除金额）：保留空占位把发送键推到右侧，布局不变 -->
+      <span class="node-estimate" aria-hidden="true" />
       <button class="node-generate" type="button" :disabled="Boolean(busy) || running || !canGenerate" :title="`重新生成当前${subjectLabel}`" @click="generate">
         <LoaderCircle v-if="busy === 'generate' || running" :size="17" class="spin" />
         <ArrowUp v-else :size="18" />

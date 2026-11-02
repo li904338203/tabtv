@@ -6,19 +6,19 @@
  * 左栏「模型选择」（名称等宽字体 + 角标 + 灰色说明行，选中项左侧圆点高亮），右栏参数。
  * 浮层锚定在**整个输入框**上（不是触发器）：宽度跟输入框走，窄面板里自动变单栏，不会伸出可视区域。
  *
- * - ⚠️ **不可用的模型照样列出、置灰并写原因**（原因来自服务端报价的原话，如需要会员）—— 隐藏的话
- *   用户以为没有这个模型，而其实只差开一档会员；
- * - 推理模型页签只列 `agentCapable` 模型并显示每轮单价；它没有「智能匹配」（服务端没有默认推理模型）；
+ * - ⚠️ **不可用的模型照样列出、置灰并写原因**（原因来自服务端能力校验的原话）—— 隐藏的话
+ *   用户以为没有这个模型，而其实只差在设置里配一下；
+ * - 推理模型页签只列 `agentCapable` 模型；它没有「智能匹配」（服务端没有默认推理模型）；
  * - 画幅 / 分辨率 / 时长的选项取自 `/canvas/config` 里视频节点的 `param_def`（与画布同源，不写死），
  *   另加「智能」= 不指定，由 Agent 按需求决定；
- * - 角标只显示目录里真有的（目前只有会员门槛），说明行是单价（目录没有模型介绍字段），不编文案；
+ * - 角标只显示目录里真有的（tabtv 没有会员门槛，目前没有角标），可用模型没有说明行（目录没有介绍字段），不编文案；
  * - 对标里的「生成模式 正常 / 自动」我们没有对应能力，不做假控件；
  * - 改动只影响**本会话**后续轮次（父组件走 `agent.patchSession`）；「设为默认」才写用户偏好（`agentPrefs`）。
- * - 价格一律来自服务端报价（每个模型报 1 个单位），这里不算。
+ * - tabtv 不计价（TT-T-14）：不显示单价。
  *
  * **直接生成（`direct`，创造页）复用同一个胶囊与浮层**：
  * - 只出现当前模式那一个页签（视频 / 图片 / 音频），不出现与当前模式无关的页签；
- * - 左栏是该模式的模型（`/models`，与报价同源的单价 / 不可用原因），没有「智能匹配」—— 直接生成必须落到一个模型；
+ * - 左栏是该模式的模型（`/models`，不可用原因与能力校验同源），没有「智能匹配」—— 直接生成必须落到一个模型；
  * - 右栏是该模式的参数，**按 `param_def` 逐项渲染**（与画布节点同一份 `nodeParamLayout`，不写死选项）；
  *   音色走父组件的 `VoicePicker`；
  * - 操作码不在这里选（按参考图张数推断，见 `quickVideoOperation`），底部说清当前按哪种操作生成；
@@ -380,7 +380,7 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside, tru
                       <span class="model-pref-name">{{ option.name }}</span>
                       <em v-for="badge in option.badges ?? []" :key="badge" class="model-pref-badge">{{ badge }}</em>
                     </span>
-                    <span class="model-pref-note" :class="{ price: option.available && option.price !== undefined }">{{ modelOptionNote(option, tab === 'reasoning') }}</span>
+                    <span v-if="modelOptionNote(option, tab === 'reasoning')" class="model-pref-note">{{ modelOptionNote(option, tab === 'reasoning') }}</span>
                   </span>
                 </button>
               </li>
@@ -643,7 +643,6 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", onOutside, tru
 }
 .model-pref-item.unavailable .model-pref-badge { color: var(--portal-disabled-text); background: var(--portal-surface-2); }
 .model-pref-note { color: var(--portal-muted); font-size: 11px; line-height: 16px; }
-.model-pref-note.price { color: var(--portal-text-soft); }
 .model-pref-item.unavailable .model-pref-note { color: var(--portal-disabled-text); }
 .model-pref-empty { padding: 8px 10px; color: var(--portal-muted); }
 
