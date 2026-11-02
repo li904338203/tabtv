@@ -208,7 +208,7 @@ func (p *HTTPProvider) mediaValue(ctx context.Context, cfg RunConfig, mediaID in
 
 // mediaDuration 取音视频的时长（毫秒）；取不到返回 0（未知）。
 //
-// 只有部分协议用得上（UniArt 要自报参考视频总时长），所以是**可选端口**：
+// 只有部分协议用得上（可灵视频配音效要校验参考视频时长），所以是**可选端口**：
 // 媒体解析器没实现、或查询失败，都按未知处理 —— 由用得上的协议自己决定拒不拒，
 // 不在这里把用不上时长的协议一起拖垮。
 func (p *HTTPProvider) mediaDuration(ctx context.Context, kind string, mediaID int64) int {

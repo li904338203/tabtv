@@ -19,7 +19,7 @@ func init() { register(klingVideo{}) }
 //	 "options":{"external_task_id":"...","watermark_info":{"enabled":false}}}
 //
 // ⚠️ 与 Seedance 的「多模态 content 数组 + 顶层规格字段」**不是一回事**，
-// 与 bblabu 的「平铺参考数组」更不是。这就是"换一家厂商基本都要加协议"的实例。
+// 与 Grok 的「图片嵌套对象、视频音频顶层字符串」也不是。这就是"换一家厂商基本都要加协议"的实例。
 //
 // ⚠️ 提交地址按操作切换（见 SubmitPath）：普通模型的文生/图生是**两个端点**，
 // omni 模型才是一个端点收全部模式。

@@ -327,7 +327,7 @@ func TestDurationRangeOf_配乐音效与视频协议(t *testing.T) {
 		{"volc_music", "text2music", 30, 60, true},
 		{"elevenlabs_music", "text2music", 3, 300, true},
 		{"kling_v2a", "video2audio", 3, 20, true},
-		{"uniart_video", "text2video", 4, 30, true}, // 视频协议照旧取 VideoLimits
+		{"seedance_video", "text2video", 3, 30, true}, // 视频协议照旧取 VideoLimits
 		{"volc_music", "video2audio", 0, 0, false},
 		{"openai_tts", "text2audio", 0, 0, false},
 		{"not_a_protocol", "text2music", 0, 0, false},

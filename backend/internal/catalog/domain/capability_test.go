@@ -26,7 +26,7 @@ func TestCapabilitySet_拒绝未声明的角色(t *testing.T) {
 	}
 }
 
-// 例：BBLABU 不支持 first_last_frame —— 表现为该操作下没有 first_frame 能力。
+// 例：Grok 视频不支持 first_last_frame —— 表现为该操作下没有 first_frame 能力。
 func TestCapabilitySet_数量区间(t *testing.T) {
 	cs := caps(
 		Capability{Role: RoleFirstFrame, MinCount: 1, MaxCount: 1},

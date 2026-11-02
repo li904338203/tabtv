@@ -120,7 +120,7 @@ const currentValues = computed<Record<string, string>>(() =>
 
 /**
  * 选不了的项：配置里标了 disabled，或被其他项约束住（型号覆盖的 `restrictBy`，
- * 如 UniArt 的 Seedance 在 1080p 下只有 16:9 / 9:16 / 1:1）—— 置灰而不是藏起来，
+ * 如某些视频型号在 1080p 下只有 16:9 / 9:16 / 1:1）—— 置灰而不是藏起来，
  * 藏起来的话用户会以为这个模型根本没有 21:9。
  */
 function blocked(param: FormatParam, option: ControlOption): boolean {

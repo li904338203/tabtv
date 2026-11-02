@@ -123,7 +123,7 @@ func (klingV2A) ParseSubmit(status int, body []byte) (Result, error) {
 	}
 	id := scalarString(data["task_id"])
 	if id == "" {
-		return Result{}, fmt.Errorf("可灵没有返回任务 ID: %s", uniartSnippet(body))
+		return Result{}, fmt.Errorf("可灵没有返回任务 ID: %s", bodySnippet(body))
 	}
 	return Result{Async: true, TaskID: id}, nil
 }
@@ -151,11 +151,11 @@ func (klingV2A) ParseQuery(status int, body []byte) (Result, error) {
 		}
 		// ⚠️ 不回落到 task_result.videos：那是原片配上声音的视频，放进音效轨会是一段视频。
 		return Result{Async: true, State: StateFailed,
-			Message: "可灵任务完成但没有返回音频（task_result.audios）: " + uniartSnippet(body)}, nil
+			Message: "可灵任务完成但没有返回音频（task_result.audios）: " + bodySnippet(body)}, nil
 	case "failed":
 		msg := firstString(data, "task_status_msg")
 		if msg == "" {
-			msg = uniartSnippet(body)
+			msg = bodySnippet(body)
 		}
 		return Result{Async: true, State: StateFailed, Message: "视频配音效失败：" + msg}, nil
 	}
@@ -168,20 +168,20 @@ func klingV2AData(status int, body []byte, what string) (map[string]any, error) 
 	var root map[string]any
 	if err := json.Unmarshal(body, &root); err != nil {
 		if status >= 400 {
-			return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, uniartSnippet(body))
+			return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, bodySnippet(body))
 		}
-		return nil, fmt.Errorf("%s失败：响应不是 JSON: %s", what, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：响应不是 JSON: %s", what, bodySnippet(body))
 	}
 	if code := scalarString(root["code"]); code != "" && code != "0" {
 		msg := firstString(root, "message")
 		return nil, &StatusError{Status: klingCodeStatus(code, status), Msg: fmt.Sprintf("%s失败（错误码 %s）：%s", what, code, msg)}
 	}
 	if status >= 400 {
-		return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, bodySnippet(body))
 	}
 	data := asObject(root["data"])
 	if data == nil {
-		return nil, fmt.Errorf("%s失败：响应里没有 data: %s", what, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：响应里没有 data: %s", what, bodySnippet(body))
 	}
 	return data, nil
 }

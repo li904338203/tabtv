@@ -93,7 +93,7 @@ describe("控件选项归一", () => {
   });
 });
 
-/** UniArt 的 Seedance：1080p 下画幅只有三种（型号覆盖里的 restrictBy）。 */
+/** 某些视频型号：1080p 下画幅只有三种（型号覆盖里的 restrictBy）。 */
 const RATIO_CONFIG = {
   options: ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9"].map(value => ({ label: value, value })),
   default: "16:9",

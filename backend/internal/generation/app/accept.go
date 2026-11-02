@@ -187,7 +187,7 @@ func (s *Service) HasDirectorGuard() bool { return s.director != nil }
 
 // MediaURLDelivery 回答「这个协议的上游收不收得到这边的参考媒体」（docs/agent/smartcut SCT-38）。
 //
-// 只收地址的协议（provider/protocol.MediaURLRequiring：去字幕、UniArt、火山识别标准版）在主存储签不出上游够得着的
+// 只收地址的协议（provider/protocol.MediaURLRequiring：去字幕、可灵视频配音效、火山识别标准版）在主存储签不出上游够得着的
 // 地址、又没有公网中转时收不到。不问的话受理照样扣费、排队，Worker 在提交前判永久失败再退款 —— 用户白等一轮，
 // 账本里多一对扣款与退款。由 provider/app.MediaDelivery 实现（判据与 Worker 发参考媒体时是同一条）。
 type MediaURLDelivery interface {

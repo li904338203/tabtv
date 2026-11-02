@@ -84,7 +84,7 @@ func (volcMusic) ParseSubmit(status int, body []byte) (Result, error) {
 	}
 	id := scalarString(root["TaskID"])
 	if id == "" {
-		return Result{}, fmt.Errorf("豆包音乐没有返回任务 ID: %s", uniartSnippet(body))
+		return Result{}, fmt.Errorf("豆包音乐没有返回任务 ID: %s", bodySnippet(body))
 	}
 	return Result{Async: true, TaskID: id}, nil
 }
@@ -104,13 +104,13 @@ func (volcMusic) ParseQuery(status int, body []byte) (Result, error) {
 		u := volcMusicAudioURL(res)
 		if u == "" {
 			return Result{Async: true, State: StateFailed,
-				Message: "豆包音乐任务完成但没有返回音频地址（AudioUrl）: " + uniartSnippet(body)}, nil
+				Message: "豆包音乐任务完成但没有返回音频地址（AudioUrl）: " + bodySnippet(body)}, nil
 		}
 		return Result{Async: true, State: StateSuccess, Outputs: []Output{{Kind: "url", Value: u, MIME: "audio/mpeg"}}}, nil
 	case StateFailed:
 		msg := firstString(asObject(res["FailureReason"]), "Msg", "Message", "msg")
 		if msg == "" {
-			msg = uniartSnippet(body)
+			msg = bodySnippet(body)
 		}
 		return Result{Async: true, State: StateFailed, Message: "配乐生成失败：" + msg}, nil
 	}
@@ -123,9 +123,9 @@ func volcOpenAPIResult(status int, body []byte, what string) (map[string]any, er
 	var root map[string]any
 	if err := json.Unmarshal(body, &root); err != nil {
 		if status >= 400 {
-			return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, uniartSnippet(body))
+			return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, bodySnippet(body))
 		}
-		return nil, fmt.Errorf("%s失败：响应不是 JSON: %s", what, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：响应不是 JSON: %s", what, bodySnippet(body))
 	}
 	if e := asObject(asObject(root["ResponseMetadata"])["Error"]); len(e) > 0 {
 		code := scalarString(e["Code"])
@@ -137,11 +137,11 @@ func volcOpenAPIResult(status int, body []byte, what string) (map[string]any, er
 		return nil, &StatusError{Status: cls, Msg: fmt.Sprintf("%s失败（%s）：%s", what, code, msg)}
 	}
 	if status >= 400 {
-		return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：上游返回 HTTP %d: %s", what, status, bodySnippet(body))
 	}
 	res := asObject(root["Result"])
 	if res == nil {
-		return nil, fmt.Errorf("%s失败：响应里没有 Result: %s", what, uniartSnippet(body))
+		return nil, fmt.Errorf("%s失败：响应里没有 Result: %s", what, bodySnippet(body))
 	}
 	return res, nil
 }

@@ -32,7 +32,7 @@ var allRoles = map[InputRole]bool{
 // **画布语义**，本表表达**该型号真能收什么**，两层覆盖范围本就不同：
 //   - 通用 ref2video 规则允许 audio、不允许 video；
 //   - 而 Seedance 拒收 audio，其 adapter 又有参考 video 分支；
-//   - BBLABU 不支持 first_last_frame。
+//   - Grok 视频不支持 first_last_frame。
 //
 // 校验顺序固定：连线规则 → **能力矩阵** → 参数范围 → 会员等级 → 计价 → 扣费。
 // AC-10 要求这些在**调用与扣费之前**就给出明确错误，而不是等上游返回 400。
@@ -46,7 +46,7 @@ type Capability struct {
 // protocolRoleOf 把能力矩阵的细粒度角色折成协议层的媒体类别。
 //
 // ⚠️ 两层的粒度**故意不同**：矩阵要能表达「首帧」与「参考图」是不同的位置
-// （bblabu 恰恰缺的就是首帧这个位置），而协议层只关心"收不收得了图片"。
+// （Grok 视频恰恰缺的就是首帧这个位置），而协议层只关心"收不收得了图片"。
 // 折叠时 `reference` 既可能是图也可能是视频，因此单独处理。
 func protocolRoleOf(r InputRole) (protocol.InputRole, bool) {
 	switch r {
@@ -65,7 +65,7 @@ func protocolRoleOf(r InputRole) (protocol.InputRole, bool) {
 // CheckProtocolOperation 校验「这个协议做不做得了这个操作」。
 //
 // ⚠️ 这是 AC-10 的入口侧落地：不在这里拦的话，一个
-// 「bblabu 模型绑定 first_last_frame」的配置能存进去、能启用、能报价、能扣费，
+// 「Grok 视频模型绑定 first_last_frame」的配置能存进去、能启用、能报价、能扣费，
 // 直到 Worker 构造请求时才发现那套接口根本没有首帧的位置。
 func CheckProtocolOperation(protocolCode, operation string) error {
 	if protocol.SupportsOperation(protocolCode, operation) {

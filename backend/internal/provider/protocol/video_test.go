@@ -72,11 +72,6 @@ func TestVideo_四家的请求体形状互不相同(t *testing.T) {
 		t.Fatal("Seedance 的规格参数在顶层")
 	}
 
-	bblabu := buildBody(t, "bblabu_video", job)
-	if _, ok := bblabu["referenceImages"]; !ok {
-		t.Fatal("中转用平铺的 referenceImages 数组")
-	}
-
 	grok := buildBody(t, "grok_video", job)
 	img, ok := grok["image"].(map[string]any)
 	if !ok || img["image_url"] != "https://cdn.x/a.png" {
@@ -273,53 +268,6 @@ func TestSeedance_成功但没有产物判失败(t *testing.T) {
 	}
 }
 
-// ---------------------------------------------------------------- 中转
-
-func TestBblabu_首尾帧被明确拒绝(t *testing.T) {
-	// ⚠️ AC-10 的原型：这套接口没有首帧/尾帧的位置。把两张图当普通参考图
-	// 发上去的话，用户以为在做首尾帧过渡，拿到的却是普通参考生成。
-	msg := buildErr(t, "bblabu_video", videoJob("first_last_frame", nil,
-		"image:https://cdn.x/a.png", "image:https://cdn.x/b.png"))
-	if !strings.Contains(msg, "首帧") && !strings.Contains(msg, "首尾帧") {
-		t.Fatalf("要说清楚是首尾帧表达不了: %s", msg)
-	}
-	// 协议自己也要能声明这一点，供目录域在配置时就拦下。
-	if SupportsOperation("bblabu_video", "first_last_frame") {
-		t.Fatal("协议应声明自己不支持 first_last_frame")
-	}
-}
-
-func TestBblabu_自动补参考记号(t *testing.T) {
-	// 中转靠 @图1 / @视频1 把提示词与数组下标对应起来，而画布与脚本线
-	// 产出的提示词里不会有这种记号。
-	body := buildBody(t, "bblabu_video", videoJob("ref2video", nil,
-		"image:https://cdn.x/a.png", "image:https://cdn.x/b.png", "video:https://cdn.x/c.mp4"))
-	prompt, _ := body["prompt"].(string)
-	if !strings.HasPrefix(prompt, "@图1 @图2 @视频1 ") {
-		t.Fatalf("应自动补参考记号: %q", prompt)
-	}
-}
-
-func TestBblabu_用户写了记号就不动(t *testing.T) {
-	// 已经写了的原样保留，免得把用户排好的引用顺序打乱。
-	job := videoJob("ref2video", nil, "image:https://cdn.x/a.png")
-	job.Prompt = "@图1 中的人物挥手"
-	body := buildBody(t, "bblabu_video", job)
-	if body["prompt"] != "@图1 中的人物挥手" {
-		t.Fatalf("用户写了记号就不该再补: %v", body["prompt"])
-	}
-}
-
-func TestBblabu_adaptive被丢弃而不是报错(t *testing.T) {
-	// ⚠️ adaptive 是可灵的概念，这家不认。但历史节点的画布数据里可能还存着它 ——
-	// 报错的话用户得先去每个历史节点手动改一遍比例才能生成。
-	body := buildBody(t, "bblabu_video", videoJob("text2video",
-		map[string]any{"aspect_ratio": "adaptive"}))
-	if _, ok := body["ratio"]; ok {
-		t.Fatalf("adaptive 应被丢弃而不是发出去: %v", body["ratio"])
-	}
-}
-
 // ---------------------------------------------------------------- Grok
 
 func TestGrok_三种参考输入三种写法(t *testing.T) {
@@ -336,12 +284,12 @@ func TestGrok_三种参考输入三种写法(t *testing.T) {
 	}
 }
 
-func TestGrok_收音频而另三家不收(t *testing.T) {
-	// 同一个 ref2video，各家能力不同（UniArt 也收音频，见 video_uniart_test.go） —— 这正是能力矩阵要表达的东西（GAP-22）。
+func TestGrok_收音频而另两家不收(t *testing.T) {
+	// 同一个 ref2video，各家能力不同 —— 这正是能力矩阵要表达的东西（GAP-22）。
 	if !SupportsRole("grok_video", "ref2video", RoleAudio) {
 		t.Fatal("Grok 支持音频参考")
 	}
-	for _, code := range []string{"kling_video", "seedance_video", "bblabu_video"} {
+	for _, code := range []string{"kling_video", "seedance_video"} {
 		if SupportsRole(code, "ref2video", RoleAudio) {
 			t.Errorf("%s 不支持音频参考，不该声明支持", code)
 		}
@@ -384,7 +332,7 @@ func TestVideo_默认时长与计价一致(t *testing.T) {
 }
 
 func TestVideo_图生视频缺图被拒(t *testing.T) {
-	for _, code := range []string{"kling_video", "seedance_video", "bblabu_video", "grok_video"} {
+	for _, code := range []string{"kling_video", "seedance_video", "grok_video"} {
 		job := videoJob("img2video", map[string]any{
 			SubmitPathHintKey: "/v1/videos/image-to-video/generations",
 		})
@@ -423,7 +371,6 @@ func TestCapabilities_四家的支持范围不同(t *testing.T) {
 		code, op string
 		want     bool
 	}{
-		{"bblabu_video", "first_last_frame", false},
 		{"kling_video", "first_last_frame", true},
 		{"seedance_video", "first_last_frame", true},
 		{"grok_video", "first_last_frame", false},

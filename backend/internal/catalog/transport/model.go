@@ -77,10 +77,14 @@ func (h *Handler) listProtocols(w http.ResponseWriter, r *http.Request) {
 		RequiresQueryPath bool   `json:"requiresQueryPath"`
 		// ChatCapable 能否作 Agent 推理模型（AGT-04）。
 		ChatCapable bool `json:"chatCapable"`
+		// 缺省路径：设置页换协议时带出（空 = 没有通用值）。
+		DefaultSubmitPath string `json:"defaultSubmitPath"`
+		DefaultQueryPath  string `json:"defaultQueryPath"`
 	}
 	out := make([]resp, 0, len(ps))
 	for _, p := range ps {
-		out = append(out, resp{p.Code, p.Name, p.IsAsync, p.RequiresQueryPath, p.ChatCapable})
+		out = append(out, resp{p.Code, p.Name, p.IsAsync, p.RequiresQueryPath, p.ChatCapable,
+			p.DefaultSubmitPath, p.DefaultQueryPath})
 	}
 	httpx.JSON(w, http.StatusOK, out)
 }

@@ -10939,6 +10939,10 @@ export interface components {
             requiresQueryPath: boolean;
             /** @description 能否作 Agent 推理模型 */
             chatCapable: boolean;
+            /** @description 官方接口的提交路径（相对厂商地址）；空 = 没有通用值 */
+            defaultSubmitPath: string;
+            /** @description 官方接口的查询路径（异步协议）；空 = 没有通用值或不需要 */
+            defaultQueryPath: string;
         };
         AdminProvider: {
             code: string;

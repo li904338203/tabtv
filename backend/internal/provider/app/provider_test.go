@@ -100,6 +100,22 @@ func jobWith(protocolCode string, params map[string]any, inputs any) genapp.Job 
 	}
 }
 
+// eraseJob 是一次去字幕任务（只收公网地址的异步协议：volc_mediakit_erase）。
+func eraseJob(params map[string]any, inputs any) genapp.Job {
+	j := jobWith("volc_mediakit_erase", params, inputs)
+	j.OperationCode, j.ResultType = "video_desubtitle", "video"
+	return j
+}
+
+// eraseConfig 是去字幕协议的运行配置（查询路径必须配，见 RequiresQueryPath）。
+func eraseConfig(baseURL string) RunConfig {
+	return RunConfig{
+		ModelCode: "m-1", ProtocolCode: "volc_mediakit_erase", BaseURL: baseURL,
+		SubmitPath: "/api/v1/tools/erase-video-subtitle-pro", QueryPath: "/api/v1/tasks/{taskId}",
+		AuthType: "bearer", APIKey: "sk-erase",
+	}
+}
+
 func readAll(t *testing.T, o genapp.ProviderOutput) []byte {
 	t.Helper()
 	b, err := io.ReadAll(o.Body)

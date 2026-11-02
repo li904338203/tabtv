@@ -111,7 +111,7 @@ func (elevenLabsMusic) ParseSubmit(status int, body []byte) (Result, error) {
 	}
 	if b := strings.TrimSpace(string(body[:min(len(body), 16)])); strings.HasPrefix(b, "{") {
 		// 200 却是 JSON：多半是网关或上游换了返回形态。不把它当音频存。
-		return Result{}, fmt.Errorf("ElevenLabs 应返回音频字节，实际是 JSON: %s", uniartSnippet(body))
+		return Result{}, fmt.Errorf("ElevenLabs 应返回音频字节，实际是 JSON: %s", bodySnippet(body))
 	}
 	return Result{Outputs: []Output{{Kind: "base64", Value: base64.StdEncoding.EncodeToString(body), MIME: "audio/mpeg"}}}, nil
 }

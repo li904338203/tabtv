@@ -80,7 +80,7 @@ func (volcMediaKitErase) BuildSubmit(job Job) (Request, error) {
 
 func (volcMediaKitErase) ParseSubmit(status int, body []byte) (Result, error) {
 	if status >= 400 {
-		return Result{}, fmt.Errorf("去字幕提交失败：上游返回 HTTP %d: %s", status, uniartSnippet(body))
+		return Result{}, fmt.Errorf("去字幕提交失败：上游返回 HTTP %d: %s", status, bodySnippet(body))
 	}
 	root, err := decodeObject(body)
 	if err != nil {
@@ -92,7 +92,7 @@ func (volcMediaKitErase) ParseSubmit(status int, body []byte) (Result, error) {
 	if code, msg, ok := mediaKitBizError(root); ok {
 		return Result{}, &StatusError{Status: mediaKitErrorStatus(code), Msg: "去字幕提交被拒：" + msg}
 	}
-	return Result{}, fmt.Errorf("去字幕上游没有返回任务 ID: %s", uniartSnippet(body))
+	return Result{}, fmt.Errorf("去字幕上游没有返回任务 ID: %s", bodySnippet(body))
 }
 
 func (volcMediaKitErase) BuildQuery(Job, string) (Request, bool) {
@@ -103,7 +103,7 @@ func (volcMediaKitErase) BuildQuery(Job, string) (Request, bool) {
 func (volcMediaKitErase) ParseQuery(status int, body []byte) (Result, error) {
 	if status >= 400 {
 		// 查询失败不判任务失败（上游可能只是这一次没回），返回 error 让执行器下一轮再查，由死线兜底。
-		return Result{}, fmt.Errorf("查询去字幕任务失败：上游返回 HTTP %d: %s", status, uniartSnippet(body))
+		return Result{}, fmt.Errorf("查询去字幕任务失败：上游返回 HTTP %d: %s", status, bodySnippet(body))
 	}
 	root, err := decodeObject(body)
 	if err != nil {
@@ -118,14 +118,14 @@ func (volcMediaKitErase) ParseQuery(status int, body []byte) (Result, error) {
 		u := mediaKitResultURL(task)
 		if u == "" {
 			return Result{Async: true, State: StateFailed,
-				Message: "去字幕任务完成但没有返回结果地址（result.video_url）: " + uniartSnippet(body)}, nil
+				Message: "去字幕任务完成但没有返回结果地址（result.video_url）: " + bodySnippet(body)}, nil
 		}
 		return Result{Async: true, State: StateSuccess,
 			Outputs: []Output{{Kind: "url", Value: u, MIME: "video/mp4"}}}, nil
 	case StateFailed:
 		msg := mediaKitMessage(task)
 		if msg == "" {
-			msg = uniartSnippet(body)
+			msg = bodySnippet(body)
 		}
 		return Result{Async: true, State: StateFailed, Message: "去字幕失败：" + msg}, nil
 	}

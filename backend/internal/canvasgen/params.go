@@ -135,9 +135,9 @@ func NormalizeGenerateParams(nodeType, operationCode string, params map[string]a
 // FillNodeDefaults 给**新建**节点补上调用方没给的参数默认值（纯函数，输入 map 不被修改）。
 //
 // ⚠️ 与参数面板挂载时补默认值是同一条规则（ParamPanel：节点上没有这个键才补，值取 GET /canvas/config 的
-// defaultValue）。Agent / MCP 建的节点原先不补：受理参数里没有画幅，上游按它自己的默认走 —— UniArt 的
-// seedance-2.5 默认 auto 而该能力集不支持，直接 400（会话 107398945801502720）；别的上游则悄悄出了它自己的
-// 默认规格，而用户打开节点时面板补上的是 16:9，节点上显示的与实际发出去的对不上，从节点重跑又是另一种规格。
+// defaultValue）。Agent / MCP 建的节点原先不补：受理参数里没有画幅，上游按它自己的默认走 —— 有的型号
+// 不支持那个默认，直接 400（会话 107398945801502720）；有的则悄悄出了它自己的默认规格，而用户打开节点时
+// 面板补上的是 16:9，节点上显示的与实际发出去的对不上，从节点重跑又是另一种规格。
 //
 //   - 只补**缺的键**：键已按画布编码归一，aspectRatio 之类的别名不会被默认值顶掉；
 //   - 只给**新建节点**补（调用方判断）：已有节点上的值是用户设的，补默认值会在 merge patch 里把它盖掉；
@@ -178,7 +178,7 @@ func FillNodeDefaults(params map[string]any, defaults map[string]string, duratio
 //
 // ⚠️ 与前端「从节点生成」同一份语义（ParamPanel 发的是节点的全部 params，时长 / 张数也从 params 取）。
 // 原先只发这次给的：Agent 在自己的节点上重跑（追加额度后带同一个 nodeId 再调一次）而没再写画幅时，
-// 节点上明明是 9:16，发出去的却没有画幅 —— UniArt 直接 400，别的上游悄悄出了它自己的默认规格。
+// 节点上明明是 9:16，发出去的却没有画幅 —— 有的上游直接 400，有的悄悄出了它自己的默认规格。
 // 这次没给时长 / 张数时取节点上的（只认该类节点有的参数）：不取的话按默认 5 秒计价、上游却按节点上的 15 秒出片。
 func OverlayNodeParams(node, given map[string]any, keys map[string]bool, durationSec, count int) (
 	map[string]any, int, int) {

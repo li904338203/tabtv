@@ -90,7 +90,7 @@ func TestNormalizeGenerateParams_画布编码(t *testing.T) {
 	}
 }
 
-// 会话 107398945801502720：Agent 建的视频节点没有画幅，UniArt 的 seedance-2.5 按 auto 处理而该能力集不支持（400）。
+// 会话 107398945801502720：Agent 建的视频节点没有画幅，上游按自己的默认处理而该型号不支持（400）。
 // 新建节点按画布配置的 defaultValue 补齐，与参数面板挂载时补的是同一份。
 func TestFillNodeDefaults_只补缺的键并同步时长张数(t *testing.T) {
 	videoDefaults := map[string]string{"video_mode": "text2video", "duration": "5", "resolution": "720p",

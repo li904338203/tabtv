@@ -16,7 +16,6 @@ targets=("$@")
 
 patterns=(
   'claudecode\.top'
-  'bblabu\.ai'
   '/Volumes/[A-Za-z]'
   '/Users/[a-z]'
   'sk-[A-Za-z0-9]{24,}'

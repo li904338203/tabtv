@@ -5,7 +5,8 @@ import {
   settingsValidateModel, settingsValidateProvider, SETTINGS_VOLC_REGION_HEADER, SETTINGS_VOLC_SERVICE_HEADER,
   type SettingsProtocol,
   settingsEnableSummary, settingsIsPrivateAddress, settingsParamSupportDraft, settingsParamSupportPayload,
-  settingsTemplateAuthHint, settingsTemplateState, settingsValidateParamSupport, type SettingsTemplate
+  settingsTemplateAuthHint, settingsTemplateState, settingsValidateParamSupport, type SettingsTemplate,
+  settingsApplyProtocolDefaults, settingsPathPlaceholder
 } from './settingsModelForm'
 
 const protocols: SettingsProtocol[] = [
@@ -278,3 +279,41 @@ describe('模板卡片', () => {
     expect(r.text).toMatch(/B：无法启用：没有价格/)
   })
 })
+
+describe("settingsApplyProtocolDefaults（换协议带出缺省路径）", () => {
+  const chat = { code: "openai_chat", name: "OpenAI Chat", isAsync: false, requiresQueryPath: false, defaultSubmitPath: "/chat/completions" };
+  const images = { code: "openai_images", name: "OpenAI Images", isAsync: false, requiresQueryPath: false, defaultSubmitPath: "/images/generations" };
+  const video = { code: "seedance_video", name: "Seedance", isAsync: true, requiresQueryPath: true,
+    defaultSubmitPath: "/contents/generations/tasks", defaultQueryPath: "/contents/generations/tasks/{taskId}" };
+  const generic = { code: "generic_sync", name: "通用同步", isAsync: false, requiresQueryPath: false };
+
+  it("空路径带出新协议的缺省值", () => {
+    const d = { submitPath: "", queryPath: "" };
+    settingsApplyProtocolDefaults(d, undefined, chat);
+    expect(d).toEqual({ submitPath: "/chat/completions", queryPath: "" });
+  });
+
+  it("上一个协议的缺省值跟着换；异步协议带出查询路径，换回同步时清掉", () => {
+    const d = { submitPath: "/chat/completions", queryPath: "" };
+    settingsApplyProtocolDefaults(d, chat, video);
+    expect(d).toEqual({ submitPath: "/contents/generations/tasks", queryPath: "/contents/generations/tasks/{taskId}" });
+    settingsApplyProtocolDefaults(d, video, images);
+    expect(d).toEqual({ submitPath: "/images/generations", queryPath: "" });
+  });
+
+  it("用户手填的路径不动", () => {
+    const d = { submitPath: "/my-gateway/v2/chat", queryPath: "" };
+    settingsApplyProtocolDefaults(d, chat, images);
+    expect(d.submitPath).toBe("/my-gateway/v2/chat");
+  });
+
+  it("没有缺省值的协议：清掉上一个协议的缺省值，占位提示说清该填什么", () => {
+    const d = { submitPath: "/chat/completions", queryPath: "" };
+    settingsApplyProtocolDefaults(d, chat, generic);
+    expect(d.submitPath).toBe("");
+    expect(settingsPathPlaceholder(generic, "submit")).toContain("相对厂商地址");
+    expect(settingsPathPlaceholder(chat, "submit")).toBe("/chat/completions");
+    expect(settingsPathPlaceholder(chat, "query")).toBe("同步协议不需要");
+    expect(settingsPathPlaceholder(undefined, "submit")).toBe("先选择 API 协议");
+  });
+});

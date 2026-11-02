@@ -9,7 +9,7 @@ import (
 // Protocol 是一个已实现的上游协议。
 //
 // ⚠️ 修 GAP-09：旧系统 api_protocol 是**硬编码枚举**，改一处要同步四处，
-// 结果管理端下拉漏掉了后端已支持的 kling/seedance/bblabu，
+// 结果管理端下拉漏掉了后端已支持的 kling/seedance，
 // 运营根本无法维护这些已有适配。
 //
 // 新设计：协议由**适配器注册表**（`provider/protocol`）决定，
@@ -25,6 +25,11 @@ type Protocol struct {
 	// ChatCapable 能做多轮 + 工具调用（可作 Agent 推理模型，AGT-04）。
 	// 由 `protocol.IsChatCapable` 派生，管理端据此决定「支持 Agent」能不能勾 —— 前端不另抄协议名单。
 	ChatCapable bool
+	// DefaultSubmitPath / DefaultQueryPath 是该协议在**官方接口**上的提交 / 查询路径（相对厂商地址，
+	// 与内置厂商模板的地址约定一致，例如 OpenAI 的地址写到 /v1 为止）。空 = 没有通用值：
+	// 通用信封由中转自定，可灵按型号与模式区分路径。设置页换协议时据此带出缺省值。
+	DefaultSubmitPath string
+	DefaultQueryPath  string
 }
 
 // displayNames 是协议的中文名。
@@ -44,8 +49,6 @@ var displayNames = map[string]string{
 	"grok_video":         "Grok 视频",
 	"kling_video":        "可灵视频",
 	"seedance_video":     "Seedance 视频（火山方舟）",
-	"bblabu_video":       "中转视频",
-	"uniart_video":       "UniArt 视频（OpenAI 兼容）",
 	// 语音识别（docs/agent/smartcut SCT-33）。
 	"volc_asr":          "火山录音文件识别（极速版）",
 	"volc_asr_standard": "火山录音文件识别（标准版）",
@@ -55,6 +58,32 @@ var displayNames = map[string]string{
 	"volc_music":          "火山豆包音乐（纯音乐）",
 	"elevenlabs_music":    "ElevenLabs Music",
 	"kling_v2a":           "可灵视频配音效",
+}
+
+// defaultPaths 是协议的缺省路径（提交、查询）。只写官方文档里固定的那一段；
+// 内置厂商模板（seed/data/providers.json）用到的路径必须与这里一致（desktop 包有测试比对）。
+var defaultPaths = map[string][2]string{
+	"openai_chat":        {"/chat/completions", ""},
+	"anthropic_messages": {"/messages", ""},
+	"openai_images":      {"/images/generations", ""},
+	"openai_tts":         {"/audio/speech", ""},
+	"openai_transcribe":  {"/audio/transcriptions", ""},
+	"grok_video":         {"/v1/videos/generations", "/v1/videos/{taskId}"},
+	"seedance_video":     {"/contents/generations/tasks", "/contents/generations/tasks/{taskId}"},
+	"volc_asr":           {"/api/v3/auc/bigmodel/recognize/flash", ""},
+	// 标准版的查询路径由协议自己从提交路径推出（submit → query），不用配。
+	"volc_asr_standard": {"/api/v3/auc/bigmodel/submit", ""},
+	// 可灵的提交路径按型号与模式区分（/text-to-video/<型号>、/omni-video/<型号>…），没有通用值；查询路径是统一的。
+	"kling_video":         {"", "/tasks?task_ids={taskId}"},
+	"volc_mediakit_erase": {"/api/v1/tools/erase-video-subtitle-pro", "/api/v1/tasks/{taskId}"},
+	"elevenlabs_music":    {"/v1/music", ""},
+	"kling_v2a":           {"/v1/audio/video-to-audio", ""},
+}
+
+// DefaultPaths 返回协议的缺省提交 / 查询路径（没有通用值时为空串）。
+func DefaultPaths(code string) (submit, query string) {
+	p := defaultPaths[code]
+	return p[0], p[1]
 }
 
 func nameOf(code string) string {
@@ -69,10 +98,12 @@ func Protocols() []Protocol {
 	descs := protocol.All()
 	out := make([]Protocol, 0, len(descs))
 	for _, d := range descs {
+		submit, query := DefaultPaths(d.Code)
 		out = append(out, Protocol{
 			Code: d.Code, Name: nameOf(d.Code),
 			IsAsync: d.Async, RequiresQueryPath: d.RequiresQueryPath,
-			ChatCapable: protocol.IsChatCapable(d.Code),
+			ChatCapable:       protocol.IsChatCapable(d.Code),
+			DefaultSubmitPath: submit, DefaultQueryPath: query,
 		})
 	}
 	return out

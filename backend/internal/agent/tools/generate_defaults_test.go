@@ -11,7 +11,7 @@ import (
 	"github.com/li904338203/tabtv/backend/internal/agent/domain"
 )
 
-// 会话 107398945801502720：generate 没带画幅，UniArt 的 seedance-2.5 当成 auto（不支持，400）。
+// 会话 107398945801502720：generate 没带画幅，上游按它自己的默认处理（该型号不支持，400）。
 // 模型没写的画幅 / 清晰度按「用户的选择（偏好或确认过的回答）→ 营销创意推荐」补；都没有再由 canvasgen 按节点默认补。
 
 func TestFillGenerateDefaults_顺序与只补缺的(t *testing.T) {

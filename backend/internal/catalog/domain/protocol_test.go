@@ -35,10 +35,10 @@ func TestProtocols_每个协议都有中文名(t *testing.T) {
 
 // ⚠️ AC-10：协议表达不了的组合要在**配置时**就拒，而不是等 Worker 构造请求。
 // 不拦的话，这个配置能存进去、能启用、能报价、能扣费 —— 直到任务跑起来。
-func TestCheckProtocolOperation_中转不支持首尾帧(t *testing.T) {
-	err := CheckProtocolOperation("bblabu_video", "first_last_frame")
+func TestCheckProtocolOperation_不支持首尾帧的协议被拒(t *testing.T) {
+	err := CheckProtocolOperation("grok_video", "first_last_frame")
 	if err == nil {
-		t.Fatal("中转视频接口没有首帧/尾帧的位置，应被拒")
+		t.Fatal("Grok 视频接口没有首帧/尾帧的位置，应被拒")
 	}
 	// 错误里要列出它**支持什么**，否则运营只知道错了不知道该配什么。
 	if !strings.Contains(err.Error(), "text2video") {
@@ -77,15 +77,15 @@ func TestCheckProtocolRole_首帧折成图片(t *testing.T) {
 		t.Fatalf("尾帧应折成 image: %v", err)
 	}
 	// reference 既可能是图也可能是视频，任一支持即可。
-	if err := CheckProtocolRole("bblabu_video", "ref2video", RoleReference); err != nil {
-		t.Fatalf("中转的参考输入应被接受: %v", err)
+	if err := CheckProtocolRole("grok_video", "ref2video", RoleReference); err != nil {
+		t.Fatalf("Grok 的参考输入应被接受: %v", err)
 	}
 }
 
 func TestCheckPublishable_协议不支持的操作是阻塞项(t *testing.T) {
 	blockers := CheckPublishable(PublishInput{
-		ProviderReady: true, Protocol: "bblabu_video",
-		SubmitPath: "/v1/video", QueryPath: "/v1/video/{taskId}",
+		ProviderReady: true, Protocol: "grok_video",
+		SubmitPath: "/v1/videos/generations", QueryPath: "/v1/videos/{taskId}",
 		EnabledOps:     []string{"first_last_frame"},
 		OpsWithPricing: map[string]bool{"first_last_frame": true},
 		OpsWithCaps:    map[string]bool{"first_last_frame": true},
@@ -143,10 +143,10 @@ func TestCheckPublishable_端点不支持也是阻塞项(t *testing.T) {
 
 // 04 文档 P-61：报价 / 受理在扣费前按协议范围校验视频参数。
 func TestCheckVideoParams_扣费前按协议范围拦截(t *testing.T) {
-	if err := CheckVideoParams("uniart_video", "img2video", 3, nil); err == nil {
-		t.Fatal("UniArt 最短 4 秒：3 秒应在报价时就拒")
+	if err := CheckVideoParams("kling_video", "img2video", 2, nil); err == nil {
+		t.Fatal("可灵最短 3 秒：2 秒应在报价时就拒")
 	}
-	if err := CheckVideoParams("uniart_video", "img2video", 0, map[string]any{"duration": 2}); err == nil {
+	if err := CheckVideoParams("kling_video", "img2video", 0, map[string]any{"duration": 2}); err == nil {
 		t.Fatal("参数里的时长同样要查")
 	}
 	if err := CheckVideoParams("kling_video", "text2video", 10, map[string]any{"resolution": "480p"}); err == nil {
@@ -161,21 +161,5 @@ func TestCheckVideoParams_扣费前按协议范围拦截(t *testing.T) {
 	if err := CheckVideoParams("seedance_video", "text2video", 10, map[string]any{"resolution": "1080p",
 		"aspect_ratio": "9:16"}); err != nil {
 		t.Fatalf("合法参数应放行：%v", err)
-	}
-}
-
-// 会话 107398945801502720：UniArt 不带画幅 → 上游 auto → seedance-2.5 不支持（400），那时已经扣费。
-// 受理（带参数）在扣费前要求画幅；规划报价 / 前端估价不带参数，照常放行。
-func TestCheckVideoParams_UniArt受理要求画幅(t *testing.T) {
-	if err := CheckVideoParams("uniart_video", "ref2video", 15, nil); err != nil {
-		t.Fatalf("没有参数的报价（规划、估价）不查画幅：%v", err)
-	}
-	err := CheckVideoParams("uniart_video", "ref2video", 15, map[string]any{"model": "seedance_2_5", "duration": "15"})
-	if err == nil || !strings.Contains(err.Error(), "需要指定画幅") {
-		t.Fatalf("受理参数里没有画幅应在扣费前拒绝：%v", err)
-	}
-	if err := CheckVideoParams("uniart_video", "ref2video", 15, map[string]any{"duration": "15",
-		"aspect_ratio": "9:16"}); err != nil {
-		t.Fatalf("给了画幅应放行：%v", err)
 	}
 }

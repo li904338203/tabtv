@@ -15,7 +15,7 @@ func init() { register(grokVideo{}) }
 // `video_url` / `audio_url` 两个**顶层字符串** —— 三个参考输入三种写法，
 // 这就是"不能替换为通用 JSON 原样透传"的具体含义。
 //
-// ⚠️ 这是最早四家里**唯一收音频参考**的协议（后接的 UniArt 也收）。
+// ⚠️ 这是内置几家视频协议里**唯一收音频参考**的。
 type grokVideo struct{}
 
 func (grokVideo) Code() string            { return "grok_video" }
@@ -38,7 +38,7 @@ func (grokVideo) SupportedOperations() map[string]OperationSupport {
 		"text2video": {Roles: []InputRole{RoleText}},
 		"img2video":  {Roles: []InputRole{RoleText, RoleImage}, MaxImages: 1},
 		// ⚠️ 收音频：通用 ref2video 规则允许 audio，这家真的支持，
-		// 而 Seedance / 可灵 / bblabu 中转都不支持（UniArt 支持）。同一个操作在不同协议下能力不同，
+		// 而 Seedance / 可灵都不支持。同一个操作在不同协议下能力不同，
 		// 正是能力矩阵要表达的东西（GAP-22）。
 		"ref2video":   {Roles: []InputRole{RoleText, RoleImage, RoleAudio, RoleVideo}, MaxImages: 1},
 		"video2video": {Roles: []InputRole{RoleText, RoleVideo}, MaxVideos: 1},

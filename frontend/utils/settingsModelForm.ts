@@ -44,6 +44,36 @@ export interface SettingsProtocol {
   requiresQueryPath: boolean;
   /** 能做多轮 + 工具调用（可作 Agent 推理模型）。 */
   chatCapable?: boolean;
+  /** 该协议在官方接口上的提交 / 查询路径（相对厂商地址）；空 = 没有通用值（如通用信封、按型号区分的路径）。 */
+  defaultSubmitPath?: string;
+  defaultQueryPath?: string;
+}
+
+/**
+ * 换协议时带出该协议的缺省路径（2026-11-03 用户反馈：选了 OpenAI Chat，提交路径框里却提示 /images/generations，不知道该填什么）。
+ *
+ * ⚠️ 只替换「空的」或「仍是上一个协议缺省值」的路径：用户自己填过的（例如中转网关的特殊路径）一律不动 ——
+ *    改协议顺手把手填的路径冲掉，用户多半不会发现，保存后调用直接 404。
+ * 同步协议不该有查询路径：换到同步协议时，只清掉上一个协议带出来的缺省查询路径。
+ */
+export function settingsApplyProtocolDefaults(
+  draft: Pick<SettingsModelDraft, "submitPath" | "queryPath">,
+  prev: SettingsProtocol | undefined,
+  next: SettingsProtocol | undefined
+): void {
+  if (!next) return;
+  const untouched = (value: string, prevDefault: string | undefined) => !value.trim() || value.trim() === (prevDefault ?? "");
+  if (untouched(draft.submitPath, prev?.defaultSubmitPath)) draft.submitPath = next.defaultSubmitPath ?? "";
+  if (untouched(draft.queryPath, prev?.defaultQueryPath)) draft.queryPath = next.isAsync ? (next.defaultQueryPath ?? "") : "";
+}
+
+/** 路径输入框的占位提示：有缺省值时给缺省值，没有时说清楚该填什么。 */
+export function settingsPathPlaceholder(p: SettingsProtocol | undefined, kind: "submit" | "query"): string {
+  if (!p) return "先选择 API 协议";
+  if (kind === "query" && !p.isAsync) return "同步协议不需要";
+  const def = kind === "submit" ? p.defaultSubmitPath : p.defaultQueryPath;
+  if (def) return def;
+  return kind === "submit" ? "相对厂商地址的路径，如 /v1/xxx" : "含 {taskId} 的查询路径，如 /v1/tasks/{taskId}";
 }
 
 export interface SettingsModelDraft {

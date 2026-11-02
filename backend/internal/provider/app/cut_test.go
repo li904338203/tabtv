@@ -197,20 +197,21 @@ func TestComposeInputs_区间截出那一段内联发出(t *testing.T) {
 	}
 }
 
-// 只收地址的异步协议（UniArt）：截好放进对象存储、发签名地址、时长报 3 秒；受理之后留着（上游稍后来取），
+// 只收地址的异步协议（去字幕）：截好放进对象存储、发签名地址；受理之后留着（上游稍后来取），
 // 查询到终态才删。
 func TestSubmit_区间片段放进存储并在查询终态后删除(t *testing.T) {
 	needFFmpeg(t)
 	var submitted map[string]any
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var srv *httptest.Server
+	srv = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
-		case r.Method == http.MethodPost && r.URL.Path == "/v1/videos":
+		case r.Method == http.MethodPost && r.URL.Path == "/api/v1/tools/erase-video-subtitle-pro":
 			b, _ := io.ReadAll(r.Body)
 			_ = json.Unmarshal(b, &submitted)
-			fmt.Fprint(w, `{"id":"video_1","status":"queued"}`)
-		case r.URL.Path == "/v1/videos/video_1":
-			fmt.Fprint(w, `{"id":"video_1","status":"completed","result_url":"/v1/videos/video_1/content"}`)
-		case r.URL.Path == "/v1/videos/video_1/content":
+			fmt.Fprint(w, `{"task_id":"t1"}`)
+		case r.URL.Path == "/api/v1/tasks/t1":
+			fmt.Fprintf(w, `{"status":"completed","result":{"video_url":%q}}`, srv.URL+"/out.mp4")
+		case r.URL.Path == "/out.mp4":
 			w.Header().Set("Content-Type", "video/mp4")
 			_, _ = w.Write([]byte("MP4"))
 		default:
@@ -218,14 +219,11 @@ func TestSubmit_区间片段放进存储并在查询终态后删除(t *testing.T
 		}
 	}))
 	defer srv.Close()
-	p, _ := newProvider(t, RunConfig{
-		ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-		SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}", AuthType: "bearer", APIKey: "sk-uni",
-	})
+	p, _ := newProvider(t, eraseConfig(srv.URL))
 	p.SetMediaResolver(&openMedia{src: sourceVideo(t, 60)})
 	store := newMemScratch("https://scratch.example.com")
 	p.SetScratch(store, nil)
-	job := uniartJob("video2video", map[string]any{"prompt": "去掉字幕"},
+	job := eraseJob(map[string]any{},
 		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 31, "mediaKind": "video", "rangeMs": []int{2000, 5000}}})
 
 	res, err := p.Submit(context.Background(), job)
@@ -240,15 +238,11 @@ func TestSubmit_区间片段放进存储并在查询终态后删除(t *testing.T
 	if secs, _ := probeSeconds(t, objs[key]); secs < 2.96 || secs > 3.04 {
 		t.Fatalf("放进存储的应是 3 秒的片段，实际 %.3f", secs)
 	}
-	raw, _ := json.Marshal(submitted)
-	if !strings.Contains(string(raw), "https://scratch.example.com/"+key) {
-		t.Fatalf("发给上游的应是片段的签名地址: %s", raw)
-	}
-	if meta, _ := submitted["metadata"].(map[string]any); meta["input_video_duration"] != float64(3) {
-		t.Fatalf("参考视频时长报区间长度 3 秒: %+v", submitted["metadata"])
+	if u, _ := submitted["video_url"].(string); !strings.HasPrefix(u, "https://scratch.example.com/"+key) {
+		t.Fatalf("发给上游的应是片段的签名地址: %+v", submitted)
 	}
 
-	q, err := p.Query(context.Background(), job, "video_1")
+	q, err := p.Query(context.Background(), job, "t1")
 	if err != nil || !q.Done || !q.Success {
 		t.Fatalf("应成功: %+v %v", q, err)
 	}
@@ -267,14 +261,11 @@ func TestSubmit_区间片段在提交失败后立即删除(t *testing.T) {
 		fmt.Fprint(w, `{"error":{"message":"bad"}}`)
 	}))
 	defer srv.Close()
-	p, _ := newProvider(t, RunConfig{
-		ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-		SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}", AuthType: "bearer", APIKey: "sk-uni",
-	})
+	p, _ := newProvider(t, eraseConfig(srv.URL))
 	p.SetMediaResolver(&openMedia{src: sourceVideo(t, 10)})
 	store := newMemScratch("https://scratch.example.com")
 	p.SetScratch(store, nil)
-	job := uniartJob("video2video", map[string]any{"prompt": "x"},
+	job := eraseJob(map[string]any{},
 		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 31, "mediaKind": "video", "rangeMs": []int{0, 1000}}})
 	res, _ := p.Submit(context.Background(), job)
 	if res.Outcome == gendomain.SubmitAccepted {
@@ -291,15 +282,12 @@ func TestSubmit_区间片段上游够不着时说清原因(t *testing.T) {
 	hit := false
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { hit = true }))
 	defer srv.Close()
-	p, _ := newProvider(t, RunConfig{
-		ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-		SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}",
-	})
+	p, _ := newProvider(t, eraseConfig(srv.URL))
 	media := &openMedia{src: []byte("never-read")}
 	p.SetMediaResolver(media)
 	store := newMemScratch("http://127.0.0.1:9000/bucket")
 	p.SetScratch(store, nil)
-	job := uniartJob("video2video", map[string]any{"prompt": "x"},
+	job := eraseJob(map[string]any{},
 		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 31, "mediaKind": "video", "rangeMs": []int{0, 1000}}})
 	res, _ := p.Submit(context.Background(), job)
 	if hit || res.Outcome != gendomain.SubmitRejected || !strings.Contains(res.Message, "SEEAITV_RELAY_STORAGE_") {

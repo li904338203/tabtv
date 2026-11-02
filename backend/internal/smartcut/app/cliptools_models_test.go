@@ -16,12 +16,12 @@ func TestClipModelChoices_补镜合并两种操作并去重(t *testing.T) {
 	s := &Service{}
 	s.SetClipToolPorts(ClipToolPorts{Models: stubClipModels{
 		"text2video":       {{Code: "kling", UnitPrice: 3}, {Code: "seedance", UnitPrice: 4}},
-		"img2video":        {{Code: "seedance", UnitPrice: 9}, {Code: "uniart", UnitPrice: 5}},
+		"img2video":        {{Code: "seedance", UnitPrice: 9}, {Code: "grok", UnitPrice: 5}},
 		"video_desubtitle": {{Code: "erase", UnitPrice: 2}},
 	}})
 	fill, err := s.clipModelChoices(context.Background(), "fill", 0)
 	if err != nil || len(fill) != 3 || fill[0].Code != "kling" || fill[1].Code != "seedance" || fill[1].UnitPrice != 4 ||
-		fill[2].Code != "uniart" {
+		fill[2].Code != "grok" {
 		t.Fatalf("补镜模型: %+v %v", fill, err)
 	}
 	erase, _ := s.clipModelChoices(context.Background(), "video_desubtitle", 0)

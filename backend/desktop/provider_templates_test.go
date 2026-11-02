@@ -156,3 +156,26 @@ func TestProviderTemplates_首次启动写入且幂等(t *testing.T) {
 		}
 	}
 }
+
+// 设置页换协议时带出的缺省路径（catalog/domain.DefaultPaths）必须与内置模板实际用的一致：
+// 两份对不上的话，用户照着缺省值新建的模型调不通，而模板里的却能用 —— 看起来像用户填错了。
+func TestProviderTemplates_路径与协议缺省值一致(t *testing.T) {
+	f, err := loadProviderTemplates()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for proto, path := range f.ProtocolSubmitPaths {
+		if submit, _ := catalogdomain.DefaultPaths(proto); submit != path {
+			t.Errorf("协议 %s：模板的提交路径 %q，协议缺省值 %q", proto, path, submit)
+		}
+	}
+	for _, m := range f.Models {
+		submit, query := catalogdomain.DefaultPaths(m.Protocol)
+		if submit != "" && f.submitPath(m) != submit {
+			t.Errorf("模型 %s：提交路径 %q 与协议 %s 的缺省值 %q 不一致", m.Code, f.submitPath(m), m.Protocol, submit)
+		}
+		if query != "" && m.QueryPath != query {
+			t.Errorf("模型 %s：查询路径 %q 与协议 %s 的缺省值 %q 不一致", m.Code, m.QueryPath, m.Protocol, query)
+		}
+	}
+}

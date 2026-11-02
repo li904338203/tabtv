@@ -11,7 +11,7 @@ import {
 import { settingsApiError } from "~/utils/settingsApi";
 import {
   SETTINGS_MAX_VIDEO_DURATION_SEC, SETTINGS_MODEL_DOMAINS, settingsAgentCapableAllowed, settingsModelDraft, settingsModelPayload,
-  settingsValidateModel, type SettingsModelDraft, type SettingsProtocol
+  settingsValidateModel, settingsApplyProtocolDefaults, settingsPathPlaceholder, type SettingsModelDraft, type SettingsProtocol
 } from "~/utils/settingsModelForm";
 
 type Row = Record<string, unknown>;
@@ -26,11 +26,24 @@ const saving = ref(false);
 const editing = computed(() => props.row !== null);
 const blockers = ref<Blocker[]>([]);
 const protocol = computed(() => props.protocols.find(p => p.code === draft.apiProtocol));
+// 换协议时带出缺省路径（只换空的或上一个协议的缺省值，用户手填的不动）。
+// ⚠️ 打开编辑器时整份换草稿也会改 apiProtocol：那一次不是用户换协议，跳过（否则可能改掉库里存的路径）。
+let loadingDraft = false;
+watch(() => draft.apiProtocol, (next, prev) => {
+  if (loadingDraft) {
+    loadingDraft = false;
+    return;
+  }
+  if (next === prev) return;
+  settingsApplyProtocolDefaults(draft, props.protocols.find(p => p.code === prev), props.protocols.find(p => p.code === next));
+});
 const agentAllowed = computed(() => settingsAgentCapableAllowed(draft, props.protocols));
 
 watch(() => props.open, async open => {
   if (!open) return;
-  Object.assign(draft, settingsModelDraft(props.row));
+  const loaded = settingsModelDraft(props.row);
+  loadingDraft = loaded.apiProtocol !== draft.apiProtocol;
+  Object.assign(draft, loaded);
   blockers.value = [];
   if (props.row) {
     try {
@@ -98,9 +111,9 @@ async function save() {
           </ElSelect>
           <small class="me-help">「通用」协议发的是本应用自有的请求信封，只适用于兼容它的中转；接厂商原生接口请选对应的协议。</small>
         </ElFormItem>
-        <ElFormItem label="提交路径" required><ElInput v-model="draft.submitPath" :maxlength="256" placeholder="/images/generations" /></ElFormItem>
+        <ElFormItem label="提交路径" required><ElInput v-model="draft.submitPath" :maxlength="256" :placeholder="settingsPathPlaceholder(protocol, 'submit')" /></ElFormItem>
         <ElFormItem v-if="protocol?.isAsync" label="查询路径" :required="protocol?.requiresQueryPath">
-          <ElInput v-model="draft.queryPath" :maxlength="256" placeholder="/videos/{taskId}" />
+          <ElInput v-model="draft.queryPath" :maxlength="256" :disabled="Boolean(protocol) && !protocol?.isAsync" :placeholder="settingsPathPlaceholder(protocol, 'query')" />
         </ElFormItem>
         <ElFormItem label="预计耗时（秒）" required>
           <ElInputNumber v-model="draft.estSeconds" :min="1" :max="3600" :precision="0" />

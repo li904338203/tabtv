@@ -16,8 +16,8 @@ import (
 	gendomain "github.com/li904338203/tabtv/backend/internal/generation/domain"
 )
 
-// 只收地址形态参考媒体的协议（protocol.MediaURLRequiring）。会话 107440483873062912 与 2026-10-24 实测（R-13）：
-// UniArt 收到内联图时，按大小分别回「413」「提示词过长」「requires prompt media references」，换成公网地址就成功。
+// 只收地址形态参考媒体的协议（protocol.MediaURLRequiring，例如火山 MediaKit 去字幕的 `video_url`）。
+// 这类上游收到内联数据一律拒收，只能发公网可访问的地址（R-13）。
 
 // countingMedia 记下是否取过内联字节：只收地址的协议一次都不该取。
 type countingMedia struct {
@@ -36,9 +36,9 @@ func TestSubmit_只收地址的协议签不出外链时提交前判失败(t *tes
 		media  stubMedia
 		reason string
 	}{
-		{"本地 MinIO 的内网地址", stubMedia{url: "http://127.0.0.1:9100/b/a.png", mime: "image/png", data: []byte("PNG")},
+		{"本地 MinIO 的内网地址", stubMedia{url: "http://127.0.0.1:9100/b/a.mp4", mime: "video/mp4", data: []byte("MP4")},
 			"签出的地址上游访问不到"},
-		{"签发失败", stubMedia{urlErr: errors.New("存储不可用"), mime: "image/png", data: []byte("PNG")},
+		{"签发失败", stubMedia{urlErr: errors.New("存储不可用"), mime: "video/mp4", data: []byte("MP4")},
 			"签发地址失败：存储不可用"},
 	}
 	for _, c := range cases {
@@ -46,17 +46,14 @@ func TestSubmit_只收地址的协议签不出外链时提交前判失败(t *tes
 			var hits atomic.Int32
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				hits.Add(1)
-				fmt.Fprint(w, `{"id":"video_1","status":"queued"}`)
+				fmt.Fprint(w, `{"task_id":"t1"}`)
 			}))
 			defer srv.Close()
-			p, _ := newProvider(t, RunConfig{
-				ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-				SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}", AuthType: "bearer", APIKey: "sk",
-			})
+			p, _ := newProvider(t, eraseConfig(srv.URL))
 			var inlined atomic.Int32
 			p.SetMediaResolver(countingMedia{stubMedia: c.media, inlined: &inlined})
-			job := uniartJob("ref2video", map[string]any{"prompt": "沙发", "aspect_ratio": "9:16"},
-				[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "image"}})
+			job := eraseJob(map[string]any{},
+				[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "video"}})
 
 			res, err := p.Submit(context.Background(), job)
 			if err != nil || res.Outcome != gendomain.SubmitRejected {
@@ -79,27 +76,23 @@ func TestSubmit_只收地址的协议签得出外链时照常发地址(t *testin
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		b, _ := io.ReadAll(r.Body)
 		_ = json.Unmarshal(b, &submitted)
-		fmt.Fprint(w, `{"id":"video_1","status":"queued"}`)
+		fmt.Fprint(w, `{"task_id":"t1"}`)
 	}))
 	defer srv.Close()
-	p, _ := newProvider(t, RunConfig{
-		ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-		SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}", AuthType: "bearer", APIKey: "sk",
-	})
-	p.SetMediaResolver(stubMedia{url: "https://cdn.example.com/a.png?sig=x", mime: "image/png", data: []byte("PNG")})
-	job := uniartJob("ref2video", map[string]any{"prompt": "沙发", "aspect_ratio": "9:16"},
-		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "image"}})
-	if res, err := p.Submit(context.Background(), job); err != nil || res.ProviderTaskID != "video_1" {
+	p, _ := newProvider(t, eraseConfig(srv.URL))
+	p.SetMediaResolver(stubMedia{url: "https://cdn.example.com/a.mp4?sig=x", mime: "video/mp4", data: []byte("MP4")})
+	job := eraseJob(map[string]any{},
+		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "video"}})
+	if res, err := p.Submit(context.Background(), job); err != nil || res.ProviderTaskID != "t1" {
 		t.Fatalf("提交应受理: %+v %v", res, err)
 	}
-	meta, _ := submitted["metadata"].(map[string]any)
-	if urls, _ := meta["image_urls"].([]any); len(urls) != 1 || urls[0] != "https://cdn.example.com/a.png?sig=x" {
-		t.Fatalf("应发签名地址: %v", meta)
+	if submitted["video_url"] != "https://cdn.example.com/a.mp4?sig=x" {
+		t.Fatalf("应发签名地址: %v", submitted)
 	}
 
 	// 查询不发参考图：签不出外链不该让轮询失败（只有提交才要求地址形态）。
-	p.SetMediaResolver(stubMedia{url: "http://127.0.0.1:9100/b/a.png", mime: "image/png", data: []byte("PNG")})
-	if _, err := p.Query(context.Background(), job, "video_1"); err != nil {
+	p.SetMediaResolver(stubMedia{url: "http://127.0.0.1:9100/b/a.mp4", mime: "video/mp4", data: []byte("MP4")})
+	if _, err := p.Query(context.Background(), job, "t1"); err != nil {
 		t.Fatalf("轮询不该因为参考媒体签不出外链而失败: %v", err)
 	}
 }
@@ -140,8 +133,9 @@ func (f *fakeRelay) URL(context.Context, int64) (string, string, error) {
 	return f.url, "image/jpeg", f.err
 }
 
-// uniartSubmit 用本地 MinIO 式的内网地址提交一张参考图，返回提交结果与上游收到的 metadata。
-func uniartSubmit(t *testing.T, relay MediaRelay, signed string) (gendomain.SubmitOutcome, string, map[string]any, int32) {
+// urlOnlySubmit 用本地 MinIO 式的内网地址提交一段参考视频（去字幕：只收地址的协议），
+// 返回提交结果、原因与上游收到的 video_url。
+func urlOnlySubmit(t *testing.T, relay MediaRelay, signed string) (gendomain.SubmitOutcome, string, string, int32) {
 	t.Helper()
 	var submitted map[string]any
 	var hits atomic.Int32
@@ -149,45 +143,42 @@ func uniartSubmit(t *testing.T, relay MediaRelay, signed string) (gendomain.Subm
 		hits.Add(1)
 		b, _ := io.ReadAll(r.Body)
 		_ = json.Unmarshal(b, &submitted)
-		fmt.Fprint(w, `{"id":"video_1","status":"queued"}`)
+		fmt.Fprint(w, `{"task_id":"t1"}`)
 	}))
 	defer srv.Close()
-	p, _ := newProvider(t, RunConfig{
-		ModelCode: "m-1", ProtocolCode: "uniart_video", BaseURL: srv.URL,
-		SubmitPath: "/v1/videos", QueryPath: "/v1/videos/{taskId}", AuthType: "bearer", APIKey: "sk",
-	})
+	p, _ := newProvider(t, eraseConfig(srv.URL))
 	var inlined atomic.Int32
-	p.SetMediaResolver(countingMedia{stubMedia: stubMedia{url: signed, mime: "image/png", data: []byte("PNG")}, inlined: &inlined})
+	p.SetMediaResolver(countingMedia{stubMedia: stubMedia{url: signed, mime: "video/mp4", data: []byte("MP4")}, inlined: &inlined})
 	if relay != nil {
 		p.SetMediaRelay(relay)
 	}
-	res, err := p.Submit(context.Background(), uniartJob("ref2video", map[string]any{"prompt": "沙发", "aspect_ratio": "9:16"},
-		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "image"}}))
+	res, err := p.Submit(context.Background(), eraseJob(map[string]any{},
+		[]map[string]any{{"kind": "reference", "order": 1, "mediaId": 42, "mediaKind": "video"}}))
 	if err != nil {
 		t.Fatal(err)
 	}
-	meta, _ := submitted["metadata"].(map[string]any)
 	if inlined.Load() != 0 {
 		t.Fatal("只收地址的协议不该取内联字节")
 	}
-	return res.Outcome, res.Message, meta, hits.Load()
+	u, _ := submitted["video_url"].(string)
+	return res.Outcome, res.Message, u, hits.Load()
 }
 
 func TestSubmit_只收地址的协议够不着主存储时走公网中转(t *testing.T) {
-	relay := &fakeRelay{url: "https://ss3.example.com/seeaitv/relay/a.png?sig=r"}
-	outcome, msg, meta, _ := uniartSubmit(t, relay, "http://127.0.0.1:9100/b/a.png")
+	relay := &fakeRelay{url: "https://relay.example.com/tabtv/relay/a.mp4?sig=r"}
+	outcome, msg, sent, _ := urlOnlySubmit(t, relay, "http://127.0.0.1:9100/b/a.mp4")
 	if outcome == gendomain.SubmitRejected {
 		t.Fatalf("配了中转就该照常提交：%s", msg)
 	}
-	if urls, _ := meta["image_urls"].([]any); len(urls) != 1 || urls[0] != relay.url {
-		t.Fatalf("应发中转存储的签名地址：%v", meta)
+	if sent != relay.url {
+		t.Fatalf("应发中转存储的签名地址：%q", sent)
 	}
 
 	// 主存储本来就够得着：不走中转（不白占中转服务器的带宽）。
 	relay2 := &fakeRelay{url: relay.url}
-	_, _, meta, _ = uniartSubmit(t, relay2, "https://cdn.example.com/a.png?sig=x")
-	if urls, _ := meta["image_urls"].([]any); relay2.calls.Load() != 0 || len(urls) != 1 || urls[0] != "https://cdn.example.com/a.png?sig=x" {
-		t.Fatalf("主存储够得着时直接发主存储的地址：calls=%d %v", relay2.calls.Load(), meta)
+	_, _, sent, _ = urlOnlySubmit(t, relay2, "https://cdn.example.com/a.mp4?sig=x")
+	if relay2.calls.Load() != 0 || sent != "https://cdn.example.com/a.mp4?sig=x" {
+		t.Fatalf("主存储够得着时直接发主存储的地址：calls=%d %q", relay2.calls.Load(), sent)
 	}
 }
 
@@ -198,11 +189,11 @@ func TestSubmit_公网中转失败时提交前判失败并说清(t *testing.T) {
 		want  string
 	}{
 		{"转存失败", &fakeRelay{err: errors.New("连接中断")}, "转存到公网中转存储也失败了：连接中断"},
-		{"中转地址也是内网", &fakeRelay{url: "http://127.0.0.1:9101/relay/a.png"}, "公网中转存储签出的地址同样访问不到"},
+		{"中转地址也是内网", &fakeRelay{url: "http://127.0.0.1:9101/relay/a.mp4"}, "公网中转存储签出的地址同样访问不到"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			outcome, msg, _, hits := uniartSubmit(t, c.relay, "http://127.0.0.1:9100/b/a.png")
+			outcome, msg, _, hits := urlOnlySubmit(t, c.relay, "http://127.0.0.1:9100/b/a.mp4")
 			if outcome != gendomain.SubmitRejected || hits != 0 {
 				t.Fatalf("应在提交前判永久失败、不发上游：%v 上游 %d 次", outcome, hits)
 			}
@@ -225,7 +216,7 @@ func TestSubmit_收内联的协议不走公网中转(t *testing.T) {
 	}))
 	defer srv.Close()
 	p, _ := newProvider(t, RunConfig{ModelCode: "m-1", ProtocolCode: "openai_chat", BaseURL: srv.URL, SubmitPath: "/chat/completions"})
-	relay := &fakeRelay{url: "https://ss3.example.com/relay/a.png"}
+	relay := &fakeRelay{url: "https://relay.example.com/relay/a.png"}
 	p.SetMediaResolver(stubMedia{url: "http://127.0.0.1:9100/b/a.png", mime: "image/png", data: []byte("PNG")})
 	p.SetMediaRelay(relay)
 	if _, err := p.Submit(context.Background(), jobWith("openai_chat", nil,

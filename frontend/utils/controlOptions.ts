@@ -91,7 +91,7 @@ export function optionSelected(option: ControlOption, modelValue: unknown): bool
 /**
  * 参数之间的约束（`config.restrictBy`，由型号覆盖下发，见契约 `ModelParams`）：
  * `{"restrictBy":{"resolution":{"1080p":["16:9","9:16","1:1"]}}}` 写在画幅上，
- * 意思是「清晰度为 1080p 时画幅只能选这三种」（UniArt 的 Seedance 就是这样）。
+ * 意思是「清晰度为 1080p 时画幅只能选这三种」（有的视频型号就是这样）。
  *
  * 返回在 `params` 这组取值下**还能选的值**；不受任何约束时返回 null（全部可选）。
  * 多条约束同时生效时取交集。

@@ -5923,8 +5923,14 @@ type AdminModelOperationBinding struct {
 // AdminModelProtocol defines model for AdminModelProtocol.
 type AdminModelProtocol struct {
 	// ChatCapable 能否作 Agent 推理模型
-	ChatCapable       bool   `json:"chatCapable"`
-	Code              string `json:"code"`
+	ChatCapable bool   `json:"chatCapable"`
+	Code        string `json:"code"`
+
+	// DefaultQueryPath 官方接口的查询路径（异步协议）；空 = 没有通用值或不需要
+	DefaultQueryPath string `json:"defaultQueryPath"`
+
+	// DefaultSubmitPath 官方接口的提交路径（相对厂商地址）；空 = 没有通用值
+	DefaultSubmitPath string `json:"defaultSubmitPath"`
 	IsAsync           bool   `json:"isAsync"`
 	Name              string `json:"name"`
 	RequiresQueryPath bool   `json:"requiresQueryPath"`

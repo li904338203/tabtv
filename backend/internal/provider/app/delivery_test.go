@@ -29,7 +29,7 @@ func TestMediaDelivery_只收地址的协议才查且与发送规则一致(t *te
 		{"主存储签得出公网地址", "volc_mediakit_erase", MediaDelivery{Main: public}, false},
 		{"主存储是内网、配了公网中转", "volc_mediakit_erase", MediaDelivery{Main: private, Relay: public}, false},
 		{"主存储是内网、没有中转", "volc_mediakit_erase", MediaDelivery{Main: private}, true},
-		{"中转签出的也是内网地址", "uniart_video", MediaDelivery{Main: private, Relay: private}, true},
+		{"中转签出的也是内网地址", "volc_mediakit_erase", MediaDelivery{Main: private, Relay: private}, true},
 		{"签名失败且没有中转", "volc_asr_standard", MediaDelivery{Main: broken}, true},
 		{"没有对象存储", "volc_mediakit_erase", MediaDelivery{}, true},
 	}

@@ -42,7 +42,7 @@ type Config struct {
 	Storage            Storage
 	// RelayStorage 是可选的「公网中转」对象存储（marketing dev/01 R-15）。Endpoint 为空 = 不启用。
 	//
-	// 主存储签出的地址上游够不着（本地 MinIO），而协议又只收地址（UniArt，protocol.MediaURLRequiring）时，
+	// 主存储签出的地址上游够不着（本地 MinIO），而协议又只收地址（去字幕等，protocol.MediaURLRequiring）时，
 	// Worker 把要发出去的那几张参考媒体转存一份到这里，发这边的签名地址。主存储因此可以留在本地：
 	// 前端照常快，只有真要发给这类上游的文件才走一趟中转（实测把主存储整体搬到带宽 5Mbps 的服务器上，
 	// 前端取图全部 30 秒超时）。签名有效期沿用 Storage.SignTTL。
