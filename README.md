@@ -94,7 +94,7 @@ make test-it   # 数据库集成测试（用内嵌 PostgreSQL，不需要 docker
 make help      # 全部命令
 ```
 
-参与开发请先读 [CONTRIBUTING.md](CONTRIBUTING.md)；需求与设计文档在 [`docs/`](docs/)。
+参与开发请先读 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 许可证
 

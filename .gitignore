@@ -29,3 +29,6 @@ build/ffmpeg/out/
 # 打包产物（build/package.sh）与 wails 生成的校验文件
 build/dist/
 frontend/package.json.md5
+
+# 需求、设计与任务卡只留在本地，不进仓库
+docs/
