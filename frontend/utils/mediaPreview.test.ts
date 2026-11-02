@@ -1,16 +1,17 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-const APP = join(__dirname, "..");
+// ⚠️ 统一成 / 分隔：下面按 endsWith("stores/workspace.ts") 之类放行，Windows 上的 \ 路径永远匹配不上（TT-T-29 CI 抓出）。
+const APP = join(__dirname, "..").split(sep).join("/");
 
 function vueFiles(dir: string, out: string[] = []): string[] {
   for (const name of readdirSync(dir)) {
     if (["node_modules", ".nuxt", ".output", "dist", ".turbo"].includes(name)) continue;
     const path = join(dir, name);
     if (statSync(path).isDirectory()) vueFiles(path, out);
-    else if (name.endsWith(".vue")) out.push(path);
+    else if (name.endsWith(".vue")) out.push(path.split(sep).join("/"));
   }
   return out;
 }

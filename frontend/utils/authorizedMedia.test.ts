@@ -1,11 +1,12 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, sep } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
 import { LIST_THUMB_WIDTH, absoluteMediaUrl, authorizedMediaRequest, projectCoverUrl } from "./authorizedMedia";
 
-const APP = join(__dirname, "..");
+// ⚠️ 统一成 / 分隔：下面按 endsWith("stores/workspace.ts") 之类放行，Windows 上的 \ 路径永远匹配不上（TT-T-29 CI 抓出）。
+const APP = join(__dirname, "..").split(sep).join("/");
 
 /**
  * ⚠️ 已知遗留的直链下载 —— 登记在这里，而不是让扫描放过它们。**不许往这里加新的。**
@@ -60,7 +61,7 @@ function vueAndTsFiles(dir: string, out: string[] = []): string[] {
     if (["node_modules", ".nuxt", ".output", "dist", ".turbo"].includes(name)) continue;
     const path = join(dir, name);
     if (statSync(path).isDirectory()) vueAndTsFiles(path, out);
-    else if (/\.(vue|ts)$/.test(name) && !name.endsWith(".test.ts")) out.push(path);
+    else if (/\.(vue|ts)$/.test(name) && !name.endsWith(".test.ts")) out.push(path.split(sep).join("/"));
   }
   return out;
 }

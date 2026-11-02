@@ -49,7 +49,16 @@ func start() {
 	if err != nil {
 		return
 	}
-	pool, err = pgxpool.New(context.Background(), dsn)
+	// ⚠️ 连接数写死，不跟 CPU 数走：pgxpool 缺省是 max(4, CPU 数)，在 4 核的 CI 机器上只有 4 条。
+	// 真并发用例（8 个协程抢同一行 / 同一把锁）在那里会把池子占满 —— 预热池子的测试自己就卡死，
+	// 而在核数多的开发机上一切正常（TT-T-29 CI 抓出）。
+	cfg, perr := pgxpool.ParseConfig(dsn)
+	if perr != nil {
+		err = perr
+		return
+	}
+	cfg.MaxConns = 32
+	pool, err = pgxpool.NewWithConfig(context.Background(), cfg)
 }
 
 // Fresh 清空全部业务表，给当前用例一张干净的库。

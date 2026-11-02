@@ -219,6 +219,9 @@ func (r *Repo) Fulfil(ctx context.Context, payerID, orderID int64,
 		Scan(&typ, &credits, &levelID, &startAt, &expireAt)
 	if errors.Is(err, pgx.ErrNoRows) {
 		// 没抢到 —— 要么订单不存在，要么已经不是 pending 了。
+		// ⚠️ 先放掉事务再查：r.Order 走连接池要第二条连接，攥着事务那条去等的话，
+		// 并发的回调各占一条、各等一条，连接池小的机器上整体卡死（CI 4 核实测）。
+		_ = tx.Rollback(ctx)
 		o, ferr := r.Order(ctx, payerID, orderID)
 		if ferr != nil {
 			return FulfilResult{}, ferr
