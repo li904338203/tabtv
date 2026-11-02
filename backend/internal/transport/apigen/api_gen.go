@@ -3229,6 +3229,7 @@ const (
 	RenderPrecheckIssuesCodeClipGenerating      RenderPrecheckIssuesCode = "clip_generating"
 	RenderPrecheckIssuesCodeEmptyTimeline       RenderPrecheckIssuesCode = "empty_timeline"
 	RenderPrecheckIssuesCodeFfmpegMissing       RenderPrecheckIssuesCode = "ffmpeg_missing"
+	RenderPrecheckIssuesCodeH264EncoderMissing  RenderPrecheckIssuesCode = "h264_encoder_missing"
 	RenderPrecheckIssuesCodeMediaMissing        RenderPrecheckIssuesCode = "media_missing"
 	RenderPrecheckIssuesCodeSubtitleUnsupported RenderPrecheckIssuesCode = "subtitle_unsupported"
 	RenderPrecheckIssuesCodeTooLong             RenderPrecheckIssuesCode = "too_long"
@@ -3242,6 +3243,8 @@ func (e RenderPrecheckIssuesCode) Valid() bool {
 	case RenderPrecheckIssuesCodeEmptyTimeline:
 		return true
 	case RenderPrecheckIssuesCodeFfmpegMissing:
+		return true
+	case RenderPrecheckIssuesCodeH264EncoderMissing:
 		return true
 	case RenderPrecheckIssuesCodeMediaMissing:
 		return true
@@ -6799,6 +6802,7 @@ const (
 	StartRender202JSONResponseBodyIssuesCodeClipGenerating      StartRender202JSONResponseBodyIssuesCode = "clip_generating"
 	StartRender202JSONResponseBodyIssuesCodeEmptyTimeline       StartRender202JSONResponseBodyIssuesCode = "empty_timeline"
 	StartRender202JSONResponseBodyIssuesCodeFfmpegMissing       StartRender202JSONResponseBodyIssuesCode = "ffmpeg_missing"
+	StartRender202JSONResponseBodyIssuesCodeH264EncoderMissing  StartRender202JSONResponseBodyIssuesCode = "h264_encoder_missing"
 	StartRender202JSONResponseBodyIssuesCodeMediaMissing        StartRender202JSONResponseBodyIssuesCode = "media_missing"
 	StartRender202JSONResponseBodyIssuesCodeSubtitleUnsupported StartRender202JSONResponseBodyIssuesCode = "subtitle_unsupported"
 	StartRender202JSONResponseBodyIssuesCodeTooLong             StartRender202JSONResponseBodyIssuesCode = "too_long"
@@ -6812,6 +6816,8 @@ func (e StartRender202JSONResponseBodyIssuesCode) Valid() bool {
 	case StartRender202JSONResponseBodyIssuesCodeEmptyTimeline:
 		return true
 	case StartRender202JSONResponseBodyIssuesCodeFfmpegMissing:
+		return true
+	case StartRender202JSONResponseBodyIssuesCodeH264EncoderMissing:
 		return true
 	case StartRender202JSONResponseBodyIssuesCodeMediaMissing:
 		return true

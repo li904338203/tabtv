@@ -9,6 +9,8 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	billingrepo "github.com/li904338203/tabtv/backend/internal/billing/repo"
@@ -59,6 +61,7 @@ func NewTimelineService(in TimelineInput) *timelineapp.Service {
 	// ⚠️ 本机有没有 ffmpeg 在**受理时**就判：不判的话任务会排队然后失败，
 	// 而错误信息里只有一句 "exec: not found"。
 	tl.SetFFmpegAvailable(timelineapp.FFmpegAvailable())
+	tl.SetEncoderAvailable(func() bool { return ffbin.H264().Encoder.Name != "" })
 	// 水印开关（GAP-13）。⚠️ **服务端按用户 ID 查库**，不从请求体收：
 	// 让客户端自己报"我关了水印"等于把 AI 标识变成谁都能关的可选项。
 	tl.SetUserFlags(userWatermarkFlags{identityrepo.New(in.Pool)})

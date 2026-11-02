@@ -14003,7 +14003,7 @@ components:
             properties:
               code:
                 type: string
-                enum: [empty_timeline, media_missing, too_long, ffmpeg_missing, subtitle_unsupported, clip_generating]
+                enum: [empty_timeline, media_missing, too_long, ffmpeg_missing, h264_encoder_missing, subtitle_unsupported, clip_generating]
               detail: { type: string }
               clipIdx:
                 type: integer

@@ -20,7 +20,7 @@ import (
 
 // 环境自检（TT-F-35，TT-T-22）。每一项给「状态 + 现值 + 处置建议」：
 // 只说「ffmpeg 不可用」的话，用户不知道下一步该做什么。
-// 编码器探测（TT-T-27）与 Linux 播放依赖（TT-T-28）后续追加到 checks 里。
+// Linux 播放依赖（TT-T-28）后续追加到 checks 里。
 
 // Check 是一项自检结果。
 type Check struct {
@@ -43,6 +43,9 @@ func runDiagnostics(ctx context.Context, pool *pgxpool.Pool) []Check {
 	out := []Check{dbCheck(ctx, pool)}
 	out = append(out, binCheck(ctx, "ffmpeg", "ffmpeg", "渲染成片、视频封面、剪辑台预览都依赖它"))
 	out = append(out, binCheck(ctx, "ffprobe", "ffprobe", "读取音视频时长与音轨"))
+	if ffbin.Available("ffmpeg") {
+		out = append(out, encoderCheck())
+	}
 	out = append(out, fontCheck())
 	return out
 }
@@ -89,5 +92,37 @@ func fontCheck() Check {
 		return c
 	}
 	c.Status, c.Value = "ok", filepath.Clean(dir)
+	return c
+}
+
+// encoderCheck 报告选中的 H.264 编码器与被跳过的候选（TT-T-27）。
+// ⚠️ 跳过原因要原样给：「nvenc 试编码失败：No capable devices found」能让用户知道是驱动问题，
+// 一句「不可用」不能。
+func encoderCheck() Check {
+	c := Check{Key: "h264_encoder", Label: "H.264 编码器"}
+	sel := ffbin.H264()
+	var skipped []string
+	for _, s := range sel.Skipped {
+		if s.Reason == "当前 ffmpeg 没有编入" {
+			continue // 随包构建本来就没有 x264 等，列出来只是噪声
+		}
+		skipped = append(skipped, s.Name+"："+s.Reason)
+	}
+	if sel.Encoder.Name == "" {
+		c.Status, c.Value = "fail", "没有可用的编码器"
+		c.Advice = "无法渲染成片与剪辑预览；请重新安装应用，或在「常规」里指定一个带 H.264 编码器的 ffmpeg"
+		if len(skipped) > 0 {
+			c.Value += "（" + strings.Join(skipped, "；") + "）"
+		}
+		return c
+	}
+	c.Status, c.Value = "ok", sel.Encoder.Name
+	if len(skipped) > 0 {
+		c.Value += " · 已跳过 " + strings.Join(skipped, "；")
+	}
+	if sel.Encoder.Name == "libopenh264" {
+		c.Status = "warn"
+		c.Advice = "没有可用的硬件编码器，使用软件编码 openh264：成片能出，但渲染较慢"
+	}
 	return c
 }

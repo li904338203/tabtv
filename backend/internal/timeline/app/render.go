@@ -84,6 +84,10 @@ func (s *Service) SetRenderQuoter(q RenderQuoter) { s.renderQuote = q }
 func (s *Service) SetNextID(f func() int64)       { s.nextID = f }
 func (s *Service) SetFFmpegAvailable(ok bool)     { s.ffmpegOK = ok }
 
+// SetEncoderAvailable 注入「本机有没有可用的 H.264 编码器」（TT-T-27）；不注入 = 视为有。
+// 按次求值而不是启动时定死：探测结果有缓存，换了 ffmpeg 之后会重新探测。
+func (s *Service) SetEncoderAvailable(fn func() bool) { s.encoderOK = fn }
+
 // RenderPrecheck 预检结果（也用于 dryRun 报价）。
 type RenderPrecheck struct {
 	Issues      []domain.PrecheckIssue
@@ -169,6 +173,7 @@ func (s *Service) PrecheckRender(ctx context.Context, in RenderInput) (
 	}
 	issues := domain.Precheck(snap, domain.PrecheckEnv{
 		MediaOK: func(id int64) bool { _, ok := look(id); return ok }, FFmpegOK: s.ffmpegOK, GeneratingClips: generating,
+		NoEncoder: s.ffmpegOK && s.encoderOK != nil && !s.encoderOK(),
 	})
 
 	subs := 0

@@ -3,6 +3,7 @@ package domain
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 )
@@ -35,6 +36,11 @@ func planOf(t *testing.T, snap RenderSnapshot, io RenderIO) RenderPlan {
 	}
 	if io.WorkDir == "" {
 		io.WorkDir = "/tmp/work"
+	}
+	// TABTV_TEST_H264=h264_videotoolbox 等：用别的编码器把真实 ffmpeg 的渲染测试再跑一遍（TT-T-27）。
+	// 滤镜图与编码器无关，换编码器后这些量产物的断言必须照样成立。
+	if io.Encoder.Name == "" {
+		io.Encoder.Name = os.Getenv("TABTV_TEST_H264")
 	}
 	plan, err := BuildRenderPlan(snap, io)
 	if err != nil {
@@ -503,5 +509,19 @@ func TestExportSize(t *testing.T) {
 		if w, h := ExportSize(c.aspect, c.w, c.h, c.res); w != c.wantW || h != c.wantH {
 			t.Errorf("%s %s：%dx%d，应为 %dx%d", c.aspect, c.res, w, h, c.wantW, c.wantH)
 		}
+	}
+}
+
+// 有 ffmpeg 但没有任何 H.264 编码器（随包 LGPL 构建 + 硬件与 openh264 都不可用）：受理前拦下并说出路（TT-T-27）。
+func TestPrecheck_没有H264编码器(t *testing.T) {
+	env := PrecheckEnv{MediaOK: func(int64) bool { return true }, FFmpegOK: true, NoEncoder: true}
+	issues := Precheck(baseSnap(snapClip(1, 1000)), env)
+	if len(issues) != 1 || issues[0].Code != PrecheckNoEncoder || !strings.Contains(issues[0].Detail, "设置") {
+		t.Fatalf("应只报无编码器并给出路：%+v", issues)
+	}
+	// 连 ffmpeg 都没有时只报那一条（编码器无从谈起）。
+	env.FFmpegOK = false
+	if issues := Precheck(baseSnap(snapClip(1, 1000)), env); len(issues) != 1 || issues[0].Code != PrecheckNoFFmpeg {
+		t.Fatalf("没有 ffmpeg 时只报 ffmpeg：%+v", issues)
 	}
 }

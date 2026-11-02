@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 )
 
 // 渲染（NEW-10、NEW-11）。
@@ -100,6 +102,8 @@ const (
 	PrecheckMediaMissing = "media_missing"
 	PrecheckTooLong      = "too_long"
 	PrecheckNoFFmpeg     = "ffmpeg_missing"
+	// PrecheckNoEncoder ffmpeg 在，但没有任何能用的 H.264 编码器（随包构建没有 libx264，TT-T-27）。
+	PrecheckNoEncoder = "h264_encoder_missing"
 	// PrecheckClipGenerating 片段级生成还在进行（SC-F-138）：导出的会是旧素材，而用户以为是新的。
 	PrecheckClipGenerating = "clip_generating"
 )
@@ -116,6 +120,8 @@ type PrecheckEnv struct {
 	// MediaOK 素材还在不在（按工作区）；nil 表示不查。
 	MediaOK  func(int64) bool
 	FFmpegOK bool
+	// NoEncoder 本机 ffmpeg 没有可用的 H.264 编码器（零值 = 有，旧调用方不受影响）。
+	NoEncoder bool
 	// GeneratingClips 画面轨上还在片段级生成的段（1 起的段号）。
 	GeneratingClips []int
 }
@@ -132,6 +138,10 @@ func Precheck(snap RenderSnapshot, env PrecheckEnv) []PrecheckIssue {
 		// 而错误信息里只有一句 "exec: not found"。
 		out = append(out, PrecheckIssue{PrecheckNoFFmpeg,
 			"服务端没有可用的 ffmpeg，无法渲染", 0})
+	} else if env.NoEncoder {
+		// ⚠️ 不预检的话任务会排队、跑完全部滤镜，最后在编码那一步报「Unknown encoder」。
+		out = append(out, PrecheckIssue{PrecheckNoEncoder,
+			"当前 ffmpeg 没有可用的 H.264 编码器，无法渲染；可在设置 → 常规里换一个 ffmpeg", 0})
 	}
 	if len(snap.Clips) == 0 {
 		out = append(out, PrecheckIssue{PrecheckEmpty,
@@ -220,13 +230,14 @@ type RenderIO struct {
 	// WorkDir 分块的中间文件放这里（与其余临时文件同一个目录，整体删）。
 	WorkDir string
 	OutPath string
+	// Encoder 本机选中的 H.264 编码器（ffbin.H264，TT-T-27）；零值 = libx264。
+	Encoder h264.Encoder
 }
 
 // ChunkClips 超过这么多段就分块渲染：每段一个 `-i`，几百个解码器同时开着会把 Worker 内存撑爆。
 const ChunkClips = 60
 
-// ChunkCRF 中间文件的编码质量：收尾那一遍还要再编码一次，中间文件给得高一些，免得两代压缩糊掉。
-const ChunkCRF = 16
+// 中间文件的编码质量是 h264.TierIntermediate：收尾那一遍还要再编码一次，中间文件给得高一些，免得两代压缩糊掉。
 
 // BuildRenderPlan 把快照拼成 ffmpeg 命令（SCD-27）。
 //
@@ -243,6 +254,9 @@ func BuildRenderPlan(snap RenderSnapshot, io RenderIO) (RenderPlan, error) {
 		}
 	}
 	plan := RenderPlan{}
+	intent := func(t h264.Tier) h264.Intent {
+		return h264.Intent{Tier: t, Width: snap.Width, Height: snap.Height, FPS: float64(snap.FPS)}
+	}
 	chunks := ChunkBounds(snap.Clips, ChunkClips)
 	var head []string
 	var filters []string
@@ -259,9 +273,9 @@ func BuildRenderPlan(snap RenderSnapshot, io RenderIO) (RenderPlan, error) {
 			in, fs, label := videoGraph(snap, io.Files, clips, 0)
 			out := filepath.Join(io.WorkDir, fmt.Sprintf("chunk-%03d.mp4", k+1))
 			args := append([]string{"-hide_banner", "-nostdin", "-y"}, in...)
-			args = append(args, "-filter_complex", strings.Join(fs, ";"), "-map", label,
-				"-c:v", "libx264", "-preset", "veryfast", "-crf", fmt.Sprint(ChunkCRF), "-pix_fmt", "yuv420p",
-				"-r", fmt.Sprint(snap.FPS), "-an", out)
+			args = append(args, "-filter_complex", strings.Join(fs, ";"), "-map", label)
+			args = append(args, h264.EncodeArgs(io.Encoder, intent(h264.TierIntermediate))...)
+			args = append(args, "-r", fmt.Sprint(snap.FPS), "-an", out)
 			_, dur := placeVideo(snapSeams(clips))
 			plan.Chunks = append(plan.Chunks, ChunkPass{Args: args, Output: out, DurationMs: dur})
 			fmt.Fprintf(&list, "file '%s'\n", escapeConcatPath(out))
@@ -308,8 +322,8 @@ func BuildRenderPlan(snap RenderSnapshot, io RenderIO) (RenderPlan, error) {
 	if audioIdx >= 0 {
 		args = append(args, "-map", fmt.Sprintf("%d:a", audioIdx))
 	}
+	args = append(args, h264.EncodeArgs(io.Encoder, intent(h264.TierFinal))...)
 	args = append(args,
-		"-c:v", "libx264", "-preset", "veryfast", "-pix_fmt", "yuv420p",
 		"-r", fmt.Sprint(snap.FPS),
 		// ⚠️ `+faststart` 让 moov 原子挪到文件头：不加的话浏览器要把整个
 		// 文件下完才能起播，用户点下载预览时以为卡住了。

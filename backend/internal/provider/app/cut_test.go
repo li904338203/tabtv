@@ -20,6 +20,7 @@ import (
 	"time"
 
 	gendomain "github.com/li904338203/tabtv/backend/internal/generation/domain"
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 )
 
 // docs/agent/smartcut SCT-32：输入区间截取（SCD-34）。
@@ -134,7 +135,7 @@ func (s *memScratch) snapshot() (map[string][]byte, []string) {
 }
 
 func TestCutArgs(t *testing.T) {
-	video := cutArgs("/tmp/a/src", "/tmp/a/cut.mp4", "video", 2000, 5000)
+	video := cutArgs("/tmp/a/src", "/tmp/a/cut.mp4", "video", 2000, 5000, h264.Encoder{})
 	want := []string{"-nostdin", "-hide_banner", "-loglevel", "error", "-y",
 		// -ss 在 -i 之前 + 重新编码 = 精确到帧；-t 是区间长度不是终点。
 		"-ss", "2.000", "-i", "/tmp/a/src", "-t", "3.000",
@@ -144,7 +145,7 @@ func TestCutArgs(t *testing.T) {
 	if !reflect.DeepEqual(video, want) {
 		t.Fatalf("视频截取参数:\n got %q\nwant %q", video, want)
 	}
-	audio := cutArgs("/tmp/a/src", "/tmp/a/cut.mp3", "audio", 1250, 61005)
+	audio := cutArgs("/tmp/a/src", "/tmp/a/cut.mp3", "audio", 1250, 61005, h264.Encoder{})
 	wantA := []string{"-nostdin", "-hide_banner", "-loglevel", "error", "-y",
 		"-ss", "1.250", "-i", "/tmp/a/src", "-t", "59.755",
 		"-map", "0:a:0", "-vn", "-c:a", "libmp3lame", "-b:a", "192k", "/tmp/a/cut.mp3"}

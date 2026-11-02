@@ -1,0 +1,101 @@
+tabtv
+Copyright 2026 tabtv contributors
+
+本产品以 Apache License 2.0 发布（见 LICENSE）。
+本文件列出随源码或随安装包分发的第三方组件及其许可证。各组件的许可证原文
+见下文注明的位置；打包时统一拷入安装包的 resources/licenses/ 目录。
+
+依赖库（Go 模块与 npm 包）的完整许可清单由 build/gen-licenses.sh 生成，
+见 build/licenses/dependencies.json。
+
+======================================================================
+一、随安装包分发的二进制
+======================================================================
+
+1. PostgreSQL 17.11
+   用途：内嵌数据库（应用启动时在本机拉起，只监听本机地址）。
+   来源：zonky embedded-postgres-binaries 17.11.0（Maven Central），
+         各平台的地址与 SHA-256 锁定在 build/third_party.lock。
+   许可：PostgreSQL License（类 BSD/MIT 的宽松许可）。
+         原文见 build/licenses/PostgreSQL.txt，打包时拷入 resources/licenses/。
+   Portions Copyright (c) 1996-2025, PostgreSQL Global Development Group
+   Portions Copyright (c) 1994, The Regents of the University of California
+
+2. FFmpeg（ffmpeg / ffprobe）
+   用途：时间线成片渲染、媒体时长探测、视频截帧。
+   ⚠️ 随包来源待 TT-T-26 / TT-T-27 锁定。
+   许可要求：只随包分发 LGPL-2.1-or-later 构建（不启用 --enable-gpl、
+         --enable-nonfree）；须随包附 LGPL 原文、注明所用版本与配置参数，
+         并给出对应源码的获取方式。锁定后在此处补齐版本、构建来源与源码地址。
+
+3. OpenH264
+   用途：在没有可用硬件编码器时作为 H.264 编码的回落。
+   ⚠️ 随包来源待 TT-T-27 锁定。
+   许可要求：源码为 BSD-2-Clause；若分发 Cisco 预编译二进制，须遵守 Cisco
+         的二进制许可（由 Cisco 承担 H.264 专利许可费的前提是使用其官方
+         二进制），并随包附带其许可说明。锁定后在此处补齐。
+
+======================================================================
+二、字体
+======================================================================
+
+字体文件由 build/fetch-fonts.sh 按固定地址下载并校验 SHA-256，
+来源与校验值见 backend/assets/fonts/SOURCES.txt。
+
+1. 思源黑体 Source Han Sans SC（2.004R）
+   Copyright Adobe. 许可：SIL Open Font License 1.1。
+   原文：backend/assets/fonts/LICENSE-SourceHanSans.txt
+
+2. Noto Emoji
+   Copyright Google LLC. 许可：SIL Open Font License 1.1。
+   原文：backend/assets/fonts/OFL-NotoEmoji.txt
+
+======================================================================
+三、导演台资源（frontend/public/director/）
+======================================================================
+
+1. 人体素模（models/*.glb）
+   来源：wonderunit/shot-generator-models，提交 a6c43cd14c08e93149d6a5248e916c0b40a37b0d。
+   经裁剪 LOD、统一材质、骨骼改名与量化处理（处理步骤见 models/SOURCE.md）。
+   许可：MIT。Copyright (c) 2019 Wonder Unit。
+   原文：frontend/public/director/models/LICENSE
+
+2. MediaPipe 姿势识别（mediapipe/）
+   wasm/：npm 包 @mediapipe/tasks-vision@1.1.1 的 wasm 目录，原样复制。
+   pose_landmarker_full.task：Google 官方发布的 BlazePose GHUM 3D 模型。
+   许可：Apache License 2.0。Copyright The MediaPipe Authors.
+   原文：frontend/public/director/mediapipe/LICENSE；来源与校验见 mediapipe/SOURCE.md
+
+3. 姿势缩略图（poses/*.webp）
+   由本项目的开发工具用上述人体素模渲染生成，随素模许可（MIT）。
+
+======================================================================
+四、Agent 技能文本的借鉴来源
+======================================================================
+
+内置技能（backend/internal/platform/seed/agent_skill_lib_*.go）的正文为本项目
+按自身的工具与流程撰写，部分写法借鉴了以下开源仓库，按本平台的流程改写重组，
+不是逐句翻译。每份附属文档末尾另有逐条注明。
+
+MIT：
+  zenstory-ai/drama-skills · sickn33/agentic-awesome-skills · HBAI-Ltd/Toonflow-app ·
+  yi1108/printfilm · lixiaoxiao9888-create/manju-laoli-skill · Emily2040/seedance-2.0 ·
+  jtydhr88/screenwriting-skills · LearnPrompt/awesome-seedance · dexhunter/seedance2-skill ·
+  wuyoscar/GPT-Image2-Skill · freestylefly/awesome-gpt-image-2 · AgriciDaniel/banana-claude
+Apache-2.0：
+  eternityspring/shuohao-skills · eternityspring/reelbench-skills · openai/skills ·
+  Wan-Video/Wan2.2
+仅借鉴方法、表述全部自写（未复制任何文本）：
+  calesthio/OpenMontage（AGPL-3.0）：借鉴「运镜分三族」与「分模型结构、长度区间」的思路；
+  waooAI/waoowaoo（未声明许可）：借鉴方法。
+
+======================================================================
+五、内置图片
+======================================================================
+
+backend/internal/platform/seed/data/images/ 下的图片：
+  options/    67 张  营销选项封面
+  skills/     20 张  技能封面
+  characters/ 12 张  预置营销角色图
+均由 AI 图片模型（GPT Image 2）生成，再经 backend/tools/covers 缩为长边 768 的 JPEG。
+可自由替换。

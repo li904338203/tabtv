@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 
 	gendomain "github.com/li904338203/tabtv/backend/internal/generation/domain"
 
@@ -90,16 +91,16 @@ func cutMIME(kind string) string {
 //   - 视频统一成 H.264 + yuv420p + AAC、宽高取偶数：上游收得最广，奇数宽高的源在 yuv420p 下直接编码失败。
 //   - 只取第一路画面与（可选的）第一路声音：字幕流、数据流混进去，有的上游会拒收整个文件。
 //   - 音频出 MP3：识别、配乐类上游都收。
-func cutArgs(src, dst, kind string, inMs, outMs int) []string {
+func cutArgs(src, dst, kind string, inMs, outMs int, enc h264.Encoder) []string {
 	args := []string{"-nostdin", "-hide_banner", "-loglevel", "error", "-y",
 		"-ss", msSeconds(inMs), "-i", src, "-t", msSeconds(outMs - inMs)}
 	if kind == "audio" {
 		return append(args, "-map", "0:a:0", "-vn", "-c:a", "libmp3lame", "-b:a", "192k", dst)
 	}
-	return append(args, "-map", "0:v:0", "-map", "0:a:0?",
-		"-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
-		"-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-pix_fmt", "yuv420p",
-		"-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", dst)
+	args = append(args, "-map", "0:v:0", "-map", "0:a:0?",
+		"-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2")
+	args = append(args, h264.EncodeArgs(enc, h264.Intent{Tier: h264.TierCut})...)
+	return append(args, "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", dst)
 }
 
 func msSeconds(ms int) string { return fmt.Sprintf("%d.%03d", ms/1000, ms%1000) }
@@ -189,7 +190,7 @@ func (p *HTTPProvider) cutFile(ctx context.Context, in resolvedInput) (string, f
 		return "", func() {}, err
 	}
 	dst := filepath.Join(dir, "cut"+cutExt(in.MediaKind))
-	if err := p.runCut(ctx, cutArgs(src, dst, in.MediaKind, in.RangeMs[0], in.RangeMs[1])); err != nil {
+	if err := p.runCut(ctx, cutArgs(src, dst, in.MediaKind, in.RangeMs[0], in.RangeMs[1], ffbin.H264().Encoder)); err != nil {
 		cleanup()
 		return "", func() {}, fmt.Errorf("截取参考媒体 %d 的 %s~%s 秒失败: %w", in.MediaID,
 			msSeconds(in.RangeMs[0]), msSeconds(in.RangeMs[1]), err)

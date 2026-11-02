@@ -27,13 +27,18 @@ var (
 // SetOverride 指定某个程序的路径（设置表的 ffmpeg.path / ffprobe.path）；空串取消指定。
 func SetOverride(name, path string) {
 	mu.Lock()
-	defer mu.Unlock()
 	if path == "" {
 		delete(override, name)
 	} else {
 		override[name] = path
 	}
 	delete(cache, name)
+	mu.Unlock()
+	// 换了 ffmpeg 就换了一套编码器，下次用时重新探测。
+	// ⚠️ 放在释放 mu 之后：H264() 持有 selMu 时会经 FFmpeg() 去拿 mu，反过来嵌套就会死锁。
+	if name == "ffmpeg" {
+		resetSelection()
+	}
 }
 
 func exe(name string) string {

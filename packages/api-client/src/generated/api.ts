@@ -10823,7 +10823,7 @@ export interface components {
             runnable: boolean;
             issues: {
                 /** @enum {string} */
-                code: "empty_timeline" | "media_missing" | "too_long" | "ffmpeg_missing" | "subtitle_unsupported" | "clip_generating";
+                code: "empty_timeline" | "media_missing" | "too_long" | "ffmpeg_missing" | "h264_encoder_missing" | "subtitle_unsupported" | "clip_generating";
                 detail: string;
                 /** @description 第几段（从 1 起）。0 表示与具体片段无关。 */
                 clipIdx?: number;

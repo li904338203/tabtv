@@ -519,7 +519,7 @@ func (r analysisRun) previewProxy() (any, int64, error) {
 		}
 	}
 	out := filepath.Join(r.dir, "preview.mp4")
-	if err := r.ffmpeg(domain.ProxyArgs(r.src, out, r.info.FPS), nil); err != nil {
+	if err := r.ffmpeg(domain.ProxyArgs(r.src, out, r.info.FPS, ffbin.H264().Encoder), nil); err != nil {
 		return nil, 0, err
 	}
 	got, err := domain.ProbeStreams(r.ctx, out)

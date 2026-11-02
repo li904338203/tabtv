@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 )
 
 // 剪辑台的预览素材与分析（docs/agent/smartcut SCT-16，SCD-30）。
@@ -285,16 +286,18 @@ func KeyframeInterval(fps float64) int {
 //
 // ⚠️ 音轨用 `0:a:0?`（可选）：生成出来的视频十有八九没有音轨，写成必选的话 ffmpeg 直接报错。
 // ⚠️ `-sc_threshold 0`：不让场景切换额外插关键帧，否则「每秒一个」就不成立了（多了不出错，但间隔不再整齐）。
-func ProxyArgs(input, output string, fps float64) []string {
-	g := strconv.Itoa(KeyframeInterval(fps))
-	return []string{"-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", input,
+//
+// 编码器由调用方给（ffbin.H264，TT-T-27）；零值 = libx264，参数与来源系统逐字一致。
+func ProxyArgs(input, output string, fps float64, enc h264.Encoder) []string {
+	args := []string{"-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-i", input,
 		"-map", "0:v:0", "-map", "0:a:0?",
-		"-vf", ProxyScaleFilter,
-		"-c:v", "libx264", "-preset", "veryfast", "-crf", "28", "-maxrate", "1200k", "-bufsize", "2400k",
-		"-pix_fmt", "yuv420p", "-g", g, "-keyint_min", g, "-sc_threshold", "0",
+		"-vf", ProxyScaleFilter}
+	args = append(args, h264.EncodeArgs(enc, h264.Intent{Tier: h264.TierProxy, FPS: fps,
+		Width: 854, Height: 480, MaxRateK: 1200, BufSizeK: 2400, GOP: KeyframeInterval(fps)})...)
+	return append(args,
 		"-c:a", "aac", "-b:a", "64k", "-ac", "2",
 		"-sn", "-dn", "-map_metadata", "-1",
-		"-movflags", "+faststart", output}
+		"-movflags", "+faststart", output)
 }
 
 // ---------------------------------------------------------------- 缩略图拼图

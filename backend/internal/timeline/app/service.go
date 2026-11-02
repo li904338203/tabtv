@@ -64,8 +64,9 @@ type Service struct {
 	userFlags   UserFlags
 	mediaExists MediaExistence
 	// events 写入成功后发 timeline.updated（SCD-19）。
-	events   EventPublisher
-	ffmpegOK bool
+	events    EventPublisher
+	ffmpegOK  bool
+	encoderOK func() bool
 	// renderLimits 导出按用户限流（SCT-15）。
 	renderLimits RenderLimits
 	// downloads 成片下载链接（SCT-15，媒体域实现）；downloadTTL 链接有效期。

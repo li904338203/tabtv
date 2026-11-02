@@ -14,6 +14,9 @@ import (
 	"testing"
 	"testing/iotest"
 	"time"
+
+	"github.com/li904338203/tabtv/backend/internal/platform/ffbin"
+	"github.com/li904338203/tabtv/backend/pkg/h264"
 )
 
 func TestAnalysisEngine_扫描种类各有版本(t *testing.T) {
@@ -138,7 +141,7 @@ func TestKeyframeInterval(t *testing.T) {
 
 // 参数形状：-g 与关键帧最小间隔都等于帧率、音轨可选、moov 前置、输入输出在固定位置。
 func TestProxyArgs(t *testing.T) {
-	args := ProxyArgs("/tmp/in.mov", "/tmp/out.mp4", 25)
+	args := ProxyArgs("/tmp/in.mov", "/tmp/out.mp4", 25, h264.Encoder{})
 	joined := strings.Join(args, " ")
 	for _, want := range []string{"-i /tmp/in.mov", "-map 0:a:0?", "-vf " + ProxyScaleFilter,
 		"-g 25 -keyint_min 25 -sc_threshold 0", "-b:a 64k", "-movflags +faststart", "-pix_fmt yuv420p"} {
@@ -311,7 +314,7 @@ func TestProxyArgs_真实ffmpeg(t *testing.T) {
 				t.Fatal(err)
 			}
 			dst := filepath.Join(dir, c.name+"-proxy.mp4")
-			if out, err := exec.Command("ffmpeg", ProxyArgs(src, dst, in.FPS)...).CombinedOutput(); err != nil {
+			if out, err := exec.Command("ffmpeg", ProxyArgs(src, dst, in.FPS, ffbin.H264().Encoder)...).CombinedOutput(); err != nil {
 				t.Fatalf("转预览版失败：%v %s", err, out)
 			}
 			got, err := ProbeStreams(context.Background(), dst)

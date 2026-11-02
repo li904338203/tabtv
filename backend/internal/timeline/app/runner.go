@@ -373,7 +373,8 @@ func (x *Renderer) render(ctx context.Context, job repo.RenderJob, pr *renderPro
 
 	out := filepath.Join(dir, "out.mp4")
 	plan, err := domain.BuildRenderPlan(snap, domain.RenderIO{Files: files, OverlayList: overlay,
-		WatermarkPath: watermarkPath, AudioPath: audioPath, WorkDir: dir, OutPath: out})
+		WatermarkPath: watermarkPath, AudioPath: audioPath, WorkDir: dir, OutPath: out,
+		Encoder: ffbin.H264().Encoder})
 	if err != nil {
 		return renderResult{}, err
 	}
