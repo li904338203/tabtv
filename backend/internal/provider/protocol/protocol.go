@@ -56,7 +56,7 @@ type Media struct {
 	Role string
 	// DurationMs 是音视频的时长（毫秒，上传时 ffprobe 探出来的）；0 表示未知。
 	//
-	// 有的协议要在提交前校验参考视频的时长（可灵视频配音效只收 3~20 秒），
+	// 有的协议要用到参考视频的时长（可灵视频配音效只收 3~20 秒；OpenAI 兼容视频要自报 `input_video_duration`），
 	// 协议拿不到媒体本身，只能靠这里。
 	DurationMs int
 }

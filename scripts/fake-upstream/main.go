@@ -116,6 +116,11 @@ func main() {
 	mux.HandleFunc("/v1/seedance/submit", s.seedanceSubmit)
 	mux.HandleFunc("/v1/seedance/query/", s.seedanceQuery)
 	mux.HandleFunc("/v1/async/query/", s.asyncQuery)
+	// OpenAI Video（OpenAI 兼容 /v1/videos）：规格与参考都在 metadata 里；完成后回**相对地址**
+	// + requires_auth=true，验「补全后同源 → 带 key 下载」。Provider 的 base 配 `/v1`，
+	// 提交 `/openai-video/videos`、查询 `/openai-video/videos/{taskId}`。
+	mux.HandleFunc("/v1/openai-video/videos", s.openAIVideoSubmit)
+	mux.HandleFunc("/v1/openai-video/videos/", s.openAIVideoQuery)
 	// 门控异步视频（AGT-31）：一直「处理中」直到 /_probe/gated/release 放行。
 	mux.HandleFunc("/v1/gated/submit", s.gatedSubmit)
 	mux.HandleFunc("/v1/gated/query/", s.gatedQuery)
@@ -429,6 +434,92 @@ func (s *server) seedanceQuery(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, map[string]any{"id": id, "status": "succeeded",
 		"content": map[string]any{"video_url": s.addr + "/files/seedance.mp4"}})
+}
+
+// openAIVideoSubmit 校验「OpenAI 信封 + metadata」：resolution 必填、seconds 4~30、
+// frames 模式首尾帧必须同时给、给了 video_urls 就要报 input_video_duration。
+// 失败按 HTTP 400 + 原文回（真实上游的失败结构未知，协议只认状态码 + 原文）。
+func (s *server) openAIVideoSubmit(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	var req struct {
+		Model    string         `json:"model"`
+		Prompt   string         `json:"prompt"`
+		Seconds  int            `json:"seconds"`
+		Metadata map[string]any `json:"metadata"`
+	}
+	body, _ := io.ReadAll(r.Body)
+	reject := func(msg string) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": map[string]any{"message": msg}})
+	}
+	if err := json.Unmarshal(body, &req); err != nil {
+		reject("请求体不是 JSON 或字段类型不对: " + err.Error())
+		return
+	}
+	m := req.Metadata
+	if m == nil || m["resolution"] == nil {
+		reject("metadata.resolution is required")
+		return
+	}
+	if req.Seconds < 4 || req.Seconds > 30 {
+		reject("seconds must be between 4 and 30")
+		return
+	}
+	if m["mode"] == "frames" && (m["first_frame_url"] == nil || m["last_frame_url"] == nil) {
+		reject("frames mode requires both first_frame_url and last_frame_url")
+		return
+	}
+	if v, ok := m["video_urls"].([]any); ok && len(v) > 0 && m["input_video_duration"] == nil {
+		reject("input_video_duration is required when video_urls is set")
+		return
+	}
+	if strings.Contains(req.Prompt, magicUpstreamFail) {
+		reject("假上游按 " + magicUpstreamFail + " 拒绝")
+		return
+	}
+	log.Printf("  OpenAI Video 收到：model=%s seconds=%d mode=%v resolution=%v ratio=%v",
+		req.Model, req.Seconds, m["mode"], m["resolution"], m["ratio"])
+	id := fmt.Sprintf("ovid-%d", s.seq.Add(1))
+	s.asyncTasks.Store(id, new(atomic.Int64))
+	writeJSON(w, map[string]any{"id": id, "object": "video", "status": "queued"})
+}
+
+// openAIVideoQuery 查询与内容下载共用一个前缀：`{id}` 是查询，`{id}/content` 是下载。
+func (s *server) openAIVideoQuery(w http.ResponseWriter, r *http.Request) {
+	rest := r.URL.Path[len("/v1/openai-video/videos/"):]
+	if id, ok := strings.CutSuffix(rest, "/content"); ok {
+		s.lastDownloadAuth.Store(r.Header.Get("Authorization"))
+		if _, known := s.asyncTasks.Load(id); !known {
+			http.Error(w, "任务不存在", http.StatusNotFound)
+			return
+		}
+		// requires_auth=true：不带认证一律 401。
+		if r.Header.Get("Authorization") == "" {
+			http.Error(w, `{"error":{"message":"unauthorized"}}`, http.StatusUnauthorized)
+			return
+		}
+		w.Header().Set("Content-Type", "video/mp4")
+		_, _ = w.Write(decodeB64(oneSecondMP4))
+		return
+	}
+	v, ok := s.asyncTasks.Load(rest)
+	if !ok {
+		http.Error(w, "任务不存在", http.StatusNotFound)
+		return
+	}
+	switch n := v.(*atomic.Int64).Add(1); {
+	case n < 2:
+		writeJSON(w, map[string]any{"id": rest, "status": "queued"})
+	case n < 3:
+		writeJSON(w, map[string]any{"id": rest, "status": "in_progress", "progress": 50})
+	default:
+		writeJSON(w, map[string]any{"id": rest, "status": "completed", "progress": 100,
+			"result_url": "/v1/openai-video/videos/" + rest + "/content", "requires_auth": true})
+	}
 }
 
 // failPermanent 上游明确拒绝（400）：永久失败，不该重试。

@@ -67,6 +67,8 @@ func mountModelTemplates(r chi.Router, mt modelTemplates, requireAdmin func(http
 		r.Use(requireAdmin)
 		r.With(requirePerm("model:read")).Get("/", mt.list)
 		r.With(requirePerm("model:write")).Post("/{code}/enable", mt.enable)
+		// 给自建模型一键绑定推荐的操作与能力规则（见 model_recommend.go）。
+		r.With(requirePerm("model:write")).Post("/recommend-bindings/{model}", mt.recommend)
 	})
 }
 

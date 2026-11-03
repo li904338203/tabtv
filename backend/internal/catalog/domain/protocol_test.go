@@ -163,3 +163,19 @@ func TestCheckVideoParams_扣费前按协议范围拦截(t *testing.T) {
 		t.Fatalf("合法参数应放行：%v", err)
 	}
 }
+
+// 会话 107398945801502720：OpenAI 兼容视频接口不带画幅 → 上游 auto → seedance-2.5 不支持（400），那时已经扣费。
+// 受理（带参数）在扣费前要求画幅；规划报价 / 前端估价不带参数，照常放行。
+func TestCheckVideoParams_OpenAIVideo受理要求画幅(t *testing.T) {
+	if err := CheckVideoParams("openai_video", "ref2video", 15, nil); err != nil {
+		t.Fatalf("没有参数的报价（规划、估价）不查画幅：%v", err)
+	}
+	err := CheckVideoParams("openai_video", "ref2video", 15, map[string]any{"model": "seedance_2_5", "duration": "15"})
+	if err == nil || !strings.Contains(err.Error(), "需要指定画幅") {
+		t.Fatalf("受理参数里没有画幅应在扣费前拒绝：%v", err)
+	}
+	if err := CheckVideoParams("openai_video", "ref2video", 15, map[string]any{"duration": "15",
+		"aspect_ratio": "9:16"}); err != nil {
+		t.Fatalf("给了画幅应放行：%v", err)
+	}
+}

@@ -332,7 +332,7 @@ func TestVideo_默认时长与计价一致(t *testing.T) {
 }
 
 func TestVideo_图生视频缺图被拒(t *testing.T) {
-	for _, code := range []string{"kling_video", "seedance_video", "grok_video"} {
+	for _, code := range []string{"kling_video", "seedance_video", "grok_video", "openai_video"} {
 		job := videoJob("img2video", map[string]any{
 			SubmitPathHintKey: "/v1/videos/image-to-video/generations",
 		})

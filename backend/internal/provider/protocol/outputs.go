@@ -18,6 +18,15 @@ type Output struct {
 	// URL 形态：需要下载；Base64 形态：直接解码；Text 形态：就是内容本身。
 	Value string
 	MIME  string
+	// AuthRequired 上游明说「下载这个地址要带认证」（OpenAI 兼容视频接口的 `requires_auth`）。
+	//
+	// ⚠️ 它**不放宽**同源规则：密钥只发给与 Provider 同源的地址（GO-31）。
+	// 它的作用是让「上游要认证、而地址不同源」这件事**说得出来** ——
+	// 不标的话下载一律 401，用户只看到「下载第 0 个产物失败」。
+	AuthRequired bool
+	// AuthFallback 是 AuthRequired 而地址不同源时改走的**同源**地址（相对 Provider 地址）。
+	// 为空时直接报错，不外发密钥。
+	AuthFallback string
 	// Meta 是产物的结构化附加信息（jsonb），原样落进 generation_output.meta（SCD-32）。
 	// 语音识别的句与字时间就在这里：全文进文本、时间进 meta。为空时落 `{}`，与没有这个字段之前一致。
 	Meta json.RawMessage

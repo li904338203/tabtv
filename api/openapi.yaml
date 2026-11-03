@@ -8663,6 +8663,34 @@ paths:
                   items: { type: array, items: { $ref: '#/components/schemas/ModelTemplate' } }
         '403': { $ref: '#/components/responses/Forbidden' }
 
+  /admin/model-templates/recommend-bindings/{model}:
+    post:
+      tags: [catalog]
+      operationId: adminRecommendModelBindings
+      security: [{ adminBearer: [] }]
+      description: |
+        给自建模型绑定推荐的操作与能力规则（依据内置厂商模板：文本模型取文本操作组，图片 / 视频取模板里同协议同类型模型的操作）。
+        已经绑过的操作原样保留。没有可推荐的操作时回 400 并说明。权限 `model:write`。
+      parameters:
+        - name: model
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 推荐结果
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [bound, skipped]
+                properties:
+                  bound: { type: array, items: { type: string }, description: 本次新绑的操作 }
+                  skipped: { type: array, items: { type: string }, description: 已经绑过、原样保留的操作 }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
   /admin/model-templates/{code}/enable:
     post:
       tags: [catalog]

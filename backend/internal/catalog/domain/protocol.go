@@ -49,6 +49,7 @@ var displayNames = map[string]string{
 	"grok_video":         "Grok 视频",
 	"kling_video":        "可灵视频",
 	"seedance_video":     "Seedance 视频（火山方舟）",
+	"openai_video":       "OpenAI Video（/v1/videos）",
 	// 语音识别（docs/agent/smartcut SCT-33）。
 	"volc_asr":          "火山录音文件识别（极速版）",
 	"volc_asr_standard": "火山录音文件识别（标准版）",

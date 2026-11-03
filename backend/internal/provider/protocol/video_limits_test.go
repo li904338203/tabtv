@@ -8,7 +8,7 @@ import (
 // 04 文档 P-61：报价用的范围与 BuildSubmit 必须是同一份 —— 两边对不上的表现是
 // 「报价说能做、Worker 里失败退款」或者反过来「报价拦下了本来能做的」。
 func TestVideoLimits_与构造请求的判断一致(t *testing.T) {
-	codes := []string{"grok_video", "kling_video", "seedance_video"}
+	codes := []string{"grok_video", "kling_video", "openai_video", "seedance_video"}
 	for _, code := range codes {
 		lim, ok := VideoLimitsOf(code, "text2video")
 		if !ok {
@@ -77,5 +77,32 @@ func TestVideoLimits_参数里的时长同样检查(t *testing.T) {
 	}
 	if err := lim.CheckParams(map[string]any{"duration": 10}); err != nil {
 		t.Fatalf("10 秒应放行：%v", err)
+	}
+}
+
+// 会话 107398945801502720：OpenAI 兼容视频接口收不到画幅按 auto 处理，seedance-2.5 不支持 → 上游 400，而那时已经扣费。
+// 带参数的报价 / 受理要求明确的画幅（adaptive 本协议会丢掉，同样落成 auto）；别家不要求。
+func TestVideoLimits_OpenAIVideo画幅必填(t *testing.T) {
+	lim, _ := VideoLimitsOf("openai_video", "ref2video")
+	for _, params := range []map[string]any{{"duration": "15"}, {"aspect_ratio": "adaptive"}, {"aspectRatio": ""}} {
+		err := lim.CheckParams(params)
+		if err == nil || !strings.Contains(err.Error(), "需要指定画幅") || !strings.Contains(err.Error(), "9:16") ||
+			strings.Contains(err.Error(), "adaptive") {
+			t.Fatalf("%v：应要求指定画幅并列出可选值（不列 adaptive）：%v", params, err)
+		}
+	}
+	for _, params := range []map[string]any{{"aspect_ratio": "9:16"}, {"aspectRatio": "16:9"},
+		{"size": map[string]any{"ratio": "1:1"}}} {
+		if err := lim.CheckParams(params); err != nil {
+			t.Fatalf("%v：给了画幅应放行：%v", params, err)
+		}
+	}
+	other, _ := VideoLimitsOf("seedance_video", "ref2video")
+	if err := other.CheckParams(map[string]any{"duration": "10"}); err != nil {
+		t.Fatalf("别家不要求必须给画幅：%v", err)
+	}
+	// 构造请求不变：已经受理的历史任务照旧能发（adaptive 照旧丢掉）。
+	if meta := openAIVideoMeta(t, buildBody(t, "openai_video", videoJob("text2video", map[string]any{"duration": 10}))); meta["ratio"] != nil {
+		t.Fatalf("构造请求不补画幅：%v", meta)
 	}
 }

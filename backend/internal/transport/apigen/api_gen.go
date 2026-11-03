@@ -17178,6 +17178,9 @@ type ServerInterface interface {
 	// (GET /admin/model-templates)
 	AdminListModelTemplates(w http.ResponseWriter, r *http.Request)
 
+	// (POST /admin/model-templates/recommend-bindings/{model})
+	AdminRecommendModelBindings(w http.ResponseWriter, r *http.Request, model string)
+
 	// (POST /admin/model-templates/{code}/enable)
 	AdminEnableModelTemplate(w http.ResponseWriter, r *http.Request, code string)
 
@@ -18238,6 +18241,11 @@ func (_ Unimplemented) AdminDownloadMedia(w http.ResponseWriter, r *http.Request
 
 // (GET /admin/model-templates)
 func (_ Unimplemented) AdminListModelTemplates(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/model-templates/recommend-bindings/{model})
+func (_ Unimplemented) AdminRecommendModelBindings(w http.ResponseWriter, r *http.Request, model string) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21049,6 +21057,32 @@ func (siw *ServerInterfaceWrapper) AdminListModelTemplates(w http.ResponseWriter
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AdminListModelTemplates(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminRecommendModelBindings operation middleware
+func (siw *ServerInterfaceWrapper) AdminRecommendModelBindings(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "model" -------------
+	var model string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "model", chi.URLParam(r, "model"), &model, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: r.URL.RawPath == ""})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "model", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminRecommendModelBindings(w, r, model)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -35235,6 +35269,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/admin/model-templates", wrapper.AdminListModelTemplates)
 	})
 	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/model-templates/recommend-bindings/{model}", wrapper.AdminRecommendModelBindings)
+	})
+	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/admin/model-templates/{code}/enable", wrapper.AdminEnableModelTemplate)
 	})
 	r.Group(func(r chi.Router) {
@@ -38442,6 +38479,76 @@ func (response AdminListModelTemplates403JSONResponse) VisitAdminListModelTempla
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRecommendModelBindingsRequestObject struct {
+	Model string `json:"model"`
+}
+
+type AdminRecommendModelBindingsResponseObject interface {
+	VisitAdminRecommendModelBindingsResponse(w http.ResponseWriter) error
+}
+
+type AdminRecommendModelBindings200JSONResponse struct {
+	// Bound 本次新绑的操作
+	Bound []string `json:"bound"`
+
+	// Skipped 已经绑过、原样保留的操作
+	Skipped []string `json:"skipped"`
+}
+
+func (response AdminRecommendModelBindings200JSONResponse) VisitAdminRecommendModelBindingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRecommendModelBindings400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminRecommendModelBindings400JSONResponse) VisitAdminRecommendModelBindingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRecommendModelBindings403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminRecommendModelBindings403JSONResponse) VisitAdminRecommendModelBindingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminRecommendModelBindings404JSONResponse struct{ NotFoundJSONResponse }
+
+func (response AdminRecommendModelBindings404JSONResponse) VisitAdminRecommendModelBindingsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -51823,6 +51930,9 @@ type StrictServerInterface interface {
 	// (GET /admin/model-templates)
 	AdminListModelTemplates(ctx context.Context, request AdminListModelTemplatesRequestObject) (AdminListModelTemplatesResponseObject, error)
 
+	// (POST /admin/model-templates/recommend-bindings/{model})
+	AdminRecommendModelBindings(ctx context.Context, request AdminRecommendModelBindingsRequestObject) (AdminRecommendModelBindingsResponseObject, error)
+
 	// (POST /admin/model-templates/{code}/enable)
 	AdminEnableModelTemplate(ctx context.Context, request AdminEnableModelTemplateRequestObject) (AdminEnableModelTemplateResponseObject, error)
 
@@ -54324,6 +54434,32 @@ func (sh *strictHandler) AdminListModelTemplates(w http.ResponseWriter, r *http.
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(AdminListModelTemplatesResponseObject); ok {
 		if err := validResponse.VisitAdminListModelTemplatesResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminRecommendModelBindings operation middleware
+func (sh *strictHandler) AdminRecommendModelBindings(w http.ResponseWriter, r *http.Request, model string) {
+	var request AdminRecommendModelBindingsRequestObject
+
+	request.Model = model
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminRecommendModelBindings(ctx, request.(AdminRecommendModelBindingsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminRecommendModelBindings")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminRecommendModelBindingsResponseObject); ok {
+		if err := validResponse.VisitAdminRecommendModelBindingsResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

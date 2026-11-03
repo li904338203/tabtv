@@ -49,7 +49,7 @@ type MediaRelay interface {
 
 // MediaDurationResolver 是 MediaResolver 的可选扩展：取音视频时长（毫秒，0 = 未知）。
 //
-// 单独成一个接口而不是加进 MediaResolver：只有要用到参考视频时长的协议（可灵视频配音效）用得上，
+// 单独成一个接口而不是加进 MediaResolver：只有要用到参考视频时长的协议（可灵视频配音效、OpenAI 兼容视频要自报 `input_video_duration`）用得上，
 // 加进主接口会让每个测试替身都得补一个与它无关的方法。
 type MediaDurationResolver interface {
 	DurationMs(ctx context.Context, mediaID int64) (int, error)

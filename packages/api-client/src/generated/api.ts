@@ -6640,6 +6640,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/model-templates/recommend-bindings/{model}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 给自建模型绑定推荐的操作与能力规则（依据内置厂商模板：文本模型取文本操作组，图片 / 视频取模板里同协议同类型模型的操作）。
+         *     已经绑过的操作原样保留。没有可推荐的操作时回 400 并说明。权限 `model:write`。
+         */
+        post: operations["adminRecommendModelBindings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/model-templates/{code}/enable": {
         parameters: {
             query?: never;
@@ -21316,6 +21336,36 @@ export interface operations {
                 };
             };
             403: components["responses"]["Forbidden"];
+        };
+    };
+    adminRecommendModelBindings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                model: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 推荐结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description 本次新绑的操作 */
+                        bound: string[];
+                        /** @description 已经绑过、原样保留的操作 */
+                        skipped: string[];
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
     adminEnableModelTemplate: {

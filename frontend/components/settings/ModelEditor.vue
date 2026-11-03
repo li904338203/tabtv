@@ -63,7 +63,23 @@ async function save() {
   }
   saving.value = true;
   try {
-    await api("/admin/models/", { method: "PUT", body: settingsModelPayload(draft) });
+    const payload = settingsModelPayload(draft);
+    if (!editing.value && draft.status === "enabled") {
+      // 新建并直接启用（2026-11-03 用户反馈：直接启用会被拒——至少需要绑定并启用一个操作）：
+      // 先按停用存下，套用内置模板的推荐操作与能力规则，再启用。推荐不了时保持停用并说清去哪里手动绑。
+      await api("/admin/models/", { method: "PUT", body: { ...payload, status: "disabled" } });
+      try {
+        const rec = await api<{ bound: string[] }>(`/admin/model-templates/recommend-bindings/${encodeURIComponent(draft.code.trim())}`, { method: "POST" });
+        await api("/admin/models/", { method: "PUT", body: payload });
+        ElMessage.success(`模型已保存并启用（已绑定：${rec.bound.join("、") || "无"}）`);
+      } catch (e) {
+        ElMessage.warning({ message: `模型已保存但未启用：${settingsApiError(e).message}。可在列表的「操作与参数」里调整后再启用。`, duration: 10000 });
+      }
+      emit("update:open", false);
+      emit("saved");
+      return;
+    }
+    await api("/admin/models/", { method: "PUT", body: payload });
     ElMessage.success("模型已保存");
     emit("update:open", false);
     emit("saved");

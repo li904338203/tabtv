@@ -39,6 +39,11 @@ func TestProtocolSync_库里有已删除的协议照常启动(t *testing.T) {
 			t.Fatalf("%s 已从代码里删除，应标成未注册", code)
 		}
 	}
+	// 原 uniart_video 的格式以 openai_video 的名字重新加入：同步要把这个新码写进来并标成已注册。
+	var openaiRegistered bool
+	if err := pool.QueryRow(ctx, `select is_registered from api_protocol where code = 'openai_video'`).Scan(&openaiRegistered); err != nil || !openaiRegistered {
+		t.Fatalf("openai_video 应由同步写入并标成已注册: %v %v", openaiRegistered, err)
+	}
 	for _, p := range domain.Protocols() {
 		if p.Code == "bblabu_video" || p.Code == "uniart_video" {
 			t.Fatalf("注册表里不该再有 %s", p.Code)

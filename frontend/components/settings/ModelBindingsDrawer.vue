@@ -39,6 +39,22 @@ const roleLabel = (r: string) => SETTINGS_INPUT_ROLES.find(x => x.value === r)?.
 const opName = (c: string) => String(props.operations.find(o => o.code === c)?.name ?? c);
 const path = (suffix: string) => `/admin/models/${encodeURIComponent(code.value)}${suffix}`;
 
+const recommending = ref(false);
+/** 按内置模板绑推荐的操作与能力规则（已绑的不动）。 */
+async function recommend() {
+  recommending.value = true;
+  try {
+    const res = await api<{ bound: string[]; skipped: string[] }>(`/admin/model-templates/recommend-bindings/${encodeURIComponent(code.value)}`, { method: "POST" });
+    ElMessage.success(res.bound.length ? `已绑定：${res.bound.map(opName).join("、")}` : "推荐的操作都已经绑过了");
+    await load();
+    emit("changed");
+  } catch (e) {
+    ElMessage.error({ message: settingsApiError(e).message, duration: 8000 });
+  } finally {
+    recommending.value = false;
+  }
+}
+
 async function load() {
   loading.value = true;
   try {
@@ -210,8 +226,11 @@ const allowedText = (v: unknown) => (Array.isArray(v) && v.length ? v.join("、"
         </template>
       </section>
 
-      <h3 class="bd-title">操作与能力</h3>
-      <p class="bd-note">一个模型能做哪些操作、每个操作收哪些输入各几个。启用的操作都要有能力配置，模型才能启用。</p>
+      <div class="bd-title-row">
+        <h3 class="bd-title">操作与能力</h3>
+        <ElButton size="small" :loading="recommending" @click="recommend">一键推荐配置</ElButton>
+      </div>
+      <p class="bd-note">一个模型能做哪些操作、每个操作收哪些输入各几个。启用的操作都要有能力配置，模型才能启用。「一键推荐配置」按内置模板给这个协议与类型绑上常用操作与输入规则，已绑的不动。</p>
       <div v-for="b in bindings" :key="b.operation" class="bd-binding">
         <header>
           <div><strong>{{ opName(b.operation) }}</strong> <code class="bd-sub">{{ b.operation }}</code></div>
@@ -339,4 +358,5 @@ v-model="paramEditor.draft.overrideText" type="textarea" :autosize="{ minRows: 3
 .bd-sub { color: var(--portal-faint); font-size: 11px; }
 .bd-muted { color: var(--portal-faint); font-size: 12px; }
 .bd-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+.bd-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 </style>

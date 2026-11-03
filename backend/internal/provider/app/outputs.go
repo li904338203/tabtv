@@ -55,6 +55,15 @@ func (p *HTTPProvider) materialize(ctx context.Context, cfg RunConfig, resultTyp
 			//    按 Provider 的地址补全。不补的话一律「只允许 http/https」—— 而这时任务在上游**已经成功、
 			//    已经计费**，我们这边却判失败退款，用户只看到「下载第 0 个产物失败」。
 			ref := resolveOutputURL(cfg.BaseURL, o.Value)
+			// ⚠️ 上游说「这个地址要带认证」而它与 Provider 不同源：改走协议给的同源兜底地址；
+			// 没有兜底就明确报错 —— **不外发密钥**（GO-31），也不发一个注定 401 的请求。
+			if o.AuthRequired && !transport.SameOrigin(cfg.BaseURL, ref) {
+				if o.AuthFallback == "" {
+					cleanup()
+					return nil, fmt.Errorf("第 %d 个产物要求带认证下载，但地址与 Provider 不同源，拒绝外发密钥", i)
+				}
+				ref = resolveOutputURL(cfg.BaseURL, o.AuthFallback)
+			}
 			// ⚠️ 只有与 Provider **同源**的地址才带认证：
 			// 产物地址常常是 CDN 或对象存储签名链接，
 			// 把 API key 一起发过去等于把密钥泄漏给第三方（GO-31）。
