@@ -338,6 +338,8 @@ func (b *background) buildProvider(ctx context.Context, ffSem *ffsem.Sem) provid
 		} else {
 			h.SetMediaRelay(relay.New(b.media, rs, cfg.RelayPrefix, log))
 			relayScratch = prefixedScratch{rs, cfg.RelayPrefix}
+			// 成功时也记一行：排查「参考图为什么发不出去」时第一个要确认的就是中转开没开。
+			log.Info("公网中转存储已启用", "endpoint", rc.Endpoint, "bucket", rc.Bucket, "prefix", cfg.RelayPrefix)
 		}
 	}
 	h.SetScratch(store, relayScratch)
