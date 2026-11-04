@@ -1,6 +1,25 @@
-# tabtv
+<p align="center">
+  <img src="frontend/public/brand/logo-mark.png" alt="tabtv" width="96">
+</p>
 
-tabtv 是一个开源的 AI 视频创作桌面应用：在节点画布上把文本、图片、视频、音频串起来，调用你自己配置的模型完成从剧本到成片的整条流程。
+<h1 align="center">tabtv</h1>
+
+<p align="center">
+  开源的 AI 视频创作桌面应用 · 节点画布一站式完成剧本 → 分镜 → 角色/场景图 → 视频 → 剪辑成片
+</p>
+
+<p align="center">
+  <a href="https://github.com/li904338203/tabtv/releases/latest"><img src="https://img.shields.io/github/v/release/li904338203/tabtv?label=%E4%B8%8B%E8%BD%BD&color=6d4aff" alt="最新版本"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache-2.0"></a>
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="macOS | Windows | Linux">
+  <a href="https://github.com/li904338203/tabtv/actions/workflows/ci.yml"><img src="https://github.com/li904338203/tabtv/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+
+<p align="center">
+  <b>中文</b> · <a href="README.en.md">English</a>
+</p>
+
+tabtv 在节点画布上把文本、图片、视频、音频串起来，调用你自己配置的模型完成从剧本到成片的整条流程。
 
 <p align="center">
   <img src="assets/screenshots/canvas.jpg" alt="tabtv 节点画布：创意描述、角色与场景图连到全能参考视频节点" width="100%">
@@ -18,6 +37,8 @@ tabtv 是一个开源的 AI 视频创作桌面应用：在节点画布上把文�
 - **时间线与成片**：剪辑、转场、字幕、按分镜自动装配，用 ffmpeg 在本机渲染成片。
 - **智能剪辑与导演台**：自动粗剪；3D 素模摆姿势、定机位。
 - **图片工具**：设定图、打光、高清、多角度、涂抹重绘、抠图、宫格切分等。
+- **项目导出导入**：项目打包成 zip，带到另一台电脑恢复（包里不含任何 Key）。
+- **自动更新**：Windows 与 Linux（AppImage）应用内下载安装，macOS 提示并打开下载页。
 
 ## 截图
 
@@ -29,7 +50,16 @@ tabtv 是一个开源的 AI 视频创作桌面应用：在节点画布上把文�
 
 ## 下载与安装
 
-安装包发布在本仓库的 [Releases](../../releases) 页面（macOS Apple 芯片 / Intel、Windows 64 位、Linux x86_64）。
+最新版本：**[v0.1.0](https://github.com/li904338203/tabtv/releases/tag/v0.1.0)**（全部版本见 [Releases](https://github.com/li904338203/tabtv/releases)）
+
+| 平台 | 下载 |
+| --- | --- |
+| macOS · Apple 芯片 | [tabtv-0.1.0-darwin-arm64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.0/tabtv-0.1.0-darwin-arm64.dmg) |
+| macOS · Intel | [tabtv-0.1.0-darwin-amd64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.0/tabtv-0.1.0-darwin-amd64.dmg) |
+| Windows 10/11 · 64 位 | [tabtv-0.1.0-windows-amd64-setup.exe](https://github.com/li904338203/tabtv/releases/download/v0.1.0/tabtv-0.1.0-windows-amd64-setup.exe) |
+| Linux · x86_64 | [AppImage](https://github.com/li904338203/tabtv/releases/download/v0.1.0/tabtv-0.1.0-linux-amd64.AppImage) · [deb](https://github.com/li904338203/tabtv/releases/download/v0.1.0/tabtv_0.1.0_amd64.deb) |
+
+校验文件：[SHA256SUMS](https://github.com/li904338203/tabtv/releases/download/v0.1.0/SHA256SUMS)。安装包约 110–135 MB，已包含数据库、ffmpeg 与字体，不需要另装任何东西。
 
 安装包**没有做代码签名**，第一次打开时系统会拦一下，按下面的方法放行即可。
 
@@ -67,10 +97,25 @@ chmod +x tabtv-*.AppImage
 ## 第一次使用：配置模型
 
 1. 打开左侧栏的 **设置 → 模型与厂商**。
-2. 应用内置了常见厂商的模板（地址都是厂商官方地址，默认全部停用）。选一个厂商，填入你的 API Key。
-3. 启用要用的模型，回到画布即可生成。
+2. 在「模板」里选一个厂商，填入你的 API Key → **测试连接** → **启用**。模板里的地址都是厂商官方地址，默认全部停用。
+3. 回到画布即可生成。
 
-设置页里还有：Agent 技能、提示词、图片预设、营销选项与角色、可选的 S3 兼容存储、并发与日志、环境自检（ffmpeg、字体、数据库）。
+内置模板：OpenAI（GPT、GPT Image）、Anthropic（Claude）、可灵、火山方舟（Seedance）、火山引擎语音识别与 MediaKit、xAI（Grok 视频）、ElevenLabs（音乐）。
+
+**接入自己的中转网关**：在「厂商」里新建厂商（填网关地址与 Key），在「模型」里新建模型并选对应的 API 协议，提交路径会按协议自动填好。新建时直接打开「启用」，应用会按内置模板自动绑好常用操作与输入规则；已有模型可在「操作与参数」里点 **一键推荐配置**。
+
+| API 协议 | 用途 |
+| --- | --- |
+| OpenAI Chat / Anthropic Messages | 文本、Agent 推理、分镜与提示词 |
+| OpenAI Images | 文生图、图生图、资产图 |
+| OpenAI Video（`/v1/videos`） | 兼容 OpenAI 视频接口的服务：文生 / 图生 / 首尾帧 / 全能参考 / 视频生视频 |
+| Grok 视频、可灵视频、Seedance 视频 | 各家视频接口 |
+| OpenAI TTS / 转写、火山语音识别、ElevenLabs 音乐等 | 音频 |
+| 通用同步 / 异步 | 兼容本应用请求信封的中转 |
+
+**只收公网地址的上游**（如 OpenAI Video 协议的参考图、参考视频）：在 **设置 → 存储** 里配一个 S3 兼容存储（MinIO、阿里云 OSS、腾讯云 COS、火山 TOS、R2、S3 均可）。参考媒体会先传到那里，再把带签名的临时地址发给上游；本机素材仍保存在本地。
+
+设置页里还有：Agent 技能、提示词、图片预设、营销选项与角色、并发与日志、调用日志、环境自检（数据库、ffmpeg、H.264 编码器、字体、Linux 视频解码插件）。
 
 ## 数据保存在哪里
 
@@ -96,7 +141,12 @@ make fonts    # 下载排版字体（按 SHA-256 校验）
 # 构建桌面应用，产物在 build/bin/
 wails build                       # macOS / Windows
 wails build -tags webkit2_40      # Linux：必须带这个标签，否则请求体传不到后端
+
+# 或者一步打出安装包（含数据库、ffmpeg、字体），产物在 build/dist/
+make package
 ```
+
+发布：推送 `v*` 标签后，GitHub Actions 会在四个平台打包并上传为 Release 草稿。
 
 开发与提交前的门禁：
 
