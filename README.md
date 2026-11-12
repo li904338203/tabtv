@@ -51,16 +51,16 @@ tabtv 在节点画布上把文本、图片、视频、音频串起来，调用�
 
 ## 下载与安装
 
-最新版本：**[v0.1.1](https://github.com/li904338203/tabtv/releases/tag/v0.1.1)**（全部版本见 [Releases](https://github.com/li904338203/tabtv/releases)）
+最新版本：**[v0.1.2](https://github.com/li904338203/tabtv/releases/tag/v0.1.2)**（全部版本见 [Releases](https://github.com/li904338203/tabtv/releases)）
 
 | 平台 | 下载 |
 | --- | --- |
-| macOS · Apple 芯片 | [tabtv-0.1.1-darwin-arm64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-darwin-arm64.dmg) |
-| macOS · Intel | [tabtv-0.1.1-darwin-amd64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-darwin-amd64.dmg) |
-| Windows 10/11 · 64 位 | [tabtv-0.1.1-windows-amd64-setup.exe](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-windows-amd64-setup.exe) |
-| Linux · x86_64 | [AppImage](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-linux-amd64.AppImage) · [deb](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv_0.1.1_amd64.deb) |
+| macOS · Apple 芯片 | [tabtv-0.1.2-darwin-arm64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-darwin-arm64.dmg) |
+| macOS · Intel | [tabtv-0.1.2-darwin-amd64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-darwin-amd64.dmg) |
+| Windows 10/11 · 64 位 | [tabtv-0.1.2-windows-amd64-setup.exe](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-windows-amd64-setup.exe) |
+| Linux · x86_64 | [AppImage](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-linux-amd64.AppImage) · [deb](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv_0.1.2_amd64.deb) |
 
-校验文件：[SHA256SUMS](https://github.com/li904338203/tabtv/releases/download/v0.1.1/SHA256SUMS)。安装包约 110–135 MB，已包含数据库、ffmpeg 与字体，不需要另装任何东西。
+校验文件：[SHA256SUMS](https://github.com/li904338203/tabtv/releases/download/v0.1.2/SHA256SUMS)。安装包约 110–135 MB，已包含数据库、ffmpeg 与字体，不需要另装任何东西。
 
 安装包**没有做代码签名**，第一次打开时系统会拦一下，按下面的方法放行即可。
 

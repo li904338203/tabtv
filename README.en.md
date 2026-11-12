@@ -53,16 +53,16 @@ tabtv connects text, image, video and audio nodes on a canvas and drives the mod
 
 ## Download &amp; install
 
-Latest: **[v0.1.1](https://github.com/li904338203/tabtv/releases/tag/v0.1.1)** (all versions on [Releases](https://github.com/li904338203/tabtv/releases))
+Latest: **[v0.1.2](https://github.com/li904338203/tabtv/releases/tag/v0.1.2)** (all versions on [Releases](https://github.com/li904338203/tabtv/releases))
 
 | Platform | Download |
 | --- | --- |
-| macOS · Apple silicon | [tabtv-0.1.1-darwin-arm64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-darwin-arm64.dmg) |
-| macOS · Intel | [tabtv-0.1.1-darwin-amd64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-darwin-amd64.dmg) |
-| Windows 10/11 · 64-bit | [tabtv-0.1.1-windows-amd64-setup.exe](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-windows-amd64-setup.exe) |
-| Linux · x86_64 | [AppImage](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv-0.1.1-linux-amd64.AppImage) · [deb](https://github.com/li904338203/tabtv/releases/download/v0.1.1/tabtv_0.1.1_amd64.deb) |
+| macOS · Apple silicon | [tabtv-0.1.2-darwin-arm64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-darwin-arm64.dmg) |
+| macOS · Intel | [tabtv-0.1.2-darwin-amd64.dmg](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-darwin-amd64.dmg) |
+| Windows 10/11 · 64-bit | [tabtv-0.1.2-windows-amd64-setup.exe](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-windows-amd64-setup.exe) |
+| Linux · x86_64 | [AppImage](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv-0.1.2-linux-amd64.AppImage) · [deb](https://github.com/li904338203/tabtv/releases/download/v0.1.2/tabtv_0.1.2_amd64.deb) |
 
-Checksums: [SHA256SUMS](https://github.com/li904338203/tabtv/releases/download/v0.1.1/SHA256SUMS). Packages are about 110–135 MB and already include the database, ffmpeg and fonts — nothing else to install.
+Checksums: [SHA256SUMS](https://github.com/li904338203/tabtv/releases/download/v0.1.2/SHA256SUMS). Packages are about 110–135 MB and already include the database, ffmpeg and fonts — nothing else to install.
 
 The builds are **not code-signed**, so the OS will warn you the first time:
 
