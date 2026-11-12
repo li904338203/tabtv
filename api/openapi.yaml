@@ -8663,6 +8663,50 @@ paths:
                   items: { type: array, items: { $ref: '#/components/schemas/ModelTemplate' } }
         '403': { $ref: '#/components/responses/Forbidden' }
 
+  /admin/model-config/export:
+    get:
+      tags: [catalog]
+      operationId: adminExportModelConfig
+      security: [{ adminBearer: [] }]
+      description: |
+        导出全部厂商（**含明文 API Key**）、模型、操作绑定、能力矩阵、参数覆盖与公网中转存储配置（含明文 SecretKey），
+        用于换电脑 / 重装时整体同步。权限 `model:read`。
+      responses:
+        '200':
+          description: 模型配置文件（`format=tabtv.settings`、`kind=model-config`、`version=1`）
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ModelConfigFile' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  /admin/model-config/import:
+    post:
+      tags: [catalog]
+      operationId: adminImportModelConfig
+      security: [{ adminBearer: [] }]
+      description: |
+        导入 `adminExportModelConfig` 导出的文件。以文件为准：同 code 覆盖、没有的新建，本机多出来的厂商 / 模型不动
+        （同一模型下文件里没有的操作改为停用、能力行与参数覆盖删除）。`dryRun=true` 只返回预览、不写库。
+        `problems` 非空时整次不写入；单个厂商 / 模型失败记在该项的 `error` / `warnings` 上，其余照常导入。权限 `model:write`。
+      parameters:
+        - name: dryRun
+          in: query
+          required: false
+          schema: { type: boolean }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ModelConfigFile' }
+      responses:
+        '200':
+          description: 预览或导入结果
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ModelConfigImportReport' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
   /admin/model-templates/recommend-bindings/{model}:
     post:
       tags: [catalog]
@@ -9132,6 +9176,56 @@ components:
           schema: { $ref: '#/components/schemas/Error' }
 
   schemas:
+    ModelConfigFile:
+      type: object
+      required: [format, kind, version]
+      properties:
+        format: { type: string, example: tabtv.settings }
+        kind: { type: string, example: model-config }
+        version: { type: integer, example: 1 }
+        exportedAt: { type: string, format: date-time }
+        appVersion: { type: string }
+        providers:
+          type: array
+          items: { type: object, additionalProperties: true }
+          description: 厂商，`apiKey` 为明文
+        models:
+          type: array
+          items: { type: object, additionalProperties: true }
+          description: 模型，含 `operations`、`capabilities`、`params`
+        storage:
+          type: object
+          additionalProperties: true
+          description: 公网中转存储（S3 兼容），`secretKey` 为明文；没配时不出现
+    ModelConfigImportItem:
+      type: object
+      required: [code, name, action, status, ok]
+      properties:
+        code: { type: string }
+        name: { type: string }
+        action: { type: string, enum: [create, update] }
+        status: { type: string, description: 文件里的状态 }
+        hasKey: { type: boolean }
+        ok: { type: boolean }
+        error: { type: string }
+        warnings: { type: array, items: { type: string } }
+    ModelConfigImportReport:
+      type: object
+      required: [dryRun, problems, providers, models, storage, localOnly, restartRequired]
+      properties:
+        dryRun: { type: boolean }
+        problems: { type: array, items: { type: string }, description: 挡住整次导入的问题 }
+        providers: { type: array, items: { $ref: '#/components/schemas/ModelConfigImportItem' } }
+        models: { type: array, items: { $ref: '#/components/schemas/ModelConfigImportItem' } }
+        storage: { type: string, enum: [none, set] }
+        storageEndpoint: { type: string }
+        localOnly:
+          type: object
+          required: [providers, models]
+          properties:
+            providers: { type: array, items: { type: string } }
+            models: { type: array, items: { type: string } }
+        restartRequired: { type: boolean }
     # ---------- 通用 ----------
     Id:
       type: string

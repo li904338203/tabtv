@@ -6640,6 +6640,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/model-config/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description 导出全部厂商（**含明文 API Key**）、模型、操作绑定、能力矩阵、参数覆盖与公网中转存储配置（含明文 SecretKey），
+         *     用于换电脑 / 重装时整体同步。权限 `model:read`。
+         */
+        get: operations["adminExportModelConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/model-config/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description 导入 `adminExportModelConfig` 导出的文件。以文件为准：同 code 覆盖、没有的新建，本机多出来的厂商 / 模型不动
+         *     （同一模型下文件里没有的操作改为停用、能力行与参数覆盖删除）。`dryRun=true` 只返回预览、不写库。
+         *     `problems` 非空时整次不写入；单个厂商 / 模型失败记在该项的 `error` / `warnings` 上，其余照常导入。权限 `model:write`。
+         */
+        post: operations["adminImportModelConfig"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admin/model-templates/recommend-bindings/{model}": {
         parameters: {
             query?: never;
@@ -6843,6 +6884,56 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ModelConfigFile: {
+            /** @example tabtv.settings */
+            format: string;
+            /** @example model-config */
+            kind: string;
+            /** @example 1 */
+            version: number;
+            /** Format: date-time */
+            exportedAt?: string;
+            appVersion?: string;
+            /** @description 厂商，`apiKey` 为明文 */
+            providers?: {
+                [key: string]: unknown;
+            }[];
+            /** @description 模型，含 `operations`、`capabilities`、`params` */
+            models?: {
+                [key: string]: unknown;
+            }[];
+            /** @description 公网中转存储（S3 兼容），`secretKey` 为明文；没配时不出现 */
+            storage?: {
+                [key: string]: unknown;
+            };
+        };
+        ModelConfigImportItem: {
+            code: string;
+            name: string;
+            /** @enum {string} */
+            action: "create" | "update";
+            /** @description 文件里的状态 */
+            status: string;
+            hasKey?: boolean;
+            ok: boolean;
+            error?: string;
+            warnings?: string[];
+        };
+        ModelConfigImportReport: {
+            dryRun: boolean;
+            /** @description 挡住整次导入的问题 */
+            problems: string[];
+            providers: components["schemas"]["ModelConfigImportItem"][];
+            models: components["schemas"]["ModelConfigImportItem"][];
+            /** @enum {string} */
+            storage: "none" | "set";
+            storageEndpoint?: string;
+            localOnly: {
+                providers: string[];
+                models: string[];
+            };
+            restartRequired: boolean;
+        };
         /** @description Snowflake id。内部 int64，**对外一律 string**（GO-34）。 */
         Id: string;
         /**
@@ -21335,6 +21426,55 @@ export interface operations {
                     };
                 };
             };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminExportModelConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 模型配置文件（`format=tabtv.settings`、`kind=model-config`、`version=1`） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelConfigFile"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminImportModelConfig: {
+        parameters: {
+            query?: {
+                dryRun?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ModelConfigFile"];
+            };
+        };
+        responses: {
+            /** @description 预览或导入结果 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ModelConfigImportReport"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
             403: components["responses"]["Forbidden"];
         };
     };

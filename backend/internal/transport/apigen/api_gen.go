@@ -2068,6 +2068,42 @@ func (e ModelCapabilityRole) Valid() bool {
 	}
 }
 
+// Defines values for ModelConfigImportItemAction.
+const (
+	Create ModelConfigImportItemAction = "create"
+	Update ModelConfigImportItemAction = "update"
+)
+
+// Valid indicates whether the value is a known member of the ModelConfigImportItemAction enum.
+func (e ModelConfigImportItemAction) Valid() bool {
+	switch e {
+	case Create:
+		return true
+	case Update:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ModelConfigImportReportStorage.
+const (
+	ModelConfigImportReportStorageNone ModelConfigImportReportStorage = "none"
+	ModelConfigImportReportStorageSet  ModelConfigImportReportStorage = "set"
+)
+
+// Valid indicates whether the value is a known member of the ModelConfigImportReportStorage enum.
+func (e ModelConfigImportReportStorage) Valid() bool {
+	switch e {
+	case ModelConfigImportReportStorageNone:
+		return true
+	case ModelConfigImportReportStorageSet:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for MultiAngleOptionsPreset.
 const (
 	MultiAngleOptionsPresetBack      MultiAngleOptionsPreset = "back"
@@ -8494,6 +8530,61 @@ type ModelCapability struct {
 // ModelCapabilityRole defines model for ModelCapability.Role.
 type ModelCapabilityRole string
 
+// ModelConfigFile defines model for ModelConfigFile.
+type ModelConfigFile struct {
+	AppVersion *string    `json:"appVersion,omitempty"`
+	ExportedAt *time.Time `json:"exportedAt,omitempty"`
+	Format     string     `json:"format"`
+	Kind       string     `json:"kind"`
+
+	// Models 模型，含 `operations`、`capabilities`、`params`
+	Models *[]map[string]interface{} `json:"models,omitempty"`
+
+	// Providers 厂商，`apiKey` 为明文
+	Providers *[]map[string]interface{} `json:"providers,omitempty"`
+
+	// Storage 公网中转存储（S3 兼容），`secretKey` 为明文；没配时不出现
+	Storage *map[string]interface{} `json:"storage,omitempty"`
+	Version int                     `json:"version"`
+}
+
+// ModelConfigImportItem defines model for ModelConfigImportItem.
+type ModelConfigImportItem struct {
+	Action ModelConfigImportItemAction `json:"action"`
+	Code   string                      `json:"code"`
+	Error  *string                     `json:"error,omitempty"`
+	HasKey *bool                       `json:"hasKey,omitempty"`
+	Name   string                      `json:"name"`
+	Ok     bool                        `json:"ok"`
+
+	// Status 文件里的状态
+	Status   string    `json:"status"`
+	Warnings *[]string `json:"warnings,omitempty"`
+}
+
+// ModelConfigImportItemAction defines model for ModelConfigImportItem.Action.
+type ModelConfigImportItemAction string
+
+// ModelConfigImportReport defines model for ModelConfigImportReport.
+type ModelConfigImportReport struct {
+	DryRun    bool `json:"dryRun"`
+	LocalOnly struct {
+		Models    []string `json:"models"`
+		Providers []string `json:"providers"`
+	} `json:"localOnly"`
+	Models []ModelConfigImportItem `json:"models"`
+
+	// Problems 挡住整次导入的问题
+	Problems        []string                       `json:"problems"`
+	Providers       []ModelConfigImportItem        `json:"providers"`
+	RestartRequired bool                           `json:"restartRequired"`
+	Storage         ModelConfigImportReportStorage `json:"storage"`
+	StorageEndpoint *string                        `json:"storageEndpoint,omitempty"`
+}
+
+// ModelConfigImportReportStorage defines model for ModelConfigImportReport.Storage.
+type ModelConfigImportReportStorage string
+
 // ModelParamSupport defines model for ModelParamSupport.
 type ModelParamSupport struct {
 	// AllowedValues 可选值（字符串或数字，照参数定义）；null = 不收窄
@@ -11149,6 +11240,11 @@ type AdminDownloadMediaParams struct {
 // AdminDownloadMediaParamsW defines parameters for AdminDownloadMedia.
 type AdminDownloadMediaParamsW int
 
+// AdminImportModelConfigParams defines parameters for AdminImportModelConfig.
+type AdminImportModelConfigParams struct {
+	DryRun *bool `form:"dryRun,omitempty" json:"dryRun,omitempty"`
+}
+
 // AdminEnableModelTemplateJSONBody defines parameters for AdminEnableModelTemplate.
 type AdminEnableModelTemplateJSONBody struct {
 	// ApiKey 密钥三态。`keep` 保留 / `replace` 替换（带 value）/ `clear` 清除；未知 action 按保留。
@@ -13767,6 +13863,9 @@ type AdminSaveMaterialJSONRequestBody = AdminMaterialInput
 
 // AdminUploadMediaMultipartRequestBody defines body for AdminUploadMedia for multipart/form-data ContentType.
 type AdminUploadMediaMultipartRequestBody AdminUploadMediaMultipartBody
+
+// AdminImportModelConfigJSONRequestBody defines body for AdminImportModelConfig for application/json ContentType.
+type AdminImportModelConfigJSONRequestBody = ModelConfigFile
 
 // AdminEnableModelTemplateJSONRequestBody defines body for AdminEnableModelTemplate for application/json ContentType.
 type AdminEnableModelTemplateJSONRequestBody AdminEnableModelTemplateJSONBody
@@ -17175,6 +17274,12 @@ type ServerInterface interface {
 	// (GET /admin/media/{mediaId})
 	AdminDownloadMedia(w http.ResponseWriter, r *http.Request, mediaId string, params AdminDownloadMediaParams)
 
+	// (GET /admin/model-config/export)
+	AdminExportModelConfig(w http.ResponseWriter, r *http.Request)
+
+	// (POST /admin/model-config/import)
+	AdminImportModelConfig(w http.ResponseWriter, r *http.Request, params AdminImportModelConfigParams)
+
 	// (GET /admin/model-templates)
 	AdminListModelTemplates(w http.ResponseWriter, r *http.Request)
 
@@ -18236,6 +18341,16 @@ func (_ Unimplemented) AdminUploadMedia(w http.ResponseWriter, r *http.Request) 
 
 // (GET /admin/media/{mediaId})
 func (_ Unimplemented) AdminDownloadMedia(w http.ResponseWriter, r *http.Request, mediaId string, params AdminDownloadMediaParams) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /admin/model-config/export)
+func (_ Unimplemented) AdminExportModelConfig(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /admin/model-config/import)
+func (_ Unimplemented) AdminImportModelConfig(w http.ResponseWriter, r *http.Request, params AdminImportModelConfigParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -21043,6 +21158,53 @@ func (siw *ServerInterfaceWrapper) AdminDownloadMedia(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AdminDownloadMedia(w, r, mediaId, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminExportModelConfig operation middleware
+func (siw *ServerInterfaceWrapper) AdminExportModelConfig(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminExportModelConfig(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdminImportModelConfig operation middleware
+func (siw *ServerInterfaceWrapper) AdminImportModelConfig(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AdminImportModelConfigParams
+
+	// ------------- Optional query parameter "dryRun" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", true, false, "dryRun", r.URL.Query(), &params.DryRun, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "dryRun"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "dryRun", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdminImportModelConfig(w, r, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -35269,6 +35431,12 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Get(options.BaseURL+"/admin/model-templates", wrapper.AdminListModelTemplates)
 	})
 	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/admin/model-config/export", wrapper.AdminExportModelConfig)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/admin/model-config/import", wrapper.AdminImportModelConfig)
+	})
+	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/admin/model-templates/recommend-bindings/{model}", wrapper.AdminRecommendModelBindings)
 	})
 	r.Group(func(r chi.Router) {
@@ -38442,6 +38610,92 @@ func (response AdminDownloadMedia404JSONResponse) VisitAdminDownloadMediaRespons
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminExportModelConfigRequestObject struct {
+}
+
+type AdminExportModelConfigResponseObject interface {
+	VisitAdminExportModelConfigResponse(w http.ResponseWriter) error
+}
+
+type AdminExportModelConfig200JSONResponse ModelConfigFile
+
+func (response AdminExportModelConfig200JSONResponse) VisitAdminExportModelConfigResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminExportModelConfig403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminExportModelConfig403JSONResponse) VisitAdminExportModelConfigResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminImportModelConfigRequestObject struct {
+	Params AdminImportModelConfigParams
+	Body   *AdminImportModelConfigJSONRequestBody
+}
+
+type AdminImportModelConfigResponseObject interface {
+	VisitAdminImportModelConfigResponse(w http.ResponseWriter) error
+}
+
+type AdminImportModelConfig200JSONResponse ModelConfigImportReport
+
+func (response AdminImportModelConfig200JSONResponse) VisitAdminImportModelConfigResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminImportModelConfig400JSONResponse struct{ BadRequestJSONResponse }
+
+func (response AdminImportModelConfig400JSONResponse) VisitAdminImportModelConfigResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type AdminImportModelConfig403JSONResponse struct{ ForbiddenJSONResponse }
+
+func (response AdminImportModelConfig403JSONResponse) VisitAdminImportModelConfigResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(403)
 	_, err := buf.WriteTo(w)
 	return err
 }
@@ -51927,6 +52181,12 @@ type StrictServerInterface interface {
 	// (GET /admin/media/{mediaId})
 	AdminDownloadMedia(ctx context.Context, request AdminDownloadMediaRequestObject) (AdminDownloadMediaResponseObject, error)
 
+	// (GET /admin/model-config/export)
+	AdminExportModelConfig(ctx context.Context, request AdminExportModelConfigRequestObject) (AdminExportModelConfigResponseObject, error)
+
+	// (POST /admin/model-config/import)
+	AdminImportModelConfig(ctx context.Context, request AdminImportModelConfigRequestObject) (AdminImportModelConfigResponseObject, error)
+
 	// (GET /admin/model-templates)
 	AdminListModelTemplates(ctx context.Context, request AdminListModelTemplatesRequestObject) (AdminListModelTemplatesResponseObject, error)
 
@@ -54410,6 +54670,63 @@ func (sh *strictHandler) AdminDownloadMedia(w http.ResponseWriter, r *http.Reque
 		sh.options.ResponseErrorHandlerFunc(w, r, err)
 	} else if validResponse, ok := response.(AdminDownloadMediaResponseObject); ok {
 		if err := validResponse.VisitAdminDownloadMediaResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminExportModelConfig operation middleware
+func (sh *strictHandler) AdminExportModelConfig(w http.ResponseWriter, r *http.Request) {
+	var request AdminExportModelConfigRequestObject
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminExportModelConfig(ctx, request.(AdminExportModelConfigRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminExportModelConfig")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminExportModelConfigResponseObject); ok {
+		if err := validResponse.VisitAdminExportModelConfigResponse(w); err != nil {
+			sh.options.ResponseErrorHandlerFunc(w, r, err)
+		}
+	} else if response != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// AdminImportModelConfig operation middleware
+func (sh *strictHandler) AdminImportModelConfig(w http.ResponseWriter, r *http.Request, params AdminImportModelConfigParams) {
+	var request AdminImportModelConfigRequestObject
+
+	request.Params = params
+
+	var body AdminImportModelConfigJSONRequestBody
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		sh.options.RequestErrorHandlerFunc(w, r, fmt.Errorf("can't decode JSON body: %w", err))
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx context.Context, w http.ResponseWriter, r *http.Request, request interface{}) (interface{}, error) {
+		return sh.ssi.AdminImportModelConfig(ctx, request.(AdminImportModelConfigRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "AdminImportModelConfig")
+	}
+
+	response, err := handler(r.Context(), w, r, request)
+
+	if err != nil {
+		sh.options.ResponseErrorHandlerFunc(w, r, err)
+	} else if validResponse, ok := response.(AdminImportModelConfigResponseObject); ok {
+		if err := validResponse.VisitAdminImportModelConfigResponse(w); err != nil {
 			sh.options.ResponseErrorHandlerFunc(w, r, err)
 		}
 	} else if response != nil {

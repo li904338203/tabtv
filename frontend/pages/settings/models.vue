@@ -10,6 +10,7 @@
  */
 import { ElButton, ElInput, ElLoading, ElMessage, ElMessageBox, ElOption, ElSelect, ElTabPane, ElTable, ElTableColumn, ElTabs, ElTag } from "element-plus";
 import ModelBindingsDrawer from "~/components/settings/ModelBindingsDrawer.vue";
+import ModelConfigTransfer from "~/components/settings/ModelConfigTransfer.vue";
 import ModelEditor from "~/components/settings/ModelEditor.vue";
 import ModelTemplateCard from "~/components/settings/ModelTemplateCard.vue";
 import ProviderEditor from "~/components/settings/ProviderEditor.vue";
@@ -111,8 +112,9 @@ async function probe(row: Row) {
     <div class="section-head">
       <div>
         <h2>模型与厂商</h2>
-        <p>填入各厂商的 API Key 即可启用内置模板；接自己的中转网关或新型号用「厂商 / 模型」两页。Key 只保存在这台电脑上。</p>
+        <p>填入各厂商的 API Key 即可启用内置模板；接自己的中转网关或新型号用「厂商 / 模型」两页。Key 只保存在这台电脑上。换电脑时用「导出配置 / 导入配置」整体同步（含 Key）。</p>
       </div>
+      <ModelConfigTransfer @changed="load" />
     </div>
     <p v-if="loadError" class="settings-error">{{ loadError }} <button type="button" class="portal-link-button" @click="load">重试</button></p>
 

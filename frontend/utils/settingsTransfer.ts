@@ -9,6 +9,8 @@
  * ⚠️ 导入按 key 覆盖已有条目（技能 / 预设 / 选项按 code，角色按名称）；覆盖一律走正常的保存接口，
  *    不绕过服务端校验。
  */
+import { saveBlob } from "~/utils/download";
+
 export const TRANSFER_FORMAT = "tabtv.settings";
 export const TRANSFER_VERSION = 1;
 
@@ -122,16 +124,12 @@ export function exportFileName(kind: TransferKind, now = new Date()): string {
   return `tabtv-${kind}-${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}.json`;
 }
 
-/** 浏览器里下载一份 JSON（没有测试：只碰 DOM）。 */
+/**
+ * 把一份 JSON 存成文件（没有测试：只碰 DOM / 宿主）。
+ * ⚠️ 走 saveBlob：桌面版 WebView 里没有下载管理器，`<a download>` 点了没反应，要交给宿主弹「另存为」。
+ */
 export function downloadJson(name: string, data: unknown) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = name;
-  a.click();
-  // ⚠️ 不能同步 revoke：部分浏览器 click 之后才异步取这个地址，立刻撤销会下出 0 字节文件。
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  saveBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }), name);
 }
 
 /** 读用户选的文件为文本。 */

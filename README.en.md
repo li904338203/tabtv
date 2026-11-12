@@ -38,6 +38,7 @@ tabtv connects text, image, video and audio nodes on a canvas and drives the mod
 - **Smart cut &amp; 3D director**: automatic rough cuts; pose mannequins and set camera angles in 3D.
 - **Image tools**: character sheets, relighting, upscaling, multi-angle, inpainting, background removal, grid splitting and more.
 - **Project export / import**: pack a project as a zip and restore it on another machine (no keys inside).
+- **Model config export / import**: Settings → Models &amp; Providers → *Export / Import config* (导出配置 / 导入配置) moves providers, models, bindings, parameters and relay storage to another machine (the file contains your keys in plain text — keep it between your own devices).
 - **Auto update**: in-app download and install on Windows and Linux (AppImage); on macOS it points you to the download page.
 
 ## Screenshots

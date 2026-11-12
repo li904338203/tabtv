@@ -267,6 +267,8 @@ func assemble(ctx context.Context, cfg config.Config, deps *bootstrap.Deps, iden
 		catalogHandler.MountModelAdmin(r, identity.RequireAdmin, identity.RequirePermission)
 		mountModelTemplates(r, modelTemplates{svc: catalogSvc, repo: catalogrepo.New(pool), who: subjectID},
 			identity.RequireAdmin, identity.RequirePermission)
+		mountModelConfig(r, modelConfig{svc: catalogSvc, repo: catalogrepo.New(pool), st: st,
+			decrypt: cipher.Decrypt, who: subjectID}, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountMaterial(r, identity.RequireUser, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountPrompt(r, identity.RequireAdmin, identity.RequirePermission)
 		catalogHandler.MountPresetAdmin(r, identity.RequireAdmin, identity.RequirePermission)
