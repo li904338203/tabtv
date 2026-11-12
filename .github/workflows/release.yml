@@ -21,11 +21,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-14
+          - os: macos-15
             plat: darwin-arm64
             wails: darwin/arm64
           # Intel 版在苹果芯片的机器上交叉构建（macos-13 runner 逐步下线）。
-          - os: macos-14
+          - os: macos-15
             plat: darwin-amd64
             wails: darwin/amd64
           - os: windows-latest

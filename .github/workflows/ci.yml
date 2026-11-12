@@ -66,7 +66,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-14
+          - os: macos-15
             plat: darwin-arm64
           - os: windows-latest
             plat: windows-amd64

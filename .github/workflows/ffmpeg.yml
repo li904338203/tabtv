@@ -40,7 +40,7 @@ jobs:
       matrix:
         arch: [arm64, x86_64]
     # 两个架构都在苹果芯片的机器上构建：x86_64 交叉编译，用 Rosetta 跑自检。
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: 构建工具（只作工具用，不链接其库）
