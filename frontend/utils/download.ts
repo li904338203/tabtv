@@ -69,9 +69,16 @@ export function safeFilename(base: string, fallback = "AITv作品"): string {
   return cleaned || fallback;
 }
 
-/** 桌面版的另存为（Go 侧 app/save.go）。返回是否保存（用户取消为 false）。 */
+/**
+ * 桌面版的另存为（Go 侧 app/save.go）。返回是否保存（用户取消为 false）。
+ *
+ * ⚠️ 请求体必须是 ArrayBuffer，不能直接给 Blob：macOS 的 WKWebView 把 Blob 请求体当成**流**交给 Wails，
+ *    而 Wails 读流时只要那一刻还没有可读字节就当成读完了 —— 宿主收到 0 字节，存出一个空文件（实测踩过）。
+ *    ArrayBuffer 与 JSON 字符串一样走整段字节那条路。
+ */
 export async function saveViaHost(blob: Blob, filename: string): Promise<boolean> {
-  const response = await fetch(`/api/v1/_desktop/save?name=${encodeURIComponent(filename)}`, { method: "POST", body: blob });
+  const body = await blob.arrayBuffer();
+  const response = await fetch(`/api/v1/_desktop/save?name=${encodeURIComponent(filename)}`, { method: "POST", body });
   const result = (await response.json().catch(() => ({}))) as { saved?: boolean; message?: string };
   if (!response.ok) throw new Error(result.message || "保存失败");
   return Boolean(result.saved);
